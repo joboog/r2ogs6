@@ -1,0 +1,21 @@
+Package: r2ogs6
+Type: Package
+Title: An API to the multi-physics simulator OpenGeoSys-v6
+Version: 0.1.0
+Author: person(given = "Johannes",
+               family = "Boog",
+               role = c("aut", "cre"),
+               email = "johannesboog@yahoo.de",
+               comment = structure("https://orcid.org/0000-0003-1094-9255",
+                                    .Names = "ORCID"))
+Maintainer: Johannes Boog <johannesboog@yahoo.de>
+Description: Define and manage simulations using OpenGeoSys-v6.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat
+Imports: 
+    purrr,
+    magrittr
+RoxygenNote: 7.1.1
