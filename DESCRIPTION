@@ -17,5 +17,10 @@ Suggests:
     testthat
 Imports: 
     purrr,
-    magrittr
+    magrittr,
+    xml2,
+    checkmate,
+    tibble,
+    R6,
+    stringr
 RoxygenNote: 7.1.1
