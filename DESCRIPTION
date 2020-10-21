@@ -22,5 +22,6 @@ Imports:
     checkmate,
     tibble,
     R6,
-    stringr
+    stringr,
+    readr
 RoxygenNote: 7.1.1

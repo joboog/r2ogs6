@@ -1,13 +1,13 @@
 #This script contains various functions to turn data for a .gml file into the correct XML format
 
 #' Export function
-#' @param gml_data The .gml data (already in XML friendly format)
+#' @param xml_data The .gml data (already in XML friendly format)
 #' @param file_name The name of the .gml file to be written
 # @examples
-# export_gml_to_file(my_gml)
+# export_xml_to_file(my_gml)
 #' @export
-export_gml_to_file <- function(gml_data, file_name) {
-  doc <- xml2::as_xml_document(gml_data)
+export_xml_to_file <- function(xml_data, file_name) {
+  doc <- xml2::as_xml_document(xml_data)
   xml2::write_xml(doc, file_name, options = "format", encoding="ISO-8859-1")
   invisible()
 }
@@ -21,7 +21,7 @@ export_gml_to_file <- function(gml_data, file_name) {
 #' @return A XML document ready for export to a file
 # @examples (WIP)
 #' @export
-data_to_xml <- function(geo_name, points_tibble, polylines_list, surfaces_list) {
+gml_data_to_xml <- function(geo_name, points_tibble, polylines_list, surfaces_list) {
 
   #data_node <- xml2::read_xml('<OpenGeoSysGLI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogs="http://www.opengeosys.org"/>')
 
@@ -42,14 +42,15 @@ data_to_xml <- function(geo_name, points_tibble, polylines_list, surfaces_list) 
 #' @param point_tibble The specified tibble
 #' @return An XML node containing the points
 #' @examples
-#' my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1),is_origin = c(TRUE, FALSE))
+#' my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1), name = c("origin", ""))
 #' point_node <- points_to_xml(my_tibble)
 #' @export
 points_to_xml <- function(point_tibble) {
   points_node <- list(points = list())
+  has_names <- (length(point_tibble) == 4)
 
   for(i in 1:length(point_tibble[[1]])){
-    if(!point_tibble[[4]][[i]]) {
+    if(!has_names || point_tibble[[4]][[i]] == "") {
       points_node[[1]] <- c(points_node[[1]], list(point = structure(list(),
                                                                      id = (i-1),
                                                                      x = point_tibble[[1]][[i]],
@@ -61,7 +62,7 @@ points_to_xml <- function(point_tibble) {
                                                                      x = point_tibble[[1]][[i]],
                                                                      y = point_tibble[[2]][[i]],
                                                                      z = point_tibble[[3]][[i]],
-                                                                     name = "origin")))
+                                                                     name = point_tibble[[4]][[i]])))
     }
   }
 
@@ -79,8 +80,14 @@ polylines_to_xml <- function(polyline_list) {
   polylines_node <- list(polylines = list())
 
   for(i in 1:length(polyline_list)){
-    polylines_node[[1]] <- c(polylines_node[[1]], list(polyline = structure(list(pnt = list(polyline_list[[i]][[2]][[1]]),
-                                                                                 pnt = list(polyline_list[[i]][[2]][[2]])),
+
+    pnt_list <- list()
+
+    for(j in 1:length(polyline_list[[i]][[2]])) {
+      pnt_list <- c(pnt_list, list(pnt = list(polyline_list[[i]][[2]][[j]])))
+    }
+
+    polylines_node[[1]] <- c(polylines_node[[1]], list(polyline = structure(pnt_list,
                                                                             id = (i-1),
                                                                             name = polyline_list[[i]][[1]])))
   }

@@ -15,7 +15,6 @@ Class describing a set of points
 \item \href{#method-validate_ids}{\code{GMLPoints$validate_ids()}}
 \item \href{#method-validate_dim}{\code{GMLPoints$validate_dim()}}
 \item \href{#method-validate_coordinates}{\code{GMLPoints$validate_coordinates()}}
-\item \href{#method-validate_origin}{\code{GMLPoints$validate_origin()}}
 \item \href{#method-as_list}{\code{GMLPoints$as_list()}}
 \item \href{#method-as_node}{\code{GMLPoints$as_node()}}
 \item \href{#method-print}{\code{GMLPoints$print()}}
@@ -55,15 +54,6 @@ Class describing a set of points
 \subsection{Method \code{validate_coordinates()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GMLPoints$validate_coordinates(gml_points)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate_origin"></a>}}
-\if{latex}{\out{\hypertarget{method-validate_origin}{}}}
-\subsection{Method \code{validate_origin()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GMLPoints$validate_origin(gml_points)}\if{html}{\out{</div>}}
 }
 
 }

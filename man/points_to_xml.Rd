@@ -16,6 +16,6 @@ An XML node containing the points
 Turns a tibble of points into an XML node
 }
 \examples{
-my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1),is_origin = c(TRUE, FALSE))
+my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1), name = c("origin", ""))
 point_node <- points_to_xml(my_tibble)
 }

@@ -223,7 +223,6 @@ GMLPoints <- R6::R6Class("GMLPoints",
                                  private$.ids <- self$validate_ids(gml_points)
                                  self$validate_dim(gml_points)
                                  self$validate_coordinates(gml_points)
-                                 self$validate_origin(gml_points)
 
                                  private$.gml_points <- gml_points
                              },
@@ -256,22 +255,6 @@ GMLPoints <- R6::R6Class("GMLPoints",
                                              stop("Overlapping points (with the same coordinates) detected", call. = FALSE)
                                          }
                                      }
-                                 }
-                             },
-
-                             validate_origin = function(gml_points){
-                                 found_origin <- FALSE
-                                 for(i in 1:length(gml_points)){
-                                     if (gml_points[[i]]$is_origin == TRUE){
-                                         if(found_origin){
-                                             stop("More than one origin point detected", call. = FALSE)
-                                         }else{
-                                             found_origin <- TRUE
-                                         }
-                                     }
-                                 }
-                                 if(!found_origin){
-                                     stop("No origin point detected", call. = FALSE)
                                  }
                              },
 
