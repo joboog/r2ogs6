@@ -1,4 +1,4 @@
-test_that("validate_points function checks ...", {
+test_that("validate_points function checks if ...", {
 
     point_list <- list(x = c(0, 0), y = c(1, 1), z = c(0, 1))
 
@@ -21,4 +21,43 @@ test_that("validate_points function checks ...", {
 
     expect_invisible(validate_points(point_tibble_val))
     expect_invisible(validate_points(point_tibble_val_2))
+})
+
+
+test_that("validate_polylines function checks if...", {
+
+    polyline_tibble <- tibble::tibble(name = "tibble", polyline = c(c(1, 2)))
+
+    #Check class (should expect a list, not a tibble)
+    expect_error(validate_polylines(polyline_tibble))
+
+    polyline_list_inv_0 <- list(name = "missing_polyline_list", c(1,2))
+    polyline_list_inv_1 <- list(list(name = "wrong_length", c(0, 1, 2), c(1, 2)))
+    polyline_list_inv_2 <- list(list(name = 42, c(1, 2)))
+    polyline_list_inv_3 <- list(list(name = "wrong_points", c("this", "should", "fail")))
+
+    expect_error(validate_polylines(polyline_list_inv_0))
+    expect_error(validate_polylines(polyline_list_inv_1))
+    expect_error(validate_polylines(polyline_list_inv_2))
+    expect_error(validate_polylines(polyline_list_inv_3))
+
+    polyline_list_val_0 <- list(list(name = "cool", c(1, 2)))
+    polyline_list_val_1 <- list(list(name = "also cool", c(1, 2, 4, 5, 1)))
+
+    expect_invisible(validate_polylines(polyline_list_val_0))
+    expect_invisible(validate_polylines(polyline_list_val_1))
+
+    #...(WIP)
+
+})
+
+
+test_that("validate_surfaces function checks if...", {
+
+    surface_tibble <- tibble::tibble(name = "tibble", surface = c(c(0, 1, 2), c(1, 2, 3)))
+
+    #Check class (should expect a list, not a tibble)
+    expect_error(validate_surfaces(surface_tibble))
+
+    #...(WIP)
 })

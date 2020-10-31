@@ -2,9 +2,7 @@
 % Please edit documentation in R/validate_gml.R
 \name{validate_points}
 \alias{validate_points}
-\title{Checks if the input is a tibble, if this tibble has the right number of elements,
-if those elements are named correctly, if the lists in the tibble are of the same length and
-if there is any overlapping points or duplicate point names}
+\title{validate_points}
 \usage{
 validate_points(gml_points)
 }
@@ -13,6 +11,5 @@ validate_points(gml_points)
 }
 \description{
 Checks if the input is a tibble, if this tibble has the right number of elements,
-if those elements are named correctly, if the lists in the tibble are of the same length and
-if there is any overlapping points or duplicate point names
+if those elements are named correctly and if there are any overlapping points or duplicate point names
 }

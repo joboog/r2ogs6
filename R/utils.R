@@ -1,7 +1,3 @@
-
-default_xml_version <- "1.0"
-default_xml_encoding <- "ISO-8859-1"
-
 #============================== GENERAL UTILITY (copy playground) ================================
 
 ###Stub
@@ -23,51 +19,129 @@ default_xml_encoding <- "ISO-8859-1"
 #   )
 # )
 
-#============================== XML UTILITY FUNCTIONS ================================
 
-#' Reads the encoding of an XML file
-#'
-#' @param input_file_name An XML (.xml or, in the case of OpenGeoSys, .prj) file
-#' @return The encoding of the input file
+#============================== VALIDATION UTILITY ================================
+
+#'check_for_obj_of_name
+#'@description Checks if a object with the given name was already defined for a ogs6 object and if not,
+#' tells user to initialize one
+#'@param ogs6_obj The ogs6 object to check
+#'@param obj_name The name of the object to check for
+check_for_obj_of_name <- function(ogs6_obj, obj_name) {
+
+  if(!obj_name %in% names(ogs6_obj$sim_input)){
+    stop(paste("There is no object named ", obj_name," for your ogs6 object yet.\n
+               You can initialize one by calling input_add_", obj_name ,
+               "() (read up on the required parameters)"),
+         call. = FALSE)
+    }
+}
+
+
+#============================== XML UTILITY ================================
+
+
+#' export_xml_to_file
+#' @description Export function
+#' @param xml_data The data to be exported (already in XML friendly format)
+#' @param file_name The name of the file to be written
 # @examples
-# input_file_encoding <- get_xml_encoding("file.xml")
-# input_file_encoding <- get_xml_encoding("file.prj")
-get_xml_encoding <- function(input_file_name) {
-  input_file <- file(input_file_name, "r")
-  first_line <- readLines(input_file, n=1)
-  close(input_file)
-  decl <- stringr::str_split(first_line, '"', simplify = TRUE)
+# export_xml_to_file(...)
+export_xml_to_file <- function(xml_data, file_name) {
+  doc <- xml2::as_xml_document(xml_data)
+  xml2::write_xml(doc, file_name, options = "format", encoding="ISO-8859-1")
+  invisible()
+}
 
-  xml_encoding <- default_xml_encoding
 
-  if(length(decl) == 5 && decl[1] == "<?xml version=" && decl[3] == " encoding=" && decl[5]=="?>"){
-    xml_encoding <- decl[4]
-    cat(paste("Valid XML declaration in first line of input file found.\nDetected encoding ", xml_encoding))
+#' adopt_nodes
+#' @description A helper function for creating parent nodes using the generic function as_node
+#' @param parent_name The name of the new parent node
+#' @param objs A list of class objects (class must have method for generic function as_node)
+adopt_nodes <- function(parent_name, objs) {
+  parent_node <- list(parent_name = list())
 
-  }else{
-    cat("XML declaration not as expected. Example for valid declaration:\n")
-    cat('<?xml version="1.0" encoding="UTF-8"?>\n')
-    cat(paste("I will use my default value of XML encoding ",  default_xml_encoding, ".\n"))
+  for(i in 1:length(objs)) {
+    parent_node <- c(parent_node[[1]], as_node(objs[[i]]))
+  }
+
+  return(xml2::as_xml_document(parent_node))
+}
+
+#'add_opt_attr
+#'@description Adds an optional attribute to a node attribute list
+#'@param node The node the optional attribute should be added to
+#'@param obj_parameter The value of the attribute to be added
+#'@param attr_name The name of the attribute to be added
+add_opt_attr <- function(node, obj_parameter, attr_name) {
+  if(!is.null(obj_parameter)) {
+    attributes(node[[1]])[[attr_name]] <- obj_parameter
+  }
+
+  return(node)
+}
+
+
+#'add_opt_child
+#'@description Adds an optional child to a node child list
+#'@param node The node the optional child should be added to
+#'@param obj_parameter The value of the child to be added
+#'@param child_name Optional: If it's a child node instead of just a value, the name of the child to be added
+add_opt_child <- function(node, obj_parameter, child_name = NULL) {
+
+  if(!is.null(obj_parameter)) {
+    if(!is.null(child_name) && length(node[[1]]) == length(names(node[[1]]))) {
+      node[[1]] <- c(node[[1]], list(child_name = obj_parameter))
+    }else if(length(node[[1]]) == 0) {
+      node[[1]] <- list(obj_parameter)
+    }else{
+      stop(paste("You're trying to add a value (an unnamed child node) to a node
+                 which already has a value."), call. = FALSE)
+    }
 
   }
-  return(xml_encoding)
+
+  return(node)
 }
 
 
-#' Creates a template project file based on the XML structure and attributes of an existing project file.
-#' @param existing_prj An existing .prj file to use as a template for the structure and attributes
-#' @param template_prj The path where the template should be saved
-#' @return The newly created template project file
-# @examples
-# blank_prj_file <- create_template_prj("file.prj")
-create_template_prj <- function(existing_prj, template_prj) {
-  xml_input <- xml2::read_xml(existing_prj)
-
-  #Empty text nodes
-  text_nodes<-xml2::xml_find_all(xml_input, "//text()")
-  xml2::xml_set_text(text_nodes, "")
-
-  xml2::write_xml(xml_input, template_prj, options = "format", encoding=get_xml_encoding(existing_prj))
-}
 
 
+#================================Test if S3 object in R6 class inherits reference semantics
+
+# A <- R6::R6Class("A",
+#   public = list(
+#
+#       b_obj = NULL,
+#
+#       initialize = function(b_obj) {
+#           self$b_obj <- b_obj
+#         }
+#   )
+# )
+#
+# b <- function(x){
+#     structure(x,
+#               class = "b")
+# }
+#
+# mod_func_a <- function(a_obj){
+#     a_obj$b_obj$x <- 100
+# }
+#
+# a_obj <- A$new(b(42))
+#
+# mod_func_a(a_obj)
+#
+# a_obj$b_obj$x
+#
+#
+# mod_func_b <- function(b_obj){
+#     b_obj$x <- 100
+# }
+#
+# b_obj <- b(42)
+#
+# mod_func_b(b_obj)
+#
+# b_obj

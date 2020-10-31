@@ -23,5 +23,8 @@ Imports:
     tibble,
     R6,
     stringr,
-    readr
+    readr,
+    assertthat,
+    crayon,
+    snakecase
 RoxygenNote: 7.1.1

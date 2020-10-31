@@ -1,38 +1,31 @@
 #This script contains various functions to turn data for a .gml file into the correct XML format
 
-#' Export function
-#' @param xml_data The .gml data (already in XML friendly format)
-#' @param file_name The name of the .gml file to be written
-# @examples
-# export_xml_to_file(my_gml)
-#' @export
-export_xml_to_file <- function(xml_data, file_name) {
-  doc <- xml2::as_xml_document(xml_data)
-  xml2::write_xml(doc, file_name, options = "format", encoding="ISO-8859-1")
-  invisible()
-}
 
-
-#' Wrapper function to create a XML document based on the user input data
-#' @param geo_name The name of the geometry specified by the user
-#' @param points_tibble A tibble containing points
-#' @param polylines_list A list containing polylines
-#' @param surfaces_list A list containing surfaces
+#' Wrapper function to create a .gml XML document based on the user input data
+#' @param gml_obj A gml class object
 #' @return A XML document ready for export to a file
 # @examples (WIP)
-#' @export
-gml_data_to_xml <- function(geo_name, points_tibble, polylines_list, surfaces_list) {
+gml_data_to_xml <- function(gml_obj) {
 
-  #data_node <- xml2::read_xml('<OpenGeoSysGLI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogs="http://www.opengeosys.org"/>')
+  validate_gml_data(gml_obj)
 
   data_node <- xml2::xml_new_root(.value = "OpenGeoSysGLI",
                     "xmlns:xsi" = "http://www.w3.org/2001/XMLSchema-instance",
                     "xmlns:ogs" = "http://www.opengeosys.org")
 
-  xml2::xml_add_child(data_node, xml2::as_xml_document(list(name = list(geo_name))))
-  xml2::xml_add_child(data_node, points_to_xml(points_tibble))
-  xml2::xml_add_child(data_node, polylines_to_xml(polylines_list))
-  xml2::xml_add_child(data_node, surfaces_to_xml(surfaces_list))
+  xml2::xml_add_child(data_node, xml2::as_xml_document(list(name = list(gml_obj$geometry_name))))
+
+  if(!is.null(gml_obj$points)){
+    xml2::xml_add_child(data_node, points_to_xml(gml_obj$points))
+  }
+
+  if(!is.null(gml_obj$polylines)){
+    xml2::xml_add_child(data_node, polylines_to_xml(gml_obj$polylines))
+  }
+
+  if(!is.null(gml_obj$surfaces)){
+    xml2::xml_add_child(data_node, surfaces_to_xml(gml_obj$surfaces))
+  }
 
   return(data_node)
 }
@@ -70,21 +63,21 @@ points_to_xml <- function(point_tibble) {
 }
 
 #' Turns a list of polylines into an XML node
-#' @param polyline_list The specified list
+#' @param polylines A list of polylines
 #' @return An XML node containing the polylines
 #' @examples
 #' my_list <- list(list(name = "front_left", c(0, 1)), list(name = "front_right", c(4, 5)))
 #' polylines_node <- polylines_to_xml(my_list)
 #' @export
-polylines_to_xml <- function(polyline_list) {
+polylines_to_xml <- function(polylines) {
   polylines_node <- list(polylines = list())
 
-  for(i in 1:length(polyline_list)){
+  for(i in 1:length(polylines)){
 
     pnt_list <- list()
 
-    for(j in 1:length(polyline_list[[i]][[2]])) {
-      pnt_list <- c(pnt_list, list(pnt = list(polyline_list[[i]][[2]][[j]])))
+    for(j in 1:length(polylines[[i]][[2]])) {
+      pnt_list <- c(pnt_list, list(pnt = list(polylines[[i]][[2]][[j]])))
     }
 
     polylines_node[[1]] <- c(polylines_node[[1]], list(polyline = structure(pnt_list,
@@ -96,27 +89,27 @@ polylines_to_xml <- function(polyline_list) {
 }
 
 #' Turns a list of surfaces into an XML node
-#' @param surfaces_list The specified list
+#' @param surfaces A list of surfaces
 #' @return An XML node containing the surfaces
 #' @examples
 #' my_list <- list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
 #' list(name = "right", c(4, 6, 5), c(4, 6, 7)))
 #' surfaces_node <- surfaces_to_xml(my_list)
 #' @export
-surfaces_to_xml <- function(surfaces_list) {
+surfaces_to_xml <- function(surfaces) {
   surfaces_node <- list(surfaces = list())
 
-  for(i in 1:length(surfaces_list)){
+  for(i in 1:length(surfaces)){
     surfaces_node[[1]] <- c(surfaces_node[[1]], list(surface = structure(c(list(element = structure(list(),
-                                                                                                    p1 = surfaces_list[[i]][[2]][[1]],
-                                                                                                    p2 = surfaces_list[[i]][[2]][[2]],
-                                                                                                    p3 = surfaces_list[[i]][[2]][[3]])),
+                                                                                                    p1 = surfaces[[i]][[2]][[1]],
+                                                                                                    p2 = surfaces[[i]][[2]][[2]],
+                                                                                                    p3 = surfaces[[i]][[2]][[3]])),
                                                                            list(element = structure(list(),
-                                                                                                    p1 = surfaces_list[[i]][[3]][[1]],
-                                                                                                    p2 = surfaces_list[[i]][[3]][[2]],
-                                                                                                    p3 = surfaces_list[[i]][[3]][[3]]))),
+                                                                                                    p1 = surfaces[[i]][[3]][[1]],
+                                                                                                    p2 = surfaces[[i]][[3]][[2]],
+                                                                                                    p3 = surfaces[[i]][[3]][[3]]))),
                                                                          id = (i-1),
-                                                                         name = surfaces_list[[i]][[1]])))
+                                                                         name = surfaces[[i]][[1]])))
   }
 
   return(xml2::as_xml_document(surfaces_node))
