@@ -2,7 +2,7 @@
 % Please edit documentation in R/export_gml.R
 \name{gml_data_to_xml}
 \alias{gml_data_to_xml}
-\title{Wrapper function to create a .gml XML document based on the user input data}
+\title{gml_data_to_xml}
 \usage{
 gml_data_to_xml(gml_obj)
 }

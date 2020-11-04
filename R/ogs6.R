@@ -2,18 +2,25 @@
 
 #============================== R6 ================================
 
-#'Constructor for the OGS6 base class
+#'OGS6
+#'@description Constructor for the OGS6 base class
+#'@param sim_name The name of the simulation
+#'@param sim_id The ID of the simulation
+#'@param sim_path The path where all relevant files for the simulation will be saved
+#'@param ogs_bin_path
 OGS6 <- R6::R6Class("OGS6",
   public = list(
 
     initialize = function(sim_name,
                           sim_id,
-                          sim_path) {
+                          sim_path,
+                          ogs_bin_path) {
 
       # Basic validation
       assertthat::assert_that(assertthat::is.string(sim_name))
       assertthat::assert_that(is.integer(sim_id))
       assertthat::assert_that(assertthat::is.string(sim_path))
+      assertthat::assert_that(assertthat::is.string(ogs_bin_path))
 
         private$.sim_input <- list()
         private$.sim_output <- list()
@@ -21,14 +28,28 @@ OGS6 <- R6::R6Class("OGS6",
         private$.sim_name <- sim_name
         private$.sim_id <- sim_id
         private$.sim_path <- sim_path
+        private$.ogs_bin_path <- ogs_bin_path
     },
 
-    add_sim_input = function(name, value) {
-        private$.sim_input[[name]] <- value
+    #Sets a sim_input list object
+    set_sim_input = function(name, value) {
+      private$.sim_input[[name]] <- value
     },
 
+    #Adds an element to a sim_input list object
+    add_to_sim_input = function(name, value) {
+      private$.sim_input[[name]] <- c(private$.sim_input[[name]], value)
+    },
+
+    #Sets a sim_input object parameter
     set_sim_input_obj_param = function(obj_name, obj_param_name, value) {
         private$.sim_input[[obj_name]]$obj_param_name <- value
+    },
+
+    #Adds an element to a sim_input object parameter which is a list
+    add_to_sim_input_obj_param = function(obj_name, obj_param_name, value) {
+      private$.sim_input[[obj_name]]$obj_param_name <-
+        c(private$.sim_input[[obj_name]]$obj_param_name, value)
     },
 
     add_sim_output = function(name, value) {
@@ -76,6 +97,14 @@ OGS6 <- R6::R6Class("OGS6",
           } else {
               stop("`$sim_path` is read only", call. = FALSE)
           }
+      },
+
+      ogs_bin_path = function(value) {
+        if (missing(value)) {
+          private$.ogs_bin_path
+        } else {
+          stop("`$ogs_bin_path` is read only", call. = FALSE)
+        }
       }
 
   ),
@@ -85,7 +114,8 @@ OGS6 <- R6::R6Class("OGS6",
       .sim_output = NULL,
       .sim_name = NULL,
       .sim_id = NULL,
-      .sim_path = NULL
+      .sim_path = NULL,
+      .ogs_bin_path = NULL
   )
 )
 

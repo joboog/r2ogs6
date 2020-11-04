@@ -5,128 +5,118 @@
 #============================== Functions to be exported ================================
 
 
+#'new_prj
+#'@description Class describing the .prj file and any parameters defined in one
+#'@param processes
+#'@param time_loop
+#'@param media
+#'@param parameters
+#'@param process_variables
+#'@param nonlinear_solvers
+#'@param linear_solvers
+#'@param mesh
+#'@param geometry
+#'@param meshes
+#'@param curves
+#'@param test_definition
+new_prj <- function() {
 
-
-#============================== processes classes and methods ================================
-
-
-#S3 class representing a .prj process element
-#'@param name The process name
-#'@param type The process type
-#'@param integration_order ...
-#'@param dimension ...
-#'@param constitutive_relation ...
-#'@param process_variables ...
-#'@param secondary_variables A list of secondary variables
-#'@param specific_body_force The specific body force
-new_r2ogs_prj_process <- function(name, type, integration_order, dimension, constitutive_relation,
-                                   process_variables, secondary_variables, specific_body_force) {
-    #validating functions here
+    #validation here...
 
     structure(
-        list(
-            name = name,
-            type = type,
-            integration_order = integration_order,
-            dimension = dimension,
-            constitutive_relation = constitutive_relation,
-            process_variables = process_variables,
-            secondary_variables = secondary_variables,
-            specific_body_force = specific_body_force,
-        ),
-        class = "r2ogs_prj_process"
-    )
+        list(meshes,
+             geometry,
+             processes,
+             time_loop,
+             media,
+             parameters,
+             curves,
+             process_variables,
+             nonlinear_solvers,
+             linear_solvers,
+             test_definition
+             ),
+
+        class = "r2ogs6_prj")
 }
 
 
+#'as_node.r2ogs6_prj
+#'@description
+as_node.r2ogs6_prj <- function(obj) {
 
+    #Validate the r2ogs6_prj object
+    #...
 
+    prj_node <- list(OpenGeoSysProject = structure(list()))
 
-#============================== media classes and methods ================================
+    #If there is a .gml defined, add "geometry" and "mesh" node
+    if(1) {
 
-new_r2ogs_prj_property <- function(name = character(), type = character(), value = double()){
-    #Validate...
+    }
 
+    #Create wrapper nodes where necessary
+    processes_node <- adopt_nodes("processes", obj$processes)
+    media_node <- adopt_nodes("media", obj$media)
+    parameters_node <- adopt_nodes("parameters", obj$parameters)
+    #...
 
-    structure(
-        list(
-            name = name,
-            type = type,
-            value = value
-        ),
-        class = "r2ogs6_prj_property"
-    )
+    process_variables_node <- adopt_nodes("process_variables", obj$process_variables)
+    nonlinear_solvers_node <- adopt_nodes("nonlinear_solvers", obj$nonlinear_solvers)
+    linear_solvers_node <- adopt_nodes("linear_solvers", obj$linear_solvers)
+
+    #Add all of the required children
+    prj_node <- add_children(prj_node, list(processes_node,
+                                            obj$time_loop,
+                                            media_node,
+                                            parameters_node,
+
+                                            nonlinear_solvers_node,
+                                            linear_solvers_node
+                                            )
+                             )
+
+    #Optional: Add all defined curves to a parent node named "curves"
+
+    #Add all defined process variables to a parent node named "process_variables"
+
+    #Optional: Add all defined test definition to a parent node named "test_definition"
+
+    return(prj_node)
 }
 
-
-
-
-#'Defines a .prj medium phase element
-#'@param type A string specifying the medium type (valid types: ...)
-#'@param properties A list of properties (see ?r2ogs6_property for more info)
-new_r2ogs6_prj_medium_phase <- function(type = character(), properties = list()) {
-
-    stopifnot(is.character(type), length(type) == 1)
-
-    structure(
-        list(
-            type = type,
-            properties = properties
-        ),
-        class = "r2ogs6_prj_medium_phase"
-    )
-}
-
-
-
-
+#'input_add_prj_obj
+#'@description Adds an empty prj class object to a ogs6 class object input list
+#'@param ogs6_obj The ogs6 object the prj class object should be added to
 #'
-#'@param phases A list of medium phases
-#'@param properties A list of medium properties
-new_r2ogs6_prj_medium <- function(phases = list(), properties = list()) {
-    #Validate
+input_add_prj_obj <- function(ogs6_obj) {
 
-    stopifnot(is.list(phases))
-    stopifnot(is.list(properties))
+    assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
 
-    structure(
-        list(
-            phases = phases,
-            properties = properties
-        ),
-        class = "r2ogs6_prj_medium"
-    )
+    check_for_input_of_name(ogs6_obj, "prj_obj", TRUE, TRUE, "input_add_prj_obj")
+
+    has_gml <- check_for_input_of_name(ogs6_obj, "gml_obj", TRUE, FALSE)
+
+    check_for_input_of_name(ogs6_obj, "vtu_meshes", TRUE, TRUE, "generate_structured_mesh")
+
+    if(!has_gml){
+        if(length(ogs6_obj$sim_input[["vtk_meshes"]]) < 2){
+            stop("If you don't want to specify a gml object, you must have multiple
+                  meshes. You can define more by calling the function generate_structured_mesh.", call. = FALSE)
+        }
+    }else if(length(ogs6_obj$sim_input[["vtk_meshes"]]) != 1){
+        stop("If you want to specify a gml object, there must be (only) one mesh (one vtk file).", call. = FALSE)
+    }
+
+    ogs6_obj$set_sim_input("prj_obj", new_prj())
 }
 
 
-
-
-#============================== time_loop classes and methods ================================
-
-#============================== parameters classes and methods ================================
-
-
-new_r2ogs6_prj_parameter <- function(name = character(), type = character(), value = double()) {
-    #Validate
-
-    structure(
-        list(
-            name = name,
-            type = type,
-            value = value
-        ),
-        class = "r2ogs6_prj_parameter"
-    )
-}
-
-
+#============================== curves classes and methods ================================
 
 #============================== process_variables classes and methods ================================
 
-
-#============================== nonlinear_solvers classes and methods ================================
-
-#============================== linear_solvers classes and methods ================================
+#============================== test_definition classes and methods ================================
 
 
 

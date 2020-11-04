@@ -2,7 +2,7 @@
 % Please edit documentation in R/export_gml.R
 \name{surfaces_to_xml}
 \alias{surfaces_to_xml}
-\title{Turns a list of surfaces into an XML node}
+\title{surfaces_to_xml}
 \usage{
 surfaces_to_xml(surfaces)
 }

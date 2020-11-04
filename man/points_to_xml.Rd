@@ -2,7 +2,7 @@
 % Please edit documentation in R/export_gml.R
 \name{points_to_xml}
 \alias{points_to_xml}
-\title{Turns a tibble of points into an XML node}
+\title{points_to_xml}
 \usage{
 points_to_xml(point_tibble)
 }

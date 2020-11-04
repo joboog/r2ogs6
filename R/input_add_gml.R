@@ -23,15 +23,10 @@ new_gml <- function(geometry_name = NULL,
 #'@param geometry_name The name of the geometry specified by the gml class object
 input_add_gml_obj <- function(ogs6_obj, geometry_name) {
 
-    if(!is.character(geometry_name)){
-        stop("'geometry_name' is not of type character()", call. = FALSE)
-    }
+    assertthat::assert_that(assertthat::is.string(geometry_name))
+    check_for_input_of_name(ogs6_obj, "gml_obj", FALSE, TRUE, "input_add_gml_obj")
 
-    if("gml_obj" %in% names(ogs6_obj$sim_input)){
-        stop("ogs6_obj already has a gml object attached to it.", call. = FALSE)
-    }else{
-        ogs6_obj$add_sim_io_input("gml_obj", new_gml(geometry_name = geometry_name))
-    }
+    ogs6_obj$add_sim_io_input("gml_obj", new_gml(geometry_name = geometry_name))
 }
 
 
@@ -42,7 +37,7 @@ input_add_gml_points <- function(ogs6_obj, gml_points) {
 
     validate_points(gml_points)
 
-    check_for_obj_of_name(ogs6_obj, "gml_obj")
+    check_for_input_of_name(ogs6_obj, "gml_obj", TRUE, TRUE, "input_add_gml_obj")
 
     if(!is.null(ogs6_obj$sim_input[["gml_obj"]]$gml_points)){
         stop("There are already points defined for the gml object", call. = FALSE)
@@ -59,7 +54,7 @@ input_add_gml_polylines <- function(ogs6_obj, gml_polylines) {
 
     validate_polylines(gml_polylines)
 
-    check_for_obj_of_name(ogs6_obj, "gml_obj")
+    check_for_input_of_name(ogs6_obj, "gml_obj", TRUE, TRUE, "input_add_gml_obj")
 
     if(!is.null(ogs6_obj$sim_input[["gml_obj"]]$gml_polylines)){
         stop("There are already polylines defined for the gml object", call. = FALSE)
@@ -76,7 +71,7 @@ input_add_gml_surfaces <- function(ogs6_obj, gml_surfaces) {
 
     validate_surfaces(gml_surfaces)
 
-    check_for_obj_of_name(ogs6_obj, "gml_obj")
+    check_for_input_of_name(ogs6_obj, "gml_obj", TRUE, TRUE, "input_add_gml_obj")
 
     if(!is.null(ogs6_obj$sim_input[["gml_obj"]]$gml_surfaces)){
         stop("There are already surfaces defined for the gml object", call. = FALSE)

@@ -2,10 +2,8 @@
 % Please edit documentation in R/ogs6.R
 \name{OGS6}
 \alias{OGS6}
-\title{Constructor for the OGS6 base class}
+\title{OGS6}
 \description{
-Constructor for the OGS6 base class
-
 Constructor for the OGS6 base class
 }
 \section{Methods}{
@@ -23,9 +21,20 @@ Constructor for the OGS6 base class
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path, ogs_bin_path)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sim_name}}{The name of the simulation}
+
+\item{\code{sim_id}}{The ID of the simulation}
+
+\item{\code{sim_path}}{The path where all relevant files for the simulation will be saved}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_sim_input"></a>}}

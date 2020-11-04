@@ -34,6 +34,9 @@ analyse_xml <- function(path, pattern, element_name) {
     child_exists_counts <- list()
     child_total_counts <- list()
 
+    #Return values, will contain a named list of flags (TRUE if required, else FALSE)
+    attribute_flags <- list()
+    child_flags <- list()
 
 
     if(length(xml_files) == 0) {
@@ -83,6 +86,9 @@ analyse_xml <- function(path, pattern, element_name) {
         #Get child names and counts
         for (j in seq_len(length(doc_matches))){
             children <- xml2::xml_children(doc_matches[[j]])
+
+            #Helpful to print file where an element was found
+            cat(xml_files[[i]], "\n")
 
             first_found <- list()
 
@@ -142,6 +148,8 @@ analyse_xml <- function(path, pattern, element_name) {
         rownames(attr_df) <- seq(1, length(attribute_name_counts))
 
         print(attr_df)
+
+        attribute_flags <- get_required(names(attribute_name_counts), attr_name_occ_vector)
     }
 
     #List child elements
@@ -166,10 +174,12 @@ analyse_xml <- function(path, pattern, element_name) {
         rownames(child_df) <- seq(1, length(child_exists_counts))
 
         print(child_df)
+
+        child_flags <- get_required(names(child_exists_counts), child_ex_occ_vector)
     }
 
-    #Think about output...
-    return(invisible())
+    #Return attributes and children (if found), else NULL
+    return(invisible(list(attribute_flags, child_flags)))
 }
 
 
@@ -205,8 +215,8 @@ generate_validator_from_element <- function() {
 #'@param attrs Optional: A list of element attributes
 #'@param children Optional: A list of element children
 generate_as_node_from_element <- function(element_name,
-                                          attrs = NULL, opt_attrs = NULL,
-                                          children = NULL, opt_children = NULL) {
+                                          attrs = NULL,
+                                          children = NULL) {
 
     attrs_snake_names <- sapply(attrs, snakecase::to_any_case, case = "snake")
     children_snake_names <- sapply(children, snakecase::to_any_case, case = "snake")
@@ -214,9 +224,6 @@ generate_as_node_from_element <- function(element_name,
     element_snake_name <- snakecase::to_any_case(element_name, "snake")
 
     f_name <- paste0("as_node.", element_snake_name)
-
-    #Is the attribute optional?
-    optional = TRUE
 
     #Is the child a parent itself?
     is_parent = TRUE
@@ -232,13 +239,8 @@ generate_as_node_from_element <- function(element_name,
         nattr <- attrs_snake_names[[i]]
         attr <- attrs[[i]]
 
-        if(attr %in% opt_attrs) {
-            func_str <- paste0(func_str, "\t", node_name, " <- add_opt_attr(", node_name,
+        func_str <- paste0(func_str, "\t", node_name, " <- add_attr(", node_name,
                                ", obj$", nattr, ", '", attr, "')\n")
-        }else{
-            func_str <- paste0(func_str, "\t", "attributes(", node_name,")[['", attr, "']] <- obj$",
-                               nattr, "\n")
-        }
     }
 
     #Add children
@@ -246,18 +248,19 @@ generate_as_node_from_element <- function(element_name,
         child_snake <- children_snake_names[[i]]
         child <- children[[i]]
 
-
-        if(child %in% opt_children) {
-            if(is_parent){
-                func_str <- paste0(func_str, "\t", node_name, " <- add_opt_child(", node_name,
-                                   ", obj$", child_snake, ", '", child, "')\n")
+        #If a child is a parent, either call as_node or adopt_nodes
+        if(is_parent){
+            if(1){
+                func_str <- paste0(func_str, "\t", node_name, " <- add_child(", node_name,
+                               ", obj$", child_snake, ", '", child, "')\n")
             }else{
-                func_str <- paste0(func_str, "\t", node_name, " <- add_opt_child(", node_name,
-                                   ", obj$", child_snake, ")\n")
+
             }
         }else{
-            #...(WIP)
+            func_str <- paste0(func_str, "\t", node_name, " <- add_child(", node_name,
+                               ", obj$", child_snake, ")\n")
         }
+
     }
 
     func_str <- paste0(func_str, "\t", "return(", node_name, ")\n")
@@ -269,21 +272,23 @@ generate_as_node_from_element <- function(element_name,
 
 #============================== HELPERS FOR analyse_xml ================================
 
-#'get_optional
-#'@description Helper function to get optional attributes or children from a vector of names and a
+#'get_required
+#'@description Helper function to mark required attributes or children from a vector of names and a
 #' vector of occurrence probabilities
-#' @param name_counts
+#' @param names
 #' @param occurence_probabilities
-get_optional <- function(names, occurence_probabilities){
-    optional <- character()
+get_required <- function(names, occurence_probabilities){
+    required <- list()
 
     for(i in seq_len(length(names))) {
         if(occurence_probabilities[[i]] != 1) {
-            optional <- c(optional, names[[i]])
+            required[[names[[i]]]] <- FALSE
+        }else{
+            required[[names[[i]]]] <- TRUE
         }
     }
 
-    return(optional)
+    return(required)
 }
 
 

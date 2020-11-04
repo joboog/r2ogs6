@@ -1,9 +1,10 @@
 #This script contains various functions to turn data for a .gml file into the correct XML format
 
 
-#' Wrapper function to create a .gml XML document based on the user input data
-#' @param gml_obj A gml class object
-#' @return A XML document ready for export to a file
+#'gml_data_to_xml
+#'@description Wrapper function to create a .gml XML document based on the user input data
+#'@param gml_obj A gml class object
+#'@return A XML document ready for export to a file
 # @examples (WIP)
 gml_data_to_xml <- function(gml_obj) {
 
@@ -31,13 +32,13 @@ gml_data_to_xml <- function(gml_obj) {
 }
 
 
-#' Turns a tibble of points into an XML node
-#' @param point_tibble The specified tibble
-#' @return An XML node containing the points
-#' @examples
-#' my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1), name = c("origin", ""))
-#' point_node <- points_to_xml(my_tibble)
-#' @export
+#'points_to_xml
+#'@description Turns a tibble of points into an XML node
+#'@param point_tibble The specified tibble
+#'@return An XML node containing the points
+#'@examples
+#'my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1), name = c("origin", ""))
+#'point_node <- points_to_xml(my_tibble)
 points_to_xml <- function(point_tibble) {
   points_node <- list(points = list())
   has_names <- (length(point_tibble) == 4)
@@ -62,13 +63,14 @@ points_to_xml <- function(point_tibble) {
   return(xml2::as_xml_document(points_node))
 }
 
-#' Turns a list of polylines into an XML node
-#' @param polylines A list of polylines
-#' @return An XML node containing the polylines
-#' @examples
-#' my_list <- list(list(name = "front_left", c(0, 1)), list(name = "front_right", c(4, 5)))
-#' polylines_node <- polylines_to_xml(my_list)
-#' @export
+
+#'polylines_to_xml
+#'@description Turns a list of polylines into an XML node
+#'@param polylines A list of polylines
+#'@return An XML node containing the polylines
+#'@examples
+#'my_list <- list(list(name = "front_left", c(0, 1)), list(name = "front_right", c(4, 5)))
+#'polylines_node <- polylines_to_xml(my_list)
 polylines_to_xml <- function(polylines) {
   polylines_node <- list(polylines = list())
 
@@ -88,14 +90,14 @@ polylines_to_xml <- function(polylines) {
   return(xml2::as_xml_document(polylines_node))
 }
 
-#' Turns a list of surfaces into an XML node
-#' @param surfaces A list of surfaces
-#' @return An XML node containing the surfaces
-#' @examples
-#' my_list <- list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
-#' list(name = "right", c(4, 6, 5), c(4, 6, 7)))
-#' surfaces_node <- surfaces_to_xml(my_list)
-#' @export
+#'surfaces_to_xml
+#'@description Turns a list of surfaces into an XML node
+#'@param surfaces A list of surfaces
+#'@return An XML node containing the surfaces
+#'@examples
+#'my_list <- list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
+#'list(name = "right", c(4, 6, 5), c(4, 6, 7)))
+#'surfaces_node <- surfaces_to_xml(my_list)
 surfaces_to_xml <- function(surfaces) {
   surfaces_node <- list(surfaces = list())
 

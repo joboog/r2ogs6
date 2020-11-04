@@ -2,7 +2,7 @@
 % Please edit documentation in R/export_gml.R
 \name{polylines_to_xml}
 \alias{polylines_to_xml}
-\title{Turns a list of polylines into an XML node}
+\title{polylines_to_xml}
 \usage{
 polylines_to_xml(polylines)
 }
