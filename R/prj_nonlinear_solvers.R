@@ -42,12 +42,22 @@ new_r2ogs6_nonlinear_solver <- function(name, type, max_iter, linear_solver){
 #'@param obj A r2ogs6_nonlinear_solver class object
 as_node.r2ogs6_nonlinear_solver <- function(obj) {
 
-    nonlinear_solver_node <- list(nonlinear_solver = structure(list()))
+    node <- list(nonlinear_solver = structure(list()))
 
-    nonlinear_solver_node <- add_children(nonlinear_solver_node, list(name = obj$name,
-                                                                      type = obj$type,
-                                                                      max_iter = obj$max_iter,
-                                                                      linear_solver = obj$linear_solver))
+    node <- add_children(node, list(name = obj$name,
+                                    type = obj$type,
+                                    max_iter = obj$max_iter,
+                                    linear_solver = obj$linear_solver))
 
-    return(nonlinear_solver_node)
+    return(node)
+}
+
+
+#'input_add.r2ogs6_nonlinear_solver
+#'@description Implementation of generic function input_add for S3 class r2ogs6_nonlinear_solver
+#'@param obj A r2ogs6_nonlinear_solver class object
+#'@param ogs6_obj A OGS6 class object
+#'@export
+input_add.r2ogs6_nonlinear_solver <- function(obj, ogs6_obj) {
+    ogs6_obj$add_nonlinear_solver(obj)
 }

@@ -57,9 +57,10 @@ as_node.r2ogs6_parameter <- function(obj) {
 
 
 #'input_add.r2ogs6_parameter
-#'@description
-#'@param
+#'@description Implementation of generic function input_add for S3 class r2ogs6_parameter
+#'@param obj A r2ogs6_parameter class object
+#'@param ogs6_obj A OGS6 class object
+#'@export
 input_add.r2ogs6_parameter <- function(obj, ogs6_obj) {
-    check_for_input_of_name(ogs6_obj, "prj_obj", TRUE, TRUE, "input_add_prj_obj")
-    ogs6_obj$add_to_sim_input_obj_param("prj_obj", "parameters", obj)
+    ogs6_obj$add_parameter(obj)
 }

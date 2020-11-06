@@ -145,6 +145,5 @@ as_node.r2ogs6_medium <- function(obj) {
 #'@param ogs6_obj An OGS6 class object
 #'@export
 input_add.r2ogs6_medium <- function(obj, ogs6_obj) {
-    check_for_input_of_name(ogs6_obj, "prj_obj", TRUE, TRUE, "input_add_prj_obj")
-    ogs6_obj$add_to_sim_input_obj_param("prj_obj", "media", obj)
+    ogs6_obj$add_medium(obj)
 }

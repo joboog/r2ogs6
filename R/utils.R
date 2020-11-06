@@ -1,23 +1,48 @@
-#============================== GENERAL UTILITY (copy playground) ================================
+#This script contains some useful methods for a developer.
 
-###Stub
-# Stub <- R6::R6Class("Stub",
-#   public = list(
-#
-#     initialize = function(argument) {
-#       #stopifnot(is.character(name), length(name) == 1)
-#       #...
-#     }
-#   ),
-#
-#   active = list(
-#
-#   ),
-#
-#   private = list(
-#
-#   )
-# )
+
+#============================== INFO UTILITY ================================
+
+
+#'list_has_element
+#'@description Helper function for get_status() to check if a list has at least one element.
+#'@param obj_list The specified list
+#'@param element_type Optional: What kind of elements are in the list?
+list_has_element <- function(obj_list, element_type = "list element"){
+  has_element <- FALSE
+
+  if(length(obj_list) == 0){
+    cat(crayon::red("\u2717"))
+  }else{
+    cat(crayon::green("\u2713"))
+    has_element <- TRUE
+  }
+
+  cat(" At least one", element_type, "was defined", "\n")
+
+  return(invisible(has_element))
+}
+
+
+#'obj_is_null
+#'@description Helper function for get_status() to check if an object was defined.
+#'@param obj The specified object
+#'@param obj_type Optional: What kind of object is this?
+obj_is_null <- function(obj, obj_type = ""){
+  is_defined <- FALSE
+
+  if(is.null(obj)){
+    cat(crayon::red("\u2717"))
+  }else{
+    cat(crayon::green("\u2713"))
+    is_defined <- TRUE
+  }
+
+  cat(" ", obj_type, "object is not NULL", "\n")
+
+  return(invisible(is_defined))
+}
+
 
 
 #============================== VALIDATION UTILITY ================================
@@ -30,6 +55,10 @@
 #'@param possible_names How the list elements may be named (if the user DID name them)
 validate_param_list <- function(param_list, expected_length, possible_names) {
 
+  if(!is.list(param_list)){
+    stop("Argument param_list passed to validate_param_list must be a list", call. = FALSE)
+  }
+
   if(length(param_list) != expected_length){
     stop(paste(deparse(quote(param_list)), "must be a list of length", expected_length),
          call. = FALSE)
@@ -41,11 +70,10 @@ validate_param_list <- function(param_list, expected_length, possible_names) {
               values to avoid confusion: '", paste(possible_names, collapse="', '"), "'"),
          call. = FALSE)
   }
-
 }
 
 
-#'validate_list_element_classes
+#'validate_wrapper_list
 #'@description Helper function, checks if a lists consists only of elements of a specific class
 #'@param wrapper_list The list to check
 #'@param expected_class The class each element of the wrapper list should have
@@ -59,41 +87,6 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
            call. = FALSE)
     }
   }
-}
-
-
-
-#'check_for_input_of_name
-#'@description Checks if a object with the given name was already defined for a ogs6 object and if not,
-#' tells user to initialize one
-#'@param ogs6_obj The ogs6 object to check
-#'@param input_name The name of the input to check for
-#'@param input_expected Should the input exist?
-#'@param do_stop Should execution be halted or should a boolean be returned?
-#'@param init_func_name Optional: The name of the function the object can be initialized with
-check_for_input_of_name <- function(ogs6_obj, input_name, input_expected, do_stop, init_func_name = NULL) {
-
-  if(!input_name %in% names(ogs6_obj$sim_input) && input_expected){
-    if(do_stop){
-      stop(paste0("There is no input named ", input_name," for your ogs6 object yet.\n
-                  You can initialize one by calling ", init_func_name ,
-                  ". (read up on the required parameters)"),
-           call. = FALSE)
-    }else{
-      return(FALSE)
-    }
-
-  }else if(input_name %in% names(ogs6_obj$sim_input) && !input_expected) {
-    if(do_stop){
-      stop(paste0("There is already an input named ", input_name," for your ogs6 object.\n
-                  You probably added it by calling ", init_func_name , "."),
-           call. = FALSE)
-    }else{
-      return(FALSE)
-    }
-  }
-
-  return(TRUE)
 }
 
 
@@ -116,16 +109,22 @@ export_xml_to_file <- function(xml_data, file_name) {
 #' adopt_nodes
 #' @description A helper function for creating parent nodes using the generic function as_node
 #' @param parent_name The name of the new parent node
-#' @param objs A list of class objects (class must have method for generic function as_node)
-adopt_nodes <- function(parent_name, objs) {
-  parent_node <- list(parent_name = list())
+#' @param obj_list A list of class objects (class should have method for generic function as_node)
+adopt_nodes <- function(parent_name, obj_list) {
 
-  for(i in 1:length(objs)) {
-    parent_node <- c(parent_node[[1]], as_node(objs[[i]]))
+  if(length(obj_list) == 0){
+    return(invisible(NULL))
   }
 
-  return(parent_node)
+  parent_node <- list(parent_name = list())
+
+  for(i in seq_len(length(obj_list))) {
+    parent_node <- c(parent_node[[1]], as_node(obj_list[[i]]))
+  }
+
+  return(invisible(parent_node))
 }
+
 
 #'add_attr
 #'@description Adds an attribute to a node attribute list
@@ -137,7 +136,7 @@ add_attr <- function(node, obj_parameter, attr_name) {
     attributes(node[[1]])[[attr_name]] <- obj_parameter
   }
 
-  return(node)
+  return(invisible(node))
 }
 
 
@@ -189,7 +188,7 @@ add_children <- function(node, children) {
     }
   }
 
-  return(node)
+  return(invisible(node))
 }
 
 

@@ -130,7 +130,26 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 
 
 #6. One or more process variables
-
+# input_add(r2ogs6_process_variable(name = "displacement",
+#                                   components = 2,
+#                                   order = 2,
+#                                   initial_condition = "displacement0",
+#                                   boundary_conditions = list(r2ogs6_boundary_condition())),
+#           ogs6_obj)
+#
+# input_add(r2ogs6_process_variable(name = "pressure",
+#                                   components = 1,
+#                                   order = 1,
+#                                   initial_condition = "pressure0",
+#                                   boundary_conditions = list(r2ogs6_boundary_condition(type = "Neumann",
+#                                                                                        parameter = "flux",
+#                                                                                        component = 0,
+#                                                                                        geometrical_set = "square_1x1_geometry",
+#                                                                                        geometry = "left")
+#                                                              )
+#                                   ),
+#           ogs6_obj)
+#
 # #7. One or more nonlinear solvers
 # input_add(r2ogs6_nonlinear_solver(name = "basic_newton",
 #                                   type = "Newton",
@@ -149,7 +168,7 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 #           ogs6_obj)
 
 
-
+#OPTIONAL: A test definition
 
 #============================== Execution ================================
 

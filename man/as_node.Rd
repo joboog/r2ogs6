@@ -2,7 +2,7 @@
 % Please edit documentation in R/generics.R
 \name{as_node}
 \alias{as_node}
-\title{S3 generic function, use to turn class data into XML friendly format}
+\title{as_node}
 \usage{
 as_node(obj)
 }

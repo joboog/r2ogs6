@@ -86,18 +86,20 @@ new_r2ogs6_process <- function(name, type, integration_order, dimension, constit
 #'@param obj A r2ogs6_process class object
 as_node.r2ogs6_process <- function(obj) {
 
-    process_node <- list(process = structure(list()))
+    node <- list(process = structure(list()))
 
-    process_node <- add_children(process_node, list(name = obj$name,
-                                                    type = obj$type,
-                                                    coupling_scheme = obj$coupling_scheme,
-                                                    integration_order = obj$integration_order,
-                                                    dimension = obj$dimension,
-                                                    constitutive_relation = obj$constitutive_relation,
-                                                    process_variables = obj$process_variables,
-                                                    specific_body_force = obj$specific_body_force))
+    sbf_str <- paste(obj$specific_body_force, collapse = " ")
 
-    return(process_node)
+    node <- add_children(node, list(name = obj$name,
+                                    type = obj$type,
+                                    coupling_scheme = obj$coupling_scheme,
+                                    integration_order = obj$integration_order,
+                                    dimension = obj$dimension,
+                                    constitutive_relation = obj$constitutive_relation,
+                                    process_variables = obj$process_variables,
+                                    specific_body_force = sbf_str))
+
+    return(node)
 }
 
 
@@ -105,9 +107,7 @@ as_node.r2ogs6_process <- function(obj) {
 #'@description Implementation of generic function input_add for S3 class r2ogs6_process
 #'@param obj A r2ogs6_process class object
 #'@param ogs6_obj A OGS6 class object
+#'@export
 input_add.r2ogs6_process <- function(obj, ogs6_obj) {
-
-    check_for_input_of_name(ogs6_obj, "prj_obj", TRUE, TRUE, "input_add.prj_obj")
-
-    ogs6_obj$add_to_sim_input_obj_param("prj_obj", "processes", process)
+    ogs6_obj$add_process(obj)
 }

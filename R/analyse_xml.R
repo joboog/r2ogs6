@@ -25,6 +25,8 @@ analyse_xml <- function(path, pattern, element_name) {
     valid_files_count <- 0
     valid_files_names <- character()
 
+    element_found_files_names <- character()
+
     invalid_files_count <- 0
     invalid_files_names <- character()
 
@@ -70,6 +72,10 @@ analyse_xml <- function(path, pattern, element_name) {
         doc_matches <- xml2::xml_find_all(xml_doc, paste("//", element_name, sep = ""))
         total_matches <- total_matches + length(doc_matches)
 
+        if(length(doc_matches) > 0){
+            element_found_files_names <- c(element_found_files_names, xml_files[[i]])
+        }
+
         #Get attribute names and counts
         for (j in seq_len(length(doc_matches))){
             attr_names <- names(xml2::xml_attrs(doc_matches[[j]]))
@@ -85,10 +91,8 @@ analyse_xml <- function(path, pattern, element_name) {
 
         #Get child names and counts
         for (j in seq_len(length(doc_matches))){
-            children <- xml2::xml_children(doc_matches[[j]])
 
-            #Helpful to print file where an element was found
-            cat(xml_files[[i]], "\n")
+            children <- xml2::xml_children(doc_matches[[j]])
 
             first_found <- list()
 
@@ -118,19 +122,21 @@ analyse_xml <- function(path, pattern, element_name) {
     }
 
     if(invalid_files_count > 0) {
-        cat("I skipped ", invalid_files_count, " malformed XML files matching your search pattern:\n", sep = "")
+        cat("I skipped ", invalid_files_count, " malformed XML files matching your pattern:\n", sep = "")
         for(i in seq_len(length(invalid_files_names))){
             cat(invalid_files_names[[i]], "\n")
         }
     }
 
-    cat("\nI parsed ", valid_files_count, " valid XML files matching your search pattern:\n", sep = "")
+    cat("\nI parsed ", valid_files_count, " valid XML files matching your pattern.\n", sep = "")
 
-    for(i in seq_len(length(valid_files_names))){
-        cat(valid_files_names[[i]], "\n")
+    cat("\nI found at least one element named ", element_name, " in the following file(s):\n", sep = "")
+
+    for(i in seq_len(length(element_found_files_names))){
+        cat(element_found_files_names[[i]], "\n")
     }
 
-    cat("\nIn total, I found ", total_matches, " elements named ", element_name, ".\n", sep = "")
+    cat("\nIn total, I found ", total_matches, " element(s) named ", element_name, ".\n", sep = "")
 
     #List attributes
 
@@ -289,11 +295,4 @@ get_required <- function(names, occurence_probabilities){
     }
 
     return(required)
-}
-
-
-#'
-#'@description ...
-child_is_parent <- function() {
-
 }

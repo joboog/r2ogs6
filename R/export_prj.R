@@ -1,85 +1,62 @@
-#This script contains various functions to turn data for a .prj file into the correct XML format
+#This script contains functions to export the .prj data
 
-#' Wrapper function to create a .prj XML document based on the user input data
-#' @param prj_obj .
-prj_data_to_xml <- function(prj_obj) {
+#'export_prj
+#'@description Wrapper function to create a .prj XML document based on the user input data
+#'@param
+#'@param
+#'@param
+#'@param
+#'@param
+#'@param
+#'@param
+#'@param
+export_prj <- function(ogs6_obj) {
 
-    data_node <- xml2::xml_new_root(.value = "OpenGeoSysProject")
+    node <- list(OpenGeoSysProject = structure(list()))
 
-    xml2::xml_add_child(data_node, adopt_nodes("processes", prj_obj$processes))
-    xml2::xml_add_child(data_node, adopt_nodes("media", prj_obj$media))
-    xml2::xml_add_child(data_node, adopt_nodes("time_loop", prj_obj$time_loop))
-    xml2::xml_add_child(data_node, adopt_nodes("parameters", prj_obj$parameters))
-    xml2::xml_add_child(data_node, adopt_nodes("process_variables", prj_obj$process_variables))
-    xml2::xml_add_child(data_node, adopt_nodes("nonlinear_solvers", prj_obj$nonlinear_solvers))
-    xml2::xml_add_child(data_node, adopt_nodes("linear_solvers", prj_obj$linear_solvers))
+    meshes_node <- NULL
 
-    return(data_node)
-}
-
-#============================== processes ================================
-
-#Implementation for class r2ogs6_process
-as_node.r2ogs6_prj_process <- function(obj){
-
-    process_node <- list(process = structure(list(name = obj$name,
-                                                  type = obj$type,
-                                                  integration_order = obj$integration_order,
-                                                  dimension = obj$dimension,
-                                                  constitutive_relation = list(type = obj$cr_type,
-                                                                               youngs_modulus = obj$cr_youngs_modulus,
-                                                                               poissons_ratio = obj$cr_poissons_ratio),
-                                                  process_variables = list(displacement = obj$pv_displacement,
-                                                                           pressure = obj$pv_pressure),
-                                                  secondary_variables = list(),
-                                                  specific_body_force = obj$specific_body_force)))
-    return(process_node)
-}
-
-
-#'Method for coercing an r2ogs6_prj_property class object into the structure expected by xml2
-as_node.r2ogs6_prj_property <- function(obj) {
-    return(list(property = list(name = obj$name, type = obj$type)))
-}
-
-
-#============================== media ================================
-
-
-#'Method for coercing an r2ogs_prj_medium_phase class object into the structure expected by xml2
-as_node.r2ogs6_prj_medium_phase <- function(obj) {
-    medium_phase_node <- list(phase = list(type = obj$type),
-                              adopt_nodes("properties", obj$properties))
-    return(medium_phase_node)
-}
-
-
-as_node.r2ogs6_prj_medium <- function(obj) {
-
-    medium_node <- list(medium = list(phases = list(), properties = list()))
-
-    for(i in 1:length(obj$phases)){
-        medium_node[[1]] <- c(medium_node[[1]][[1]], as_node(obj$phases[[i]]))
+    #If there is a .gml defined, add "mesh" node, else add "meshes" node
+    if(is.null(geometry)) {
+        meshes_node <- adopt_nodes("meshes", meshes)
+    }else{
+        meshes_node <- list(mesh = meshes[[1]])
     }
 
-    for(i in 1:length(obj$properties)){
-        medium_node[[1]] <- c(medium_node[[1]][[2]], as_node(obj$properties[[i]]))
-    }
+    #Create wrapper nodes where necessary
+    processes_node <- adopt_nodes("processes", processes)
+    media_node <- adopt_nodes("media", media)
+    parameters_node <- adopt_nodes("parameters", parameters)
+    curves_node <- adopt_nodes("curves", curves)
+    process_variables_node <- adopt_nodes("process_variables", process_variables)
+    nonlinear_solvers_node <- adopt_nodes("nonlinear_solvers", nonlinear_solvers)
+    linear_solvers_node <- adopt_nodes("linear_solvers", linear_solvers)
+    test_definition_node <- adopt_nodes("test_definition", test_definition)
 
-    return(medium_node)
+    #Add all of the required children
+    prj_node <- add_children(prj_node, list(meshes_node,
+                                            geometry = geometry,
+                                            processes_node,
+                                            media_node,
+                                            time_loop = time_loop,
+                                            parameters_node,
+                                            curves_node,
+                                            process_variables_node,
+                                            nonlinear_solvers_node,
+                                            linear_solvers_node,
+                                            test_definition_node
+                                            ))
+
+    #...
+    return(invisible())
 }
 
-
-#============================== time_loop ================================
-
-
-#============================== parameters ================================
-
-
-#============================== process_variables ================================
-
-
-#============================== nonlinear_solvers ================================
-
-
-#============================== linear_solvers ================================
+#VALIDATION:
+# if(!has_gml){
+#     if(length(ogs6_obj$sim_input[["vtk_meshes"]]) < 2){
+#         stop("If you don't want to specify a gml object, you must have multiple
+#                   meshes. You can define more by calling the function generate_structured_mesh.", call. = FALSE)
+#     }
+# }else if(length(ogs6_obj$sim_input[["vtk_meshes"]]) != 1){
+#     stop("If you want to specify a gml object, there must be (only) one mesh (one vtk file).", call. = FALSE)
+# }

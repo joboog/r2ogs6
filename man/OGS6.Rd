@@ -10,9 +10,20 @@ Constructor for the OGS6 base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
-\item \href{#method-add_sim_input}{\code{OGS6$add_sim_input()}}
-\item \href{#method-set_sim_input_obj_param}{\code{OGS6$set_sim_input_obj_param()}}
 \item \href{#method-add_sim_output}{\code{OGS6$add_sim_output()}}
+\item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
+\item \href{#method-add_geometry}{\code{OGS6$add_geometry()}}
+\item \href{#method-add_process}{\code{OGS6$add_process()}}
+\item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
+\item \href{#method-add_medium}{\code{OGS6$add_medium()}}
+\item \href{#method-add_parameter}{\code{OGS6$add_parameter()}}
+\item \href{#method-add_curve}{\code{OGS6$add_curve()}}
+\item \href{#method-add_process_variable}{\code{OGS6$add_process_variable()}}
+\item \href{#method-add_nonlinear_solver}{\code{OGS6$add_nonlinear_solver()}}
+\item \href{#method-add_linear_solver}{\code{OGS6$add_linear_solver()}}
+\item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
+\item \href{#method-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-validate}{\code{OGS6$validate()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
 }
 }
@@ -32,27 +43,11 @@ Constructor for the OGS6 base class
 \item{\code{sim_id}}{The ID of the simulation}
 
 \item{\code{sim_path}}{The path where all relevant files for the simulation will be saved}
+
+\item{\code{ogs_bin_path}}{Path to OpenGeoSys6 /bin directory}
 }
 \if{html}{\out{</div>}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_sim_input"></a>}}
-\if{latex}{\out{\hypertarget{method-add_sim_input}{}}}
-\subsection{Method \code{add_sim_input()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_sim_input(name, value)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_sim_input_obj_param"></a>}}
-\if{latex}{\out{\hypertarget{method-set_sim_input_obj_param}{}}}
-\subsection{Method \code{set_sim_input_obj_param()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$set_sim_input_obj_param(obj_name, obj_param_name, value)}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_sim_output"></a>}}
@@ -60,6 +55,123 @@ Constructor for the OGS6 base class
 \subsection{Method \code{add_sim_output()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_sim_output(name, value)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_mesh"></a>}}
+\if{latex}{\out{\hypertarget{method-add_mesh}{}}}
+\subsection{Method \code{add_mesh()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_mesh(mesh)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_geometry"></a>}}
+\if{latex}{\out{\hypertarget{method-add_geometry}{}}}
+\subsection{Method \code{add_geometry()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_geometry(geometry)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_process"></a>}}
+\if{latex}{\out{\hypertarget{method-add_process}{}}}
+\subsection{Method \code{add_process()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_process(process)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_time_loop"></a>}}
+\if{latex}{\out{\hypertarget{method-add_time_loop}{}}}
+\subsection{Method \code{add_time_loop()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_time_loop(time_loop)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_medium"></a>}}
+\if{latex}{\out{\hypertarget{method-add_medium}{}}}
+\subsection{Method \code{add_medium()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_medium(medium)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_parameter"></a>}}
+\if{latex}{\out{\hypertarget{method-add_parameter}{}}}
+\subsection{Method \code{add_parameter()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_parameter(parameter)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_curve"></a>}}
+\if{latex}{\out{\hypertarget{method-add_curve}{}}}
+\subsection{Method \code{add_curve()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_curve(curve)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_process_variable"></a>}}
+\if{latex}{\out{\hypertarget{method-add_process_variable}{}}}
+\subsection{Method \code{add_process_variable()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_process_variable(process_variable)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_nonlinear_solver"></a>}}
+\if{latex}{\out{\hypertarget{method-add_nonlinear_solver}{}}}
+\subsection{Method \code{add_nonlinear_solver()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_nonlinear_solver(nonlinear_solver)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_linear_solver"></a>}}
+\if{latex}{\out{\hypertarget{method-add_linear_solver}{}}}
+\subsection{Method \code{add_linear_solver()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_linear_solver(linear_solver)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_vtkdiff"></a>}}
+\if{latex}{\out{\hypertarget{method-add_vtkdiff}{}}}
+\subsection{Method \code{add_vtkdiff()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtkdiff(vtkdiff)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_status"></a>}}
+\if{latex}{\out{\hypertarget{method-get_status}{}}}
+\subsection{Method \code{get_status()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-validate"></a>}}
+\if{latex}{\out{\hypertarget{method-validate}{}}}
+\subsection{Method \code{validate()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$validate()}\if{html}{\out{</div>}}
 }
 
 }

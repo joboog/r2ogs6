@@ -39,7 +39,7 @@ generate_structured_mesh = function(ogs6_obj, element_type, ...) {
                    ogs6_obj$ogs_bin_path), call. = FALSE)
     }
 
-    ogs6_obj$add_sim_input("vtu_meshes", mesh_output_file)
+    ogs6_obj$add_mesh(mesh_output_file)
 
     return(invisible())
 }
