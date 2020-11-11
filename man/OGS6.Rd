@@ -12,7 +12,7 @@ Constructor for the OGS6 base class
 \item \href{#method-new}{\code{OGS6$new()}}
 \item \href{#method-add_sim_output}{\code{OGS6$add_sim_output()}}
 \item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
-\item \href{#method-add_geometry}{\code{OGS6$add_geometry()}}
+\item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_process}{\code{OGS6$add_process()}}
 \item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
 \item \href{#method-add_medium}{\code{OGS6$add_medium()}}
@@ -23,7 +23,6 @@ Constructor for the OGS6 base class
 \item \href{#method-add_linear_solver}{\code{OGS6$add_linear_solver()}}
 \item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
-\item \href{#method-validate}{\code{OGS6$validate()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
 }
 }
@@ -68,11 +67,11 @@ Constructor for the OGS6 base class
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_geometry"></a>}}
-\if{latex}{\out{\hypertarget{method-add_geometry}{}}}
-\subsection{Method \code{add_geometry()}}{
+\if{html}{\out{<a id="method-add_gml"></a>}}
+\if{latex}{\out{\hypertarget{method-add_gml}{}}}
+\subsection{Method \code{add_gml()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_geometry(geometry)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_gml(gml)}\if{html}{\out{</div>}}
 }
 
 }
@@ -163,15 +162,6 @@ Constructor for the OGS6 base class
 \subsection{Method \code{get_status()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-validate"></a>}}
-\if{latex}{\out{\hypertarget{method-validate}{}}}
-\subsection{Method \code{validate()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$validate()}\if{html}{\out{</div>}}
 }
 
 }

@@ -4,12 +4,12 @@
 \alias{adopt_nodes}
 \title{adopt_nodes}
 \usage{
-adopt_nodes(parent_name, objs)
+adopt_nodes(parent_name, obj_list)
 }
 \arguments{
 \item{parent_name}{The name of the new parent node}
 
-\item{objs}{A list of class objects (class must have method for generic function as_node)}
+\item{obj_list}{A list of class objects (class should have method for generic function as_node)}
 }
 \description{
 A helper function for creating parent nodes using the generic function as_node

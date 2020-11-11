@@ -2,10 +2,15 @@
 % Please edit documentation in R/prj_time_loop.R
 \name{input_add.r2ogs6_time_loop}
 \alias{input_add.r2ogs6_time_loop}
-\title{WIP}
+\title{input_add.r2ogs6_time_loop}
 \usage{
-\method{input_add}{r2ogs6_time_loop}(time_loop, ogs6_obj)
+\method{input_add}{r2ogs6_time_loop}(obj, ogs6_obj)
+}
+\arguments{
+\item{obj}{A r2ogs6_time_loop class object}
+
+\item{ogs6_obj}{A OGS6 class object}
 }
 \description{
-Adds a time loop
+Implementation of generic function input_add for S3 class r2ogs6_time_loop
 }

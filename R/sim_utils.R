@@ -3,7 +3,7 @@
 
 #'run_simulation
 #'@description Calls OGS6 object validator functions, exports all necessary files and starts OpenGeoSys6
-#'@param ogs6_obj
+#'@param ogs6_obj A OGS6 class object
 #'@param iter_n The number of iterations (for simulation chains)
 #'@export
 run_simulation <- function(ogs6_obj, iter_n = 1) {
@@ -13,57 +13,51 @@ run_simulation <- function(ogs6_obj, iter_n = 1) {
     #Call all validators
     validate_all(ogs6_obj)
 
-    #Export all necessary files
-    export_all(ogs6_obj)
+    #Export the simulation files
+    export_gml(ogs6_obj)
+    export_prj(ogs6_obj)
 
     #Run simulations (and read in output as input)
     for(i in seq_len(iter_n)){
 
         #Call OGS6
-        #...
+        system(command = paste0(ogs6_obj$ogs_bin_path, "ogs.exe ",
+                                ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj "))
 
-        read_in_output(ogs6_obj)
+        # read_in_output(ogs6_obj)
     }
-}
-
-
-#'export_all
-#'@description Exports all necessary files
-#'@param ogs6_obj
-export_all <- function(ogs6_obj) {
-
-    #
-    gml_file_name <- "bla"
-
-    if(length(ogs6_obj$sim_input[["vtu_meshes"]]) == 1){
-        export_xml_to_file(gml_data_to_xml(ogs6_obj$sim_input[["gml_obj"]]), gml_file_name)
-    }
-
-    #
-    prj_file_name <- "ha"
-
-    export_xml_to_file(prj_data_to_xml(ogs6_obj$sim_input[["prj_obj"]]), prj_file_name)
 }
 
 
 #'validate_all
 #'@description Validates all necessary parameters
-#'@param ogs6_obj
+#'@param ogs6_obj A OGS6 class object
 validate_all <- function(ogs6_obj) {
 
+    if(!ogs6_obj$get_status()){
+        stop("There are some components missing from your OGS6 object.", call. = FALSE)
+    }
+
+    if(is.null(ogs6_obj$gml)){
+        if(length(ogs6_obj$meshes) < 2){
+            stop("If you don't want to specify a gml object, you must have multiple
+                      meshes. You can define more by calling the function generate_structured_mesh.", call. = FALSE)
+        }
+    }else if(length(ogs6_obj$meshes) != 1){
+        stop("If you want to specify a gml object, there must be only one mesh (one vtk file).", call. = FALSE)
+    }
+
+    #...
 }
 
 
 #'read_in_output
 #'@description After a OGS6 simulation was run, reads in the generated .vtu files as new input for
 #' the .prj file
-#'@param ogs6_obj
+#'@param ogs6_obj A OGS6 class object
 read_in_output <- function(ogs6_obj) {
 
-
-    output_file_name <- "ha"
-
-    ogs6_obj$set_sim_input_obj_param("prj_obj", "meshes", output_file_name)
+    #....WIP
 }
 
 

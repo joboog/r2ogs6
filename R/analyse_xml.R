@@ -281,8 +281,8 @@ generate_as_node_from_element <- function(element_name,
 #'get_required
 #'@description Helper function to mark required attributes or children from a vector of names and a
 #' vector of occurrence probabilities
-#' @param names
-#' @param occurence_probabilities
+#'@param names A vector of names
+#'@param occurence_probabilities A vector of occurrence probabilities
 get_required <- function(names, occurence_probabilities){
     required <- list()
 

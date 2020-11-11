@@ -19,8 +19,6 @@ r2ogs6_nonlinear_solver <- function(name, type, max_iter, linear_solver){
 }
 
 
-#'new_r2ogs6_nonlinear_solver
-#'@description Constructor for S3 class r2ogs6_nonlinear_solver
 new_r2ogs6_nonlinear_solver <- function(name, type, max_iter, linear_solver){
 
     assertthat::assert_that(assertthat::is.string(name))

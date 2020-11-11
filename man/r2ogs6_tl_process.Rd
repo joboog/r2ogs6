@@ -5,6 +5,7 @@
 \title{r2ogs6_tl_process}
 \usage{
 r2ogs6_tl_process(
+  ref,
   nonlinear_solver,
   convergence_criterion,
   time_discretization,
@@ -12,6 +13,8 @@ r2ogs6_tl_process(
 )
 }
 \arguments{
+\item{ref}{References a r2ogs6_process object by name}
+
 \item{nonlinear_solver}{...}
 
 \item{convergence_criterion}{...}

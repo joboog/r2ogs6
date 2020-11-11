@@ -20,8 +20,6 @@ r2ogs6_process_variable <- function(name, components, order, initial_condition, 
 }
 
 
-#'new_r2ogs6_process_variable
-#'@description Constructor for S3 class r2ogs6_process_variable
 new_r2ogs6_process_variable <- function(name, components, order, initial_condition, boundary_conditions){
 
     assertthat::assert_that(assertthat::is.string(name))
@@ -76,6 +74,7 @@ input_add.r2ogs6_process_variable <- function(obj, ogs6_obj) {
 #'@param type ...
 #'@param parameter ...
 #'@param component ...
+#'@param mesh ...
 #'@param geometrical_set ...
 #'@param geometry ...
 #'@export
@@ -89,8 +88,6 @@ r2ogs6_boundary_condition <- function(type, parameter, component = NULL, mesh = 
 }
 
 
-#'new_r2ogs6_boundary_condition
-#'@description Constructor for S3 class r2ogs6_boundary_condition
 new_r2ogs6_boundary_condition <- function(type, parameter, component = NULL, mesh = NULL, geometrical_set = NULL,
                                           geometry = NULL){
 

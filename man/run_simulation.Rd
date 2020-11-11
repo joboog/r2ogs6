@@ -7,6 +7,8 @@
 run_simulation(ogs6_obj, iter_n = 1)
 }
 \arguments{
+\item{ogs6_obj}{A OGS6 class object}
+
 \item{iter_n}{The number of iterations (for simulation chains)}
 }
 \description{

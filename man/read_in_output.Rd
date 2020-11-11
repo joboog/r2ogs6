@@ -6,6 +6,9 @@
 \usage{
 read_in_output(ogs6_obj)
 }
+\arguments{
+\item{ogs6_obj}{A OGS6 class object}
+}
 \description{
 After a OGS6 simulation was run, reads in the generated .vtu files as new input for
 the .prj file

@@ -20,6 +20,8 @@ r2ogs6_boundary_condition(
 
 \item{component}{...}
 
+\item{mesh}{...}
+
 \item{geometrical_set}{...}
 
 \item{geometry}{...}

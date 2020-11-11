@@ -4,38 +4,46 @@
 #============================== INFO UTILITY ================================
 
 
-#'list_has_element
+#'get_list_status
 #'@description Helper function for get_status() to check if a list has at least one element.
+#'@param flag Boolean flag to keep track of missing components
 #'@param obj_list The specified list
 #'@param element_type Optional: What kind of elements are in the list?
-list_has_element <- function(obj_list, element_type = "list element"){
-  has_element <- FALSE
+#'@param is_opt Does the list need at least one element?
+get_list_status <- function(flag, obj_list, element_type = "list element", is_opt = FALSE){
+
+  sim_ready <- flag
 
   if(length(obj_list) == 0){
-    cat(crayon::red("\u2717"))
+    if(!is_opt){
+      cat(crayon::red("\u2717"))
+      sim_ready <- FALSE
+    }else{
+      cat(crayon::yellow("()"))
+    }
   }else{
     cat(crayon::green("\u2713"))
-    has_element <- TRUE
   }
 
   cat(" At least one", element_type, "was defined", "\n")
 
-  return(invisible(has_element))
+  return(invisible(sim_ready))
 }
 
 
-#'obj_is_null
+#'obj_is_defined
 #'@description Helper function for get_status() to check if an object was defined.
+#'@param flag Boolean flag to keep track of missing components
 #'@param obj The specified object
 #'@param obj_type Optional: What kind of object is this?
-obj_is_null <- function(obj, obj_type = ""){
-  is_defined <- FALSE
+obj_is_defined <- function(flag, obj, obj_type = ""){
+  is_defined <- flag
 
   if(is.null(obj)){
     cat(crayon::red("\u2717"))
+    is_defined <- FALSE
   }else{
     cat(crayon::green("\u2713"))
-    is_defined <- TRUE
   }
 
   cat(" ", obj_type, "object is not NULL", "\n")
@@ -46,6 +54,27 @@ obj_is_null <- function(obj, obj_type = ""){
 
 
 #============================== VALIDATION UTILITY ================================
+
+#'validate_paths
+#'@description Helper function to pull path validation out of already large class OGS6
+#'@param sim_path The path where all relevant files for the simulation will be saved
+#'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
+validate_paths <- function(sim_path, ogs_bin_path){
+  if(!dir.exists(sim_path)){
+    dir.create(sim_path)
+  }else{
+    if(length(dir(sim_path, all.files = TRUE)) != 0){
+      warning(paste0("The sim_path directory you defined ('", sim_path,
+                     "') already exists (that is ok). However, ",
+                     "it is not empty. Files may be overwritten."), call. = FALSE)
+    }
+  }
+
+  if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
+    stop(paste("Could not find executable file generateStructuredMesh.exe at location",
+               ogs_bin_path), call. = FALSE)
+  }
+}
 
 
 #'validate_param_list
@@ -76,14 +105,14 @@ validate_param_list <- function(param_list, expected_length, possible_names) {
 #'validate_wrapper_list
 #'@description Helper function, checks if a lists consists only of elements of a specific class
 #'@param wrapper_list The list to check
-#'@param expected_class The class each element of the wrapper list should have
+#'@param expected_element_class The class each element of the wrapper list should have
 validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
   assertthat::assert_that(is.list(wrapper_list))
 
-  for(i in seq_len(length(object_list))){
-    if(class(object_list[[i]] != expected_class)){
-      stop(paste("List ... has at least one element whose class is not", expected_element_class),
+  for(i in seq_len(length(wrapper_list))){
+    if(class(wrapper_list[[i]]) != expected_element_class){
+      stop(paste("List has at least one element whose class is not", expected_element_class),
            call. = FALSE)
     }
   }
@@ -92,22 +121,39 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
 #============================== XML UTILITY ================================
 
+#'simple_list_to_node
+#'@description Helper to turn a simple vector into the corresponding node structure
+#' with the vector elements as children.
+#'@param parent_name The name of the parent node
+#'@param simple_vector The vector to turn into the node structure
+simple_vector_to_node <- function(parent_name, simple_vector){
 
-#' export_xml_to_file
-#' @description Export function
-#' @param xml_data The data to be exported (already in XML friendly format)
-#' @param file_name The name of the file to be written
-# @examples
-# export_xml_to_file(...)
-export_xml_to_file <- function(xml_data, file_name) {
-  doc <- xml2::as_xml_document(xml_data)
-  xml2::write_xml(doc, file_name, options = "format", encoding="ISO-8859-1")
-  invisible()
+  assertthat::assert_that(assertthat::is.string(parent_name))
+  assertthat::assert_that(is.vector(simple_vector))
+
+  if(any(!is.atomic(simple_vector))){
+    stop(paste("simple_vector_to_node 'simple_vector' parameter may only contain",
+               "atomic values!"), call. = FALSE)
+  }
+
+  node <- list(structure(list()))
+  names(node)[[1]] <- parent_name
+
+  for(i in seq_len(length(simple_vector))){
+    element_name <- names(simple_vector)[[i]]
+    element_list <- list(list(simple_vector[[i]]))
+    names(element_list)[[1]] <- element_name
+
+    node[[1]] <- c(node[[1]], element_list)
+  }
+
+  return(invisible(node))
 }
 
 
 #' adopt_nodes
-#' @description A helper function for creating parent nodes using the generic function as_node
+#' @description Takes a homogenous list of r2ogs6_* objects and creates a wrapper node
+#'  using the generic function as_node
 #' @param parent_name The name of the new parent node
 #' @param obj_list A list of class objects (class should have method for generic function as_node)
 adopt_nodes <- function(parent_name, obj_list) {
@@ -116,13 +162,13 @@ adopt_nodes <- function(parent_name, obj_list) {
     return(invisible(NULL))
   }
 
-  parent_node <- list(parent_name = list())
+  node <- list(parent_name = list())
 
   for(i in seq_len(length(obj_list))) {
-    parent_node <- c(parent_node[[1]], as_node(obj_list[[i]]))
+    node <- c(node[[1]], as_node(obj_list[[i]]))
   }
 
-  return(invisible(parent_node))
+  return(invisible(node))
 }
 
 
@@ -146,44 +192,37 @@ add_attr <- function(node, obj_parameter, attr_name) {
 #'@param children The children to be added (a partially named list)
 add_children <- function(node, children) {
 
+  assertthat::assert_that(is.list(node))
   assertthat::assert_that(is.list(children))
 
-  value_added <- FALSE
-
-  for(i in seq_len(length(node[[1]]))){
-    if(names(node[[1]])[[i]] == ""){
-      value_added <- TRUE
-    }
+  if(length(node[[1]]) == 1 && is.null(names(node[[1]])[[1]])){
+    stop(paste("Trying to add children to a leaf node (a node which is",
+               "an unnamed list containing only a value"), call. = FALSE)
   }
 
   for(i in seq_len(length(children))){
+
     child <- children[[i]]
-
-    is_wrapper <- is.list(child)
-
     child_name <- names(children)[[i]]
 
-    is_r2ogs6_obj <- any(grepl("r2ogs6", class(child)))
-
-    if(is_r2ogs6_obj){
-      child_name <- ""
+    #If the child is a r2ogs6 class object, call as_node on it
+    if(any(grepl("r2ogs6", class(child)))){
+      node[[1]] <- c(node[[1]], as_node(child))
+      next
     }
 
     if(!is.null(child)) {
-      if(is_wrapper){
+      #If the child is a wrapper, leave it alone
+      if(is.list(child)){
         node[[1]] <- c(node[[1]], child)
-      }else if(!is.null(child_name) && child_name != "" && !value_added) {
-        node[[1]] <- c(node[[1]], as_node(list(child_name = child)))
-      }else if(!value_added && (length(node[[1]]) == 0 || is_r2ogs6_obj)){
-        node[[1]] <- c(node[[1]], as_node(child))
 
-        if(!is_r2ogs6_obj){
-          value_added <- TRUE
-        }
-
+      #If the child has a name
+      }else if(!is.null(child_name) && child_name != "") {
+        new_node <- as_node(child, child_name)
+        node[[1]] <- c(node[[1]], new_node)
       }else{
-        stop(paste("You're trying to add a value (an unnamed child node) to a node
-                 which already has a value."), call. = FALSE)
+        stop(paste("add_children: Trying to add an unnamed child which is not",
+                   "already a node (list) or an r2ogs6_* class object"), call. = FALSE)
       }
     }
   }

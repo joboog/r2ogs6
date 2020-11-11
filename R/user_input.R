@@ -1,58 +1,47 @@
-#This is where the user defines his data.
+#This is where the user defines their data.
 
 
 #============================== SET UP SIMULATION OBJECT ================================
 
-# my_ogs6_obj <- new_ogs6( sim_io = list(input = list(), output = list()),
-#                          sim_name = "my_sim",
-#                          sim_id = 1L,
-#                          sim_path = "simulations/")
-
-#R6
-ogs6_obj <- OGS6$new( sim_name = "my_sim",
-                         sim_id = 1L,
-                         sim_path = "D:\\OGS_Sim",
-                         ogs_bin_path = "")
+# #If you want to test this, don't forget to alter the paths to fit your system!
+#
+# ogs6_obj <- OGS6$new(sim_name = "my_sim",
+#                      sim_id = 1,
+#                      sim_path = "D:\\OGS_Sim\\",
+#                      ogs_bin_path = "D:\\Programme\\OpenGeoSys\\ogs-6.3.2-Windows-10.0.14393-x64-python-3.7.2-de-utils\\bin")
 
 
 #============================== ADD .gml DATA ================================
 
-#(source: HydroComponent Benchmarks -> IdealGas -> flow_free_expansion -> cube_1x1x1.gml)
+# #(source: HydroComponent Benchmarks -> IdealGas -> flow_free_expansion -> cube_1x1x1.gml)
 
-# #Add gml object and give it a name
-# input_add_gml_obj(my_ogs6_obj, "cube_1x1x1_geometry")
+# #Add some geometry
+# input_add(r2ogs6_gml(name = "cube_1x1x1_geometry",
+#                      points = tibble::tibble(x = c(0, 0, 0, 0, 1, 1, 1, 1),
+#                                     y = c(0, 0, 1, 1, 0, 0, 1, 1),
+#                                     z = c(0, 1, 1, 0, 0, 1, 1, 0),
+#                                     name = c("origin", rep("", 7))),
 #
-
-
-
-# # #Add some points
-# input_add_gml_points(my_ogs6_obj, tibble::tibble(x = c(0, 0, 0, 0, 1, 1, 1, 1),
-#                                                  y = c(0, 0, 1, 1, 0, 0, 1, 1),
-#                                                  z = c(0, 1, 1, 0, 0, 1, 1, 0),
-#                                                  name = c("origin", rep("", 7))))
+#                      polylines = list(list(name = "front_left", c(0, 1)),
+#                                       list(name = "front_right", c(4, 5)),
+#                                       list(name = "front_bottom", c(0, 4)),
+#                                       list(name = "front_top", c(1, 5)),
+#                                       list(name = "bottom_left", c(0, 3)),
+#                                       list(name = "bottom_right", c(4, 7)),
+#                                       list(name = "top_left", c(1, 2)),
+#                                       list(name = "top_right", c(5, 6)),
+#                                       list(name = "back_left", c(2, 3)),
+#                                       list(name = "back_right", c(6, 7)),
+#                                       list(name = "back_bottom", c(3, 7)),
+#                                       list(name = "back_top", c(2, 6))),
 #
-# #Add some polylines
-# input_add_gml_polylines(my_ogs6_obj, list(list(name = "front_left", c(0, 1)),
-#                                           list(name = "front_right", c(4, 5)),
-#                                           list(name = "front_bottom", c(0, 4)),
-#                                           list(name = "front_top", c(1, 5)),
-#                                           list(name = "bottom_left", c(0, 3)),
-#                                           list(name = "bottom_right", c(4, 7)),
-#                                           list(name = "top_left", c(1, 2)),
-#                                           list(name = "top_right", c(5, 6)),
-#                                           list(name = "back_left", c(2, 3)),
-#                                           list(name = "back_right", c(6, 7)),
-#                                           list(name = "back_bottom", c(3, 7)),
-#                                           list(name = "back_top", c(2, 6))))
-#
-# #Add some surfaces
-# input_add_gml_surfaces(my_ogs6_obj, list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
-#                                          list(name = "right", c(4, 6, 5), c(4, 6, 7)),
-#                                          list(name = "top", c(1, 2, 5), c(5, 2, 6)),
-#                                          list(name = "bottom", c(0, 3, 4), c(4, 3, 7)),
-#                                          list(name = "front", c(0, 1, 4), c(4, 1, 5)),
-#                                          list(name = "back", c(2, 3, 6), c(6, 3, 7))))
-
+#                      surfaces = list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
+#                                      list(name = "right", c(4, 6, 5), c(4, 6, 7)),
+#                                      list(name = "top", c(1, 2, 5), c(5, 2, 6)),
+#                                      list(name = "bottom", c(0, 3, 4), c(4, 3, 7)),
+#                                      list(name = "front", c(0, 1, 4), c(4, 1, 5)),
+#                                      list(name = "back", c(2, 3, 6), c(6, 3, 7)))),
+#           ogs6_obj)
 
 #============================== ADD .vtu DATA ================================
 
@@ -65,9 +54,7 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 #============================== ADD .prj DATA ================================
 
 #Let's add our data for the .prj file, arguably the most important file.
-
-# #Add prj object and give it a name
-# input_add_prj_obj(my_ogs6_obj)
+#(source: HydroComponent Benchmarks -> IdealGas -> flow_no_strain -> flow_no_strain.prj)
 
 #We need:
 #1. Either one mesh and one geometry file OR multiple mesh files (for the latter case: Skip to
@@ -96,25 +83,63 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 #           ogs6_obj)
 #
 # #3. One time_loop element:
-# input_add(r2ogs6_time_loop(processes = ,
-#                                output = r2ogs6_process_output(type = "",
-#                                                                   prefix = "",
-#                                                                   timesteps = list(),
-#                                                                   variables = list(),
-#                                                                   suffix = "",
-#                                                                   compress_output = FALSE)
-#                                ),
+# input_add(r2ogs6_time_loop(processes = list(r2ogs6_tl_process(ref = "HM",
+#                                                               nonlinear_solver = "basic_newton",
+#                                                               convergence_criterion = list(type = "PerComponentDeltaX",
+#                                                                                            norm_type = "NORM2",
+#                                                                                            reltols = "5e-8 1e10 1e10"),
+#                                                               time_discretization = list(type = "BackwardEuler"),
+#                                                               time_stepping = list(type = "FixedTimeStepping",
+#                                                                                    t_initial = 0,
+#                                                                                    t_end = 100,
+#                                                                                    timesteps = list(pair = list(rep = 1,
+#                                                                                                                 delta_t = 0.1))
+#                                                                                    )
+#                                                               )),
+#                            output = r2ogs6_tl_output(type = "VTK",
+#                                                      prefix = "flow_no_strain_pcs_{:process_id}",
+#                                                      suffix = "_ts_{:timestep}_t_{:time}",
+#                                                      timesteps = list(pair = list(rep = 1,
+#                                                                               each_steps = 1000)),
+#                                                      variables = list("displacement",
+#                                                                       "pressure",
+#                                                                       "sigma_xx",
+#                                                                       "sigma_yy",
+#                                                                       "sigma_zz",
+#                                                                       "sigma_xy",
+#                                                                       "epsilon_xx",
+#                                                                       "epsilon_yy",
+#                                                                       "epsilon_zz",
+#                                                                       "epsilon_xy",
+#                                                                       "velocity"))),
 #           ogs6_obj)
 #
-#4. One or more medium elements:
-# input_add(r2ogs6_medium(phases = list(r2ogs6_medium_phase(type = Gas,
+# #4. One or more medium elements:
+# input_add(r2ogs6_medium(phases = list(r2ogs6_medium_phase(type = "Gas",
 #                                                           properties = list(r2ogs6_medium_property(name = "viscosity",
 #                                                                                                    type = "Constant",
-#                                                                                                    value = 1e-5)))),
+#                                                                                                    value = 1e-5),
+#                                                                             r2ogs6_medium_property(name = "density",
+#                                                                                                    type = "IdealGasLaw"),
+#                                                                             r2ogs6_medium_property(name = "molar_mass",
+#                                                                                                    type = "Constant",
+#                                                                                                    value = 0.028964397787206768))),
+#                                       r2ogs6_medium_phase(type = "Solid",
+#                                                           properties = list(r2ogs6_medium_property(name = "porosity",
+#                                                                                                    type = "Constant",
+#                                                                                                    value = 0.03),
+#                                                                             r2ogs6_medium_property(name = "density",
+#                                                                                                    type = "Constant",
+#                                                                                                    value = 2.17e3),
+#                                                                             r2ogs6_medium_property(name = "biot_coefficient",
+#                                                                                                    type = "Constant",
+#                                                                                                    value = 0.6)))),
 #                         properties = list(r2ogs6_medium_property(name = "reference_temperature",
 #                                                                  type = "Constant",
-#                                                                  value = 293.15)),
-#                             id = 1),
+#                                                                  value = 293.15),
+#                                           r2ogs6_medium_property(name = "permeability",
+#                                                                  type = "Constant",
+#                                                                  value = 1e-4))),
 #           ogs6_obj)
 #
 # #5. One or more parameters:
@@ -127,14 +152,53 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 #                            type = "Constant",
 #                            values = .3),
 #           ogs6_obj)
-
-
-#6. One or more process variables
+#
+# input_add(r2ogs6_parameter(name = "displacement0",
+#                            type = "Constant",
+#                            values = c(0, 0)),
+#           ogs6_obj)
+#
+# input_add(r2ogs6_parameter(name = "pressure0",
+#                            type = "Constant",
+#                            values = 1e5),
+#           ogs6_obj)
+#
+# input_add(r2ogs6_parameter(name = "zero",
+#                            type = "Constant",
+#                            values = 0),
+#           ogs6_obj)
+#
+# input_add(r2ogs6_parameter(name = "flux",
+#                            type = "Constant",
+#                            values = 1e-3),
+#           ogs6_obj)
+#
+#
+# #6. One or more process variables
 # input_add(r2ogs6_process_variable(name = "displacement",
 #                                   components = 2,
 #                                   order = 2,
 #                                   initial_condition = "displacement0",
-#                                   boundary_conditions = list(r2ogs6_boundary_condition())),
+#                                   boundary_conditions = list(r2ogs6_boundary_condition(type = "Dirichlet",
+#                                                                                        parameter = "zero",
+#                                                                                        component = 0,
+#                                                                                        geometrical_set = "square_1x1_geometry",
+#                                                                                        geometry = "left"),
+#                                                              r2ogs6_boundary_condition(type = "Dirichlet",
+#                                                                                        parameter = "zero",
+#                                                                                        component = 1,
+#                                                                                        geometrical_set = "square_1x1_geometry",
+#                                                                                        geometry = "bottom"),
+#                                                              r2ogs6_boundary_condition(type = "Dirichlet",
+#                                                                                        parameter = "zero",
+#                                                                                        component = 0,
+#                                                                                        geometrical_set = "square_1x1_geometry",
+#                                                                                        geometry = "right"),
+#                                                              r2ogs6_boundary_condition(type = "Dirichlet",
+#                                                                                        parameter = "zero",
+#                                                                                        component = 1,
+#                                                                                        geometrical_set = "square_1x1_geometry",
+#                                                                                        geometry = "top"))),
 #           ogs6_obj)
 #
 # input_add(r2ogs6_process_variable(name = "pressure",
@@ -163,8 +227,7 @@ ogs6_obj <- OGS6$new( sim_name = "my_sim",
 #                                             precon_type = "ILUT",
 #                                             max_iteration_step = 10000,
 #                                             error_tolerance = 1e-16),
-#                                lis = "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000",
-#                                petsc = NULL),
+#                                lis = "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000"),
 #           ogs6_obj)
 
 

@@ -4,10 +4,10 @@
 \alias{validate_surfaces}
 \title{validate_surfaces}
 \usage{
-validate_surfaces(gml_surfaces)
+validate_surfaces(surfaces)
 }
 \arguments{
-\item{gml_surfaces}{A list consisting of other lists}
+\item{surfaces}{A list consisting of other lists}
 }
 \description{
 Checks if the input is a list, if this list consists of other lists and

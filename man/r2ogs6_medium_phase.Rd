@@ -7,10 +7,10 @@
 r2ogs6_medium_phase(type, properties)
 }
 \arguments{
-\item{type}{A string specifying the medium type (valid types: ...)}
+\item{type}{A string specifying the medium type (one of "Gas", "Solid", "AqueousLiquid" and "NonAqueousLiquid")}
 
 \item{properties}{A list of properties (see ?r2ogs6_medium_property for more info)}
 }
 \description{
-S3 class describing a .prj medium phase
+S3 class describing a .prj medium phase (a coherent material with homogeneous properties)
 }

@@ -6,6 +6,9 @@
 \usage{
 \method{as_node}{r2ogs6_parameter}(obj)
 }
+\arguments{
+\item{obj}{A r2ogs6_parameter class object}
+}
 \description{
-as_node.r2ogs6_parameter
+Implementation of generic function as_node for S3 class r2ogs6_parameter
 }

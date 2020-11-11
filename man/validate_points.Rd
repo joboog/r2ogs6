@@ -4,10 +4,10 @@
 \alias{validate_points}
 \title{validate_points}
 \usage{
-validate_points(gml_points)
+validate_points(points)
 }
 \arguments{
-\item{gml_points}{A tibble with 3 vectors named 'x', 'y' and 'z' (and an optional 'name' vector)}
+\item{points}{A tibble with 3 vectors named 'x', 'y' and 'z' (and an optional 'name' vector)}
 }
 \description{
 Checks if the input is a tibble, if this tibble has the right number of elements,

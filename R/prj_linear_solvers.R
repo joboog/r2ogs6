@@ -19,8 +19,6 @@ r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
 }
 
 
-#'new_r2ogs6_linear_solver
-#'@description Constructor for S3 class r2ogs6_linear_solver
 new_r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
 
     assertthat::assert_that(assertthat::is.string(name))

@@ -18,8 +18,6 @@ r2ogs6_vtkdiff <- function(regex, field, absolute_tolerance, relative_tolerance)
 }
 
 
-#'new_r2ogs6_vtkdiff
-#'@description Constructor for S3 class r2ogs6_vtkdiff
 new_r2ogs6_vtkdiff <- function(regex, field, absolute_tolerance, relative_tolerance) {
 
     assertthat::assert_that(assertthat::is.string(regex))

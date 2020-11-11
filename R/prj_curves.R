@@ -6,8 +6,8 @@
 #'r2ogs6_curve
 #'@description S3 class describing a .prj curve
 #'@param name The name of the curve
-#'@param coords The coordinates ...
-#'@param values The values ...
+#'@param coords Coordinates at which the curve's values are given
+#'@param values Values of the curve at the given coordinates
 #'@export
 r2ogs6_curve <- function(name, coords, values){
 
@@ -20,6 +20,9 @@ r2ogs6_curve <- function(name, coords, values){
 
 #'new_r2ogs6_curve
 #'@description Constructor for S3 class r2ogs6_curve
+#'@param name The name of the curve
+#'@param coords Coordinates at which the curve's values are given
+#'@param values Values of the curve at the given coordinates
 new_r2ogs6_curve <- function(name, coords, values){
 
     assertthat::assert_that(assertthat::is.string(name))

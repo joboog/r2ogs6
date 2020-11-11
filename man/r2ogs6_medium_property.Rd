@@ -16,5 +16,5 @@ r2ogs6_medium_property(name, type, value = NULL, ...)
 \item{...}{...}
 }
 \description{
-S3 class describing a .prj medium property (some rare parameters are NOT implemented yet!)
+S3 class describing a .prj medium property (a constitutive property) (WIP!)
 }

@@ -6,6 +6,13 @@
 \usage{
 new_r2ogs6_curve(name, coords, values)
 }
+\arguments{
+\item{name}{The name of the curve}
+
+\item{coords}{Coordinates at which the curve's values are given}
+
+\item{values}{Values of the curve at the given coordinates}
+}
 \description{
 Constructor for S3 class r2ogs6_curve
 }

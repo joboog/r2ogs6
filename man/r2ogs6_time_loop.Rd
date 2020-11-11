@@ -7,9 +7,9 @@
 r2ogs6_time_loop(processes, output, global_processes_coupling = NULL)
 }
 \arguments{
-\item{processes}{...}
+\item{processes}{A list of r2ogs6_tl_process class objects}
 
-\item{output}{...}
+\item{output}{A r2ogs6_tl_output class object}
 
 \item{global_processes_coupling}{...}
 }

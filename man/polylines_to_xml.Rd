@@ -15,7 +15,3 @@ An XML node containing the polylines
 \description{
 Turns a list of polylines into an XML node
 }
-\examples{
-my_list <- list(list(name = "front_left", c(0, 1)), list(name = "front_right", c(4, 5)))
-polylines_node <- polylines_to_xml(my_list)
-}

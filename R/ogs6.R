@@ -18,18 +18,18 @@ OGS6 <- R6::R6Class("OGS6",
 
       # Basic validation
       assertthat::assert_that(assertthat::is.string(sim_name))
-      assertthat::assert_that(is.integer(sim_id))
+      assertthat::assert_that(assertthat::is.number(sim_id))
       assertthat::assert_that(assertthat::is.string(sim_path))
       assertthat::assert_that(assertthat::is.string(ogs_bin_path))
 
-        private$.sim_input <- list()
+      validate_paths(sim_path, ogs_bin_path)
+
         private$.sim_output <- list()
 
         private$.sim_name <- sim_name
         private$.sim_id <- sim_id
         private$.sim_path <- sim_path
         private$.ogs_bin_path <- ogs_bin_path
-
 
         private$.meshes <- list()
         private$.geometry <- NULL
@@ -53,9 +53,14 @@ OGS6 <- R6::R6Class("OGS6",
       private$.meshes <- c(private$.meshes, mesh)
     },
 
-    add_geometry = function(geometry){
-      assertthat::assert_that(assertthat::is.string(geometry))
-      private$.geometry <- c(private$.geometry, geometry)
+    add_gml = function(gml){
+      assertthat::assert_that(class(gml) == "r2ogs6_gml")
+      if(!is.null(private$.gml)){
+        warning("Overwriting gml variable of OGS6 object", call. = FALSE)
+
+      }
+      private$.gml <- gml
+      private$.geometry <- paste0(gml$name, ".gml")
     },
 
     add_process = function(process){
@@ -93,7 +98,7 @@ OGS6 <- R6::R6Class("OGS6",
     },
 
     add_nonlinear_solver = function(nonlinear_solver){
-      assertthat::assert_that(class(parameter) == "r2ogs6_nonlinear_solver")
+      assertthat::assert_that(class(nonlinear_solver) == "r2ogs6_nonlinear_solver")
       private$.nonlinear_solvers <- c(private$.nonlinear_solvers, nonlinear_solver)
     },
 
@@ -109,44 +114,37 @@ OGS6 <- R6::R6Class("OGS6",
 
     get_status = function(){
 
-      ready_for_sim <- list_has_element(private$.processes, "process")
-      ready_for_sim <- obj_is_null(private$.time_loop, "time_loop")
-      ready_for_sim <- list_has_element(private$.media, "medium")
-      ready_for_sim <- list_has_element(private$.parameters, "parameter")
-      ready_for_sim <- list_has_element(private$.process_variables, "process_variable")
-      ready_for_sim <- list_has_element(private$.nonlinear_solvers, "nonlinear_solver")
-      ready_for_sim <- list_has_element(private$.linear_solvers, "linear_solver")
+      flag <- TRUE
 
-      if(ready_for_sim){
-        cat("Your simulation object has all necessary components. You can try to start the
-             simulation by calling run_simulation() on your OGS6 object. Note that this will
-             call more validation functions so you may not be done just yet.", "\n")
+      #.gml
+      #flag <- obj_is_defined(flag, private$.gml, "gml")
+
+      #.vtu
+      flag <- get_list_status(flag, private$.meshes, "mesh")
+
+      #.prj
+      flag <- get_list_status(flag, private$.processes, "process")
+      flag <- obj_is_defined(flag, private$.time_loop, "time_loop")
+      flag <- get_list_status(flag, private$.media, "medium")
+      flag <- get_list_status(flag, private$.parameters, "parameter")
+      flag <- get_list_status(flag, private$.curves, "curve", is_opt = TRUE)
+      flag <- get_list_status(flag, private$.process_variables, "process_variable")
+      flag <- get_list_status(flag, private$.nonlinear_solvers, "nonlinear_solver")
+      flag <- get_list_status(flag, private$.linear_solvers, "linear_solver")
+      flag <- get_list_status(flag, private$.test_definition, "vtkdiff", is_opt = TRUE)
+
+      if(flag){
+        cat(paste0("Your simulation object has all necessary components.\n",
+        "You can try to start the simulation by calling run_simulation() on your OGS6 object.\n", "
+        Note that this will call more validation functions so you may not be done just yet.\n"))
       }
 
-      return(invisible(ready_for_sim))
-    },
-
-    validate = function(){
-
-      if(!self$get_status()){
-        stop("There are some components missing from your OGS6 object.", call. = FALSE)
-      }
-
-
+      return(invisible(flag))
     }
-
 
   ),
 
   active = list(
-      sim_input = function(value) {
-          if (missing(value)) {
-              private$.sim_input
-          } else {
-              stop("To modify `$sim_input`, use set_sim_input().", call. = FALSE)
-          }
-      },
-
       sim_output = function(value) {
         if (missing(value)) {
           private$.sim_output
@@ -185,18 +183,117 @@ OGS6 <- R6::R6Class("OGS6",
         } else {
           stop("`$ogs_bin_path` is read only", call. = FALSE)
         }
-      }
+      },
 
+      gml = function(value) {
+        if (missing(value)) {
+          private$.gml
+        } else {
+          stop("`To modify `$gml`, use add_gml().", call. = FALSE)
+        }
+      },
+
+      meshes = function(value) {
+        if (missing(value)) {
+          private$.meshes
+        } else {
+          stop("`$meshes` is read only", call. = FALSE)
+        }
+      },
+
+      geometry = function(value) {
+        if (missing(value)) {
+          private$.geometry
+        } else {
+          stop("`$geometry` is read only", call. = FALSE)
+        }
+      },
+
+      processes = function(value) {
+        if (missing(value)) {
+          private$.processes
+        } else {
+          stop("`To modify `$processes`, use add_process().", call. = FALSE)
+        }
+      },
+
+      time_loop = function(value) {
+        if (missing(value)) {
+          private$.time_loop
+        } else {
+          stop("`To modify `$time_loop`, use add_time_loop().", call. = FALSE)
+        }
+      },
+
+      media = function(value) {
+        if (missing(value)) {
+          private$.media
+        } else {
+          stop("`To modify `$media`, use add_medium().", call. = FALSE)
+        }
+      },
+
+      parameters = function(value) {
+        if (missing(value)) {
+          private$.parameters
+        } else {
+          stop("`To modify `$parameters`, use add_parameter().", call. = FALSE)
+        }
+      },
+
+      curves = function(value) {
+        if (missing(value)) {
+          private$.curves
+        } else {
+          stop("`To modify `$curves`, use add_curve().", call. = FALSE)
+        }
+      },
+
+      process_variables = function(value) {
+        if (missing(value)) {
+          private$.process_variables
+        } else {
+          stop("`To modify `$process_variables`, use add_process_variable().", call. = FALSE)
+        }
+      },
+
+      nonlinear_solvers = function(value) {
+        if (missing(value)) {
+          private$.nonlinear_solvers
+        } else {
+          stop("`To modify `$nonlinear_solvers`, use add_nonlinear_solver().", call. = FALSE)
+        }
+      },
+
+      linear_solvers = function(value) {
+        if (missing(value)) {
+          private$.linear_solvers
+        } else {
+          stop("`To modify `$linear_solvers`, use add_linear_solver().", call. = FALSE)
+        }
+      },
+
+      test_definition = function(value) {
+        if (missing(value)) {
+          private$.test_definition
+        } else {
+          stop("`To modify `$test_definition`, use add_test_definition().", call. = FALSE)
+        }
+      }
   ),
 
   private = list(
-      .sim_input = NULL,
+    #general parameters
       .sim_output = NULL,
       .sim_name = NULL,
       .sim_id = NULL,
       .sim_path = NULL,
       .ogs_bin_path = NULL,
 
+      #.gml parameters
+      .gml = NULL,
+
+      #.prj parameters
       .meshes = NULL,
       .geometry = NULL,
       .processes = NULL,
@@ -210,58 +307,4 @@ OGS6 <- R6::R6Class("OGS6",
       .test_definition = NULL
   )
 )
-
-
-
-
-#============================== S3 ================================
-
-#'Constructor for the ogs6 base class
-#'
-#'@param sim_io ...
-#'@param sim_name A string value representing the simulation name
-#'@param sim_id An integer value representing the simulation ID
-#'@param sim_path A string value describing the path where the IO files will be saved
-new_ogs6 <- function(sim_io = list(input = list(), output = list()),
-                     sim_name = character(),
-                     sim_id = integer(),
-                     sim_path = character()) {
-
-    # Basic validation
-    if (!is.character(sim_name)) {
-        stop("'sim_name' has to be of type character", call. = FALSE)
-    }
-
-    if (!is.integer(sim_id)) {
-        stop("'sim_id' has to be of type integer", call. = FALSE)
-    }
-
-    if (!is.character(sim_path)) {
-        stop("'sim_path' has to be of type character", call. = FALSE)
-    }
-
-    structure(
-        sim_io,
-        sim_name = sim_name,
-        sim_id = sim_id,
-        sim_path = sim_path,
-        class = "ogs6"
-    )
-}
-
-#' Validating functions for an ogs6 class object (to be run before a simulation is started)
-validate_ogs6 <- function(ogs6_obj) {
-
-
-    if (!class(ogs6_obj) == "ogs6") {
-        stop("ogs6_obj is not of class 'ogs6' ", call. = FALSE)
-    }
-    if (is.null(x$input)) {
-        stop("'input' list missing.", call. = FALSE)
-    }
-    if (is.null(x$output)) {
-        stop("'output' list missing.", call. = FALSE)
-    }
-
-}
 

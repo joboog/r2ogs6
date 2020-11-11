@@ -4,12 +4,12 @@
 \alias{validate_surface_elements}
 \title{validate_surface_elements}
 \usage{
-validate_surface_elements(gml_surface_element_1, gml_surface_element_2)
+validate_surface_elements(surface_element_1, surface_element_2)
 }
 \arguments{
-\item{gml_surface_element_1}{A numerical vector of length 3}
+\item{surface_element_1}{A numerical vector of length 3}
 
-\item{gml_surface_element_2}{A numerical vector of length 3}
+\item{surface_element_2}{A numerical vector of length 3}
 }
 \description{
 Helper function, checks if two numerical vectors of length 3 (two surface elements)

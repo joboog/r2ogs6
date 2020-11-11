@@ -4,18 +4,14 @@
 \alias{points_to_xml}
 \title{points_to_xml}
 \usage{
-points_to_xml(point_tibble)
+points_to_xml(points)
 }
 \arguments{
-\item{point_tibble}{The specified tibble}
+\item{points}{The specified tibble}
 }
 \value{
 An XML node containing the points
 }
 \description{
 Turns a tibble of points into an XML node
-}
-\examples{
-my_tibble <- tibble::tibble(x = c(0, 0), y = c(0, 0), z = c(0, 1), name = c("origin", ""))
-point_node <- points_to_xml(my_tibble)
 }

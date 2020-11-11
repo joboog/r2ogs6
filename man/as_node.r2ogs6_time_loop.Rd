@@ -2,10 +2,13 @@
 % Please edit documentation in R/prj_time_loop.R
 \name{as_node.r2ogs6_time_loop}
 \alias{as_node.r2ogs6_time_loop}
-\title{WIP}
+\title{as_node.r2ogs6_time_loop}
 \usage{
 \method{as_node}{r2ogs6_time_loop}(obj)
 }
+\arguments{
+\item{obj}{A r2ogs6_time_loop class object}
+}
 \description{
-WIP
+Implementation of generic function as_node for S3 class r2ogs6_time_loop
 }

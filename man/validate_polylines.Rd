@@ -4,10 +4,10 @@
 \alias{validate_polylines}
 \title{validate_polylines}
 \usage{
-validate_polylines(gml_polylines)
+validate_polylines(polylines)
 }
 \arguments{
-\item{gml_polylines}{A list consisting of other lists}
+\item{polylines}{A list consisting of other lists}
 }
 \description{
 Checks if the input is a list, if this list consists of other lists and

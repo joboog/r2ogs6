@@ -6,6 +6,9 @@
 \usage{
 validate_all(ogs6_obj)
 }
+\arguments{
+\item{ogs6_obj}{A OGS6 class object}
+}
 \description{
 Validates all necessary parameters
 }

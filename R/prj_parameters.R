@@ -17,8 +17,6 @@ r2ogs6_parameter <- function(name, type, values) {
 }
 
 
-#'new_r2ogs6_parameter
-#'@description Constructor for S3 class r2ogs6_parameter
 new_r2ogs6_parameter <- function(name, type, values) {
 
     assertthat::assert_that(assertthat::is.string(name))
@@ -37,22 +35,23 @@ new_r2ogs6_parameter <- function(name, type, values) {
 
 
 #'as_node.r2ogs6_parameter
-#'@description
+#'@description Implementation of generic function as_node for S3 class r2ogs6_parameter
+#'@param obj A r2ogs6_parameter class object
 as_node.r2ogs6_parameter <- function(obj) {
-    parameter_node <- list(parameter = structure(list()))
+    node <- list(parameter = structure(list()))
 
-    parameter_node <- add_children(parameter_node, list(name = obj$name,
-                                                        type = obj$type))
+    node <- add_children(node, list(name = obj$name,
+                                    type = obj$type))
 
     if(length(obj$values) == 1){
-        parameter_node <- add_children(parameter_node, list(value = obj$values[[1]]))
+        node <- add_children(node, list(value = obj$values[[1]]))
     }else{
 
         val_string <- paste(obj$values, collapse = " ")
-        parameter_node <- add_children(parameter_node, list(values = val_string))
+        node <- add_children(node, list(values = val_string))
     }
 
-    return(parameter_node)
+    return(node)
 }
 
 

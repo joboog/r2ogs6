@@ -15,8 +15,3 @@ An XML node containing the surfaces
 \description{
 Turns a list of surfaces into an XML node
 }
-\examples{
-my_list <- list(list(name = "left", c(0, 1, 2), c(0, 3, 2)),
-list(name = "right", c(4, 6, 5), c(4, 6, 7)))
-surfaces_node <- surfaces_to_xml(my_list)
-}

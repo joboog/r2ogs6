@@ -1,4 +1,4 @@
-test_that("validate_points function checks if ...", {
+test_that("validate_points function checks if input is a tibble with the right contents", {
 
     point_list <- list(x = c(0, 0), y = c(1, 1), z = c(0, 1))
 
@@ -24,7 +24,7 @@ test_that("validate_points function checks if ...", {
 })
 
 
-test_that("validate_polylines function checks if...", {
+test_that("validate_polylines function checks if input is a list with the right contents", {
 
     polyline_tibble <- tibble::tibble(name = "tibble", polyline = c(c(1, 2)))
 
@@ -52,7 +52,7 @@ test_that("validate_polylines function checks if...", {
 })
 
 
-test_that("validate_surfaces function checks if...", {
+test_that("validate_surfaces function checks if input is a list with the right contents", {
 
     surface_tibble <- tibble::tibble(name = "tibble", surface = c(c(0, 1, 2), c(1, 2, 3)))
 

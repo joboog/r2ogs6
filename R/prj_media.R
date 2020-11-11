@@ -4,7 +4,7 @@
 #============================== MEDIUM ================================
 
 #'r2ogs6_medium_property
-#'@description S3 class describing a .prj medium property (some rare parameters are NOT implemented yet!)
+#'@description S3 class describing a .prj medium property (a constitutive property) (WIP!)
 #'@param name A string specifying the property name
 #'@param type A string specifying the property type
 #'@param value A string ...
@@ -19,12 +19,10 @@ r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 }
 
 
-#'new_r2ogs6_medium_property
-#'@description Constructor for S3 class r2ogs6_medium_property
 new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 
-    assertthat::assert_that(is.string(name))
-    assertthat::assert_that(is.string(type))
+    assertthat::assert_that(assertthat::is.string(name))
+    assertthat::assert_that(assertthat::is.string(type))
 
     if(!is.null(value)){
         assertthat::assert_that(is.numeric(value), length(value) == 1)
@@ -45,19 +43,19 @@ new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 #'@description Implementation of generic function as_node for S3 class r2ogs6_medium_property
 #'@param obj A r2ogs6_medium_property class object
 as_node.r2ogs6_medium_property <- function(obj) {
-    medium_property_node <- list(property = structure(list()))
+    node <- list(property = structure(list()))
 
-    medium_property_node <- add_children(medium_property_node, list(name = obj$name,
-                                                                    type = obj$type,
-                                                                    value = obj$value))
+    node <- add_children(node, list(name = obj$name,
+                                    type = obj$type,
+                                    value = obj$value))
 
-    return(medium_property_node)
+    return(node)
 }
 
 
 #'r2ogs6_medium_phase
-#'@description S3 class describing a .prj medium phase
-#'@param type A string specifying the medium type (valid types: ...)
+#'@description S3 class describing a .prj medium phase (a coherent material with homogeneous properties)
+#'@param type A string specifying the medium type (one of "Gas", "Solid", "AqueousLiquid" and "NonAqueousLiquid")
 #'@param properties A list of properties (see ?r2ogs6_medium_property for more info)
 #'@export
 r2ogs6_medium_phase <- function(type, properties){
@@ -69,11 +67,10 @@ r2ogs6_medium_phase <- function(type, properties){
 }
 
 
-#'new_r2ogs6_medium_phase
-#'@description Constructor for S3 class r2ogs6_medium_phase
 new_r2ogs6_medium_phase <- function(type, properties) {
 
-    assertthat::assert_that(is.string(type))
+    assertthat::assert_that(assertthat::is.string(type))
+    assertthat::assert_that(type %in% prj_medium_phase_types)
 
     structure(
         list(
@@ -89,21 +86,30 @@ new_r2ogs6_medium_phase <- function(type, properties) {
 #'@description Implementation of generic function as_node for S3 class r2ogs6_medium_phase
 #'@param obj A r2ogs6_medium_phase class object
 as_node.r2ogs6_medium_phase <- function(obj) {
-    medium_phase_node <- list(property = structure(list()))
+    node <- list(phase = structure(list()))
 
-    medium_phase_node <- add_children(medium_property_node, list(type = obj$type,
-                                                                 properties = obj$properties))
+    node <- add_children(node, list(type = obj$type,
+                                    properties = obj$properties))
 
-    return(medium_phase_node)
+    return(node)
 }
 
 
-#'new_r2ogs6_medium
-#'@description
+#'r2ogs6_medium
+#'@description A specific medium with optional id corresponding to the MaterialIDs
 #'@param phases A list of medium phases (r2ogs6_medium_phase objects)
 #'@param properties A list of medium properties (r2ogs6_medium_property objects)
-#'@param id Optional: The medium ID
+#'@param id Optional: ID corresponding to the MaterialIDs
 #'@export
+r2ogs6_medium <- function(phases, properties, id = NULL) {
+
+    #Make this more user friendly
+    #...
+
+    new_r2ogs6_medium(phases, properties, id)
+}
+
+
 new_r2ogs6_medium <- function(phases, properties, id = NULL) {
 
     validate_wrapper_list(phases, "r2ogs6_medium_phase")
