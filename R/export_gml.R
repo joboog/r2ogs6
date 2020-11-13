@@ -10,7 +10,7 @@ export_gml <- function(ogs6_obj) {
                                 "xmlns:xsi" = "http://www.w3.org/2001/XMLSchema-instance",
                                 "xmlns:ogs" = "http://www.opengeosys.org")
 
-  xml2::xml_add_child(gml_xml, xml2::as_xml_document(list(name = ogs6_obj$gml$name)), .copy = FALSE)
+  xml2::xml_add_child(gml_xml, xml2::as_xml_document(list(name = list(ogs6_obj$gml$name))), .copy = FALSE)
 
   xml2::xml_add_child(gml_xml, points_to_xml(ogs6_obj$gml$points), .copy = FALSE)
 
