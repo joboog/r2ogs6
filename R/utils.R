@@ -123,7 +123,7 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
 #'simple_list_to_node
 #'@description Helper to turn a simple vector into the corresponding node structure
-#' with the vector elements as children.
+#' with the vector elements as children. This works for lists too (as they are vectors).
 #'@param parent_name The name of the parent node
 #'@param simple_vector The vector to turn into the node structure
 simple_vector_to_node <- function(parent_name, simple_vector){
@@ -131,9 +131,11 @@ simple_vector_to_node <- function(parent_name, simple_vector){
   assertthat::assert_that(assertthat::is.string(parent_name))
   assertthat::assert_that(is.vector(simple_vector))
 
-  if(any(!is.atomic(simple_vector))){
-    stop(paste("simple_vector_to_node 'simple_vector' parameter may only contain",
-               "atomic values!"), call. = FALSE)
+  for(i in seq_len(length(simple_vector))){
+    if(length(simple_vector[[i]]) != 1){
+      stop(paste("simple_vector_to_node 'simple_vector' parameter may only contain",
+                 "atomic values!"), call. = FALSE)
+    }
   }
 
   node <- list(structure(list()))
@@ -151,21 +153,23 @@ simple_vector_to_node <- function(parent_name, simple_vector){
 }
 
 
-#' adopt_nodes
-#' @description Takes a homogenous list of r2ogs6_* objects and creates a wrapper node
-#'  using the generic function as_node
-#' @param parent_name The name of the new parent node
-#' @param obj_list A list of class objects (class should have method for generic function as_node)
+#'adopt_nodes
+#'@description Takes a homogenous list of r2ogs6_* objects and creates a wrapper node
+#' using the generic function as_node
+#'@param parent_name The name of the new parent node
+#'@param obj_list A list of class objects (class should have method for generic function as_node)
 adopt_nodes <- function(parent_name, obj_list) {
 
   if(length(obj_list) == 0){
     return(invisible(NULL))
   }
 
-  node <- list(parent_name = list())
+  node <- list(list())
+  names(node)[[1]] <- parent_name
 
   for(i in seq_len(length(obj_list))) {
-    node <- c(node[[1]], as_node(obj_list[[i]]))
+    #cat(class(obj_list[[i]]), " ", obj_list[[i]], "\n")
+    node[[1]] <- c(node[[1]], list(as_node(obj_list[[i]])))
   }
 
   return(invisible(node))
@@ -195,11 +199,6 @@ add_children <- function(node, children) {
   assertthat::assert_that(is.list(node))
   assertthat::assert_that(is.list(children))
 
-  if(length(node[[1]]) == 1 && is.null(names(node[[1]])[[1]])){
-    stop(paste("Trying to add children to a leaf node (a node which is",
-               "an unnamed list containing only a value"), call. = FALSE)
-  }
-
   for(i in seq_len(length(children))){
 
     child <- children[[i]]
@@ -207,19 +206,18 @@ add_children <- function(node, children) {
 
     #If the child is a r2ogs6 class object, call as_node on it
     if(any(grepl("r2ogs6", class(child)))){
-      node[[1]] <- c(node[[1]], as_node(child))
+      node[[1]][[length(node[[1]]) + 1]] <- as_node(child)
       next
     }
 
     if(!is.null(child)) {
       #If the child is a wrapper, leave it alone
       if(is.list(child)){
-        node[[1]] <- c(node[[1]], child)
-
+        node[[1]][[length(node[[1]]) + 1]] <- child
       #If the child has a name
       }else if(!is.null(child_name) && child_name != "") {
         new_node <- as_node(child, child_name)
-        node[[1]] <- c(node[[1]], new_node)
+        node[[1]][[length(node[[1]]) + 1]] <- new_node
       }else{
         stop(paste("add_children: Trying to add an unnamed child which is not",
                    "already a node (list) or an r2ogs6_* class object"), call. = FALSE)
