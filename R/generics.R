@@ -18,23 +18,37 @@ as_node <- function(x, ...) {
 #' atomic objects. So far only returns the value it was given (will be altered later,
 #' at the moment this is needed for the add_children function to work)
 #'@param x Any object
-#'@param node_name How the node should be called
-#'@param node_attrs The attributes of the node (a named vector)
-as_node.default <- function(x, node_name, node_attrs = NULL){
+#'@param ... Required: The name of the new node (string), Optional: A list of attributes
+as_node.default <- function(x, ...){
 
-    if(!is.null(node_attrs)){
-        assertthat::assert_that(is.vector(node_attrs))
-        assertthat::assert_that(!is.null(names(node_attrs)))
+    if(is.null(x)){
+        return(invisible(NULL))
+    }
 
-        for(i in seq_len(length(node_attrs))){
-            assertthat::assert_that(names(node_attrs)[[i]] != "")
+    params <- list(...)
+
+    if(length(params) == 0){
+        stop("as_node.default must be given a string as second parameter.", call. = FALSE)
+    }
+
+    assertthat::assert_that(assertthat::is.string(params[[1]]))
+    node_name <- params[[1]]
+
+    has_attrs <- length(params) >= 2
+
+    if(has_attrs){
+        assertthat::assert_that(is.list(params[[2]]))
+        assertthat::assert_that(!is.null(names(params[[2]])))
+
+        for(i in seq_len(length(params[[2]]))){
+            assertthat::assert_that(names(params[[2]])[[i]] != "")
         }
+
+        attributes(node[[1]]) <- params[[2]]
     }
 
     node <- list(structure(list(x)))
     names(node)[[1]] <- node_name
-
-    attributes(node[[1]]) <- node_attrs
 
     return(invisible(node))
 }
@@ -46,14 +60,25 @@ as_node.default <- function(x, node_name, node_attrs = NULL){
 #' become an XML child to a parent node. The name of the list
 #' (= the name of the new parent node) must be supplied.
 #'@param x A named list
-#'@param node_name How the node should be called
-#'@param attr_flags Which of the list elements should be attributes?
-as_node.list <- function(x, node_name, attr_flags = NULL){
+#'@param ... Required: The name of the new node (string), Optional: A vector of attribute flags
+as_node.list <- function(x, ...){
 
-    if(is.null(node_name) || node_name == ""){
-        stop(paste("as_node.list 'node_name' parameter can't",
-                    "be NULL or an empty string."), call. = FALSE)
+    params <- list(...)
+
+    if(length(params) == 0){
+        stop("as_node.list must be given a string as second parameter.", call. = FALSE)
     }
+
+    assertthat::assert_that(assertthat::is.string(params[[1]]))
+    node_name <- params[[1]]
+
+    attr_flags <- list()
+
+    if(length(params) >= 2){
+        assertthat::assert_that(is.vector(params[[2]]))
+        attr_flags <- params[[2]]
+    }
+
 
     node = list(structure(list()))
     names(node)[[1]] <- node_name
@@ -94,9 +119,10 @@ as_node.list <- function(x, node_name, attr_flags = NULL){
 #============================== input_add ================================
 
 #'S3 generic function, used to add input of different kinds to a OGS6 class object
-#'@param obj A class object (must have implementation for input_add)
+#'@param x A class object (must have implementation for input_add)
 #'@param ogs6_obj The OGS6 class object the input should be added to
-input_add <- function(obj, ogs6_obj) {
+#'@export
+input_add <- function(x, ogs6_obj) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     UseMethod("input_add")
