@@ -8,6 +8,7 @@
 #'@param sim_id The ID of the simulation
 #'@param sim_path The path where all relevant files for the simulation will be saved
 #'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
+#'@export
 OGS6 <- R6::R6Class("OGS6",
   public = list(
 
@@ -65,7 +66,7 @@ OGS6 <- R6::R6Class("OGS6",
 
     add_process = function(process){
       assertthat::assert_that(class(process) == "r2ogs6_process")
-      private$.processes <- c(private$.processes, process)
+      private$.processes <- c(private$.processes, list(process))
     },
 
     add_time_loop = function(time_loop){
@@ -79,37 +80,37 @@ OGS6 <- R6::R6Class("OGS6",
 
     add_medium = function(medium){
       assertthat::assert_that(class(medium) == "r2ogs6_medium")
-      private$.media <- c(private$.media, medium)
+      private$.media <- c(private$.media, list(medium))
     },
 
     add_parameter = function(parameter){
       assertthat::assert_that(class(parameter) == "r2ogs6_parameter")
-      private$.parameters <- c(private$.parameters, parameter)
+      private$.parameters <- c(private$.parameters, list(parameter))
     },
 
     add_curve = function(curve){
       assertthat::assert_that(class(curve) == "r2ogs6_curve")
-      private$.curves <- c(private$.curves, curve)
+      private$.curves <- c(private$.curves, list(curve))
     },
 
     add_process_variable = function(process_variable){
       assertthat::assert_that(class(process_variable) == "r2ogs6_process_variable")
-      private$.process_variables <- c(private$.process_variables, process_variable)
+      private$.process_variables <- c(private$.process_variables, list(process_variable))
     },
 
     add_nonlinear_solver = function(nonlinear_solver){
       assertthat::assert_that(class(nonlinear_solver) == "r2ogs6_nonlinear_solver")
-      private$.nonlinear_solvers <- c(private$.nonlinear_solvers, nonlinear_solver)
+      private$.nonlinear_solvers <- c(private$.nonlinear_solvers, list(nonlinear_solver))
     },
 
     add_linear_solver = function(linear_solver){
       assertthat::assert_that(class(linear_solver) == "r2ogs6_linear_solver")
-      private$.linear_solvers <- c(private$.linear_solvers, linear_solver)
+      private$.linear_solvers <- c(private$.linear_solvers, list(linear_solver))
     },
 
     add_vtkdiff = function(vtkdiff){
       assertthat::assert_that(class(vtkdiff) == "r2ogs6_vtkdiff")
-      private$.test_definition <- c(private$.test_definition, vtkdiff)
+      private$.test_definition <- c(private$.test_definition, list(vtkdiff))
     },
 
     get_status = function(){
@@ -135,8 +136,8 @@ OGS6 <- R6::R6Class("OGS6",
 
       if(flag){
         cat(paste0("Your simulation object has all necessary components.\n",
-        "You can try to start the simulation by calling run_simulation() on your OGS6 object.\n", "
-        Note that this will call more validation functions so you may not be done just yet.\n"))
+        "You can try to start the simulation by calling run_simulation() on your OGS6 object.\n",
+        "Note that this will call more validation functions so you may not be done just yet.\n"))
       }
 
       return(invisible(flag))
