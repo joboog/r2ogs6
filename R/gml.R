@@ -52,9 +52,9 @@ new_r2ogs6_gml <- function(name, points, polylines = NULL, surfaces = NULL) {
 
 #'input_add.r2ogs6_gml
 #'@description Implementation of generic function input_add for S3 class r2ogs6_gml
-#'@param obj A r2ogs6_gml class object
+#'@param x A r2ogs6_gml class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_gml <- function(obj, ogs6_obj) {
-    ogs6_obj$add_gml(obj)
+input_add.r2ogs6_gml <- function(x, ogs6_obj) {
+    ogs6_obj$add_gml(x)
 }
