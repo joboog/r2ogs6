@@ -38,25 +38,52 @@ new_r2ogs6_time_loop <- function(processes, output, global_processes_coupling = 
 
 #'as_node.r2ogs6_time_loop
 #'@description Implementation of generic function as_node for S3 class r2ogs6_time_loop
-#'@param obj A r2ogs6_time_loop class object
-as_node.r2ogs6_time_loop <- function(obj) {
+#'@param x A r2ogs6_time_loop class object
+as_node.r2ogs6_time_loop <- function(x) {
     node <- list(time_loop = structure(list()))
 
-    node <- add_children(node, list(as_node(obj$global_processes_coupling),
-                                    as_node(obj$processes),
-                                    as_node(obj$output)))
+    processes_node <- adopt_nodes("processes", x$processes)
 
-    return(node)
+    node <- add_children(node, list(as_node(x$global_processes_coupling),
+                                    processes_node,
+                                    as_node(x$output)))
+
+    return(invisible(node))
 }
 
 
 #'input_add.r2ogs6_time_loop
 #'@description Implementation of generic function input_add for S3 class r2ogs6_time_loop
-#'@param obj A r2ogs6_time_loop class object
+#'@param x A r2ogs6_time_loop class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_time_loop <- function(obj, ogs6_obj){
-    ogs6_obj$add_time_loop(obj)
+input_add.r2ogs6_time_loop <- function(x, ogs6_obj){
+    ogs6_obj$add_time_loop(x)
+}
+
+
+#============================== TIME_LOOP GLOBAL PROCESSES COUPLING ================================
+
+#WIP!!!!!!!!!!!!!!
+
+new_r2ogs6_global_processes_coupling <- function() {
+
+    structure(
+        list(
+        ),
+        class = "r2ogs6_global_processes_coupling"
+    )
+}
+
+#'as_node.r2ogs6_global_processes_coupling
+#'@description Implementation of generic function as_node for S3 class r2ogs6_global_processes_coupling
+#'@param x A r2ogs6_global_processes_coupling class object
+as_node.r2ogs6_global_processes_coupling <- function(x) {
+    node <- list(global_processes_coupling = structure(list()))
+
+    node <- add_children(node, list())
+
+    return(invisible(node))
 }
 
 
@@ -85,7 +112,11 @@ r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
 new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
                                   time_discretization, time_stepping) {
 
-    #Val...
+    assertthat::assert_that(assertthat::is.string(ref))
+    assertthat::assert_that(assertthat::is.string(nonlinear_solver))
+    assertthat::assert_that(is.vector(convergence_criterion))
+    assertthat::assert_that(is.vector(time_discretization))
+    assertthat::assert_that(is.list(time_stepping))
 
     structure(
         list(ref = ref,
@@ -101,16 +132,29 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
 
 #'as_node.r2ogs6_tl_process
 #'@description Implementation of generic function as_node for S3 class r2ogs6_tl_process
-#'@param obj A r2ogs6_tl_process class object
-as_node.r2ogs6_tl_process <- function(obj) {
-    node <- list(process = structure(list(), ref = obj$ref))
+#'@param x A r2ogs6_tl_process class object
+as_node.r2ogs6_tl_process <- function(x) {
+    node <- list(process = structure(list(), ref = x$ref))
 
-    node <- add_children(node, list(nonlinear_solver = obj$nonlinear_solver,
-                                    convergence_criterion = obj$convergence_criterion,
-                                    time_discretization = obj$time_discretization,
-                                    time_stepping = obj$time_stepping))
+    convergence_criterion_node <- simple_vector_to_node("convergence_criterion",
+                                                        x$convergence_criterion)
+    time_discretization_node <- simple_vector_to_node("time_discretization",
+                                                      x$time_discretization)
 
-    return(node)
+    time_stepping_node <- list(time_stepping = structure(list()))
+    timesteps_node <- timesteps_as_node(x$time_stepping[[4]])
+    time_stepping_node <- add_children(time_stepping_node, list(type = x$time_stepping[[1]],
+                                                                t_initial = x$time_stepping[[2]],
+                                                                t_end = x$time_stepping[[3]],
+                                                                timesteps_node))
+
+
+    node <- add_children(node, list(nonlinear_solver = x$nonlinear_solver,
+                                    convergence_criterion_node,
+                                    time_discretization_node,
+                                    time_stepping_node))
+
+    return(invisible(node))
 }
 
 
@@ -144,6 +188,8 @@ new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, com
     assertthat::assert_that(is.list(timesteps))
     assertthat::assert_that(is.list(variables))
 
+    names(variables) <- rep("variable", length(variables))
+
     if(!is.null(compress_output)){
         valid_vals <- c("false", "true")
         assertthat::assert_that(compress_output %in% valid_vals)
@@ -164,17 +210,40 @@ new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, com
 
 #'as_node.r2ogs6_tl_output
 #'@description Implementation of generic function as_node for S3 class r2ogs6_tl_output
-#'@param obj A r2ogs6_tl_output class object
-as_node.r2ogs6_tl_output <- function(obj) {
+#'@param x A r2ogs6_tl_output class object
+as_node.r2ogs6_tl_output <- function(x) {
     node <- list(output = structure(list()))
 
-    node <- add_children(node, list(type = obj$type,
-                                    prefix = obj$prefix,
-                                    suffix = obj$suffix,
-                                    compress_output = obj$compress_output,
-                                    timesteps = obj$timesteps,
-                                    variables = obj$variables
+    timesteps_node <- timesteps_as_node(x$timesteps, TRUE)
+    variables_node <- simple_vector_to_node("variables", x$variables)
+
+    node <- add_children(node, list(type = x$type,
+                                    prefix = x$prefix,
+                                    suffix = x$suffix,
+                                    compress_output = x$compress_output,
+                                    timesteps_node,
+                                    variables_node
                                     ))
 
-    return(node)
+    return(invisible(node))
+}
+
+#Helper
+timesteps_as_node <- function(timesteps, in_output = FALSE){
+
+    node <- list(timesteps = structure(list()))
+
+    for(i in seq_len(length(timesteps))){
+        names(timesteps[[i]])[[1]] <- "repeat"
+
+        if(!in_output){
+            names(timesteps[[i]])[[2]] <- "delta_t"
+        }else{
+            names(timesteps[[i]])[[2]] <- "each_steps"
+        }
+
+        node[[1]] <- c(node[[1]], simple_vector_to_node("pair", timesteps[[i]]))
+    }
+
+    return(invisible(node))
 }

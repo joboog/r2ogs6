@@ -87,38 +87,37 @@ validate_r2ogs6_process <- function(r2ogs6_process){
 
     #Add more validation functionality...
 
-    return(r2ogs6_process)
+    return(invisible(r2ogs6_process))
 }
 
 
 #'as_node.r2ogs6_process
 #'@description Implementation of generic function as_node for S3 class r2ogs6_process
-#'@param obj A r2ogs6_process class object
-#'@param ... Ellipsis
-as_node.r2ogs6_process <- function(obj) {
+#'@param x A r2ogs6_process class object
+as_node.r2ogs6_process <- function(x) {
 
     node <- list(process = structure(list()))
 
-    sbf_str <- paste(obj$specific_body_force, collapse = " ")
+    sbf_str <- paste(x$specific_body_force, collapse = " ")
 
-    const_rel_node <- simple_vector_to_node("constitutive_relation", obj$constitutive_relation)
-    proc_var_node <- simple_vector_to_node("process_variables", obj$process_variables)
+    const_rel_node <- simple_vector_to_node("constitutive_relation", x$constitutive_relation)
+    proc_var_node <- simple_vector_to_node("process_variables", x$process_variables)
 
     sec_var_node <- list(secondary_variables = structure(list()))
 
-    for(i in seq_len(length(obj$secondary_variables))){
+    for(i in seq_len(length(x$secondary_variables))){
 
         sec_var_node[[1]] <- c(sec_var_node[[1]],
                                list(secondary_variable = structure(list())))
-        attributes(sec_var_node[[1]][[i]]) <- list(internal_name = obj$secondary_variables[[i]][[1]],
-                                                output_name = obj$secondary_variables[[i]][[2]])
+        attributes(sec_var_node[[1]][[i]]) <- list(internal_name = x$secondary_variables[[i]][[1]],
+                                                output_name = x$secondary_variables[[i]][[2]])
     }
 
-    node <- add_children(node, list(name = obj$name,
-                                    type = obj$type,
-                                    coupling_scheme = obj$coupling_scheme,
-                                    integration_order = obj$integration_order,
-                                    dimension = obj$dimension,
+    node <- add_children(node, list(name = x$name,
+                                    type = x$type,
+                                    coupling_scheme = x$coupling_scheme,
+                                    integration_order = x$integration_order,
+                                    dimension = x$dimension,
                                     const_rel_node,
                                     proc_var_node,
                                     sec_var_node,
@@ -130,9 +129,9 @@ as_node.r2ogs6_process <- function(obj) {
 
 #'input_add.r2ogs6_process
 #'@description Implementation of generic function input_add for S3 class r2ogs6_process
-#'@param obj A r2ogs6_process class object
+#'@param x A r2ogs6_process class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_process <- function(obj, ogs6_obj) {
-    ogs6_obj$add_process(obj)
+input_add.r2ogs6_process <- function(x, ogs6_obj) {
+    ogs6_obj$add_process(x)
 }

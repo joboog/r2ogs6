@@ -39,15 +39,15 @@ new_r2ogs6_curve <- function(name, coords, values){
 
 #'as_node.r2ogs6_curve
 #'@description Implementation of generic function as_node for S3 class r2ogs6_curve
-#'@param obj A r2ogs6_curve class object
-as_node.r2ogs6_curve <- function(obj) {
+#'@param x A r2ogs6_curve class object
+as_node.r2ogs6_curve <- function(x) {
 
     node <- list(curve = structure(list()))
 
-    coords_str <- paste(obj$coords, collapse = " ")
-    values_str <- paste(obj$values, collapse = " ")
+    coords_str <- paste(x$coords, collapse = " ")
+    values_str <- paste(x$values, collapse = " ")
 
-    node <- add_children(node, list(name = obj$name,
+    node <- add_children(node, list(name = x$name,
                                     coords = coords_str,
                                     values = values_str))
 
@@ -57,9 +57,9 @@ as_node.r2ogs6_curve <- function(obj) {
 
 #'input_add.r2ogs6_curve
 #'@description Implementation of generic function input_add for S3 class r2ogs6_curve
-#'@param obj A r2ogs6_curve class object
+#'@param x A r2ogs6_curve class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_curve <- function(obj, ogs6_obj) {
-    ogs6_obj$add_curve(obj)
+input_add.r2ogs6_curve <- function(x, ogs6_obj) {
+    ogs6_obj$add_curve(x)
 }

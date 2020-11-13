@@ -36,18 +36,18 @@ new_r2ogs6_parameter <- function(name, type, values) {
 
 #'as_node.r2ogs6_parameter
 #'@description Implementation of generic function as_node for S3 class r2ogs6_parameter
-#'@param obj A r2ogs6_parameter class object
-as_node.r2ogs6_parameter <- function(obj) {
+#'@param x A r2ogs6_parameter class object
+as_node.r2ogs6_parameter <- function(x) {
     node <- list(parameter = structure(list()))
 
-    node <- add_children(node, list(name = obj$name,
-                                    type = obj$type))
+    node <- add_children(node, list(name = x$name,
+                                    type = x$type))
 
-    if(length(obj$values) == 1){
-        node <- add_children(node, list(value = obj$values[[1]]))
+    if(length(x$values) == 1){
+        node <- add_children(node, list(value = x$values[[1]]))
     }else{
 
-        val_string <- paste(obj$values, collapse = " ")
+        val_string <- paste(x$values, collapse = " ")
         node <- add_children(node, list(values = val_string))
     }
 
@@ -57,9 +57,9 @@ as_node.r2ogs6_parameter <- function(obj) {
 
 #'input_add.r2ogs6_parameter
 #'@description Implementation of generic function input_add for S3 class r2ogs6_parameter
-#'@param obj A r2ogs6_parameter class object
+#'@param x A r2ogs6_parameter class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_parameter <- function(obj, ogs6_obj) {
-    ogs6_obj$add_parameter(obj)
+input_add.r2ogs6_parameter <- function(x, ogs6_obj) {
+    ogs6_obj$add_parameter(x)
 }

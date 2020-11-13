@@ -25,7 +25,7 @@ new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
     assertthat::assert_that(assertthat::is.string(type))
 
     if(!is.null(value)){
-        assertthat::assert_that(is.numeric(value), length(value) == 1)
+        assertthat::assert_that(assertthat::is.number(value))
     }
 
     structure(
@@ -41,15 +41,15 @@ new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 
 #'as_node.r2ogs6_medium_property
 #'@description Implementation of generic function as_node for S3 class r2ogs6_medium_property
-#'@param obj A r2ogs6_medium_property class object
-as_node.r2ogs6_medium_property <- function(obj) {
+#'@param x A r2ogs6_medium_property class object
+as_node.r2ogs6_medium_property <- function(x) {
     node <- list(property = structure(list()))
 
-    node <- add_children(node, list(name = obj$name,
-                                    type = obj$type,
-                                    value = obj$value))
+    node <- add_children(node, list(name = x$name,
+                                    type = x$type,
+                                    value = x$value))
 
-    return(node)
+    return(invisible(node))
 }
 
 
@@ -71,6 +71,7 @@ new_r2ogs6_medium_phase <- function(type, properties) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(type %in% prj_medium_phase_types)
+    validate_wrapper_list(properties, "r2ogs6_medium_property")
 
     structure(
         list(
@@ -84,14 +85,16 @@ new_r2ogs6_medium_phase <- function(type, properties) {
 
 #'as_node.r2ogs6_medium_phase
 #'@description Implementation of generic function as_node for S3 class r2ogs6_medium_phase
-#'@param obj A r2ogs6_medium_phase class object
-as_node.r2ogs6_medium_phase <- function(obj) {
+#'@param x A r2ogs6_medium_phase class object
+as_node.r2ogs6_medium_phase <- function(x) {
     node <- list(phase = structure(list()))
 
-    node <- add_children(node, list(type = obj$type,
-                                    properties = obj$properties))
+    properties_node <- adopt_nodes("properties", x$properties)
 
-    return(node)
+    node <- add_children(node, list(type = x$type,
+                                    properties_node))
+
+    return(invisible(node))
 }
 
 
@@ -132,24 +135,27 @@ new_r2ogs6_medium <- function(phases, properties, id = NULL) {
 
 #'as_node.r2ogs6_medium
 #'@description Implementation of generic function as_node for S3 class r2ogs6_medium
-#'@param obj A r2ogs6_medium class object
-as_node.r2ogs6_medium <- function(obj) {
-    medium_node <- list(medium = structure(list()))
+#'@param x A r2ogs6_medium class object
+as_node.r2ogs6_medium <- function(x) {
+    node <- list(medium = structure(list()))
 
-    medium_node <- add_attr(medium_node, obj$id, "id")
+    node <- add_attr(node, x$id, "id")
 
-    medium_node <- add_children(medium_node, list(phases = obj$phases,
-                                                  properties = obj$properties))
+    phases_node <- adopt_nodes("phases", x$phases)
+    properties_node <- adopt_nodes("properties", x$properties)
 
-    return(medium_node)
+    node <- add_children(node, list(phases_node,
+                                    properties_node))
+
+    return(invisible(node))
 }
 
 
 #'input_add.r2ogs6_medium
 #'@description Implementation of generic function input_add for S3 class r2ogs6_medium
-#'@param obj A r2ogs6_medium class object
+#'@param x A r2ogs6_medium class object
 #'@param ogs6_obj An OGS6 class object
 #'@export
-input_add.r2ogs6_medium <- function(obj, ogs6_obj) {
-    ogs6_obj$add_medium(obj)
+input_add.r2ogs6_medium <- function(x, ogs6_obj) {
+    ogs6_obj$add_medium(x)
 }

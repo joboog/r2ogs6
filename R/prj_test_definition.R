@@ -38,15 +38,15 @@ new_r2ogs6_vtkdiff <- function(regex, field, absolute_tolerance, relative_tolera
 
 #'as_node.r2ogs6_vtkdiff
 #'@description Implementation of generic function as_node for S3 class r2ogs6_vtkdiff
-#'@param obj A r2ogs6_vtkdiff class object
-as_node.r2ogs6_vtkdiff <- function(obj) {
+#'@param x A r2ogs6_vtkdiff class object
+as_node.r2ogs6_vtkdiff <- function(x) {
 
     node <- list(vtkdiff = structure(list()))
 
-    node <- add_children(node, list(regex = obj$regex,
-                                    field = obj$field,
-                                    absolute_tolerance = obj$absolute_tolerance,
-                                    relative_tolerance = obj$relative_tolerance))
+    node <- add_children(node, list(regex = x$regex,
+                                    field = x$field,
+                                    absolute_tolerance = x$absolute_tolerance,
+                                    relative_tolerance = x$relative_tolerance))
 
     return(node)
 }
@@ -54,9 +54,9 @@ as_node.r2ogs6_vtkdiff <- function(obj) {
 
 #'input_add.r2ogs6_vtkdiff
 #'@description Implementation of generic function input_add for S3 class r2ogs6_vtkdiff
-#'@param obj A r2ogs6_vtkdiff class object
+#'@param x A r2ogs6_vtkdiff class object
 #'@param ogs6_obj A OGS6 class object
 #'@export
-input_add.r2ogs6_vtkdiff <- function(obj, ogs6_obj) {
-    ogs6_obj$add_vtkdiff(obj)
+input_add.r2ogs6_vtkdiff <- function(x, ogs6_obj) {
+    ogs6_obj$add_vtkdiff(x)
 }
