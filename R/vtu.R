@@ -7,6 +7,7 @@
 #'@param call_str The arguments the script will be called with (EXCEPT -o output_file_name, this will
 #' be generated automatically!)
 #'@return The newly generated .vtu file path
+#'@export
 generate_structured_mesh = function(ogs6_obj, call_str) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
@@ -20,14 +21,15 @@ generate_structured_mesh = function(ogs6_obj, call_str) {
         mesh_number <- length(ogs6_obj$meshes) + 1
     }
 
-    mesh_output_file <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, "_", mesh_number, ".vtu")
+    mesh_output_file_name <- paste0(ogs6_obj$sim_name, "_", mesh_number, ".vtu")
+    mesh_output_file <- paste0(ogs6_obj$sim_path, mesh_output_file_name)
 
     #sysname <- Sys.info()[['sysname']]
 
     system(command = paste0(ogs6_obj$ogs_bin_path, "generateStructuredMesh.exe",
                             " -o ", mesh_output_file, " ", call_str))
 
-    ogs6_obj$add_mesh(mesh_output_file)
+    ogs6_obj$add_mesh(mesh_output_file_name)
 
-    return(invisible(mesh_output_file))
+    return(invisible(mesh_output_file_name))
 }
