@@ -8,6 +8,7 @@
 #'@export
 run_simulation <- function(ogs6_obj, iter_n = 1) {
 
+    assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(is.numeric(iter_n), iter_n > 0, iter_n < 500)
 
     #Call all validators
@@ -22,7 +23,8 @@ run_simulation <- function(ogs6_obj, iter_n = 1) {
 
         #Call OGS6
         system(command = paste0(ogs6_obj$ogs_bin_path, "ogs.exe ",
-                                ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj "))
+                                ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj -o ",
+                                ogs6_obj$sim_path))
 
         # read_in_output(ogs6_obj)
     }
