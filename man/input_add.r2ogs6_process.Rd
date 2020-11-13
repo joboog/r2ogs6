@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_process}
 \title{input_add.r2ogs6_process}
 \usage{
-\method{input_add}{r2ogs6_process}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_process}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_process class object}
+\item{x}{A r2ogs6_process class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }

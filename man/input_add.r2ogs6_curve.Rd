@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_curve}
 \title{input_add.r2ogs6_curve}
 \usage{
-\method{input_add}{r2ogs6_curve}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_curve}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_curve class object}
+\item{x}{A r2ogs6_curve class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }

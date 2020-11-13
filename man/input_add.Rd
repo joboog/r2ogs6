@@ -4,10 +4,10 @@
 \alias{input_add}
 \title{S3 generic function, used to add input of different kinds to a OGS6 class object}
 \usage{
-input_add(obj, ogs6_obj)
+input_add(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A class object (must have implementation for input_add)}
+\item{x}{A class object (must have implementation for input_add)}
 
 \item{ogs6_obj}{The OGS6 class object the input should be added to}
 }

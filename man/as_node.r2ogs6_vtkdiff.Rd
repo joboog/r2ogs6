@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_vtkdiff}
 \title{as_node.r2ogs6_vtkdiff}
 \usage{
-\method{as_node}{r2ogs6_vtkdiff}(obj)
+\method{as_node}{r2ogs6_vtkdiff}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_vtkdiff class object}
+\item{x}{A r2ogs6_vtkdiff class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_vtkdiff

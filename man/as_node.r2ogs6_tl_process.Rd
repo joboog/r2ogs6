@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_tl_process}
 \title{as_node.r2ogs6_tl_process}
 \usage{
-\method{as_node}{r2ogs6_tl_process}(obj)
+\method{as_node}{r2ogs6_tl_process}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_tl_process class object}
+\item{x}{A r2ogs6_tl_process class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_tl_process

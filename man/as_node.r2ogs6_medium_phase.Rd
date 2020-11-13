@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_medium_phase}
 \title{as_node.r2ogs6_medium_phase}
 \usage{
-\method{as_node}{r2ogs6_medium_phase}(obj)
+\method{as_node}{r2ogs6_medium_phase}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_medium_phase class object}
+\item{x}{A r2ogs6_medium_phase class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_medium_phase

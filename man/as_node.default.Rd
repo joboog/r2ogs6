@@ -4,13 +4,15 @@
 \alias{as_node.default}
 \title{as_node.default}
 \usage{
-\method{as_node}{default}(obj)
+\method{as_node}{default}(x, ...)
 }
 \arguments{
-\item{obj}{Any object}
+\item{x}{Any object}
+
+\item{...}{Required: The name of the new node (string), Optional: A list of attributes}
 }
 \description{
-Default implementation for S3 generic function as_node, just returns the object
-passed to it (this may seem senseless, but is actually important for add_children
-to work when as_node is called on values which are not r2ogs6 classes)
+Default implementation for S3 generic function as_node, to be used with
+atomic objects. So far only returns the value it was given (will be altered later,
+at the moment this is needed for the add_children function to work)
 }

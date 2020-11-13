@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_parameter}
 \title{as_node.r2ogs6_parameter}
 \usage{
-\method{as_node}{r2ogs6_parameter}(obj)
+\method{as_node}{r2ogs6_parameter}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_parameter class object}
+\item{x}{A r2ogs6_parameter class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_parameter

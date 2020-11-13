@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_parameter}
 \title{input_add.r2ogs6_parameter}
 \usage{
-\method{input_add}{r2ogs6_parameter}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_parameter}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_parameter class object}
+\item{x}{A r2ogs6_parameter class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }

@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_boundary_condition}
 \title{as_node.r2ogs6_boundary_condition}
 \usage{
-\method{as_node}{r2ogs6_boundary_condition}(obj)
+\method{as_node}{r2ogs6_boundary_condition}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_boundary_condition class object}
+\item{x}{A r2ogs6_boundary_condition class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_boundary_condition

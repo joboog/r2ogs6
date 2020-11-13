@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_process_variable}
 \title{as_node.r2ogs6_process_variable}
 \usage{
-\method{as_node}{r2ogs6_process_variable}(obj)
+\method{as_node}{r2ogs6_process_variable}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_process_variable class object}
+\item{x}{A r2ogs6_process_variable class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_process_variable

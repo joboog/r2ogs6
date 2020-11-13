@@ -4,10 +4,12 @@
 \alias{as_node}
 \title{as_node}
 \usage{
-as_node(obj)
+as_node(x, ...)
 }
 \arguments{
-\item{obj}{A class object (must have implementation for as_node)}
+\item{x}{Any object}
+
+\item{...}{In case arguments need to be passed from one method to another}
 }
 \description{
 S3 generic function, use to turn class data into XML friendly format

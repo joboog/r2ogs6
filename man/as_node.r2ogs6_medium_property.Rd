@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_medium_property}
 \title{as_node.r2ogs6_medium_property}
 \usage{
-\method{as_node}{r2ogs6_medium_property}(obj)
+\method{as_node}{r2ogs6_medium_property}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_medium_property class object}
+\item{x}{A r2ogs6_medium_property class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_medium_property

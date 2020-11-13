@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_medium}
 \title{input_add.r2ogs6_medium}
 \usage{
-\method{input_add}{r2ogs6_medium}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_medium}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_medium class object}
+\item{x}{A r2ogs6_medium class object}
 
 \item{ogs6_obj}{An OGS6 class object}
 }

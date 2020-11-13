@@ -12,5 +12,6 @@ adopt_nodes(parent_name, obj_list)
 \item{obj_list}{A list of class objects (class should have method for generic function as_node)}
 }
 \description{
-A helper function for creating parent nodes using the generic function as_node
+Takes a homogenous list of r2ogs6_* objects and creates a wrapper node
+using the generic function as_node
 }

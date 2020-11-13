@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_gml}
 \title{input_add.r2ogs6_gml}
 \usage{
-\method{input_add}{r2ogs6_gml}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_gml}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_gml class object}
+\item{x}{A r2ogs6_gml class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }

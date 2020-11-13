@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_vtkdiff}
 \title{input_add.r2ogs6_vtkdiff}
 \usage{
-\method{input_add}{r2ogs6_vtkdiff}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_vtkdiff}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_vtkdiff class object}
+\item{x}{A r2ogs6_vtkdiff class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }

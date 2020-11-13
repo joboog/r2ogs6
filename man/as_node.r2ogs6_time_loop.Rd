@@ -4,10 +4,10 @@
 \alias{as_node.r2ogs6_time_loop}
 \title{as_node.r2ogs6_time_loop}
 \usage{
-\method{as_node}{r2ogs6_time_loop}(obj)
+\method{as_node}{r2ogs6_time_loop}(x)
 }
 \arguments{
-\item{obj}{A r2ogs6_time_loop class object}
+\item{x}{A r2ogs6_time_loop class object}
 }
 \description{
 Implementation of generic function as_node for S3 class r2ogs6_time_loop

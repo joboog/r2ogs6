@@ -4,10 +4,10 @@
 \alias{input_add.r2ogs6_time_loop}
 \title{input_add.r2ogs6_time_loop}
 \usage{
-\method{input_add}{r2ogs6_time_loop}(obj, ogs6_obj)
+\method{input_add}{r2ogs6_time_loop}(x, ogs6_obj)
 }
 \arguments{
-\item{obj}{A r2ogs6_time_loop class object}
+\item{x}{A r2ogs6_time_loop class object}
 
 \item{ogs6_obj}{A OGS6 class object}
 }
