@@ -25,19 +25,29 @@ as_node.default <- function(x, ...){
         return(invisible(NULL))
     }
 
+    node_name <- ""
     params <- list(...)
 
-    if(length(params) == 0){
-        stop("as_node.default must be given a string as second parameter.", call. = FALSE)
+    if(any(grep("$", deparse(substitute(x))))){
+        node_name <- strsplit(deparse(substitute(x)), "$", fixed = TRUE)[[2]]
+    }else if(length(params) > 0){
+        assertthat::assert_that(assertthat::is.string(params[[1]]))
+        assertthat::assert_that(params[[1]] != "")
+        node_name <- params[[1]]
+    }else{
+        stop(paste("as_node.default must be given a non-empty string as second parameter",
+                   " if its first parameter is not a class parameter",
+                   " (e.g. x$some_name, then the parameter will be deparsed and the",
+                   " name will automatically become 'some_name')"), call. = FALSE)
     }
 
-    assertthat::assert_that(assertthat::is.string(params[[1]]))
-    node_name <- params[[1]]
+    node <- list(structure(list(x)))
+    names(node)[[1]] <- node_name
 
     has_attrs <- length(params) >= 2
 
     if(has_attrs){
-        assertthat::assert_that(is.list(params[[2]]))
+        assertthat::assert_that(is.vector(params[[2]]))
         assertthat::assert_that(!is.null(names(params[[2]])))
 
         for(i in seq_len(length(params[[2]]))){
@@ -46,9 +56,6 @@ as_node.default <- function(x, ...){
 
         attributes(node[[1]]) <- params[[2]]
     }
-
-    node <- list(structure(list(x)))
-    names(node)[[1]] <- node_name
 
     return(invisible(node))
 }
