@@ -121,6 +121,20 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
 #============================== XML UTILITY ================================
 
+
+#'get_value_types
+#'@description Gets the type of an XML value based on the documentation
+#' (per default, XML values are read in as a string, but for many elements,
+#' we want to coerce them to double)
+#'@param xml_node An XML node (of class xml2::xml_node)
+get_value_types <- function(xml_node) {
+
+  #WIP! Could be a nice utility function.
+
+  return(invisible("String"))
+}
+
+
 #'simple_list_to_node
 #'@description Helper to turn a simple vector into the corresponding node structure
 #' with the vector elements as children. This works for lists too (as they are vectors).
@@ -227,6 +241,8 @@ add_children <- function(node, children) {
 
   return(invisible(node))
 }
+
+#============================== OTHERS ================================
 
 
 
