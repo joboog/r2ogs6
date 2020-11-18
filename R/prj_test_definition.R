@@ -11,8 +11,14 @@
 #'@export
 r2ogs6_vtkdiff <- function(regex, field, absolute_tolerance, relative_tolerance) {
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(assertthat::is.string(absolute_tolerance)){
+        absolute_tolerance <- as.double(absolute_tolerance)
+    }
+
+    if(assertthat::is.string(relative_tolerance)){
+        relative_tolerance <- as.double(relative_tolerance)
+    }
 
     new_r2ogs6_vtkdiff(regex, field, absolute_tolerance, relative_tolerance)
 }

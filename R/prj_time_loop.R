@@ -104,8 +104,8 @@ r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
     #Make this more user friendly
     #...
 
-    new_r2ogs6_tl_process(ref, nonlinear_solver, convergence_criterion,
-                          time_discretization, time_stepping)
+    validate_r2ogs6_tl_process(new_r2ogs6_tl_process(ref, nonlinear_solver, convergence_criterion,
+                          time_discretization, time_stepping))
 }
 
 
@@ -114,9 +114,14 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
 
     assertthat::assert_that(assertthat::is.string(ref))
     assertthat::assert_that(assertthat::is.string(nonlinear_solver))
-    assertthat::assert_that(is.vector(convergence_criterion))
+
+    assertthat::assert_that(is.list(convergence_criterion))
     assertthat::assert_that(is.vector(time_discretization))
+
     assertthat::assert_that(is.list(time_stepping))
+    assertthat::assert_that(length(time_stepping) == 4)
+    names(time_stepping) <- c("type", "t_initial", "t_end", "timesteps")
+
 
     structure(
         list(ref = ref,
@@ -127,6 +132,23 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
         ),
         class = "r2ogs6_tl_process"
     )
+}
+
+
+validate_r2ogs6_tl_process(r2ogs6_tl_process){
+
+    #Coerce input
+    if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[2]])){
+        r2ogs6_tl_process$time_stepping[[2]] <- as.double(r2ogs6_tl_process$time_stepping[[2]])
+    }
+
+    if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[3]])){
+        r2ogs6_tl_process$time_stepping[[3]] <- as.double(r2ogs6_tl_process$time_stepping[[3]])
+    }
+
+    r2ogs6_tl_process$time_stepping[[4]] <- validate_timesteps(r2ogs6_tl_process$time_stepping[[4]])
+
+    return(invisible(r2ogs6_tl_process))
 }
 
 
@@ -185,9 +207,9 @@ new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, com
     assertthat::assert_that(assertthat::is.string(prefix))
     assertthat::assert_that(assertthat::is.string(suffix))
 
-    assertthat::assert_that(is.list(timesteps))
-    assertthat::assert_that(is.list(variables))
+    timesteps <- validate_timesteps(timesteps, TRUE)
 
+    assertthat::assert_that(is.vector(variables))
     names(variables) <- rep("variable", length(variables))
 
     if(!is.null(compress_output)){
@@ -228,22 +250,49 @@ as_node.r2ogs6_tl_output <- function(x) {
     return(invisible(node))
 }
 
-#Helper
-timesteps_as_node <- function(timesteps, in_output = FALSE){
+
+#Export helper function
+timesteps_as_node <- function(timesteps){
 
     node <- list(timesteps = structure(list()))
 
     for(i in seq_len(length(timesteps))){
+        node[[1]] <- c(node[[1]], simple_vector_to_node("pair", timesteps[[i]]))
+    }
+
+    return(invisible(node))
+}
+
+
+#Validation helper function
+validate_timesteps <- function(timesteps, in_output = FALSE){
+
+    assertthat::assert_that(is.list(timesteps))
+
+    for(i in seq_len(length(timesteps))){
+
+        assertthat::assert_that(is.vector(timesteps[[i]]))
+        assertthat::assert_that(length(timesteps[[i]]) == 2)
+
         names(timesteps[[i]])[[1]] <- "repeat"
+
+        #Coerce input
+        if(assertthat::is.string(timesteps[[i]][[1]])){
+            timesteps[[i]][[1]] <- as.double(timesteps[[i]][[1]])
+        }
+
+        if(assertthat::is.string(timesteps[[i]][[2]])){
+            timesteps[[i]][[2]] <- as.double(timesteps[[i]][[2]])
+        }
 
         if(!in_output){
             names(timesteps[[i]])[[2]] <- "delta_t"
         }else{
             names(timesteps[[i]])[[2]] <- "each_steps"
         }
-
-        node[[1]] <- c(node[[1]], simple_vector_to_node("pair", timesteps[[i]]))
     }
 
-    return(invisible(node))
+    names(timesteps) <- rep("pair", length(timesteps))
+
+    return(invisible(timesteps))
 }

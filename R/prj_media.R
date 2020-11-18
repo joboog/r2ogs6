@@ -12,8 +12,12 @@
 #'@export
 r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(!is.null(value)){
+        if(assertthat::is.string(value)){
+            value <- as.double(value)
+        }
+    }
 
     new_r2ogs6_medium_property(name, type, value, ...)
 }
@@ -106,8 +110,12 @@ as_node.r2ogs6_medium_phase <- function(x) {
 #'@export
 r2ogs6_medium <- function(phases, properties, id = NULL) {
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(!is.null(id)){
+        if(assertthat::is.string(id)){
+            id <- as.double(id)
+        }
+    }
 
     new_r2ogs6_medium(phases, properties, id)
 }

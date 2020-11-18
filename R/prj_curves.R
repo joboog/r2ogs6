@@ -11,8 +11,14 @@
 #'@export
 r2ogs6_curve <- function(name, coords, values){
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(assertthat::is.string(coords)){
+        coords <- as.double(unlist(strsplit(coords, " ")))
+    }
+
+    if(assertthat::is.string(values)){
+        values <- as.double(unlist(strsplit(values, " ")))
+    }
 
     new_r2ogs6_curve(name, coords, values)
 }

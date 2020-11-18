@@ -10,8 +10,10 @@
 #'@export
 r2ogs6_parameter <- function(name, type, values) {
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(assertthat::is.string(values)){
+        values <- as.double(unlist(strsplit(values, " ")))
+    }
 
     new_r2ogs6_parameter(name, type, values)
 }

@@ -13,8 +13,14 @@
 #'@export
 r2ogs6_process_variable <- function(name, components, order, initial_condition, boundary_conditions){
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(assertthat::is.string(components)){
+        components <- as.double(components)
+    }
+
+    if(assertthat::is.string(order)){
+        order <- as.double(order)
+    }
 
     new_r2ogs6_process_variable(name, components, order, initial_condition, boundary_conditions)
 }
@@ -83,8 +89,12 @@ input_add.r2ogs6_process_variable <- function(x, ogs6_obj) {
 r2ogs6_boundary_condition <- function(type, parameter, component = NULL, mesh = NULL, geometrical_set = NULL,
                                       geometry = NULL){
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(!is.null(component)){
+        if(assertthat::is.string(component)){
+            component <- as.double(component)
+        }
+    }
 
     new_r2ogs6_boundary_condition(type, parameter, component, mesh, geometrical_set, geometry)
 }

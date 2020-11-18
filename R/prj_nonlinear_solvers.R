@@ -12,8 +12,10 @@
 #'@export
 r2ogs6_nonlinear_solver <- function(name, type, max_iter, linear_solver){
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    if(assertthat::is.string(max_iter)){
+        max_iter <- as.double(max_iter)
+    }
 
     new_r2ogs6_nonlinear_solver(name, type, max_iter, linear_solver)
 }

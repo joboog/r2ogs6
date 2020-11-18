@@ -22,11 +22,19 @@ r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
 new_r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
 
     assertthat::assert_that(assertthat::is.string(name))
-    assertthat::assert_that(is.list(eigen))
 
+    assertthat::assert_that(is.list(eigen))
+    assertthat::assert_that(length(eigen) == 4)
+    names(eigen) <- c("solver_type", "precon_type", "max_iteration_step", "error_tolerance")
 
     if(!is.null(lis)){
         assertthat::assert_that(assertthat::is.string(lis))
+    }
+
+    if(!is.null(petsc)){
+        assertthat::assert_that(is.character(petsc))
+        assertthat::assert_that(length(petsc) == 2)
+        names(petsc) <- c("prefix", "parameters")
     }
 
     structure(list(name = name,
@@ -40,13 +48,13 @@ new_r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
 
 validate_r2ogs6_linear_solver <- function(r2ogs6_linear_solver){
 
-    assertthat::assert_that(length(r2ogs6_linear_solver$eigen) == 4)
-    names(r2ogs6_linear_solver$eigen) <- c("solver_type", "precon_type", "max_iteration_step", "error_tolerance")
+    #Coerce input
+    if(assertthat::is.string(r2ogs6_linear_solver$eigen[[3]])){
+        r2ogs6_linear_solver$eigen[[3]] <- as.double(r2ogs6_linear_solver$eigen[[3]])
+    }
 
-    if(!is.null(r2ogs6_linear_solver$petsc)){
-        assertthat::assert_that(is.vector(r2ogs6_linear_solver$petsc))
-        assertthat::assert_that(length(r2ogs6_linear_solver$petsc) == 2)
-        names(r2ogs6_linear_solver$petsc) <- c("prefix", "parameters")
+    if(assertthat::is.string(r2ogs6_linear_solver$eigen[[4]])){
+        r2ogs6_linear_solver$eigen[[4]] <- as.double(r2ogs6_linear_solver$eigen[[4]])
     }
 
     return(invisible(r2ogs6_linear_solver))
