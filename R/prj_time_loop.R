@@ -22,7 +22,7 @@ new_r2ogs6_time_loop <- function(processes, output, global_processes_coupling = 
     assertthat::assert_that(class(output) == "r2ogs6_tl_output")
 
     if(!is.null(global_processes_coupling)){
-        assertthat::assert_that(class(global_processes_coupling) == "r2ogs6_tl_gpc")
+        assertthat::assert_that(class(global_processes_coupling) == "r2ogs6_global_processes_coupling")
     }
 
     structure(
@@ -65,6 +65,11 @@ input_add.r2ogs6_time_loop <- function(x, ogs6_obj){
 #============================== TIME_LOOP GLOBAL PROCESSES COUPLING ================================
 
 #WIP!!!!!!!!!!!!!!
+r2ogs6_global_processes_coupling <- function() {
+
+    new_r2ogs6_global_processes_coupling()
+}
+
 
 new_r2ogs6_global_processes_coupling <- function() {
 
@@ -135,7 +140,7 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
 }
 
 
-validate_r2ogs6_tl_process(r2ogs6_tl_process){
+validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
 
     #Coerce input
     if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[2]])){
@@ -236,7 +241,7 @@ new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, com
 as_node.r2ogs6_tl_output <- function(x) {
     node <- list(output = structure(list()))
 
-    timesteps_node <- timesteps_as_node(x$timesteps, TRUE)
+    timesteps_node <- timesteps_as_node(x$timesteps)
     variables_node <- simple_vector_to_node("variables", x$variables)
 
     node <- add_children(node, list(type = x$type,
