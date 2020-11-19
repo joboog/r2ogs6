@@ -27,5 +27,6 @@ Imports:
     assertthat,
     crayon,
     snakecase,
-    rlist
+    rlist,
+    utils
 RoxygenNote: 7.1.1
