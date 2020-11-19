@@ -28,7 +28,7 @@ as_node.default <- function(x, ...){
     node_name <- ""
     params <- list(...)
 
-    if(any(grep("$", deparse(substitute(x))))){
+    if(any(grep("\\$", deparse(substitute(x))))){
         node_name <- strsplit(deparse(substitute(x)), "$", fixed = TRUE)[[2]]
     }else if(length(params) > 0){
         assertthat::assert_that(assertthat::is.string(params[[1]]))
