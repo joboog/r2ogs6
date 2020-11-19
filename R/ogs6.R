@@ -57,7 +57,7 @@ OGS6 <- R6::R6Class("OGS6",
     add_gml = function(gml){
       assertthat::assert_that(class(gml) == "r2ogs6_gml")
       if(!is.null(private$.gml)){
-        warning("Overwriting gml variable of OGS6 object", call. = FALSE)
+        warning("Overwriting gml and geometry variable of OGS6 object", call. = FALSE)
 
       }
       private$.gml <- gml
