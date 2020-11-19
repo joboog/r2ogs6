@@ -66,19 +66,13 @@ generate_validator_from_element <- function() {
 
 #'generate_as_node_func
 #'@description Generates a method for the generic function as_node based on an XML element
+#'@param file The XML file to parse
 #'@param element_name The name of the XML element to base the method on
 #'@param subclasses Optional: A named vector of subclasses
-generate_as_node_func <- function(path, element_name, subclasses = NULL) {
+#'@param show_result Should the generated function be printed to the console?
+generate_as_node_func <- function(file, element_name, subclasses = NULL, show_result = TRUE) {
 
-    out<- tryCatch(
-        {
-            xml_doc <- xml2::read_xml(path, encoding="ISO-8859-1")
-        },
-
-        error = function(cond){
-            cat("Something went wrong while parsing the XML file for generate_as_node_func.\n")
-        }
-    )
+    xml_doc <- validate_read_in_xml(file)
 
     #doc_matches <- xml2::xml_find_all(xml_doc, paste("//", element_name, sep = ""))
     element <- xml2::xml_find_first(xml_doc, paste("//", element_name, sep = ""))
@@ -94,7 +88,9 @@ generate_as_node_func <- function(path, element_name, subclasses = NULL) {
 
     method_str <- paste0(method_str, "\treturn(invisible(", element_name, "_node))\n", "}\n")
 
-    cat(method_str)
+    if(show_result){
+        cat(method_str)
+    }
 
     return(invisible(method_str))
 }
@@ -233,8 +229,7 @@ generate_simple_read_in <- function(element_name, child_name,
     }
 
     func_str <- paste0(func_str, "read_in(ogs6_obj, prj_path, \"", element_name,
-                       "\", \"", child_name, "\", has_name_tag = ", has_name_tag,
-                       "selection_vector = ")
+                       "\", \"", child_name, "\", selection_vector = ")
 
     if(has_name_tag){
         func_str <- paste0(func_str, child_name, "_names, subclasses_names = ")
@@ -243,7 +238,9 @@ generate_simple_read_in <- function(element_name, child_name,
     }
 
     if(!is.null(subclasses_names)){
-        func_str <- paste0(func_str, dput(subclasses_names), ")\n")
+        subclasses_str <- utils::capture.output(invisible(dput(subclasses_names)))
+        subclasses_str <- paste(subclasses_str, collapse = "")
+        func_str <- paste0(func_str, subclasses_str, ")\n")
     }else{
         func_str <- paste0(func_str, "NULL)\n")
     }
