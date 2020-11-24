@@ -232,20 +232,20 @@ generate_simple_read_in <- function(element_name, child_name,
                        "\", \"", child_name, "\", selection_vector = ")
 
     if(has_name_tag){
-        func_str <- paste0(func_str, child_name, "_names, subclasses_names = ")
+        func_str <- paste0(func_str, child_name, "_names")
     }else{
-        func_str <- paste0(func_str, child_name, "_indices, subclasses_names = ")
+        func_str <- paste0(func_str, child_name, "_indices")
     }
 
     if(!is.null(subclasses_names)){
         subclasses_str <- utils::capture.output(invisible(dput(subclasses_names)))
         subclasses_str <- paste(subclasses_str, collapse = "")
-        func_str <- paste0(func_str, subclasses_str, ")\n")
-    }else{
-        func_str <- paste0(func_str, "NULL)\n")
+        func_str <- paste0(func_str, ", subclasses_names = ", subclasses_str)
     }
 
-    func_str <- paste0(func_str, "}\n")
+    func_str <- paste0(func_str,
+                       ")\n",
+                       "}\n")
 
     cat(func_str)
     return(invisible(func_str))
