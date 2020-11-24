@@ -4,14 +4,16 @@
 \alias{r2ogs6_parameter}
 \title{r2ogs6_parameter}
 \usage{
-r2ogs6_parameter(name, type, values)
+r2ogs6_parameter(name, type, values = NULL, value = NULL)
 }
 \arguments{
 \item{name}{The parameter name}
 
 \item{type}{The parameter type}
 
-\item{values}{The parameter values}
+\item{values}{Optional: The parameter values}
+
+\item{value}{Optional: The parameter value}
 }
 \description{
 S3 class describing a .prj parameter

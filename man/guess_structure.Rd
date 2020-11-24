@@ -4,7 +4,7 @@
 \alias{guess_structure}
 \title{guess_structure}
 \usage{
-guess_structure(xml_node, subclasses_names = NULL)
+guess_structure(xml_node, subclasses_names = character())
 }
 \arguments{
 \item{xml_node}{An XML node (of class xml2::xml_node)}

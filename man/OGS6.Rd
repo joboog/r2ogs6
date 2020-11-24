@@ -23,6 +23,7 @@ Constructor for the OGS6 base class
 \item \href{#method-add_linear_solver}{\code{OGS6$add_linear_solver()}}
 \item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-clear}{\code{OGS6$clear()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
 }
 }
@@ -31,7 +32,7 @@ Constructor for the OGS6 base class
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path, ogs_bin_path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path, ogs_bin_path, test_mode = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -44,6 +45,9 @@ Constructor for the OGS6 base class
 \item{\code{sim_path}}{The path where all relevant files for the simulation will be saved}
 
 \item{\code{ogs_bin_path}}{Path to OpenGeoSys6 /bin directory}
+
+\item{\code{test_mode}}{In test mode, sim_path and ogs_bin_path will not be validated. If you're not
+a developer, please leave this variable as it is :)}
 }
 \if{html}{\out{</div>}}
 }
@@ -162,6 +166,19 @@ Constructor for the OGS6 base class
 \subsection{Method \code{get_status()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-clear}{}}}
+\subsection{Method \code{clear()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(
+  which = c("meshes", "geometry", "processes", "time_loop", "media", "parameters",
+    "curves", "process_variables", "nonlinear_solvers", "linear_solvers",
+    "test_definition")
+)}\if{html}{\out{</div>}}
 }
 
 }

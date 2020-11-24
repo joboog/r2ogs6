@@ -10,7 +10,7 @@ read_in(
   element_name,
   child_name,
   selection_vector = NULL,
-  subclasses_names = NULL
+  subclasses_names = character()
 )
 }
 \arguments{
