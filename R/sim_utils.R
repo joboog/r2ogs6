@@ -5,8 +5,9 @@
 #'@description Calls OGS6 object validator functions, exports all necessary files and starts OpenGeoSys6
 #'@param ogs6_obj A OGS6 class object
 #'@param iter_n The number of iterations (for simulation chains)
+#'@param output_to_log_file Should the output be written to a log file?
 #'@export
-run_simulation <- function(ogs6_obj, iter_n = 1) {
+run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(is.numeric(iter_n), iter_n > 0, iter_n < 500)
@@ -18,6 +19,12 @@ run_simulation <- function(ogs6_obj, iter_n = 1) {
     export_gml(ogs6_obj)
     export_prj(ogs6_obj)
 
+    #Direct simulation output to log file
+    if(output_to_log_file){
+        log_file <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, "_log.txt")
+        #Write to file...
+    }
+
     #Run simulations (and read in output as input)
     for(i in seq_len(iter_n)){
 
@@ -28,6 +35,8 @@ run_simulation <- function(ogs6_obj, iter_n = 1) {
 
         # read_in_output(ogs6_obj)
     }
+
+    closeAllConnections()
 }
 
 
