@@ -6,13 +6,25 @@
 #'@description S3 class describing a .prj parameter
 #'@param name The parameter name
 #'@param type The parameter type
-#'@param values The parameter values
+#'@param values Optional: The parameter values
+#'@param value Optional: The parameter value
 #'@export
-r2ogs6_parameter <- function(name, type, values) {
+r2ogs6_parameter <- function(name, type, values = NULL, value = NULL) {
+
+    if(!is.null(values) && !is.null(value)){
+        stop(paste("r2ogs6_parameter: Use either 'values' or 'value' parameter (XOR)"), call. = FALSE)
+    }
 
     #Coerce input
-    if(assertthat::is.string(values)){
-        values <- as.double(unlist(strsplit(values, " ")))
+    if(!is.null(value)){
+        if(assertthat::is.string(value)){
+            value <- as.double(value)
+        }
+        values <- value
+    }else{
+        if(assertthat::is.string(values)){
+            values <- as.double(unlist(strsplit(values, " ")))
+        }
     }
 
     new_r2ogs6_parameter(name, type, values)
