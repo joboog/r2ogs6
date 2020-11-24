@@ -8,6 +8,8 @@
 #'@param sim_id The ID of the simulation
 #'@param sim_path The path where all relevant files for the simulation will be saved
 #'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
+#'@param test_mode In test mode, sim_path and ogs_bin_path will not be validated. If you're not
+#' a developer, please leave this variable as it is :)
 #'@export
 OGS6 <- R6::R6Class("OGS6",
   public = list(
@@ -15,7 +17,8 @@ OGS6 <- R6::R6Class("OGS6",
     initialize = function(sim_name,
                           sim_id,
                           sim_path,
-                          ogs_bin_path) {
+                          ogs_bin_path,
+                          test_mode = FALSE) {
 
       # Basic validation
       assertthat::assert_that(assertthat::is.string(sim_name))
@@ -23,7 +26,9 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(assertthat::is.string(sim_path))
       assertthat::assert_that(assertthat::is.string(ogs_bin_path))
 
-      validate_paths(sim_path, ogs_bin_path)
+      if(!test_mode){
+        validate_paths(sim_path, ogs_bin_path)
+      }
 
         private$.sim_output <- list()
 
@@ -141,6 +146,39 @@ OGS6 <- R6::R6Class("OGS6",
       }
 
       return(invisible(flag))
+    },
+
+    clear = function(which = c("meshes", "geometry", "processes",
+                               "time_loop", "media", "parameters",
+                               "curves", "process_variables", "nonlinear_solvers",
+                               "linear_solvers", "test_definition")){
+
+      assertthat::assert_that(is.character(which))
+
+      valid_input <- c("meshes", "geometry", "processes",
+                       "time_loop", "media", "parameters",
+                       "curves", "process_variables", "nonlinear_solvers",
+                       "linear_solvers", "test_definition")
+
+      null_it <- c("geometry", "time_loop")
+
+      for(i in seq_len(length(which))){
+        if(!which[[i]] %in% valid_input){
+          warning(paste0("Parameter '", which[[i]], "' not recognized by OGS6$clear(). ",
+                        "Valid parameters are:\n'",
+                        paste(valid_input, sep = "", collapse = "', '"),
+                        "'\nSkipping."), call. = FALSE)
+          next
+        }else{
+          call_str <- ""
+          if(which[[i]] %in% null_it){
+            call_str <- paste0("private$.", which[[i]], " <- NULL")
+          }else{
+            call_str <- paste0("private$.", which[[i]], " <- list()")
+          }
+          eval(parse(text = call_str))
+        }
+      }
     }
 
   ),
