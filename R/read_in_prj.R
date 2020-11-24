@@ -8,7 +8,7 @@
 #'@export
 read_in_prj <- function(ogs6_obj, prj_path){
 
-    assertthat::assert_that(class(ogs6_obj) == "OGS6")
+    assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(prj_path)
 
     from_other_path <- (dirname(ogs6_obj$sim_path) != dirname(prj_path))
@@ -22,12 +22,12 @@ read_in_prj <- function(ogs6_obj, prj_path){
     if(class(gml_ref_node) != "xml_missing"){
         gml_path <- paste0(dirname(prj_path), "/", xml2::xml_text(gml_ref_node))
         read_in_gml(ogs6_obj, gml_path)
-        vtu_ref_nodes <- xml2::xml_find_first(xml_doc, "//mesh")
+        vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "//mesh")
     }else{
         vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "//meshes/*")
     }
 
-    for(i in seq_len(length(vtu_ref_nodes))){
+    for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
         ogs6_obj$add_mesh(vtu_ref)
 
@@ -42,6 +42,7 @@ read_in_prj <- function(ogs6_obj, prj_path){
     read_in_time_loop(ogs6_obj, prj_path)
     read_in_parameters(ogs6_obj, prj_path)
     read_in_curves(ogs6_obj, prj_path)
+    read_in_process_variables(ogs6_obj, prj_path)
     read_in_nonlinear_solvers(ogs6_obj, prj_path)
     read_in_linear_solvers(ogs6_obj, prj_path)
     read_in_test_definition(ogs6_obj, prj_path)
@@ -58,7 +59,7 @@ read_in_prj <- function(ogs6_obj, prj_path){
 #'@param process_names Optional: The names of the process elements to be read in
 #'@export
 read_in_processes <- function(ogs6_obj, prj_path, process_names = NULL) {
-    read_in(ogs6_obj, prj_path, "processes", "process", selection_vector = process_names, subclasses_names = NULL)
+    read_in(ogs6_obj, prj_path, "processes", "process", selection_vector = process_names)
 }
 
 
@@ -80,7 +81,7 @@ read_in_media <- function(ogs6_obj, prj_path, medium_indices = NULL) {
 #'@param prj_path The path to the project file the time_loop element should be read from
 #'@export
 read_in_time_loop <- function(ogs6_obj, prj_path) {
-    read_in(ogs6_obj, prj_path, "OpenGeoSysProject", "time_loop",
+    read_in(ogs6_obj, prj_path, "time_loop", "time_loop",
             selection_vector = NULL,
             subclasses_names = c(process = "r2ogs6_tl_process",
                                  output = "r2ogs6_tl_output",
@@ -95,7 +96,7 @@ read_in_time_loop <- function(ogs6_obj, prj_path) {
 #'@param parameter_names Optional: The names of the parameter elements to be read in
 #'@export
 read_in_parameters <- function(ogs6_obj, prj_path, parameter_names = NULL) {
-    read_in(ogs6_obj, prj_path, "parameters", "parameter", selection_vector = parameter_names, subclasses_names = NULL)
+    read_in(ogs6_obj, prj_path, "parameters", "parameter", selection_vector = parameter_names)
 }
 
 
@@ -107,7 +108,7 @@ read_in_parameters <- function(ogs6_obj, prj_path, parameter_names = NULL) {
 #'@export
 read_in_curves <- function(ogs6_obj, prj_path, curve_names = NULL) {
     read_in(ogs6_obj, prj_path, "curves", "curve",
-            selection_vector = curve_names, subclasses_names = NULL)
+            selection_vector = curve_names)
 }
 
 
@@ -132,7 +133,7 @@ read_in_process_variables <- function(ogs6_obj, prj_path, process_variable_names
 #'@export
 read_in_nonlinear_solvers <- function(ogs6_obj, prj_path, nonlinear_solver_names = NULL) {
     read_in(ogs6_obj, prj_path, "nonlinear_solvers", "nonlinear_solver",
-            selection_vector = nonlinear_solver_names, subclasses_names = NULL)
+            selection_vector = nonlinear_solver_names)
 }
 
 
@@ -144,7 +145,7 @@ read_in_nonlinear_solvers <- function(ogs6_obj, prj_path, nonlinear_solver_names
 #'@export
 read_in_linear_solvers <- function(ogs6_obj, prj_path, linear_solver_names = NULL) {
     read_in(ogs6_obj, prj_path, "linear_solvers", "linear_solver",
-            selection_vector = linear_solver_names, subclasses_names = NULL)
+            selection_vector = linear_solver_names)
 }
 
 
@@ -156,5 +157,31 @@ read_in_linear_solvers <- function(ogs6_obj, prj_path, linear_solver_names = NUL
 #'@export
 read_in_test_definition <- function(ogs6_obj, prj_path, vtkdiff_indices = NULL) {
     read_in(ogs6_obj, prj_path, "test_definition", "vtkdiff",
-            selection_vector = vtkdiff_indices, subclasses_names = NULL)
+            selection_vector = vtkdiff_indices)
 }
+
+
+#============================== SPECIAL CASES ================================
+#This part is for read_in functions dealing with elements that need special
+#handling because they have a structure that guess_structure from read_in_utils.R
+#doesn't know how to deal with
+
+#'read_in_timesteps_node
+#'@description Reads in a timesteps node
+#'@param timesteps_node The timesteps node
+read_in_timesteps_node <- function(timesteps_node){
+
+    timesteps_list <- list()
+
+    for(i in seq_along(xml2::xml_children(timesteps_node))){
+        pair_node <- xml2::xml_children(timesteps_node)[[i]]
+
+        val_1 <- xml2::xml_double(xml2::xml_children(pair_node)[[1]])
+        val_2 <- xml2::xml_double(xml2::xml_children(pair_node)[[2]])
+
+        timesteps_list <- c(timesteps_list, list(pair = c(val_1, val_2)))
+    }
+
+    return(invisible(timesteps_list))
+}
+

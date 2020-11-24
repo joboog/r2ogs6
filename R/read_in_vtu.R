@@ -8,7 +8,7 @@
 #'@export
 pick_vtu_file <- function(ogs6_obj) {
 
-    assertthat::assert_that(class(ogs6_obj) == "OGS6")
+    assertthat::assert_that("OGS6" %in% class(ogs6_obj))
 
     file <- file.choose()
     check_file_extension(file, "vtu")

@@ -8,7 +8,7 @@
 #'@export
 read_in_gml <- function(ogs6_obj, gml_path) {
 
-    assertthat::assert_that(class(ogs6_obj) == "OGS6")
+    assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(gml_path)
 
     name <- xml2::xml_text(xml2::xml_find_first(xml_doc, "//name"))
@@ -62,16 +62,16 @@ read_in_polylines <- function(xml_doc) {
 
     polylines_nodeset <- xml2::xml_find_all(xml_doc, "//polylines/*")
 
-    if(class(polylines_nodeset) == "xml_missing"){
+    if(length(polylines_nodeset) == 0){
         return(invisible(NULL))
     }
 
-    for(i in seq_len(length(polylines_nodeset))){
+    for(i in seq_along(polylines_nodeset)){
         attrs <- xml2::xml_attrs(polylines_nodeset[[i]])
         pnt_nodeset <- xml2::xml_children(polylines_nodeset[[i]])
         pnt_vector <- c()
 
-        for(j in seq_len(length(pnt_nodeset))){
+        for(j in seq_along(pnt_nodeset)){
             pnt_vector <- c(pnt_vector, xml2::xml_double(pnt_nodeset[[j]]))
         }
 
@@ -92,11 +92,11 @@ read_in_surfaces <- function(xml_doc) {
 
     surfaces_nodeset <- xml2::xml_find_all(xml_doc, "//surfaces/*")
 
-    if(class(surfaces_nodeset) == "xml_missing"){
+    if(length(surfaces_nodeset) == 0){
         return(invisible(NULL))
     }
 
-    for(i in seq_len(length(surfaces_nodeset))){
+    for(i in seq_along(surfaces_nodeset)){
         attrs <- xml2::xml_attrs(surfaces_nodeset[[i]])
         element_nodeset <- xml2::xml_children(surfaces_nodeset[[i]])
 
