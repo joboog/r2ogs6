@@ -14,7 +14,9 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 Imports: 
     purrr,
     magrittr,
@@ -28,5 +30,7 @@ Imports:
     crayon,
     snakecase,
     rlist,
-    utils
+    utils,
+    qpdf
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
