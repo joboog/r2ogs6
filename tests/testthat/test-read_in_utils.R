@@ -7,16 +7,6 @@
 # })
 
 
-test_that("make_call_from_parameters works", {
-
-    parameters <- list(a = "hello", b = c(1, 2), c = "hola")
-    const_call <- make_call_from_parameters("myclass", parameters)
-
-    expect_equal(const_call, "myclass(a = \"hello\", b = c(1, 2), c = \"hola\")")
-
-})
-
-
 test_that("guess_structure works", {
 
     prj_path <- (system.file("extdata/flow_free_expansion",
