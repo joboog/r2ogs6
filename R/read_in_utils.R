@@ -64,8 +64,8 @@ read_in <- function(ogs6_obj, prj_path, element_name, child_name,
     element <- xml2::xml_find_first(xml_doc, paste0("/OpenGeoSysProject/", element_name))
 
     if(class(element) == "xml_missing"){
-        warning(paste("read_in: Could not find element of name ", element_name,
-                      ". Skipping.", call. = FALSE))
+        # warning(paste("read_in: Could not find element of name ", element_name,
+        #               ". Skipping.", call. = FALSE))
         return(invisible(FALSE))
     }
 
@@ -173,46 +173,19 @@ node_to_r2ogs6_obj <- function(xml_node, subclasses_names = character()){
     ordered_parameters <- order_parameters(parameters, class_name)
 
     #Construct the call to the r2ogs6_object helper
-    class_constructor_call <- make_call_from_parameters(class_name, ordered_parameters)
+    class_constructor_call <- paste0(class_name,
+                                     "(",
+                                     paste(names(parameters),
+                                           lapply(parameters,
+                                                  function(x){paste(utils::capture.output(dput(x)), collapse="\n")}),
+                                           sep = " = ",
+                                           collapse = ", "),
+                                     ")")
 
     #Evaluate the constructed call
     r2ogs6_obj <- eval(parse(text = class_constructor_call))
 
     return(invisible(r2ogs6_obj))
-}
-
-
-#'make_call_from_parameters
-#'@description Helper function to construct a call from a class name and a
-#' list of class parameters
-#'@param class_name Which class constructor should be called?
-#'@param parameters A named list of parameters
-make_call_from_parameters <- function(class_name, parameters){
-
-    assertthat::assert_that(assertthat::is.string(class_name))
-    assertthat::assert_that(is.list(parameters))
-
-    constructed_call <- paste0(class_name, "(")
-
-    for(i in seq_len(length(parameters))){
-        if(assertthat::is.string(parameters[[i]])){
-            constructed_call <- paste0(constructed_call,
-                                       names(parameters)[[i]], " = ",
-                                       "\"", parameters[[i]], "\", ")
-        }else{
-            repr_str <- paste(utils::capture.output(dput(parameters[[i]])), collapse="\n")
-            constructed_call <- paste0(constructed_call,
-                                       names(parameters)[[i]], " = ",
-                                       repr_str, ", ")
-        }
-
-    }
-
-    #Trim last comma and space after it
-    constructed_call <- invisible(stringr::str_sub(constructed_call, end =-3))
-    constructed_call <- paste0(constructed_call, ")")
-
-    return(invisible(constructed_call))
 }
 
 
