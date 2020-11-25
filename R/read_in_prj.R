@@ -29,7 +29,7 @@ read_in_prj <- function(ogs6_obj, prj_path){
 
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
-        ogs6_obj$add_mesh(vtu_ref)
+        ogs6_obj$add_mesh(r2ogs6_mesh(vtu_ref))
 
         if(from_other_path){
             #Copy file into ogs6_obj$sim_path folder
