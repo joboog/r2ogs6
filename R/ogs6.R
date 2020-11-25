@@ -36,18 +36,6 @@ OGS6 <- R6::R6Class("OGS6",
         private$.sim_id <- sim_id
         private$.sim_path <- sim_path
         private$.ogs_bin_path <- ogs_bin_path
-
-        private$.meshes <- list()
-        private$.geometry <- NULL
-        private$.processes <- list()
-        private$.time_loop <- NULL
-        private$.media <- list()
-        private$.parameters <- list()
-        private$.curves <- list()
-        private$.process_variables <- list()
-        private$.nonlinear_solvers <- list()
-        private$.linear_solvers <- list()
-        private$.test_definition <- list()
     },
 
     add_sim_output = function(name, value) {
@@ -55,8 +43,8 @@ OGS6 <- R6::R6Class("OGS6",
     },
 
     add_mesh = function(mesh){
-      assertthat::assert_that(assertthat::is.string(mesh))
-      private$.meshes <- c(private$.meshes, mesh)
+      assertthat::assert_that(class(mesh) == "r2ogs6_mesh")
+      private$.meshes <- c(private$.meshes, list(mesh))
     },
 
     add_gml = function(gml){
@@ -333,17 +321,17 @@ OGS6 <- R6::R6Class("OGS6",
       .gml = NULL,
 
       #.prj parameters
-      .meshes = NULL,
+      .meshes = list(),
       .geometry = NULL,
-      .processes = NULL,
+      .processes = list(),
       .time_loop = NULL,
-      .media = NULL,
-      .parameters = NULL,
-      .curves = NULL,
-      .process_variables = NULL,
-      .nonlinear_solvers = NULL,
-      .linear_solvers = NULL,
-      .test_definition = NULL
+      .media = list(),
+      .parameters = list(),
+      .curves = list(),
+      .process_variables = list(),
+      .nonlinear_solvers = list(),
+      .linear_solvers = list(),
+      .test_definition = list()
   )
 )
 
