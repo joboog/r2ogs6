@@ -40,6 +40,9 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 }
 
 
+#============================== VALIDATION UTILITY ================================
+
+
 #'validate_all
 #'@description Validates all necessary parameters
 #'@param ogs6_obj A OGS6 class object
@@ -59,6 +62,28 @@ validate_all <- function(ogs6_obj) {
     }
 
     #...
+}
+
+
+#'validate_paths
+#'@description Helper function to pull path validation out of already large class OGS6
+#'@param sim_path The path where all relevant files for the simulation will be saved
+#'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
+validate_paths <- function(sim_path, ogs_bin_path){
+    if(!dir.exists(sim_path)){
+        dir.create(sim_path)
+    }else{
+        if(length(dir(sim_path, all.files = TRUE)) != 0){
+            warning(paste0("The sim_path directory you defined ('", sim_path,
+                           "') already exists (that is ok). However, ",
+                           "it is not empty. Files may be overwritten."), call. = FALSE)
+        }
+    }
+
+    if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
+        stop(paste("Could not find executable file generateStructuredMesh.exe at location",
+                   ogs_bin_path), call. = FALSE)
+    }
 }
 
 
