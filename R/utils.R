@@ -55,27 +55,6 @@ obj_is_defined <- function(flag, obj, obj_type = ""){
 
 #============================== VALIDATION UTILITY ================================
 
-#'validate_paths
-#'@description Helper function to pull path validation out of already large class OGS6
-#'@param sim_path The path where all relevant files for the simulation will be saved
-#'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
-validate_paths <- function(sim_path, ogs_bin_path){
-  if(!dir.exists(sim_path)){
-    dir.create(sim_path)
-  }else{
-    if(length(dir(sim_path, all.files = TRUE)) != 0){
-      warning(paste0("The sim_path directory you defined ('", sim_path,
-                     "') already exists (that is ok). However, ",
-                     "it is not empty. Files may be overwritten."), call. = FALSE)
-    }
-  }
-
-  if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
-    stop(paste("Could not find executable file generateStructuredMesh.exe at location",
-               ogs_bin_path), call. = FALSE)
-  }
-}
-
 
 #'validate_param_list
 #'@description Validator function for a parameter list
@@ -110,12 +89,11 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
   assertthat::assert_that(is.list(wrapper_list))
 
-  for(i in seq_len(length(wrapper_list))){
-    if(class(wrapper_list[[i]]) != expected_element_class){
+  lapply(wrapper_list, function(x){
+    if(class(x) != expected_element_class){
       stop(paste("List has at least one element whose class is not", expected_element_class),
-           call. = FALSE)
-    }
-  }
+         call. = FALSE)}
+    })
 }
 
 
