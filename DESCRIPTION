@@ -15,8 +15,7 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat,
-    knitr,
-    rmarkdown
+    knitr
 Imports: 
     purrr,
     magrittr,
@@ -31,6 +30,7 @@ Imports:
     snakecase,
     rlist,
     utils,
-    qpdf
+    qpdf,
+    rmarkdown
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
