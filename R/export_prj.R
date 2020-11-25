@@ -13,7 +13,7 @@ export_prj <- function(ogs6_obj) {
     if(is.null(ogs6_obj$geometry)) {
         meshes_node <- adopt_nodes("meshes", ogs6_obj$meshes)
     }else{
-        meshes_node <- list(mesh = list(ogs6_obj$meshes[[1]]))
+        meshes_node <- as_node(ogs6_obj$meshes[[1]])
     }
 
     #Create wrapper nodes where necessary
