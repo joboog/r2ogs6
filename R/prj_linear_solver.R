@@ -1,6 +1,3 @@
-#============================== LINEAR_SOLVERS CLASSES AND METHODS ================================
-
-#============================== LINEAR_SOLVER================================
 
 
 #'r2ogs6_linear_solver
@@ -40,7 +37,12 @@ new_r2ogs6_linear_solver <- function(name, eigen, lis = NULL, petsc = NULL){
     structure(list(name = name,
                    eigen = eigen,
                    lis = lis,
-                   petsc = petsc),
+                   petsc = petsc,
+                   tag_name = "linear_solver",
+                   is_subclass = FALSE,
+                   attr_names = character(),
+                   flatten_on_exp = character()
+                   ),
               class = "r2ogs6_linear_solver"
     )
 }
@@ -58,32 +60,4 @@ validate_r2ogs6_linear_solver <- function(r2ogs6_linear_solver){
     }
 
     return(invisible(r2ogs6_linear_solver))
-}
-
-
-#'as_node.r2ogs6_linear_solver
-#'@description Implementation of generic function as_node for S3 class r2ogs6_linear_solver
-#'@param x A r2ogs6_linear_solver class object
-as_node.r2ogs6_linear_solver <- function(x) {
-
-    node <- list(linear_solver = structure(list()))
-
-    eigen_node <- simple_vector_to_node("eigen", x$eigen)
-
-    node <- add_children(node, list(name = x$name,
-                                    eigen_node,
-                                    lis = x$lis,
-                                    petsc = x$petsc))
-
-    return(node)
-}
-
-
-#'input_add.r2ogs6_linear_solver
-#'@description Implementation of generic function input_add for S3 class r2ogs6_linear_solver
-#'@param x A r2ogs6_linear_solver class object
-#'@param ogs6_obj A OGS6 class object
-#'@export
-input_add.r2ogs6_linear_solver <- function(x, ogs6_obj) {
-    ogs6_obj$add_linear_solver(x)
 }

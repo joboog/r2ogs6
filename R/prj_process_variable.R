@@ -1,6 +1,3 @@
-#============================== PROCESS_VARIABLES CLASSES AND METHODS ================================
-
-#============================== PROCESS_VARIABLE ================================
 
 
 #'r2ogs6_process_variable
@@ -39,38 +36,14 @@ new_r2ogs6_process_variable <- function(name, components, order, initial_conditi
                    components = components,
                    order = order,
                    initial_condition = initial_condition,
-                   boundary_conditions = boundary_conditions),
+                   boundary_conditions = boundary_conditions,
+                   tag_name = "process_variable",
+                   is_subclass = FALSE,
+                   attr_names = character(),
+                   flatten_on_exp = character()
+                   ),
               class = "r2ogs6_process_variable"
     )
-}
-
-
-#'as_node.r2ogs6_process_variable
-#'@description Implementation of generic function as_node for S3 class r2ogs6_process_variable
-#'@param x A r2ogs6_process_variable class object
-as_node.r2ogs6_process_variable <- function(x) {
-
-    node <- list(process_variable = structure(list()))
-
-    boundary_conditions_node <- adopt_nodes("boundary_conditions", x$boundary_conditions)
-
-    node <- add_children(node, list(name = x$name,
-                                    components = x$components,
-                                    order = x$order,
-                                    initial_condition = x$initial_condition,
-                                    boundary_conditions_node))
-
-    return(invisible(node))
-}
-
-
-#'input_add.r2ogs6_process_variable
-#'@description Implementation of generic function input_add for S3 class r2ogs6_process_variable
-#'@param x A r2ogs6_process_variable class object
-#'@param ogs6_obj A OGS6 class object
-#'@export
-input_add.r2ogs6_process_variable <- function(x, ogs6_obj) {
-    ogs6_obj$add_process_variable(x)
 }
 
 
@@ -128,25 +101,12 @@ new_r2ogs6_boundary_condition <- function(type, parameter, component = NULL, mes
                    component = component,
                    mesh = mesh,
                    geometrical_set = geometrical_set,
-                   geometry = geometry),
+                   geometry = geometry,
+                   tag_name = "boundary_condition",
+                   is_subclass = TRUE,
+                   attr_names = character(),
+                   flatten_on_exp = character()
+                   ),
               class = "r2ogs6_boundary_condition"
     )
-}
-
-
-#'as_node.r2ogs6_boundary_condition
-#'@description Implementation of generic function as_node for S3 class r2ogs6_boundary_condition
-#'@param x A r2ogs6_boundary_condition class object
-as_node.r2ogs6_boundary_condition <- function(x) {
-
-    node <- list(boundary_condition = structure(list()))
-
-    node <- add_children(node, list(mesh = x$mesh,
-                                    geometrical_set = x$geometrical_set,
-                                    geometry = x$geometry,
-                                    type = x$type,
-                                    component = x$component,
-                                    parameter = x$parameter))
-
-    return(invisible(node))
 }

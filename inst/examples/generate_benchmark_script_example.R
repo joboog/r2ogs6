@@ -7,6 +7,6 @@ library(r2ogs6)
 #Define .prj path
 prj_path <- paste0("inst/extdata/flow_free_expansion/flow_free_expansion.prj")
 
-dest_dir <- paste0(dirname(prj_path), "/")
+dest_dir <- paste0("inst/examples/")
 
 generate_benchmark_script(prj_path, dest_dir)

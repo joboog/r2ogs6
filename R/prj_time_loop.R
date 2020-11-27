@@ -1,4 +1,3 @@
-#============================== TIME_LOOP CLASSES AND METHODS ================================
 
 
 #'r2ogs6_time_loop
@@ -29,40 +28,16 @@ new_r2ogs6_time_loop <- function(processes, output, global_processes_coupling = 
         list(
             processes = processes,
             output = output,
-            global_processes_coupling = global_processes_coupling
+            global_processes_coupling = global_processes_coupling,
+            tag_name = "time_loop",
+            is_subclass = FALSE,
+            attr_names = character(),
+            flatten_on_exp = character()
         ),
         class = "r2ogs6_time_loop"
     )
 }
 
-
-#'as_node.r2ogs6_time_loop
-#'@description Implementation of generic function as_node for S3 class r2ogs6_time_loop
-#'@param x A r2ogs6_time_loop class object
-as_node.r2ogs6_time_loop <- function(x) {
-    node <- list(time_loop = structure(list()))
-
-    processes_node <- adopt_nodes("processes", x$processes)
-
-    node <- add_children(node, list(as_node(x$global_processes_coupling),
-                                    processes_node,
-                                    as_node(x$output)))
-
-    return(invisible(node))
-}
-
-
-#'input_add.r2ogs6_time_loop
-#'@description Implementation of generic function input_add for S3 class r2ogs6_time_loop
-#'@param x A r2ogs6_time_loop class object
-#'@param ogs6_obj A OGS6 class object
-#'@export
-input_add.r2ogs6_time_loop <- function(x, ogs6_obj){
-    ogs6_obj$add_time_loop(x)
-}
-
-
-#============================== TIME_LOOP GLOBAL PROCESSES COUPLING ================================
 
 #WIP!!!!!!!!!!!!!!
 r2ogs6_global_processes_coupling <- function() {
@@ -79,20 +54,6 @@ new_r2ogs6_global_processes_coupling <- function() {
         class = "r2ogs6_global_processes_coupling"
     )
 }
-
-#'as_node.r2ogs6_global_processes_coupling
-#'@description Implementation of generic function as_node for S3 class r2ogs6_global_processes_coupling
-#'@param x A r2ogs6_global_processes_coupling class object
-as_node.r2ogs6_global_processes_coupling <- function(x) {
-    node <- list(global_processes_coupling = structure(list()))
-
-    node <- add_children(node, list())
-
-    return(invisible(node))
-}
-
-
-#============================== TIME_LOOP PROCESS ================================
 
 
 #'r2ogs6_tl_process
@@ -133,7 +94,11 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
              nonlinear_solver = nonlinear_solver,
              convergence_criterion = convergence_criterion,
              time_discretization = time_discretization,
-             time_stepping = time_stepping
+             time_stepping = time_stepping,
+             tag_name = "process",
+             is_subclass = TRUE,
+             attr_names = c("ref"),
+             flatten_on_exp = character()
         ),
         class = "r2ogs6_tl_process"
     )
@@ -155,37 +120,6 @@ validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
 
     return(invisible(r2ogs6_tl_process))
 }
-
-
-#'as_node.r2ogs6_tl_process
-#'@description Implementation of generic function as_node for S3 class r2ogs6_tl_process
-#'@param x A r2ogs6_tl_process class object
-as_node.r2ogs6_tl_process <- function(x) {
-    node <- list(process = structure(list(), ref = x$ref))
-
-    convergence_criterion_node <- simple_vector_to_node("convergence_criterion",
-                                                        x$convergence_criterion)
-    time_discretization_node <- simple_vector_to_node("time_discretization",
-                                                      x$time_discretization)
-
-    time_stepping_node <- list(time_stepping = structure(list()))
-    timesteps_node <- timesteps_as_node(x$time_stepping[[4]])
-    time_stepping_node <- add_children(time_stepping_node, list(type = x$time_stepping[[1]],
-                                                                t_initial = x$time_stepping[[2]],
-                                                                t_end = x$time_stepping[[3]],
-                                                                timesteps_node))
-
-
-    node <- add_children(node, list(nonlinear_solver = x$nonlinear_solver,
-                                    convergence_criterion_node,
-                                    time_discretization_node,
-                                    time_stepping_node))
-
-    return(invisible(node))
-}
-
-
-#============================== TIME_LOOP OUTPUT ================================
 
 
 #'r2ogs6_tl_output
@@ -228,44 +162,14 @@ new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, com
              suffix = suffix,
              timesteps = timesteps,
              variables = variables,
-             compress_output = compress_output
+             compress_output = compress_output,
+             tag_name = "output",
+             is_subclass = TRUE,
+             attr_names = character(),
+             flatten_on_exp = character()
         ),
         class = "r2ogs6_tl_output"
     )
-}
-
-
-#'as_node.r2ogs6_tl_output
-#'@description Implementation of generic function as_node for S3 class r2ogs6_tl_output
-#'@param x A r2ogs6_tl_output class object
-as_node.r2ogs6_tl_output <- function(x) {
-    node <- list(output = structure(list()))
-
-    timesteps_node <- timesteps_as_node(x$timesteps)
-    variables_node <- simple_vector_to_node("variables", x$variables)
-
-    node <- add_children(node, list(type = x$type,
-                                    prefix = x$prefix,
-                                    suffix = x$suffix,
-                                    compress_output = x$compress_output,
-                                    timesteps_node,
-                                    variables_node
-                                    ))
-
-    return(invisible(node))
-}
-
-
-#Export helper function
-timesteps_as_node <- function(timesteps){
-
-    node <- list(timesteps = structure(list()))
-
-    for(i in seq_len(length(timesteps))){
-        node[[1]] <- c(node[[1]], simple_vector_to_node("pair", timesteps[[i]]))
-    }
-
-    return(invisible(node))
 }
 
 

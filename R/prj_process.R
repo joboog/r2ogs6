@@ -1,8 +1,4 @@
 
-#============================== PROCESSES CLASSES AND METHODS ================================
-
-#============================== PROCESS ================================
-#NOT TO BE CONFUSED WITH TIME LOOP PROCESSES!
 
 #'r2ogs6_process
 #'@description S3 class describing a .prj (processes) process
@@ -58,6 +54,7 @@ new_r2ogs6_process <- function(name, type, integration_order, dimension, constit
     names(process_variables) <- c("displacement", "pressure")
 
     assertthat::assert_that(is.list(secondary_variables))
+    names(secondary_variables) <- rep("secondary_variable", length(secondary_variables))
     assertthat::assert_that(is.vector(specific_body_force))
 
     if(!is.null(coupling_scheme)){
@@ -74,7 +71,11 @@ new_r2ogs6_process <- function(name, type, integration_order, dimension, constit
             process_variables = process_variables,
             secondary_variables = secondary_variables,
             specific_body_force = specific_body_force,
-            coupling_scheme = coupling_scheme
+            coupling_scheme = coupling_scheme,
+            tag_name = "process",
+            is_subclass = FALSE,
+            attr_names = c("secondary_variable"),
+            flatten_on_exp = c("specific_body_force")
         ),
 
         class = "r2ogs6_process"
@@ -92,6 +93,7 @@ validate_r2ogs6_process <- function(r2ogs6_process){
             stop(paste("Parameters passed to secondary_variables must be string vectors of",
                        "length 1 or 2"), call. = FALSE)
         }
+        names(r2ogs6_process$secondary_variables[[i]]) <- c("internal_name", "output_name")
     }
 
     #Add more validation functionality...
@@ -99,48 +101,3 @@ validate_r2ogs6_process <- function(r2ogs6_process){
     return(invisible(r2ogs6_process))
 }
 
-
-#'as_node.r2ogs6_process
-#'@description Implementation of generic function as_node for S3 class r2ogs6_process
-#'@param x A r2ogs6_process class object
-as_node.r2ogs6_process <- function(x) {
-
-    node <- list(process = structure(list()))
-
-    sbf_str <- paste(x$specific_body_force, collapse = " ")
-
-    const_rel_node <- simple_vector_to_node("constitutive_relation", x$constitutive_relation)
-    proc_var_node <- simple_vector_to_node("process_variables", x$process_variables)
-
-    sec_var_node <- list(secondary_variables = structure(list()))
-
-    for(i in seq_len(length(x$secondary_variables))){
-
-        sec_var_node[[1]] <- c(sec_var_node[[1]],
-                               list(secondary_variable = structure(list())))
-        attributes(sec_var_node[[1]][[i]]) <- list(internal_name = x$secondary_variables[[i]][[1]],
-                                                output_name = x$secondary_variables[[i]][[2]])
-    }
-
-    node <- add_children(node, list(name = x$name,
-                                    type = x$type,
-                                    coupling_scheme = x$coupling_scheme,
-                                    integration_order = x$integration_order,
-                                    dimension = x$dimension,
-                                    const_rel_node,
-                                    proc_var_node,
-                                    sec_var_node,
-                                    specific_body_force = sbf_str))
-
-    return(invisible(node))
-}
-
-
-#'input_add.r2ogs6_process
-#'@description Implementation of generic function input_add for S3 class r2ogs6_process
-#'@param x A r2ogs6_process class object
-#'@param ogs6_obj A OGS6 class object
-#'@export
-input_add.r2ogs6_process <- function(x, ogs6_obj) {
-    ogs6_obj$add_process(x)
-}

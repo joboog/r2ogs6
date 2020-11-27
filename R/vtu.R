@@ -15,7 +15,11 @@ new_r2ogs6_mesh <- function(mesh_ref){
 
     structure(
         list(
-            mesh_ref = mesh_ref
+            mesh_ref = mesh_ref,
+            tag_name = "mesh",
+            is_subclass = FALSE,
+            attr_names = character(),
+            flatten_on_exp = character()
             ),
         class = "r2ogs6_mesh"
     )
