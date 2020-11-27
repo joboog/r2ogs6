@@ -4,7 +4,7 @@
 \alias{input_add.r2ogs6_gml}
 \title{input_add.r2ogs6_gml}
 \usage{
-\method{input_add}{r2ogs6_gml}(x, ogs6_obj)
+input_add.r2ogs6_gml(x, ogs6_obj)
 }
 \arguments{
 \item{x}{A r2ogs6_gml class object}

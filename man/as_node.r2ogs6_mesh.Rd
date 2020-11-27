@@ -4,7 +4,7 @@
 \alias{as_node.r2ogs6_mesh}
 \title{as_node.r2ogs6_curve}
 \usage{
-\method{as_node}{r2ogs6_mesh}(x)
+as_node.r2ogs6_mesh(x)
 }
 \arguments{
 \item{x}{A r2ogs6_mesh class object}
