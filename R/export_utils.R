@@ -86,8 +86,6 @@ to_node <- function(object, object_name = "",
                                   object$attr_names,
                                   object$flatten_on_exp)
 
-            cat("Handling parameter ", param_names[[i]], "\n")
-
             #Handle depending on if it's a child or attribute
             if(is.list(param_node)){
                 object_node[[1]][[length(object_node[[1]])+1]] <- param_node
