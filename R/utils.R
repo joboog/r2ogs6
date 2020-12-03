@@ -1,16 +1,46 @@
 #This script contains some useful methods for a developer.
 
 
-#============================== INFO UTILITY ================================
+#===== IMPLEMENTATION UTILITY =====
+
+#'get_implemented_classes
+#'@description Utility function, returns the names of all classes implemented
+#' so far. Change this if you implement new classes or delete old ones!
+#' If you implement a new class, you add the following to the character vector:
+#' <name_of_corresponding_OGS6_parameter> = <name_of_your_class>
+get_implemented_classes <- function(){
+
+  class_names <- c(meshes = "r2ogs6_mesh",
+                   gml = "r2ogs6_gml",
+                   search_length_algorithm = "r2ogs6_search_length_algorithm",
+                   processes = "r2ogs6_process",
+                   media = "r2ogs6_medium",
+                   time_loop = "r2ogs6_time_loop",
+                   local_coordinate_system = "r2ogs6_local_coordinate_system",
+                   parameters = "r2ogs6_parameter",
+                   curves = "r2ogs6_curve",
+                   process_variables = "r2ogs6_process_variable",
+                   nonlinear_solvers = "r2ogs6_nonlinear_solver",
+                   linear_solvers = "r2ogs6_linear_solver",
+                   test_definition = "r2ogs6_vtkdiff",
+                   insitu = "r2ogs6_insitu")
+
+  return(invisible(class_names))
+}
+
+
+#===== INFO UTILITY =====
 
 
 #'get_list_status
-#'@description Helper function for get_status() to check if a list has at least one element.
+#'@description Helper function for get_status() to check if a list has at least
+#' one element.
 #'@param flag Boolean flag to keep track of missing components
 #'@param obj_list The specified list
 #'@param element_type Optional: What kind of elements are in the list?
 #'@param is_opt Does the list need at least one element?
-get_list_status <- function(flag, obj_list, element_type = "list element", is_opt = FALSE){
+get_list_status <- function(flag, obj_list, element_type = "list element",
+                            is_opt = FALSE){
 
   sim_ready <- flag
 
@@ -32,7 +62,8 @@ get_list_status <- function(flag, obj_list, element_type = "list element", is_op
 
 
 #'obj_is_defined
-#'@description Helper function for get_status() to check if an object was defined.
+#'@description Helper function for get_status() to check if an object was
+#' defined
 #'@param flag Boolean flag to keep track of missing components
 #'@param obj The specified object
 #'@param obj_type Optional: What kind of object is this?
@@ -52,73 +83,167 @@ obj_is_defined <- function(flag, obj, obj_type = ""){
 }
 
 
+#===== COERCION UTILITY =====
 
-#============================== VALIDATION UTILITY ================================
+
+#'coerce_string_to_numeric
+#'@description If an object is of type string, coerces it to a numeric type:
+#' A double if 'split' is FALSE as per default, a numeric vector otherwise.
+#' If 'split' is set to true the string will be split at ' ' (whitespace)
+#' characters.
+#'@param obj An object to check
+#'@return The object as a numeric type (if 'obj' was a string, else the
+#' unchanged 'obj')
+coerce_string_to_numeric <- function(obj, split = FALSE){
+
+  if(assertthat::is.string(obj)){
+    if(split){
+      obj <- as.double(unlist(strsplit(obj, " ")))
+    }else{
+      obj <- as.double(obj)
+    }
+  }
+
+  return(invisible(obj))
+}
+
+
+#===== VALIDATION UTILITY =====
+
+
+
+
+#'validate_is_null_or_class_obj
+#'@description Checks if an object is either null or a class object of class
+#' 'class_name'
+#'@param obj The object to check
+#'@param class_name The name of the expected class
+validate_is_null_or_class_obj <- function(obj, class_name){
+
+  if(!is.null(obj)){
+      assertthat::assert_that(class(obj) == class_name)
+  }
+
+  return(invisible(obj))
+}
+
+
+#'validate_is_null_or_numeric
+#'@description Checks if an object is either null or numeric (helper to save
+#' some typing when validating optional object parameters)
+#'@param ... Ellipsis
+validate_is_null_or_numeric <- function(...){
+
+  objs <- list(...)
+
+  for(i in seq_len(length(objects))){
+    if(!is.null(objs[[i]])){
+      assertthat::assert_that(is.numeric(objs[[i]]))
+    }
+  }
+
+  return(invisible(objs))
+}
+
+
+#'validate_is_null_or_number
+#'@description Checks if an object is either null or a number (helper to save
+#' some typing when validating optional object parameters)
+#'@param ... Ellipsis
+validate_is_null_or_number <- function(...){
+
+  objs <- list(...)
+
+  for(i in seq_len(length(objects))){
+    if(!is.null(objs[[i]])){
+      assertthat::assert_that(assertthat::is.number(objs[[i]]))
+    }
+  }
+
+  return(invisible(objs))
+}
+
+
+#'validate_is_null_or_string
+#'@description Checks if an object is either null or a string (helper to save
+#' some typing when validating optional object parameters)
+#'@param ... Ellipsis
+validate_is_null_or_string <- function(...){
+
+  objs <- list(...)
+
+  for(i in seq_len(length(objects))){
+    if(!is.null(objs[[i]])){
+      assertthat::assert_that(assertthat::is.string(objs[[i]]))
+    }
+  }
+
+  return(invisible(objs))
+}
+
+
+#'validate_true_false_str
+#'@description Checks if a string reads either "true" or "false"
+#'@param string string: A string
+validate_true_false_str <- function(string){
+
+  assertthat::assert_that(assertthat::is.string(string))
+  assertthat::assert_that(string %in% c("true", "false"))
+
+  return(invisible(string))
+}
 
 
 #'validate_param_list
-#'@description Validator function for a parameter list
-#'@param param_list A list of parameters
-#'@param expected_length The expected list length
-#'@param possible_names How the list elements may be named (if the user DID name them)
-validate_param_list <- function(param_list, expected_length, possible_names) {
+#'@description Validator function for a parameter list or vector
+#'@param param_list A list (or vector) of parameters
+#'@param default_names How the list elements will be named as per default
+validate_param_list <- function(param_list, default_names) {
 
-  if(!is.list(param_list)){
-    stop("Argument param_list passed to validate_param_list must be a list", call. = FALSE)
+  assertthat::assert_that(any(is.list(param_list), is.vector(param_list)))
+  assertthat::assert_that(is.character(default_names))
+  assertthat::assert_that(length(param_list) == length(default_names))
+
+  if(is.null(names(param_list)) ||
+     (!is.null(names(param_list)) && names(param_list) != default_names)){
+
+    names(param_list) <- default_names
+
+    message(paste0(
+      "Renaming elements of ",
+      deparse(quote(param_list)),
+      " to fit their default names: '",
+      paste(default_names, collapse = "', '")
+    ))
   }
 
-  if(length(param_list) != expected_length){
-    stop(paste(deparse(quote(param_list)), "must be a list of length", expected_length),
-         call. = FALSE)
-  }
-
-  if(!is.null(names(param_list)) &&
-     names(param_list) != possible_names){
-    stop(paste0("If you do name the elements of ", deparse(quote(param_list)), ", stick to their default
-              values to avoid confusion: '", paste(possible_names, collapse="', '"), "'"),
-         call. = FALSE)
-  }
+  return(invisible(param_list))
 }
 
 
 #'validate_wrapper_list
-#'@description Helper function, checks if a lists consists only of elements of a specific class
+#'@description Helper function, checks if a lists consists only of elements of
+#' a specific class
 #'@param wrapper_list The list to check
-#'@param expected_element_class The class each element of the wrapper list should have
+#'@param expected_element_class The class each element of the wrapper list
+#' should have
 validate_wrapper_list <- function(wrapper_list, expected_element_class) {
 
   assertthat::assert_that(is.list(wrapper_list))
 
   lapply(wrapper_list, function(x){
     if(class(x) != expected_element_class){
-      stop(paste("List has at least one element whose class is not", expected_element_class),
+      stop(paste("List has at least one element whose class is not",
+                 expected_element_class),
          call. = FALSE)}
     })
 }
 
 
-#============================== XML UTILITY ================================
+#===== OTHERS =====
 
 
-#'get_value_types
-#'@description Gets the type of an XML value based on the documentation
-#' (per default, XML values are read in as a string, but for many elements,
-#' we want to coerce them to double)
-#'@param xml_node An XML node (of class xml2::xml_node)
-get_value_types <- function(xml_node) {
-
-  #WIP! Could be a nice utility function.
-
-  return(invisible("String"))
-}
-
-
-#============================== OTHERS ================================
-
-
-
-
-#================================Test if S3 object in R6 class inherits reference semantics
+#Test if S3 object in R6 class inherits reference semantics
 
 # A <- R6::R6Class("A",
 #   public = list(
