@@ -1,19 +1,18 @@
 
+#===== r2ogs6_medium =====
+
 
 #'r2ogs6_medium
-#'@description A specific medium with optional id corresponding to the MaterialIDs
-#'@param phases A list of medium phases (r2ogs6_medium_phase objects)
-#'@param properties A list of medium properties (r2ogs6_medium_property objects)
-#'@param id Optional: ID corresponding to the MaterialIDs
+#'@description tag: medium, a specific medium with optional id corresponding
+#' to the MaterialIDs
+#'@param phases list, r2ogs6_medium_phase: Medium phases
+#'@param properties list, r2ogs6_medium_property: Medium properties
+#'@param id double: ID corresponding to the MaterialIDs
 #'@export
 r2ogs6_medium <- function(phases, properties, id = NULL) {
 
     #Coerce input
-    if(!is.null(id)){
-        if(assertthat::is.string(id)){
-            id <- as.double(id)
-        }
-    }
+    id <- coerce_string_to_numeric(id)
 
     new_r2ogs6_medium(phases, properties, id)
 }
@@ -23,10 +22,7 @@ new_r2ogs6_medium <- function(phases, properties, id = NULL) {
 
     validate_wrapper_list(phases, "r2ogs6_medium_phase")
     validate_wrapper_list(properties, "r2ogs6_medium_property")
-
-    if(!is.null(id)){
-        assertthat::assert_that(assertthat::is.number(id))
-    }
+    validate_is_null_or_number(id)
 
     structure(
         list(
@@ -43,21 +39,20 @@ new_r2ogs6_medium <- function(phases, properties, id = NULL) {
 }
 
 
+#===== r2ogs6_medium_property =====
+
+
 #'r2ogs6_medium_property
-#'@description S3 class describing a .prj medium property (a constitutive property) (WIP!)
-#'@param name A string specifying the property name
-#'@param type A string specifying the property type
-#'@param value A string ...
+#'@description tag: property, a constitutive property
+#'@param name string: Property name
+#'@param type string: Property type
+#'@param value string | double: ...
 #'@param ... ...
 #'@export
 r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 
     #Coerce input
-    if(!is.null(value)){
-        if(assertthat::is.string(value)){
-            value <- as.double(value)
-        }
-    }
+    value <- coerce_string_to_numeric(value)
 
     new_r2ogs6_medium_property(name, type, value, ...)
 }
@@ -68,9 +63,7 @@ new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    if(!is.null(value)){
-        assertthat::assert_that(assertthat::is.number(value))
-    }
+    validate_is_null_or_number(value)
 
     structure(
         list(
@@ -87,30 +80,41 @@ new_r2ogs6_medium_property <- function(name, type, value = NULL, ...){
 }
 
 
+#===== r2ogs6_medium_phase =====
+
+
 #'r2ogs6_medium_phase
-#'@description S3 class describing a .prj medium phase (a coherent material with homogeneous properties)
-#'@param type A string specifying the medium type (one of "Gas", "Solid", "AqueousLiquid" and "NonAqueousLiquid")
-#'@param properties A list of properties (see ?r2ogs6_medium_property for more info)
+#'@description tag: phase, a coherent material with homogeneous properties
+#'@param type string: Medium type (one of "Gas", "Solid", "AqueousLiquid"
+#' and "NonAqueousLiquid")
+#'@param properties list, r2ogs6_medium_property: Properties
+#'@param components list, components (WIP)
 #'@export
-r2ogs6_medium_phase <- function(type, properties){
+r2ogs6_medium_phase <- function(type, properties, components = NULL){
 
     #Make this more user friendly
     #...
 
-    new_r2ogs6_medium_phase(type, properties)
+    new_r2ogs6_medium_phase(type, properties, components)
 }
 
 
-new_r2ogs6_medium_phase <- function(type, properties) {
+new_r2ogs6_medium_phase <- function(type, properties, components = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(type %in% prj_medium_phase_types)
+
+    if(!is.null(components)){
+        #...
+    }
+
     validate_wrapper_list(properties, "r2ogs6_medium_property")
 
     structure(
         list(
             type = type,
             properties = properties,
+            components = components,
             tag_name = "phase",
             is_subclass = TRUE,
             attr_names = character(),
