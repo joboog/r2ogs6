@@ -1,34 +1,41 @@
 
+#===== r2ogs6_time_loop =====
+
 
 #'r2ogs6_time_loop
-#'@description S3 class describing a .prj time_loop
-#'@param processes A list of r2ogs6_tl_process class objects
-#'@param output A r2ogs6_tl_output class object
-#'@param global_processes_coupling ...
+#'@description tag: time_loop
+#'@param processes list, r2ogs6_tl_process: ...
+#'@param output r2ogs6_tl_output: ...
+#'@param global_process_coupling Optional: r2ogs6_global_process_coupling: ...
 #'@export
-r2ogs6_time_loop <- function(processes, output, global_processes_coupling = NULL) {
+r2ogs6_time_loop <- function(processes,
+                             output,
+                             global_process_coupling = NULL) {
 
     #Make this more user friendly
     #...
 
-    new_r2ogs6_time_loop(processes, output, global_processes_coupling)
+    new_r2ogs6_time_loop(processes,
+                         output,
+                         global_process_coupling)
 }
 
 
-new_r2ogs6_time_loop <- function(processes, output, global_processes_coupling = NULL) {
+new_r2ogs6_time_loop <- function(processes,
+                                 output,
+                                 global_process_coupling = NULL) {
 
     validate_wrapper_list(processes, "r2ogs6_tl_process")
     assertthat::assert_that(class(output) == "r2ogs6_tl_output")
 
-    if(!is.null(global_processes_coupling)){
-        assertthat::assert_that(class(global_processes_coupling) == "r2ogs6_global_processes_coupling")
-    }
+    validate_is_null_or_class_obj(global_process_coupling,
+                                  "r2ogs6_global_process_coupling")
 
     structure(
         list(
             processes = processes,
             output = output,
-            global_processes_coupling = global_processes_coupling,
+            global_process_coupling = global_process_coupling,
             tag_name = "time_loop",
             is_subclass = FALSE,
             attr_names = character(),
@@ -39,55 +46,64 @@ new_r2ogs6_time_loop <- function(processes, output, global_processes_coupling = 
 }
 
 
-#WIP!!!!!!!!!!!!!!
-r2ogs6_global_processes_coupling <- function() {
-
-    new_r2ogs6_global_processes_coupling()
-}
-
-
-new_r2ogs6_global_processes_coupling <- function() {
-
-    structure(
-        list(
-        ),
-        class = "r2ogs6_global_processes_coupling"
-    )
-}
+#===== r2ogs6_tl_process =====
 
 
 #'r2ogs6_tl_process
-#'@description S3 class describing a .prj time_loop process
-#'@param ref References a r2ogs6_process object by name
-#'@param nonlinear_solver ...
-#'@param convergence_criterion ...
-#'@param time_discretization ...
-#'@param time_stepping ...
+#'@description tag: process (parent: time_loop, NOT processes!)
+#'@param ref string: References a r2ogs6_process object by name
+#'@param nonlinear_solver string:
+#'@param convergence_criterion r2ogs6_convergence_criterion:
+#'@param time_discretization vector:
+#'@param time_stepping list:
+#'@param compensate_non_equilibrium_initial_residuum string: Optional: Either
+#'"true" or "false"
 #'@export
-r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
-                              time_discretization, time_stepping) {
+r2ogs6_tl_process <- function(ref,
+                              nonlinear_solver,
+                              convergence_criterion,
+                              time_discretization,
+                              time_stepping,
+                              compensate_non_equilibrium_initial_residuum =
+                                  NULL) {
 
     #Make this more user friendly
     #...
 
-    validate_r2ogs6_tl_process(new_r2ogs6_tl_process(ref, nonlinear_solver, convergence_criterion,
-                          time_discretization, time_stepping))
+    validate_r2ogs6_tl_process(
+        new_r2ogs6_tl_process(ref,
+                              nonlinear_solver,
+                              convergence_criterion,
+                              time_discretization,
+                              time_stepping,
+                              compensate_non_equilibrium_initial_residuum))
 }
 
 
-new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
-                                  time_discretization, time_stepping) {
+new_r2ogs6_tl_process <- function(ref,
+                                  nonlinear_solver,
+                                  convergence_criterion,
+                                  time_discretization,
+                                  time_stepping,
+                                  compensate_non_equilibrium_initial_residuum =
+                                      NULL) {
 
     assertthat::assert_that(assertthat::is.string(ref))
     assertthat::assert_that(assertthat::is.string(nonlinear_solver))
 
-    assertthat::assert_that(is.list(convergence_criterion))
+    assertthat::assert_that(class(convergence_criterion) ==
+                                "r2ogs6_convergence_criterion")
+
     assertthat::assert_that(is.vector(time_discretization))
 
-    assertthat::assert_that(is.list(time_stepping))
-    assertthat::assert_that(length(time_stepping) == 4)
-    names(time_stepping) <- c("type", "t_initial", "t_end", "timesteps")
+    time_stepping::validate_param_list(time_stepping, c("type",
+                                                        "t_initial",
+                                                        "t_end",
+                                                        "timesteps"))
 
+    if(!is.null(compensate_non_equilibrium_initial_residuum)){
+        validate_true_false_str(compensate_non_equilibrium_initial_residuum)
+    }
 
     structure(
         list(ref = ref,
@@ -95,6 +111,8 @@ new_r2ogs6_tl_process <- function(ref, nonlinear_solver, convergence_criterion,
              convergence_criterion = convergence_criterion,
              time_discretization = time_discretization,
              time_stepping = time_stepping,
+             compensate_non_equilibrium_initial_residuum =
+                 compensate_non_equilibrium_initial_residuum,
              tag_name = "process",
              is_subclass = TRUE,
              attr_names = c("ref"),
@@ -109,68 +127,232 @@ validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
 
     #Coerce input
     if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[2]])){
-        r2ogs6_tl_process$time_stepping[[2]] <- as.double(r2ogs6_tl_process$time_stepping[[2]])
+        r2ogs6_tl_process$time_stepping[[2]] <-
+            as.double(r2ogs6_tl_process$time_stepping[[2]])
     }
 
     if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[3]])){
-        r2ogs6_tl_process$time_stepping[[3]] <- as.double(r2ogs6_tl_process$time_stepping[[3]])
+        r2ogs6_tl_process$time_stepping[[3]] <-
+            as.double(r2ogs6_tl_process$time_stepping[[3]])
     }
 
-    r2ogs6_tl_process$time_stepping[[4]] <- validate_timesteps(r2ogs6_tl_process$time_stepping[[4]])
+    r2ogs6_tl_process$time_stepping[[4]] <-
+        validate_timesteps(r2ogs6_tl_process$time_stepping[[4]])
 
     return(invisible(r2ogs6_tl_process))
 }
 
 
+#===== r2ogs6_tl_output =====
+
+
 #'r2ogs6_tl_output
-#'@description S3 class describing a .prj time_loop output
-#'@param type ...
-#'@param prefix ...
-#'@param suffix ...
-#'@param timesteps ...
-#'@param variables ...
-#'@param compress_output Optional: Should the output be compressed?
+#'@description tag: output
+#'@param type string:
+#'@param prefix string:
+#'@param variables vector:
+#'@param suffix Optional: string:
+#'@param timesteps Optional:
+#'@param compress_output Optional: string: Should the output be compressed?
+#' Either "true" or "false"
+#'@param data_mode Optional: string:
+#'@param output_iteration_results Optional: string: Either "true" or "false"
+#'@param meshes Optional: character: A vector of mesh names
+#'@param fixed_output_times Optional: string | numeric:
 #'@export
-r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, compress_output = NULL) {
+r2ogs6_tl_output <- function(type,
+                             prefix,
+                             variables,
+                             suffix = NULL,
+                             timesteps = NULL,
+                             compress_output = NULL,
+                             data_mode = NULL,
+                             output_iteration_results = NULL,
+                             meshes = NULL,
+                             fixed_output_times = NULL) {
 
-    #Make this more user friendly
-    #...
+    #Coerce input
+    fixed_output_times <- coerce_string_to_numeric(fixed_output_times, TRUE)
 
-    new_r2ogs6_tl_output(type, prefix, suffix, timesteps, variables, compress_output)
+    new_r2ogs6_tl_output(type,
+                         prefix,
+                         variables,
+                         suffix,
+                         timesteps,
+                         compress_output,
+                         data_mode,
+                         output_iteration_results,
+                         meshes,
+                         fixed_output_times)
 }
 
 
-new_r2ogs6_tl_output <- function(type, prefix, suffix, timesteps, variables, compress_output = NULL) {
+new_r2ogs6_tl_output <- function(type,
+                                 prefix,
+                                 variables,
+                                 suffix = NULL,
+                                 timesteps = NULL,
+                                 compress_output = NULL,
+                                 data_mode = NULL,
+                                 output_iteration_results = NULL,
+                                 meshes = NULL,
+                                 fixed_output_times = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(prefix))
-    assertthat::assert_that(assertthat::is.string(suffix))
-
-    timesteps <- validate_timesteps(timesteps, TRUE)
-
     assertthat::assert_that(is.vector(variables))
     names(variables) <- rep("variable", length(variables))
 
-    if(!is.null(compress_output)){
-        valid_vals <- c("false", "true")
-        assertthat::assert_that(compress_output %in% valid_vals)
+    validate_is_null_or_string(suffix,
+                               data_mode)
+
+
+    if(!is.null(timesteps)){
+        timesteps <- validate_timesteps(timesteps, TRUE)
     }
+
+    if(!is.null(compress_output)){
+        validate_true_false_str(compress_output)
+    }
+
+    if(!is.null(output_iteration_results)){
+        validate_true_false_str(output_iteration_results)
+    }
+
+    if(!is.null(meshes)){
+        assertthat::assert_that(is.character(meshes))
+        names(meshes) <- rep("mesh", length(meshes))
+    }
+
+    validate_is_null_or_numeric(fixed_output_times)
 
     structure(
         list(type = type,
              prefix = prefix,
+             variables = variables,
              suffix = suffix,
              timesteps = timesteps,
-             variables = variables,
              compress_output = compress_output,
+             data_mode = data_mode,
+             output_iteration_results = output_iteration_results,
+             meshes = meshes,
+             fixed_output_times = fixed_output_times,
              tag_name = "output",
              is_subclass = TRUE,
              attr_names = character(),
-             flatten_on_exp = character()
+             flatten_on_exp = c("fixed_output_times")
         ),
         class = "r2ogs6_tl_output"
     )
 }
+
+
+#===== r2ogs6_global_process_coupling =====
+
+
+#'r2ogs6_global_process_coupling
+#'@description tag: global_process_coupling
+#'@param max_iter string | double: Maximal number of iterations
+#'@param convergence_criteria list, r2ogs6_convergence_criterion:
+#' Convergence criteria
+r2ogs6_global_process_coupling <- function(max_iter,
+                                           convergence_criteria) {
+
+    #Coerce input
+    max_iter <- coerce_string_to_numeric(max_iter)
+
+    new_r2ogs6_global_process_coupling(max_iter,
+                                       convergence_criteria)
+}
+
+
+new_r2ogs6_global_process_coupling <- function(max_iter,
+                                               convergence_criteria) {
+
+    assertthat::assert_that(is.double(max_iter))
+
+    validate_wrapper_list(convergence_criteria,
+                          "r2ogs6_convergence_criterion")
+
+    structure(
+        list(
+            max_iter = max_iter,
+            convergence_criteria = convergence_criteria,
+            tag_name = "global_process_coupling",
+            is_subclass = TRUE,
+            attr_names = character(),
+            flatten_on_exp = character()
+        ),
+        class = "r2ogs6_global_process_coupling"
+    )
+}
+
+
+#===== r2ogs6_convergence_criterion =====
+
+
+#'r2ogs6_convergence_criterion
+#'@description tag: convergence_criterion
+#'@param type string: Type
+#'@param norm_type string: ...
+#'@param abstol string | double: Absolute tolerance
+#'@param reltol string | double: Relative tolerance
+#'@param abstols string | numeric: Absolute tolerances
+#'@param reltols string | numeric: Relative tolerances
+r2ogs6_convergence_criterion <- function(type,
+                                         norm_type,
+                                         abstol = NULL,
+                                         reltol = NULL,
+                                         abstols = NULL,
+                                         reltols = NULL) {
+
+    #Coerce input
+    abstols <- coerce_string_to_numeric(abstols, TRUE)
+    reltols <- coerce_string_to_numeric(reltols, TRUE)
+
+    new_r2ogs6_convergence_criterion(type,
+                                     norm_type,
+                                     abstol,
+                                     reltol,
+                                     abstols,
+                                     reltols)
+}
+
+
+new_r2ogs6_convergence_criterion <- function(type,
+                                             norm_type,
+                                             abstol = NULL,
+                                             reltol = NULL,
+                                             abstols = NULL,
+                                             reltols = NULL) {
+
+    assertthat::assert_that(assertthat::is.string(type))
+    assertthat::assert_that(assertthat::is.string(norm_type))
+
+    validate_is_null_or_number(abstol,
+                               reltol)
+    validate_is_null_or_numeric(abstols,
+                                reltols)
+
+    structure(
+        list(
+            type = type,
+            norm_type = norm_type,
+            abstol = abstol,
+            reltol = reltol,
+            abstols = abstols,
+            reltols = reltols,
+            tag_name = "convergence_criterion",
+            is_subclass = TRUE,
+            attr_names = character(),
+            flatten_on_exp = c("abstols", "reltols")
+        ),
+        class = "r2ogs6_convergence_criterion"
+    )
+}
+
+
+#===== timesteps validation =====
 
 
 #Validation helper function
