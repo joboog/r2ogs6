@@ -31,6 +31,11 @@ Imports:
     rlist,
     utils,
     qpdf,
-    rmarkdown
+    rmarkdown,
+    rvest,
+    pbapply,
+    httr,
+    RCurl,
+    curl
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
