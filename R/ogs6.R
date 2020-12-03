@@ -6,10 +6,11 @@
 #'@description Constructor for the OGS6 base class
 #'@param sim_name The name of the simulation
 #'@param sim_id The ID of the simulation
-#'@param sim_path The path where all relevant files for the simulation will be saved
+#'@param sim_path The path where all relevant files for the simulation will be
+#' saved
 #'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
-#'@param test_mode In test mode, sim_path and ogs_bin_path will not be validated. If you're not
-#' a developer, please leave this variable as it is :)
+#'@param test_mode In test mode, sim_path and ogs_bin_path will not be
+#' validated. If you're not a developer, please leave this variable as it is :)
 #'@export
 OGS6 <- R6::R6Class("OGS6",
   public = list(
@@ -50,11 +51,22 @@ OGS6 <- R6::R6Class("OGS6",
     add_gml = function(gml){
       assertthat::assert_that(class(gml) == "r2ogs6_gml")
       if(!is.null(private$.gml)){
-        warning("Overwriting gml and geometry variable of OGS6 object", call. = FALSE)
+        warning("Overwriting gml and geometry variable of OGS6 object",
+                call. = FALSE)
 
       }
       private$.gml <- gml
       private$.geometry <- paste0(gml$name, ".gml")
+    },
+
+    add_python_script = function(python_script){
+      assertthat::assert_that(assertthat::is.string(python_script))
+      if(!is.null(private$.python_script)){
+        warning("Overwriting python_script variable of OGS6 object",
+                call. = FALSE)
+
+      }
+      private$.python_script <- python_script
     },
 
     add_process = function(process){
@@ -66,9 +78,18 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(class(time_loop) == "r2ogs6_time_loop")
       if(!is.null(private$.time_loop)){
         warning("Overwriting time_loop variable of OGS6 object", call. = FALSE)
-
       }
       private$.time_loop <- time_loop
+    },
+
+    add_local_coordinate_system = function(local_coordinate_system){
+      assertthat::assert_that(class(local_coordinate_system) ==
+                                "r2ogs6_local_coordinate_system")
+      if(!is.null(private$.local_coordinate_system)){
+        warning("Overwriting local_coordinate_system variable of OGS6 object",
+                call. = FALSE)
+      }
+      private$.local_coordinate_system <- local_coordinate_system
     },
 
     add_medium = function(medium){
@@ -87,13 +108,17 @@ OGS6 <- R6::R6Class("OGS6",
     },
 
     add_process_variable = function(process_variable){
-      assertthat::assert_that(class(process_variable) == "r2ogs6_process_variable")
-      private$.process_variables <- c(private$.process_variables, list(process_variable))
+      assertthat::assert_that(class(process_variable) ==
+                                "r2ogs6_process_variable")
+      private$.process_variables <- c(private$.process_variables,
+                                      list(process_variable))
     },
 
     add_nonlinear_solver = function(nonlinear_solver){
-      assertthat::assert_that(class(nonlinear_solver) == "r2ogs6_nonlinear_solver")
-      private$.nonlinear_solvers <- c(private$.nonlinear_solvers, list(nonlinear_solver))
+      assertthat::assert_that(class(nonlinear_solver) ==
+                                "r2ogs6_nonlinear_solver")
+      private$.nonlinear_solvers <- c(private$.nonlinear_solvers,
+                                      list(nonlinear_solver))
     },
 
     add_linear_solver = function(linear_solver){
@@ -104,6 +129,15 @@ OGS6 <- R6::R6Class("OGS6",
     add_vtkdiff = function(vtkdiff){
       assertthat::assert_that(class(vtkdiff) == "r2ogs6_vtkdiff")
       private$.test_definition <- c(private$.test_definition, list(vtkdiff))
+    },
+
+    add_insitu = function(insitu){
+      assertthat::assert_that(class(insitu) == "r2ogs6_insitu")
+
+      if(!is.null(private$.insitu)){
+        warning("Overwriting insitu variable of OGS6 object", call. = FALSE)
+      }
+      private$.insitu <- insitu
     },
 
     get_status = function(){
@@ -119,40 +153,45 @@ OGS6 <- R6::R6Class("OGS6",
       #.prj
       flag <- get_list_status(flag, private$.processes, "process")
       flag <- obj_is_defined(flag, private$.time_loop, "time_loop")
-      flag <- get_list_status(flag, private$.media, "medium")
+      flag <- obj_is_defined(flag, private$.local_coordinate_system,
+                             "local_coordinate_system", is_opt = TRUE)
+      flag <- get_list_status(flag, private$.media, "medium", is_opt = TRUE)
       flag <- get_list_status(flag, private$.parameters, "parameter")
       flag <- get_list_status(flag, private$.curves, "curve", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.process_variables, "process_variable")
-      flag <- get_list_status(flag, private$.nonlinear_solvers, "nonlinear_solver")
-      flag <- get_list_status(flag, private$.linear_solvers, "linear_solver")
-      flag <- get_list_status(flag, private$.test_definition, "vtkdiff", is_opt = TRUE)
+      flag <- get_list_status(flag, private$.process_variables,
+                              "process_variable")
+      flag <- get_list_status(flag, private$.nonlinear_solvers,
+                              "nonlinear_solver")
+      flag <- get_list_status(flag, private$.linear_solvers,
+                              "linear_solver")
+      flag <- get_list_status(flag, private$.test_definition,
+                              "vtkdiff", is_opt = TRUE)
+      flag <- obj_is_defined(flag, private$.insitu,
+                             "insitu", is_opt = TRUE)
 
       if(flag){
         cat(paste0("Your simulation object has all necessary components.\n",
-        "You can try to start the simulation by calling run_simulation() on your OGS6 object.\n",
-        "Note that this will call more validation functions so you may not be done just yet.\n"))
+        "You can try to start the simulation by calling run_simulation() ",
+        "on your OGS6 object.\n",
+        "Note that this will call more validation functions, ",
+        "so you may not be done just yet.\n"))
       }
 
       return(invisible(flag))
     },
 
-    clear = function(which = c("meshes", "geometry", "processes",
-                               "time_loop", "media", "parameters",
-                               "curves", "process_variables", "nonlinear_solvers",
-                               "linear_solvers", "test_definition")){
+    clear = function(which = names(get_implemented_classes())){
 
       assertthat::assert_that(is.character(which))
 
-      valid_input <- c("meshes", "geometry", "processes",
-                       "time_loop", "media", "parameters",
-                       "curves", "process_variables", "nonlinear_solvers",
-                       "linear_solvers", "test_definition")
+      valid_input = names(get_implemented_classes())
 
       null_it <- c("geometry", "time_loop")
 
       for(i in seq_len(length(which))){
         if(!which[[i]] %in% valid_input){
-          warning(paste0("Parameter '", which[[i]], "' not recognized by OGS6$clear(). ",
+          warning(paste0("Parameter '", which[[i]],
+                         "' not recognized by OGS6$clear(). ",
                         "Valid parameters are:\n'",
                         paste(valid_input, sep = "", collapse = "', '"),
                         "'\nSkipping."), call. = FALSE)
@@ -236,6 +275,14 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
+      python_script = function(value) {
+        if (missing(value)) {
+          private$.python_script
+        } else {
+          stop("`$python_script` is read only", call. = FALSE)
+        }
+      },
+
       processes = function(value) {
         if (missing(value)) {
           private$.processes
@@ -249,6 +296,16 @@ OGS6 <- R6::R6Class("OGS6",
           private$.time_loop
         } else {
           stop("`To modify `$time_loop`, use add_time_loop().", call. = FALSE)
+        }
+      },
+
+      local_coordinate_system = function(value) {
+        if (missing(value)) {
+          private$.local_coordinate_system
+        } else {
+          stop(paste("`To modify `$local_coordinate_system`,",
+                     "use add_local_coordinate_system()."),
+               call. = FALSE)
         }
       },
 
@@ -280,7 +337,8 @@ OGS6 <- R6::R6Class("OGS6",
         if (missing(value)) {
           private$.process_variables
         } else {
-          stop("`To modify `$process_variables`, use add_process_variable().", call. = FALSE)
+          stop("`To modify `$process_variables`, use add_process_variable().",
+               call. = FALSE)
         }
       },
 
@@ -288,7 +346,8 @@ OGS6 <- R6::R6Class("OGS6",
         if (missing(value)) {
           private$.nonlinear_solvers
         } else {
-          stop("`To modify `$nonlinear_solvers`, use add_nonlinear_solver().", call. = FALSE)
+          stop("`To modify `$nonlinear_solvers`, use add_nonlinear_solver().",
+               call. = FALSE)
         }
       },
 
@@ -296,7 +355,8 @@ OGS6 <- R6::R6Class("OGS6",
         if (missing(value)) {
           private$.linear_solvers
         } else {
-          stop("`To modify `$linear_solvers`, use add_linear_solver().", call. = FALSE)
+          stop("`To modify `$linear_solvers`, use add_linear_solver().",
+               call. = FALSE)
         }
       },
 
@@ -304,7 +364,16 @@ OGS6 <- R6::R6Class("OGS6",
         if (missing(value)) {
           private$.test_definition
         } else {
-          stop("`To modify `$test_definition`, use add_test_definition().", call. = FALSE)
+          stop("`To modify `$test_definition`, use add_vtkdiff().",
+               call. = FALSE)
+        }
+      },
+
+      insitu = function(value) {
+        if (missing(value)) {
+          private$.insitu
+        } else {
+          stop("`To modify `$insitu`, use add_insitu().", call. = FALSE)
         }
       }
   ),
@@ -323,15 +392,18 @@ OGS6 <- R6::R6Class("OGS6",
       #.prj parameters
       .meshes = list(),
       .geometry = NULL,
+      .python_script = NULL,
       .processes = list(),
       .time_loop = NULL,
+      .local_coordinate_system = NULL,
       .media = list(),
       .parameters = list(),
       .curves = list(),
       .process_variables = list(),
       .nonlinear_solvers = list(),
       .linear_solvers = list(),
-      .test_definition = list()
+      .test_definition = list(),
+      .insitu = NULL
   )
 )
 
