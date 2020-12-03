@@ -1,11 +1,46 @@
 
 
+#'generate_all_benchmarks
+#'@description Collector function to generate benchmarks from all .prj files in a directory
+#'@param path Optional: A path to a benchmark directory to generate scripts from
+#' (defaults to 'extdata/benchmarks' package folder)
+#'@param dest_dir Optional: The directory to write the scripts to
+#' (defaults to 'extdata/benchmark_scripts' package folder)
+generate_all_benchmarks <- function(path = "extdata/benchmarks/",
+                                    dest_dir = "extdata/benchmark_scripts/"){
+
+    prj_files <- list.files(path = path, pattern = "\\.prj$", recursive = TRUE)
+
+    for(i in seq_len(length(prj_files))){
+
+        prj_file <- paste0(path, prj_files[[i]])
+
+        skip_to_next <- FALSE
+
+        out<- tryCatch(
+            {
+                xml2::read_xml(prj_file, encoding="ISO-8859-1")
+            },
+            error = function(cond){
+                skip_to_next <<- TRUE
+            }
+        )
+
+        if(skip_to_next){
+            next
+        }
+
+        generate_benchmark_script(prj_file, dest_dir)
+    }
+}
+
+
 #'generate_benchmark_script
 #'@description Generates a benchmark script from an existing .prj file.
 #'@param prj_path The path to the project file the script will be based on
 #'@param dest_dir Optional: The directory to write the script to
 #'@export
-generate_benchmark_script <- function(prj_path, dest_dir = "") {
+generate_benchmark_script <- function(prj_path, dest_dir = "extdata/benchmark_scripts/") {
 
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(dest_dir))
@@ -19,17 +54,7 @@ generate_benchmark_script <- function(prj_path, dest_dir = "") {
 
     read_in_prj(ogs6_obj, prj_path)
 
-    impl_classes = c(meshes = "r2ogs6_mesh",
-                     gml = "r2ogs6_gml",
-                     processes = "r2ogs6_process",
-                     media = "r2ogs6_medium",
-                     time_loop = "r2ogs6_time_loop",
-                     parameters = "r2ogs6_parameter",
-                     curves = "r2ogs6_curve",
-                     process_variables = "r2ogs6_process_variable",
-                     nonlinear_solvers = "r2ogs6_nonlinear_solver",
-                     linear_solvers = "r2ogs6_linear_solver",
-                     test_definition = "r2ogs6_vtkdiff")
+    impl_classes = get_implemented_classes()
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
