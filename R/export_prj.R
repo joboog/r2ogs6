@@ -27,7 +27,8 @@ export_prj <- function(ogs6_obj) {
             to_node(ogs6_obj$process_variables),
             to_node(ogs6_obj$nonlinear_solvers),
             to_node(ogs6_obj$linear_solvers),
-            to_node(ogs6_obj$test_definition)
+            to_node(ogs6_obj$test_definition),
+            to_node(ogs6_obj$insitu),
         )
     )
 
