@@ -83,28 +83,37 @@ test_that("to_node works for simple classes", {
     wrapper_node <- to_node(para_wrapper, "parameters")
     wrapper_xml <- xml2::as_xml_document(wrapper_node)
 
-    expect_equal(length(xml2::xml_find_all(wrapper_xml, "/parameters/parameter")), 2)
+    expect_equal(length(
+        xml2::xml_find_all(wrapper_xml, "/parameters/parameter")), 2)
 
-    expect_equal(xml2::xml_text(xml2::xml_find_all(wrapper_xml, "/parameters/parameter/values")[[2]]),
-                 "0 0")
+    expect_equal(xml2::xml_text(
+        xml2::xml_find_all(wrapper_xml, "/parameters/parameter/values")[[2]]),
+        "0 0")
 })
 
 
 test_that("to_node works for classes that have lists as parameters", {
 
-    linear_solver <- r2ogs6_linear_solver(name = "general_linear_solver",
-                                          eigen = list(solver_type = "BiCGSTAB",
-                                                       precon_type = "ILUT",
-                                                       max_iteration_step = 10000,
-                                                       error_tolerance = 1e-16),
-                                          lis = "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000")
+    linear_solver <- r2ogs6_linear_solver(
+        name = "general_linear_solver",
+        eigen = list(
+            solver_type = "BiCGSTAB",
+            precon_type = "ILUT",
+            max_iteration_step = 10000,
+            error_tolerance = 1e-16
+        ),
+        lis = "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000"
+    )
 
     linear_solver_node <- to_node(linear_solver)
     linear_solver_xml <- xml2::as_xml_document(linear_solver_node)
 
-    expect_equal(length(xml2::xml_find_all(linear_solver_xml, "/linear_solver/eigen/*")), 4)
-    expect_equal(xml2::xml_text(xml2::xml_find_all(linear_solver_xml, "/linear_solver/eigen/precon_type")),
-                 "ILUT")
+    expect_equal(length(xml2::xml_find_all(linear_solver_xml,
+                                           "/linear_solver/eigen/*")), 4)
+    expect_equal(xml2::xml_text(
+        xml2::xml_find_all(linear_solver_xml,
+                           "/linear_solver/eigen/precon_type")),
+        "ILUT")
 })
 
 
@@ -132,9 +141,13 @@ test_that("to_node works for classes that have subclasses", {
     expect_equal(length(xml2::xml_find_all(
         process_variable_xml, "/process_variable/boundary_conditions/*")), 1)
 
-    expect_equal(xml2::xml_text(xml2::xml_find_first(
-        process_variable_xml, "/process_variable/boundary_conditions/boundary_condition/geometry")),
-                 "left")
+    expect_equal(xml2::xml_text(
+        xml2::xml_find_first(
+            process_variable_xml,
+            "/process_variable/boundary_conditions/boundary_condition/geometry"
+        )
+    ),
+    "left")
 })
 
 test_that("to_node works for classes that have attributes", {
@@ -189,7 +202,9 @@ test_that("to_node works for r2ogs6_process class", {
     process_node <- to_node(process)
     process_xml <- xml2::as_xml_document(process_node)
 
-    attrs <- xml2::xml_attrs(xml2::xml_find_first(process_xml,
-                                                  "/process/secondary_variables/secondary_variable"))
+    attrs <- xml2::xml_attrs(
+        xml2::xml_find_first(process_xml,
+                             "/process/secondary_variables/secondary_variable"))
+
     expect_equal(attrs, c(internal_name = "sigma_xx", output_name = "sigma_xx"))
 })

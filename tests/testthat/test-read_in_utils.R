@@ -18,7 +18,7 @@ test_that("guess_structure works", {
                          ogs_bin_path = "ogs_bin_path",
                          test_mode = TRUE)
 
-    read_in_parameters(ogs6_obj, prj_path)
+    read_in(ogs6_obj, prj_path, "parameters", "parameter")
 
     expect_equal(length(ogs6_obj$parameters), 7)
     expect_equal(ogs6_obj$parameters[[1]]$name, "E")
