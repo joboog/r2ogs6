@@ -1,31 +1,24 @@
 
+#===== r2ogs6_curve =====
+
 
 #'r2ogs6_curve
-#'@description S3 class describing a .prj curve
-#'@param name The name of the curve
-#'@param coords Coordinates at which the curve's values are given
-#'@param values Values of the curve at the given coordinates
+#'@description tag: curve, a curve
+#'@param name string: Name of the curve
+#'@param coords string | numeric: Coordinates at which the curve's values
+#' are given
+#'@param values string | numeric: Values of the curve at the given coordinates
 #'@export
 r2ogs6_curve <- function(name, coords, values){
 
     #Coerce input
-    if(assertthat::is.string(coords)){
-        coords <- as.double(unlist(strsplit(coords, " ")))
-    }
-
-    if(assertthat::is.string(values)){
-        values <- as.double(unlist(strsplit(values, " ")))
-    }
+    coords <- coerce_string_to_numeric(coords, TRUE)
+    values <- coerce_string_to_numeric(values, TRUE)
 
     new_r2ogs6_curve(name, coords, values)
 }
 
 
-#'new_r2ogs6_curve
-#'@description Constructor for S3 class r2ogs6_curve
-#'@param name The name of the curve
-#'@param coords Coordinates at which the curve's values are given
-#'@param values Values of the curve at the given coordinates
 new_r2ogs6_curve <- function(name, coords, values){
 
     assertthat::assert_that(assertthat::is.string(name))
