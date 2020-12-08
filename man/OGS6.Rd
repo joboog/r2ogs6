@@ -13,8 +13,10 @@ Constructor for the OGS6 base class
 \item \href{#method-add_sim_output}{\code{OGS6$add_sim_output()}}
 \item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
+\item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
 \item \href{#method-add_process}{\code{OGS6$add_process()}}
 \item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
+\item \href{#method-add_local_coordinate_system}{\code{OGS6$add_local_coordinate_system()}}
 \item \href{#method-add_medium}{\code{OGS6$add_medium()}}
 \item \href{#method-add_parameter}{\code{OGS6$add_parameter()}}
 \item \href{#method-add_curve}{\code{OGS6$add_curve()}}
@@ -22,6 +24,7 @@ Constructor for the OGS6 base class
 \item \href{#method-add_nonlinear_solver}{\code{OGS6$add_nonlinear_solver()}}
 \item \href{#method-add_linear_solver}{\code{OGS6$add_linear_solver()}}
 \item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
+\item \href{#method-add_insitu}{\code{OGS6$add_insitu()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
 \item \href{#method-clear}{\code{OGS6$clear()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
@@ -42,12 +45,13 @@ Constructor for the OGS6 base class
 
 \item{\code{sim_id}}{The ID of the simulation}
 
-\item{\code{sim_path}}{The path where all relevant files for the simulation will be saved}
+\item{\code{sim_path}}{The path where all relevant files for the simulation will be
+saved}
 
 \item{\code{ogs_bin_path}}{Path to OpenGeoSys6 /bin directory}
 
-\item{\code{test_mode}}{In test mode, sim_path and ogs_bin_path will not be validated. If you're not
-a developer, please leave this variable as it is :)}
+\item{\code{test_mode}}{In test mode, sim_path and ogs_bin_path will not be
+validated. If you're not a developer, please leave this variable as it is :)}
 }
 \if{html}{\out{</div>}}
 }
@@ -80,6 +84,15 @@ a developer, please leave this variable as it is :)}
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_python_script"></a>}}
+\if{latex}{\out{\hypertarget{method-add_python_script}{}}}
+\subsection{Method \code{add_python_script()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_python_script(python_script)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_process"></a>}}
 \if{latex}{\out{\hypertarget{method-add_process}{}}}
 \subsection{Method \code{add_process()}}{
@@ -94,6 +107,15 @@ a developer, please leave this variable as it is :)}
 \subsection{Method \code{add_time_loop()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_time_loop(time_loop)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_local_coordinate_system"></a>}}
+\if{latex}{\out{\hypertarget{method-add_local_coordinate_system}{}}}
+\subsection{Method \code{add_local_coordinate_system()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_local_coordinate_system(local_coordinate_system)}\if{html}{\out{</div>}}
 }
 
 }
@@ -161,6 +183,15 @@ a developer, please leave this variable as it is :)}
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_insitu"></a>}}
+\if{latex}{\out{\hypertarget{method-add_insitu}{}}}
+\subsection{Method \code{add_insitu()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_insitu(insitu)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-get_status}{}}}
 \subsection{Method \code{get_status()}}{
@@ -174,11 +205,7 @@ a developer, please leave this variable as it is :)}
 \if{latex}{\out{\hypertarget{method-clear}{}}}
 \subsection{Method \code{clear()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(
-  which = c("meshes", "geometry", "processes", "time_loop", "media", "parameters",
-    "curves", "process_variables", "nonlinear_solvers", "linear_solvers",
-    "test_definition")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(get_implemented_classes()))}\if{html}{\out{</div>}}
 }
 
 }

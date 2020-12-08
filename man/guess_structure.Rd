@@ -4,22 +4,27 @@
 \alias{guess_structure}
 \title{guess_structure}
 \usage{
-guess_structure(xml_node, subclasses_names = character())
+guess_structure(xml_node, xpath_expr, subclasses_names = character())
 }
 \arguments{
 \item{xml_node}{An XML node (of class xml2::xml_node)}
 
-\item{subclasses_names}{Optional: A character vector containing the names of r2ogs6_*
-subclasses (r2ogs6_* classes without a method for input_add)}
+\item{xpath_expr}{An XPath expression (for subclass differentiation)}
+
+\item{subclasses_names}{Optional: A character vector containing the names of
+r2ogs6 subclasses (r2ogs6 classes without a method for input_add)}
 }
 \description{
-Guesses the R representation of an XML node and adds it to parameter list
+Guesses the R representation of an XML node and adds it to
+parameter list
 ASSUMPTIONS:
-1) Leaf nodes will have EITHER a value OR attributes (and will not be missing both, e.g. '<a/>').
+1) Leaf nodes will have EITHER a value OR attributes (and will not be missing
+both, e.g. '<a/>').
 2) Leaf nodes will never be r2ogs6_* objects
-3) If there are multiple occurrences of r2ogs6_* class (and subclass) elements on the same level,
-they have a wrapper node as their parent (e.g. <processes>, <properties>) which
-will contain ONLY elements of this type
+3) If there are multiple occurrences of r2ogs6_* class (and subclass)
+elements on the same level, they have a wrapper node as their parent
+(e.g. <processes>, <properties>) which  will contain ONLY elements of this
+type
 4) Wrapper nodes are represented as lists
 5) Parent nodes whose children have no children are represented as lists
 }

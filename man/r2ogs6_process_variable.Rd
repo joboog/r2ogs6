@@ -9,20 +9,29 @@ r2ogs6_process_variable(
   components,
   order,
   initial_condition,
-  boundary_conditions
+  boundary_conditions = NULL,
+  source_terms = NULL,
+  mesh = NULL,
+  deactivated_subdomains = NULL
 )
 }
 \arguments{
-\item{name}{The name of the process variable}
+\item{name}{string: The name of the process variable}
 
-\item{components}{The components of the process variable}
+\item{components}{string | double:}
 
-\item{order}{The order of the process variable}
+\item{order}{string | double:}
 
-\item{initial_condition}{The initial condition of the process variable}
+\item{initial_condition}{string:}
 
-\item{boundary_conditions}{The boundary conditions of the process variable}
+\item{boundary_conditions}{list, r2ogs6_boundary_condition:}
+
+\item{source_terms}{Optional: list, r2ogs6_source_term:}
+
+\item{mesh}{Optional: string: list:}
+
+\item{deactivated_subdomains}{Optional: list, r2ogs6_deactivated_subdomain:}
 }
 \description{
-S3 class describing a .prj process variable
+tag: process_variable
 }

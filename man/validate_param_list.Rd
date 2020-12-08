@@ -4,15 +4,13 @@
 \alias{validate_param_list}
 \title{validate_param_list}
 \usage{
-validate_param_list(param_list, expected_length, possible_names)
+validate_param_list(param_list, default_names)
 }
 \arguments{
-\item{param_list}{A list of parameters}
+\item{param_list}{A list (or vector) of parameters}
 
-\item{expected_length}{The expected list length}
-
-\item{possible_names}{How the list elements may be named (if the user DID name them)}
+\item{default_names}{How the list elements will be named as per default}
 }
 \description{
-Validator function for a parameter list
+Validator function for a parameter list or vector
 }

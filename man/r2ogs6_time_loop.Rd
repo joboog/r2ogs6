@@ -4,15 +4,15 @@
 \alias{r2ogs6_time_loop}
 \title{r2ogs6_time_loop}
 \usage{
-r2ogs6_time_loop(processes, output, global_processes_coupling = NULL)
+r2ogs6_time_loop(processes, output, global_process_coupling = NULL)
 }
 \arguments{
-\item{processes}{A list of r2ogs6_tl_process class objects}
+\item{processes}{list, r2ogs6_tl_process:}
 
-\item{output}{A r2ogs6_tl_output class object}
+\item{output}{r2ogs6_output:}
 
-\item{global_processes_coupling}{...}
+\item{global_process_coupling}{Optional: r2ogs6_global_process_coupling:}
 }
 \description{
-S3 class describing a .prj time_loop
+tag: time_loop
 }

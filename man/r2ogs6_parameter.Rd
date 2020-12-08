@@ -11,9 +11,9 @@ r2ogs6_parameter(name, type, values = NULL, value = NULL)
 
 \item{type}{The parameter type}
 
-\item{values}{Optional: The parameter values}
+\item{values}{Optional: string | numeric: Parameter values}
 
-\item{value}{Optional: The parameter value}
+\item{value}{Optional: string | double: Parameter value}
 }
 \description{
 S3 class describing a .prj parameter

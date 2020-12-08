@@ -4,7 +4,7 @@
 \alias{obj_is_defined}
 \title{obj_is_defined}
 \usage{
-obj_is_defined(flag, obj, obj_type = "")
+obj_is_defined(flag, obj, obj_type = "", is_opt = FALSE)
 }
 \arguments{
 \item{flag}{Boolean flag to keep track of missing components}
@@ -12,7 +12,10 @@ obj_is_defined(flag, obj, obj_type = "")
 \item{obj}{The specified object}
 
 \item{obj_type}{Optional: What kind of object is this?}
+
+\item{is_opt}{flag: Is the element optional i.e. can it be NULL?}
 }
 \description{
-Helper function for get_status() to check if an object was defined.
+Helper function for get_status() to check if an object was
+defined
 }

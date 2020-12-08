@@ -9,8 +9,10 @@ validate_wrapper_list(wrapper_list, expected_element_class)
 \arguments{
 \item{wrapper_list}{The list to check}
 
-\item{expected_element_class}{The class each element of the wrapper list should have}
+\item{expected_element_class}{The class each element of the wrapper list
+should have}
 }
 \description{
-Helper function, checks if a lists consists only of elements of a specific class
+Helper function, checks if a lists consists only of elements of
+a specific class
 }

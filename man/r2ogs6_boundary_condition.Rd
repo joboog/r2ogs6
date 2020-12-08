@@ -6,26 +6,80 @@
 \usage{
 r2ogs6_boundary_condition(
   type,
-  parameter,
+  parameter = NULL,
+  geometrical_set = NULL,
+  geometry = NULL,
   component = NULL,
   mesh = NULL,
-  geometrical_set = NULL,
-  geometry = NULL
+  alpha = NULL,
+  u_0 = NULL,
+  constraint_type = NULL,
+  constraining_process_variable = NULL,
+  constraint_threshold = NULL,
+  constraint_direction = NULL,
+  area_parameter = NULL,
+  bc_object = NULL,
+  flush_stdout = NULL,
+  property_name = NULL,
+  initial_value_parameter = NULL,
+  constant_name = NULL,
+  coefficient_current_variable_name = NULL,
+  coefficient_other_variable_name = NULL,
+  coefficient_mixed_variables_name = NULL,
+  threshold_parameter = NULL,
+  comparison_operator = NULL,
+  time_interval = NULL
 )
 }
 \arguments{
-\item{type}{...}
+\item{type}{string:}
 
-\item{parameter}{...}
+\item{parameter}{string:}
 
-\item{component}{...}
+\item{geometrical_set}{Optional: string:}
 
-\item{mesh}{...}
+\item{geometry}{Optional: string:}
 
-\item{geometrical_set}{...}
+\item{component}{Optional: string | double:}
 
-\item{geometry}{...}
+\item{mesh}{Optional: string:}
+
+\item{alpha}{Optional: string:}
+
+\item{u_0}{Optional: string:}
+
+\item{constraint_type}{Optional: string:}
+
+\item{constraining_process_variable}{Optional: string:}
+
+\item{constraint_threshold}{Optional: string | double:}
+
+\item{constraint_direction}{Optional: string:}
+
+\item{area_parameter}{Optional: string:}
+
+\item{bc_object}{Optional: string:}
+
+\item{flush_stdout}{Optional: string:}
+
+\item{property_name}{Optional: string:}
+
+\item{initial_value_parameter}{Optional: string:}
+
+\item{constant_name}{Optional: string:}
+
+\item{coefficient_current_variable_name}{Optional: string:}
+
+\item{coefficient_other_variable_name}{Optional: string:}
+
+\item{coefficient_mixed_variables_name}{Optional: string:}
+
+\item{threshold_parameter}{Optional: string:}
+
+\item{comparison_operator}{Optional: string:}
+
+\item{time_interval}{Optional: list of 2, character:}
 }
 \description{
-S3 class describing a .prj boundary condition
+tag: boundary_condition
 }

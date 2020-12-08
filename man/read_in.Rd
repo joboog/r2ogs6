@@ -4,31 +4,15 @@
 \alias{read_in}
 \title{read_in}
 \usage{
-read_in(
-  ogs6_obj,
-  prj_path,
-  element_name,
-  child_name,
-  selection_vector = NULL,
-  subclasses_names = character()
-)
+read_in(ogs6_obj, prj_path, xpath_expr)
 }
 \arguments{
 \item{ogs6_obj}{A OGS6 class object}
 
-\item{prj_path}{The path to the project file the elements should be read from}
+\item{prj_path}{string: Path to project file the elements should be read from}
 
-\item{element_name}{The name of the .prj element to be read from (wrapper element, e.g. 'processes')}
-
-\item{child_name}{The name of the child elements (e.g. 'process')}
-
-\item{selection_vector}{Optional: Either a character vector containing the names of the children
-OR a numeric vector containing their wanted indices}
-
-\item{subclasses_names}{Optional: A named character vector containing the names of r2ogs6_*
-subclasses (r2ogs6_* classes without a method for input_add)
-e.g. c(process = "r2ogs6_tl_process") if child_name would be time_loop}
+\item{xpath_expr}{string: An XPath expression (should be absolute!)}
 }
 \description{
-Reads in elements from a .prj file
+Reads in elements from a file
 }

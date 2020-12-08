@@ -10,9 +10,10 @@ get_grandchild_length_vector(xml_node)
 \item{xml_node}{An XML node}
 }
 \value{
-A numeric vector containing the number of children of each child of xml_node
+A numeric vector containing the number of children of each child of
+xml_node
 }
 \description{
-Helper function to check the number of children of children of an XML node
-(i.e. grandchildren)
+Helper function to check the number of children of children of
+an XML node (i.e. grandchildren)
 }

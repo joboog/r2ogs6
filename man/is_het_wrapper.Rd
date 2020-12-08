@@ -9,8 +9,8 @@ is_het_wrapper(xml_node, subclasses_names = character())
 \arguments{
 \item{xml_node}{An XML node (of class xml2::xml_node)}
 
-\item{subclasses_names}{Optional: A character vector containing the names of r2ogs6_*
-subclasses (r2ogs6_* classes without a method for input_add)}
+\item{subclasses_names}{Optional: A character vector containing the names of
+r2ogs6 subclasses (r2ogs6 classes without a method for input_add)}
 }
 \description{
 Tests if a node is a heterogenous wrapper

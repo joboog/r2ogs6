@@ -12,6 +12,6 @@ get_required(names, occurence_probabilities)
 \item{occurence_probabilities}{A vector of occurrence probabilities}
 }
 \description{
-Helper function to mark required attributes or children from a vector of names and a
-vector of occurrence probabilities
+Helper function to mark required attributes or children from a
+vector of names and a vector of occurrence probabilities
 }

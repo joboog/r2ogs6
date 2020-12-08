@@ -4,17 +4,19 @@
 \alias{r2ogs6_nonlinear_solver}
 \title{r2ogs6_nonlinear_solver}
 \usage{
-r2ogs6_nonlinear_solver(name, type, max_iter, linear_solver)
+r2ogs6_nonlinear_solver(name, type, max_iter, linear_solver, damping = NULL)
 }
 \arguments{
-\item{name}{The name of the nonlinear solver}
+\item{name}{string: Name}
 
-\item{type}{The type of the nonlinear solver}
+\item{type}{string: Type}
 
-\item{max_iter}{The maximal number of iterations}
+\item{max_iter}{string | double: Maximal number of iterations}
 
-\item{linear_solver}{The name of the linear solver}
+\item{linear_solver}{string: Name of corresponding linear_solver}
+
+\item{damping}{Optional: string | double: Damping}
 }
 \description{
-S3 class describing a .prj nonlinear solver
+tag: nonlinear_solver
 }

@@ -10,8 +10,10 @@ find_read_in_func_call(node_name)
 \item{node_name}{The name of an XML node}
 }
 \value{
-A ready-to-call string if a corresponding function was found, an empty string otherwise
+A ready-to-call string if a corresponding function was found, an
+empty string otherwise
 }
 \description{
-Checks if a custom read_in function was defined for nodes with the given name
+Checks if a custom read_in function was defined for nodes
+with the given name
 }

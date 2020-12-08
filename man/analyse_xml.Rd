@@ -4,18 +4,30 @@
 \alias{analyse_xml}
 \title{analyse_xml}
 \usage{
-analyse_xml(path, pattern, element_name)
+analyse_xml(
+  path,
+  pattern,
+  element_name,
+  xpath_prefix = "//",
+  print_findings = TRUE
+)
 }
 \arguments{
-\item{path}{A path}
+\item{path}{string: A path}
 
-\item{pattern}{A regex pattern}
+\item{pattern}{string: A regex pattern}
 
-\item{element_name}{The name of the XML element to look for}
+\item{element_name}{string: The name of the XML element to look for}
+
+\item{xpath_prefix}{string: Optional: The XPath prefix to use
+(defaults to "//")}
+
+\item{print_findings}{Optional: Should the results be printed to the console?}
 }
 \description{
-This is a helper function which can be used to combat missing documentation. It looks
- for files in a path which match the given pattern and then attempts to parse them as XML.
- For each occurence of the specified element, it documents its attributes and direct children and prints a little
- summary of its findings at the end.
+This is a helper function which can be used to combat missing
+documentation. It looks for files in a path which match the given pattern
+and then attempts to parse them as XML. For each occurence of the specified
+element, it documents its attributes and direct children and prints a little
+summary of its findings at the end.
 }

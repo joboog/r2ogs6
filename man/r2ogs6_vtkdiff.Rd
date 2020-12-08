@@ -7,14 +7,14 @@
 r2ogs6_vtkdiff(regex, field, absolute_tolerance, relative_tolerance)
 }
 \arguments{
-\item{regex}{...}
+\item{regex}{string: A regular expression}
 
-\item{field}{...}
+\item{field}{string: ...}
 
-\item{absolute_tolerance}{...}
+\item{absolute_tolerance}{string | double: Absolute tolerance}
 
-\item{relative_tolerance}{...}
+\item{relative_tolerance}{string | double: Relative tolerance}
 }
 \description{
-S3 class describing a .prj test_definition vtkdiff
+tag: vtkdiff
 }

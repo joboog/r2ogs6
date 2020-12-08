@@ -13,5 +13,6 @@ validate_read_in_xml(file)
 The parsed XML file (as class object of type xml2::xml_document)
 }
 \description{
-Utility function, tries parsing the provided file as an XML document
+Utility function, tries parsing the provided file as an XML
+document
 }

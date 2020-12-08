@@ -4,7 +4,7 @@
 \alias{generate_benchmark_script}
 \title{generate_benchmark_script}
 \usage{
-generate_benchmark_script(prj_path, dest_dir = "")
+generate_benchmark_script(prj_path, dest_dir = "extdata/benchmark_scripts/")
 }
 \arguments{
 \item{prj_path}{The path to the project file the script will be based on}

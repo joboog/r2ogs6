@@ -4,17 +4,17 @@
 \alias{r2ogs6_linear_solver}
 \title{r2ogs6_linear_solver}
 \usage{
-r2ogs6_linear_solver(name, eigen, lis = NULL, petsc = NULL)
+r2ogs6_linear_solver(name, eigen = NULL, lis = NULL, petsc = NULL)
 }
 \arguments{
-\item{name}{The name of the linear solver}
+\item{name}{string: The name of the linear solver}
 
-\item{eigen}{...}
+\item{eigen}{Optional: list: ...}
 
-\item{lis}{...}
+\item{lis}{Optional: string: ...}
 
-\item{petsc}{...}
+\item{petsc}{Optional: character: ...}
 }
 \description{
-S3 class describing a .prj linear solver
+tag: linear_solver
 }

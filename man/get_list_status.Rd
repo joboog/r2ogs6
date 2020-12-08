@@ -13,8 +13,9 @@ get_list_status(flag, obj_list, element_type = "list element", is_opt = FALSE)
 
 \item{element_type}{Optional: What kind of elements are in the list?}
 
-\item{is_opt}{Does the list need at least one element?}
+\item{is_opt}{flag: Does the list need at least one element?}
 }
 \description{
-Helper function for get_status() to check if a list has at least one element.
+Helper function for get_status() to check if a list has at least
+one element.
 }

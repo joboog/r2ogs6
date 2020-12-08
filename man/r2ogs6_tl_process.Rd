@@ -9,20 +9,24 @@ r2ogs6_tl_process(
   nonlinear_solver,
   convergence_criterion,
   time_discretization,
-  time_stepping
+  time_stepping,
+  compensate_non_equilibrium_initial_residuum = NULL
 )
 }
 \arguments{
-\item{ref}{References a r2ogs6_process object by name}
+\item{ref}{string: References a r2ogs6_process object by name}
 
-\item{nonlinear_solver}{...}
+\item{nonlinear_solver}{string:}
 
-\item{convergence_criterion}{...}
+\item{convergence_criterion}{r2ogs6_convergence_criterion:}
 
-\item{time_discretization}{...}
+\item{time_discretization}{vector:}
 
-\item{time_stepping}{...}
+\item{time_stepping}{list:}
+
+\item{compensate_non_equilibrium_initial_residuum}{string: Optional: Either
+"true" or "false"}
 }
 \description{
-S3 class describing a .prj time_loop process
+tag: process (parent: time_loop, NOT processes!)
 }
