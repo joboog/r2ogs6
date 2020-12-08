@@ -8,6 +8,13 @@ scrape_benchmarks <- function(
     url = "https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/",
     path = "extdata/benchmarks/") {
 
+    assertthat::assert_that(assertthat::is.string(path))
+
+    last_char_index <- length(path)
+
+    if(substring(path, last_char_index, last_char_index) != "/"){
+        path <- paste0(path, "/")
+    }
 
     data_page <- xml2::read_html(url)
 
