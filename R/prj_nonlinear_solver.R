@@ -18,7 +18,7 @@ r2ogs6_nonlinear_solver <- function(name,
 
     #Coerce input
     max_iter <- coerce_string_to_numeric(max_iter)
-    max_iter <- coerce_string_to_numeric(damping)
+    damping <- coerce_string_to_numeric(damping)
 
     new_r2ogs6_nonlinear_solver(name,
                                 type,
@@ -46,7 +46,6 @@ new_r2ogs6_nonlinear_solver <- function(name,
                    max_iter = max_iter,
                    linear_solver = linear_solver,
                    damping = damping,
-                   tag_name = "nonlinear_solver",
                    is_subclass = FALSE,
                    attr_names = character(),
                    flatten_on_exp = character()
