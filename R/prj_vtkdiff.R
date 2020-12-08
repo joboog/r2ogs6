@@ -40,7 +40,6 @@ new_r2ogs6_vtkdiff <- function(regex,
              field = field,
              absolute_tolerance = absolute_tolerance,
              relative_tolerance = relative_tolerance,
-             tag_name = "vtkdiff",
              is_subclass = FALSE,
              attr_names = character(),
              flatten_on_exp = character()
