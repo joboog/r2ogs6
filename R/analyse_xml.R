@@ -134,7 +134,7 @@ analyse_xml <- function(path,
     }
 
     make_df_vector <- function(x){
-        round((x / total_matches), 2)
+        round((x / total_matches), 4)
     }
 
     #Turn attribute data into a nice data frame
@@ -144,8 +144,6 @@ analyse_xml <- function(path,
     attr_name_occ_vector <-
         unlist(lapply (attr_ex_counts, make_df_vector))
 
-    attr_flags <- get_required(names(attr_ex_counts), attr_name_occ_vector)
-
     attr_df <- data.frame(name = names(attr_ex_counts),
                           occ = attr_name_count_vector,
                           p_occ = attr_name_occ_vector)
@@ -154,6 +152,8 @@ analyse_xml <- function(path,
         attr_df <- attr_df[order(attr_df$p_occ, decreasing = TRUE),]
         rownames(attr_df) <- seq(1, length(attr_name_count_vector))
     }
+
+    attr_flags <- get_required(attr_df$name, attr_df$p_occ)
 
     #Turn children data into a nice data frame
 
@@ -167,8 +167,6 @@ analyse_xml <- function(path,
     child_tot_occ_vector <-
         unlist(lapply(child_tot_counts, make_df_vector))
 
-    child_flags <- get_required(names(child_ex_counts), child_ex_occ_vector)
-
     child_df <- data.frame(name = names(child_ex_counts),
                            ex_occ = child_ex_count_vector,
                            p_occ = child_ex_occ_vector,
@@ -179,6 +177,8 @@ analyse_xml <- function(path,
         child_df <- child_df[order(child_df$p_occ, decreasing = TRUE),]
         rownames(child_df) <- seq(1, length(child_ex_count_vector))
     }
+
+    child_flags <- get_required(child_df$name, child_df$p_occ)
 
     if(print_findings) {
         print_analysis_findings(
@@ -265,15 +265,16 @@ print_analysis_findings <- function(invalid_files_count,
 #'@param names A vector of names
 #'@param occurence_probabilities A vector of occurrence probabilities
 get_required <- function(names, occurence_probabilities){
-    required <- list()
+
+    required <- logical()
 
     for(i in seq_len(length(names))) {
-        if(occurence_probabilities[[i]] != 1) {
+        if(occurence_probabilities[[i]] < 1) {
             required[[names[[i]]]] <- FALSE
         }else{
             required[[names[[i]]]] <- TRUE
         }
     }
 
-    return(required)
+    return(invisible(required))
 }
