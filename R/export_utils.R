@@ -71,7 +71,7 @@ to_node <- function(object, object_name = "",
         param_names <- names(as.list(formals(paste0("new_", class_name))))
 
         object_node <- list(structure(list()))
-        names(object_node)[[1]] <- object$tag_name
+        names(object_node)[[1]] <- get_class_tag_name(class_name)
 
         for(i in seq_len(length(param_names))){
             get_param_call <- paste0("object$", param_names[[i]])
