@@ -1,6 +1,17 @@
 
+#===== OGS6 documentation =====
 
-#============================== R6 ================================
+#'OGS6
+#'
+#'The OpenGeoSys6 simulation class, core of the r2ogs6 package
+#'
+#'@docType class
+#'
+#'
+NULL
+
+#===== OGS6 =====
+
 
 #'OGS6
 #'@description Constructor for the OGS6 base class
