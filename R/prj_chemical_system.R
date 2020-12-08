@@ -46,8 +46,9 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
                                        kinetic_reactants = NULL,
                                        rates = NULL) {
 
-    assertthat::assert_that(assertthat::is.string(chemical_solver))
-    assertthat::assert_that(assertthat::is.string(database))
+    validate_is_string(chemical_solver,
+                       database)
+
     assertthat::assert_that(class(solution) == "r2ogs6_solution")
 
     validate_is_null_or_string(mesh)
@@ -57,14 +58,14 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
                               "r2ogs6_phase_component")
     }
 
-    if(!is.null(knobs)){
-        knobs <- validate_param_list(knobs,
-                                     c("max_iter",
-                                       "relative_convergence_tolerance",
-                                       "tolerance",
-                                       "step_size",
-                                       "scaling"))
-    }
+    knobs <- validate_is_null_or_param_list(
+        knobs,
+        c("max_iter",
+          "relative_convergence_tolerance",
+          "tolerance",
+          "step_size",
+          "scaling")
+    )
 
     if(!is.null(kinetic_reactants)){
         validate_wrapper_list(kinetic_reactants,
@@ -86,8 +87,11 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
             knobs = knobs,
             kinetic_reactants = kinetic_reactants,
             rates = rates,
-            tag_name = "chemical_system",
             is_subclass = FALSE,
+            subclasses_names = c("r2ogs6_solution",
+                                 "r2ogs6_phase_component",
+                                 "r2ogs6_kinetic_reactant",
+                                 "r2ogs6_rate"),
             attr_names = c("chemical_solver"),
             flatten_on_exp = character()
         ),
@@ -133,10 +137,10 @@ new_r2ogs6_solution <- function(temperature,
                                 components,
                                 charge_balance = NULL) {
 
+    validate_is_number(temperature,
+                       pressure,
+                       pe)
 
-    assertthat::assert_that(is.double(temperature))
-    assertthat::assert_that(is.double(pressure))
-    assertthat::assert_that(is.double(pe))
     assertthat::assert_that(is.character(components))
     names(components) <- rep("component", length(components))
 
@@ -149,7 +153,6 @@ new_r2ogs6_solution <- function(temperature,
             pe = pe,
             components = components,
             charge_balance = charge_balance,
-            tag_name = "solution",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = character()
@@ -187,15 +190,15 @@ new_r2ogs6_phase_component <- function(name,
                                        saturation_index) {
 
     assertthat::assert_that(assertthat::is.string(name))
-    assertthat::assert_that(is.double(initial_amount))
-    assertthat::assert_that(is.double(saturation_index))
+
+    validate_is_number(initial_amount,
+                       saturation_index)
 
     structure(
         list(
             name = name,
             initial_amount = initial_amount,
             saturation_index = saturation_index,
-            tag_name = "phase_component",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = character()
@@ -247,7 +250,6 @@ new_r2ogs6_kinetic_reactant <- function(name,
             initial_amount = initial_amount,
             chemical_formula = chemical_formula,
             fix_amount = fix_amount,
-            tag_name = "kinetic_reactant",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = character()
@@ -285,7 +287,6 @@ new_r2ogs6_rate <- function(kinetic_reactant,
         list(
             kinetic_reactant = kinetic_reactant,
             expression = expression,
-            tag_name = "rate",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = character()
