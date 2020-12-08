@@ -4,9 +4,9 @@
 
 #'r2ogs6_time_loop
 #'@description tag: time_loop
-#'@param processes list, r2ogs6_tl_process: ...
-#'@param output r2ogs6_tl_output: ...
-#'@param global_process_coupling Optional: r2ogs6_global_process_coupling: ...
+#'@param processes list, r2ogs6_tl_process:
+#'@param output r2ogs6_output:
+#'@param global_process_coupling Optional: r2ogs6_global_process_coupling:
 #'@export
 r2ogs6_time_loop <- function(processes,
                              output,
@@ -26,7 +26,7 @@ new_r2ogs6_time_loop <- function(processes,
                                  global_process_coupling = NULL) {
 
     validate_wrapper_list(processes, "r2ogs6_tl_process")
-    assertthat::assert_that(class(output) == "r2ogs6_tl_output")
+    assertthat::assert_that(class(output) == "r2ogs6_output")
 
     validate_is_null_or_class_obj(global_process_coupling,
                                   "r2ogs6_global_process_coupling")
@@ -36,7 +36,6 @@ new_r2ogs6_time_loop <- function(processes,
             processes = processes,
             output = output,
             global_process_coupling = global_process_coupling,
-            tag_name = "time_loop",
             is_subclass = FALSE,
             attr_names = character(),
             flatten_on_exp = character()
@@ -96,14 +95,12 @@ new_r2ogs6_tl_process <- function(ref,
 
     assertthat::assert_that(is.vector(time_discretization))
 
-    time_stepping::validate_param_list(time_stepping, c("type",
-                                                        "t_initial",
-                                                        "t_end",
-                                                        "timesteps"))
+    time_stepping <- validate_param_list(time_stepping, c("type",
+                                                          "t_initial",
+                                                          "t_end",
+                                                          "timesteps"))
 
-    if(!is.null(compensate_non_equilibrium_initial_residuum)){
-        validate_true_false_str(compensate_non_equilibrium_initial_residuum)
-    }
+    validate_is_null_or_str_flag(compensate_non_equilibrium_initial_residuum)
 
     structure(
         list(ref = ref,
@@ -113,7 +110,6 @@ new_r2ogs6_tl_process <- function(ref,
              time_stepping = time_stepping,
              compensate_non_equilibrium_initial_residuum =
                  compensate_non_equilibrium_initial_residuum,
-             tag_name = "process",
              is_subclass = TRUE,
              attr_names = c("ref"),
              flatten_on_exp = character()
@@ -143,10 +139,10 @@ validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
 }
 
 
-#===== r2ogs6_tl_output =====
+#===== r2ogs6_output =====
 
 
-#'r2ogs6_tl_output
+#'r2ogs6_output
 #'@description tag: output
 #'@param type string:
 #'@param prefix string:
@@ -160,7 +156,7 @@ validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
 #'@param meshes Optional: character: A vector of mesh names
 #'@param fixed_output_times Optional: string | numeric:
 #'@export
-r2ogs6_tl_output <- function(type,
+r2ogs6_output <- function(type,
                              prefix,
                              variables,
                              suffix = NULL,
@@ -174,7 +170,7 @@ r2ogs6_tl_output <- function(type,
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times, TRUE)
 
-    new_r2ogs6_tl_output(type,
+    new_r2ogs6_output(type,
                          prefix,
                          variables,
                          suffix,
@@ -187,7 +183,7 @@ r2ogs6_tl_output <- function(type,
 }
 
 
-new_r2ogs6_tl_output <- function(type,
+new_r2ogs6_output <- function(type,
                                  prefix,
                                  variables,
                                  suffix = NULL,
@@ -211,13 +207,8 @@ new_r2ogs6_tl_output <- function(type,
         timesteps <- validate_timesteps(timesteps, TRUE)
     }
 
-    if(!is.null(compress_output)){
-        validate_true_false_str(compress_output)
-    }
-
-    if(!is.null(output_iteration_results)){
-        validate_true_false_str(output_iteration_results)
-    }
+    validate_is_null_or_str_flag(compress_output,
+                                 output_iteration_results)
 
     if(!is.null(meshes)){
         assertthat::assert_that(is.character(meshes))
@@ -237,12 +228,11 @@ new_r2ogs6_tl_output <- function(type,
              output_iteration_results = output_iteration_results,
              meshes = meshes,
              fixed_output_times = fixed_output_times,
-             tag_name = "output",
              is_subclass = TRUE,
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
         ),
-        class = "r2ogs6_tl_output"
+        class = "r2ogs6_output"
     )
 }
 
@@ -255,6 +245,7 @@ new_r2ogs6_tl_output <- function(type,
 #'@param max_iter string | double: Maximal number of iterations
 #'@param convergence_criteria list, r2ogs6_convergence_criterion:
 #' Convergence criteria
+#'@export
 r2ogs6_global_process_coupling <- function(max_iter,
                                            convergence_criteria) {
 
@@ -278,7 +269,6 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
         list(
             max_iter = max_iter,
             convergence_criteria = convergence_criteria,
-            tag_name = "global_process_coupling",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = character()
@@ -299,6 +289,7 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
 #'@param reltol string | double: Relative tolerance
 #'@param abstols string | numeric: Absolute tolerances
 #'@param reltols string | numeric: Relative tolerances
+#'@export
 r2ogs6_convergence_criterion <- function(type,
                                          norm_type,
                                          abstol = NULL,
@@ -342,7 +333,6 @@ new_r2ogs6_convergence_criterion <- function(type,
             reltol = reltol,
             abstols = abstols,
             reltols = reltols,
-            tag_name = "convergence_criterion",
             is_subclass = TRUE,
             attr_names = character(),
             flatten_on_exp = c("abstols", "reltols")
