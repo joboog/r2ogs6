@@ -94,26 +94,15 @@ test_that("to_node works for simple classes", {
 
 test_that("to_node works for classes that have lists as parameters", {
 
-    linear_solver <- r2ogs6_linear_solver(
-        name = "general_linear_solver",
-        eigen = list(
-            solver_type = "BiCGSTAB",
-            precon_type = "ILUT",
-            max_iteration_step = 10000,
-            error_tolerance = 1e-16
-        ),
-        lis = "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000"
-    )
+    insitu <- r2ogs6_insitu(c("script_1",
+                              "script_2",
+                              "script_3"))
 
-    linear_solver_node <- to_node(linear_solver)
-    linear_solver_xml <- xml2::as_xml_document(linear_solver_node)
+    insitu_node <- to_node(insitu)
+    insitu_xml <- xml2::as_xml_document(insitu_node)
 
-    expect_equal(length(xml2::xml_find_all(linear_solver_xml,
-                                           "/linear_solver/eigen/*")), 4)
-    expect_equal(xml2::xml_text(
-        xml2::xml_find_all(linear_solver_xml,
-                           "/linear_solver/eigen/precon_type")),
-        "ILUT")
+    expect_equal(length(xml2::xml_find_all(insitu_xml,
+                                           "/insitu/scripts/*")), 3)
 })
 
 
@@ -155,7 +144,7 @@ test_that("to_node works for classes that have attributes", {
     tl_process <- r2ogs6_tl_process(
         ref = "HM",
         nonlinear_solver = "basic_newton",
-        convergence_criterion = list(
+        convergence_criterion = r2ogs6_convergence_criterion(
             type = "PerComponentDeltaX",
             norm_type = "NORM2",
             reltols = "5e-8 1e10 1e10"

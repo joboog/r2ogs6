@@ -13,7 +13,7 @@
 
 test_that("download_benchmark works", {
 
-    path <- paste0(system.file("extdata/benchmarks/", package = "r2ogs6"), "/")
+    path <- system.file("extdata/benchmarks/", package = "r2ogs6")
 
     download_benchmark(
         prj_url = paste0("https://gitlab.opengeosys.org/ogs/ogs/-/raw/master/",

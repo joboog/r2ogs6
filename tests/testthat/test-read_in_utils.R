@@ -18,12 +18,12 @@ test_that("guess_structure works", {
                          ogs_bin_path = "ogs_bin_path",
                          test_mode = TRUE)
 
-    read_in(ogs6_obj, prj_path, "parameters", "parameter")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
 
     expect_equal(length(ogs6_obj$parameters), 7)
     expect_equal(ogs6_obj$parameters[[1]]$name, "E")
     expect_equal(ogs6_obj$parameters[[1]]$type, "Constant")
-    expect_equal(ogs6_obj$parameters[[1]]$values, 10e9)
+    expect_equal(ogs6_obj$parameters[[1]]$value, 10e9)
 })
 
 

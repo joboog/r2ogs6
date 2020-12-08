@@ -37,19 +37,3 @@ test_that("new_r2ogs6_time_loop basic validation is working", {
                  )
 })
 
-
-
-test_that("new_r2ogs6_tl_process basic validation is working", {
-
-
-
-})
-
-
-test_that("new_r2ogs6_tl_output basic validation is working", {
-
-
-
-})
-
-
