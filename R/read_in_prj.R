@@ -39,40 +39,32 @@ read_in_prj <- function(ogs6_obj, prj_path){
         }
     }
 
-    read_in(ogs6_obj, prj_path, "processes", "process")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/processes/process")
 
-    read_in(ogs6_obj, prj_path, "search_length_algorithm",
-            "search_length_algorithm")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/search_length_algorithm")
 
-    read_in(ogs6_obj, prj_path, "media", "medium",
-            subclasses_names = c(phase = "r2ogs6_medium_phase",
-                                 property = "r2ogs6_medium_property"))
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/media/medium")
 
-    read_in(ogs6_obj, prj_path, "time_loop", "time_loop",
-            subclasses_names =
-                c(process = "r2ogs6_tl_process",
-                  output = "r2ogs6_tl_output",
-                  global_processes_coupling =
-                      "r2ogs6_global_processes_coupling"))
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/time_loop")
 
-    read_in(ogs6_obj, prj_path, "local_coordinate_system",
-            "local_coordinate_system")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/local_coordinate_system")
 
-    read_in(ogs6_obj, prj_path, "parameters", "parameter")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
 
-    read_in(ogs6_obj, prj_path, "curves", "curve")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/curves/curve")
 
-    read_in(ogs6_obj, prj_path, "process_variables", "process_variable",
-            subclasses_names = c(boundary_condition =
-                                     "r2ogs6_boundary_condition"))
+    read_in(ogs6_obj, prj_path,
+            "/OpenGeoSysProject/process_variables/process_variable")
 
-    read_in(ogs6_obj, prj_path, "nonlinear_solvers", "nonlinear_solver")
+    read_in(ogs6_obj, prj_path,
+            "/OpenGeoSysProject/nonlinear_solvers/nonlinear_solver")
 
-    read_in(ogs6_obj, prj_path, "linear_solvers", "linear_solver")
+    read_in(ogs6_obj, prj_path,
+            "/OpenGeoSysProject/linear_solvers/linear_solver")
 
-    read_in(ogs6_obj, prj_path, "test_definition", "vtkdiff")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/test_definition/vtkdiff")
 
-    read_in(ogs6_obj, prj_path, "insitu", "insitu")
+    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/insitu")
 }
 
 

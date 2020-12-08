@@ -1,9 +1,10 @@
 
-#============================== VALIDATION UTILITY ================================
+#===== VALIDATION UTILITY =====
 
 
 #'validate_read_in_xml
-#'@description Utility function, tries parsing the provided file as an XML document
+#'@description Utility function, tries parsing the provided file as an XML
+#' document
 #'@param file A file to be parsed as XML
 #'@return The parsed XML file (as class object of type xml2::xml_document)
 validate_read_in_xml <- function(file){
@@ -17,117 +18,63 @@ validate_read_in_xml <- function(file){
         },
         error = function(e){
             print(e)
-            stop("Could not find file (see error message above), aborting call.", call. = FALSE)
+            stop(paste("Could not find file (see error message above),",
+                       "aborting call."), call. = FALSE)
         }
     )
 }
 
 
-#============================== GENERAL READ IN UTILITY ================================
+#===== GENERAL READ IN UTILITY =====
 
 
 #'read_in
-#'@description Reads in elements from a .prj file
+#'@description Reads in elements from a file
 #'@param ogs6_obj A OGS6 class object
-#'@param prj_path The path to the project file the elements should be read from
-#'@param element_name The name of the .prj element to be read from (wrapper element, e.g. 'processes')
-#'@param child_name The name of the child elements (e.g. 'process')
-#'@param selection_vector Optional: Either a character vector containing the names of the children
-#' OR a numeric vector containing their wanted indices
-#'@param subclasses_names Optional: A named character vector containing the names of r2ogs6_*
-#' subclasses (r2ogs6_* classes without a method for input_add)
-#' e.g. c(process = "r2ogs6_tl_process") if child_name would be time_loop
-read_in <- function(ogs6_obj, prj_path, element_name, child_name,
-                            selection_vector = NULL, subclasses_names = character()){
+#'@param prj_path string: Path to project file the elements should be read from
+#'@param xpath_expr string: An XPath expression (should be absolute!)
+read_in <- function(ogs6_obj,
+                    prj_path,
+                    xpath_expr){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(prj_path)
 
-    assertthat::assert_that(assertthat::is.string(element_name))
-    assertthat::assert_that(assertthat::is.string(child_name))
+    assertthat::assert_that(assertthat::is.string(xpath_expr))
 
-    has_names <- FALSE
-    has_indices <- FALSE
+    split_path <- unlist(strsplit(xpath_expr, "/", fixed = TRUE))
+    child_name <- split_path[[length(split_path)]]
+    subclasses_names <- get_subclass_names(paste0("r2ogs6_", child_name))
 
-    if(!is.null(selection_vector)){
-        if(is.numeric(selection_vector)){
-            has_indices <- TRUE
-        }else if(is.character(selection_vector)){
-            has_names <- TRUE
-        }else{
-            stop("selection_vector must either be of type 'numeric' or 'character'", call. = FALSE)
-        }
+    for(i in seq_len(length(subclasses_names))){
+        names(subclasses_names)[[i]] <-
+            get_class_tag_name(subclasses_names[[i]])
     }
 
-    assertthat::assert_that(is.character(subclasses_names))
+    nodes <- xml2::xml_find_all(xml_doc, xpath_expr)
 
-    element <- xml2::xml_find_first(xml_doc, paste0("/OpenGeoSysProject/", element_name))
-
-    if(class(element) == "xml_missing"){
-        # warning(paste("read_in: Could not find element of name ", element_name,
-        #               ". Skipping.", call. = FALSE))
+    if(length(nodes) == 0){
         return(invisible(FALSE))
     }
 
-    #For most wrapper classes the child_name parameter is useless
-    #(e.g. they contain only elements of type child_name),
-    #but for time_loop, finding it by name is required instead of just getting all children
-    #because it's parent is the .prj file root node and it'd get the whole document
-    element_children <- NULL
-
-    if(element_name != child_name){
-        element_children <- xml2::xml_find_all(element, child_name)
-    }else{
-        element_children <- list(element)
-    }
-
-    #cat(paste0("Found ", length(element_children), " child objects of name '", child_name, "'\n"))
-
     r2ogs6_obj <- NULL
 
-    #Code to be parsed later, when r2ogs6_obj has been defined
+    #Code to be parsed when r2ogs6_obj has been defined
     add_call <- paste0("ogs6_obj$add_", child_name, "(r2ogs6_obj)")
 
-    #If selection_vector was a character vector
-    if(has_names){
-        for(i in seq_len(length(selection_vector))){
-            specified_name <- selection_vector[[i]]
-            regex <- paste0("./", child_name, "[./name = '", specified_name, "']")
-            child <- xml2::xml_find_first(xml_doc, regex)
-            if(class(child) == "xml_missing"){
-                warning(paste("Child with name", xml2::xml_name(child),
-                              "not found. Skipping."), call. = FALSE)
-                next
-            }
-            r2ogs6_obj <- node_to_r2ogs6_obj(child, subclasses_names)
-
-            #Now r2ogs6_obj is defined, so we can add it with our code snippet.
-            eval(parse(text = add_call))
-        }
-
-    #If selection_vector was a numeric vector
-    }else if(has_indices){
-        for(i in seq_len(length(selection_vector))){
-            if(selection_vector[[i]] > length(element_children)){
-                warning(paste("Specified child index", selection_vector[[i]],
-                              "out of range. Skipping."), call. = FALSE)
-                next
-            }
-            child <- element_children[[selection_vector[[i]]]]
-            r2ogs6_obj <- node_to_r2ogs6_obj(child, subclasses_names)
-
-            #Now r2ogs6_obj is defined, so we can add it with our code snippet.
-            eval(parse(text = add_call))
-        }
-
     #If selection_vector was NULL, parse all children
-    }else{
-        for(i in seq_along(element_children)){
-            r2ogs6_obj <- node_to_r2ogs6_obj(element_children[[i]], subclasses_names)
+    for (i in seq_along(nodes)) {
 
-            #Now r2ogs6_obj is defined, so we can add it with our code snippet.
-            eval(parse(text = add_call))
-        }
+        new_xpath_expr <- paste0(xpath_expr,
+                             "/",
+                             xml2::xml_name(nodes[[i]]))
+
+        r2ogs6_obj <- node_to_r2ogs6_obj(nodes[[i]],
+                                         new_xpath_expr,
+                                         subclasses_names)
+
+        #Add r2ogs6_obj with code snippet
+        eval(parse(text = add_call))
     }
 
     return(invisible(TRUE))
@@ -137,9 +84,12 @@ read_in <- function(ogs6_obj, prj_path, element_name, child_name,
 #'node_to_r2ogs6_obj
 #'@description Takes an XML node and turns it into a class object
 #'@param xml_node An XML node (of class xml2::xml_node)
-#'@param subclasses_names Optional: A character vector containing the names of r2ogs6_*
-#' subclasses (r2ogs6_* classes without a method for input_add)
-node_to_r2ogs6_obj <- function(xml_node, subclasses_names = character()){
+#'@param xpath_expr An XPath expression (for subclass differentiation)
+#'@param subclasses_names Optional: A character vector containing the names of
+#' r2ogs6 subclasses (r2ogs6 classes without a method for input_add)
+node_to_r2ogs6_obj <- function(xml_node,
+                               xpath_expr,
+                               subclasses_names = character()){
 
     assertthat::assert_that(class(xml_node) == "xml_node")
 
@@ -153,19 +103,29 @@ node_to_r2ogs6_obj <- function(xml_node, subclasses_names = character()){
 
     for(i in seq_along(parameter_nodes)){
 
-        #Guesses the R representation of the node and adds it to parameter list
-        parameters <- c(parameters, list(guess_structure(parameter_nodes[[i]], subclasses_names)))
+        new_xpath_expr <- paste0(xpath_expr,
+                             "/",
+                             xml2::xml_name(parameter_nodes[[i]]))
 
-        #Names the parameter after the xml_node child name
-        names(parameters)[[length(parameters)]] <- xml2::xml_name(parameter_nodes[[i]])
+        #Guess R representation of node, add it to parameter list
+        parameters <- c(parameters, list(guess_structure(parameter_nodes[[i]],
+                                                         new_xpath_expr,
+                                                         subclasses_names)))
+
+        #Name parameter after the xml_node child name
+        names(parameters)[[length(parameters)]] <-
+            xml2::xml_name(parameter_nodes[[i]])
     }
 
     class_name <- ""
 
-    #If the node is a subclass, get its class name from the subclasses_names vector
+    #If node represented by subclass, get class name
     if(xml2::xml_name(xml_node) %in% names(subclasses_names)){
+
         class_name <- paste0(subclasses_names[[xml2::xml_name(xml_node)]])
-        #Else just assume the class name is r2ogs6_ + the node name
+        class_name <- select_fitting_subclass(xpath_expr, subclasses_names)
+
+    #Else assume class name is r2ogs6_ + node name
     }else{
         class_name <- paste0("r2ogs6_", xml2::xml_name(xml_node))
     }
@@ -173,14 +133,20 @@ node_to_r2ogs6_obj <- function(xml_node, subclasses_names = character()){
     ordered_parameters <- order_parameters(parameters, class_name)
 
     #Construct the call to the r2ogs6_object helper
-    class_constructor_call <- paste0(class_name,
-                                     "(",
-                                     paste(names(parameters),
-                                           lapply(parameters,
-                                                  function(x){paste(utils::capture.output(dput(x)), collapse="\n")}),
-                                           sep = " = ",
-                                           collapse = ", "),
-                                     ")")
+    class_constructor_call <-
+        paste0(class_name,
+               "(",
+               paste(
+                   names(parameters),
+                   lapply(parameters,
+                          function(x) {
+                              paste(utils::capture.output(dput(x)),
+                                    collapse = "\n")
+                          }),
+                   sep = " = ",
+                   collapse = ", "
+               ),
+               ")")
 
     #Evaluate the constructed call
     r2ogs6_obj <- eval(parse(text = class_constructor_call))
@@ -190,7 +156,8 @@ node_to_r2ogs6_obj <- function(xml_node, subclasses_names = character()){
 
 
 #'order_parameters
-#'@description Orders a list of parameters corresponding to the argument order of a class
+#'@description Orders a list of parameters corresponding to the argument order
+#' of a class
 #'@param parameter_list A list of parameters
 #'@param class_name The name of a class
 order_parameters <- function(parameter_list, class_name){
@@ -216,8 +183,10 @@ order_parameters <- function(parameter_list, class_name){
             stop(paste0("order_parameters: Found element named '",
                         names(parameter_list)[[i]],
                         "', in parameter_list.",
-                        " This element is not a parameter of class '", class_name,
-                        "'. Please check the class definition!"), call. = FALSE)
+                        " This element is not a parameter of class '",
+                        class_name,
+                        "'. Please check the class definition!"),
+                 call. = FALSE)
         }
     }
 
@@ -225,7 +194,8 @@ order_parameters <- function(parameter_list, class_name){
         if(!class_args[[i]] %in% names(parameter_list)){
             ordered_parameters[[class_args[[i]]]] <- NULL
         }else{
-            ordered_parameters[[class_args[[i]]]] <- parameter_list[[class_args[[i]]]]
+            ordered_parameters[[class_args[[i]]]] <-
+                parameter_list[[class_args[[i]]]]
         }
     }
 
@@ -233,23 +203,29 @@ order_parameters <- function(parameter_list, class_name){
 }
 
 
-#============================== GUESS STRUCTURE FUNCTIONALITY ================================
+#===== GUESS STRUCTURE FUNCTIONALITY =====
 
 
 #'guess_structure
-#'@description Guesses the R representation of an XML node and adds it to parameter list
+#'@description Guesses the R representation of an XML node and adds it to
+#' parameter list
 #'ASSUMPTIONS:
-#'1) Leaf nodes will have EITHER a value OR attributes (and will not be missing both, e.g. '<a/>').
+#'1) Leaf nodes will have EITHER a value OR attributes (and will not be missing
+#' both, e.g. '<a/>').
 #'2) Leaf nodes will never be r2ogs6_* objects
-#'3) If there are multiple occurrences of r2ogs6_* class (and subclass) elements on the same level,
-#' they have a wrapper node as their parent (e.g. <processes>, <properties>) which
-#' will contain ONLY elements of this type
+#'3) If there are multiple occurrences of r2ogs6_* class (and subclass)
+#' elements on the same level, they have a wrapper node as their parent
+#' (e.g. <processes>, <properties>) which  will contain ONLY elements of this
+#' type
 #'4) Wrapper nodes are represented as lists
 #'5) Parent nodes whose children have no children are represented as lists
 #'@param xml_node An XML node (of class xml2::xml_node)
-#'@param subclasses_names Optional: A character vector containing the names of r2ogs6_*
-#' subclasses (r2ogs6_* classes without a method for input_add)
-guess_structure <- function(xml_node, subclasses_names = character()){
+#'@param xpath_expr An XPath expression (for subclass differentiation)
+#'@param subclasses_names Optional: A character vector containing the names of
+#' r2ogs6 subclasses (r2ogs6 classes without a method for input_add)
+guess_structure <- function(xml_node,
+                            xpath_expr,
+                            subclasses_names = character()){
 
     assertthat::assert_that(class(xml_node) == "xml_node")
 
@@ -263,7 +239,9 @@ guess_structure <- function(xml_node, subclasses_names = character()){
 
     #Node is represented by subclass
     }else if(xml2::xml_name(xml_node) %in% names(subclasses_names)){
-        return(invisible(node_to_r2ogs6_obj(xml_node, subclasses_names)))
+        return(invisible(node_to_r2ogs6_obj(xml_node,
+                                            xpath_expr,
+                                            subclasses_names)))
 
     #Node has children that are represented by a subclass
     }else if(is_subclass_wrapper(xml_node, subclasses_names) ||
@@ -274,8 +252,15 @@ guess_structure <- function(xml_node, subclasses_names = character()){
         for(i in seq_along(xml2::xml_children(xml_node))){
             child_node <- xml2::xml_children(xml_node)[[i]]
             list_content <- NULL
+
+            new_xpath_expr <- paste0(xpath_expr,
+                                     "/",
+                                     xml2::xml_name(child_node))
+
             if(xml2::xml_name(child_node) %in% names(subclasses_names)){
-                list_content <- node_to_r2ogs6_obj(child_node, subclasses_names)
+                list_content <- node_to_r2ogs6_obj(child_node,
+                                                   new_xpath_expr,
+                                                   subclasses_names)
             }else{
                 list_content <- guess_structure(child_node)
             }
@@ -320,11 +305,12 @@ is_subclass_wrapper <- function(xml_node, subclasses_names){
     return(invisible(TRUE))
 }
 
+
 #'is_het_wrapper
 #'@description Tests if a node is a heterogenous wrapper
 #'@param xml_node An XML node (of class xml2::xml_node)
-#'@param subclasses_names Optional: A character vector containing the names of r2ogs6_*
-#' subclasses (r2ogs6_* classes without a method for input_add)
+#'@param subclasses_names Optional: A character vector containing the names of
+#' r2ogs6 subclasses (r2ogs6 classes without a method for input_add)
 is_het_wrapper <- function(xml_node, subclasses_names = character()){
 
     child_nodes <- xml2::xml_children(xml_node)
@@ -358,10 +344,11 @@ is_het_wrapper <- function(xml_node, subclasses_names = character()){
 
 
 #'get_grandchild_length_vector
-#'@description Helper function to check the number of children of children of an XML node
-#' (i.e. grandchildren)
+#'@description Helper function to check the number of children of children of
+#' an XML node (i.e. grandchildren)
 #'@param xml_node An XML node
-#'@return A numeric vector containing the number of children of each child of xml_node
+#'@return A numeric vector containing the number of children of each child of
+#' xml_node
 get_grandchild_length_vector <- function(xml_node){
 
     length_vector <- c()
@@ -369,7 +356,8 @@ get_grandchild_length_vector <- function(xml_node){
     for(i in seq_along(xml2::xml_children(xml_node))){
         child_node <- xml2::xml_children(xml_node)[[i]]
 
-        length_vector <- c(length_vector, length(xml2::xml_children(child_node)))
+        length_vector <- c(length_vector,
+                           length(xml2::xml_children(child_node)))
     }
 
     return(invisible(length_vector))
@@ -398,13 +386,15 @@ list_from_nodeset <- function(xml_nodeset){
 }
 
 
-#============================== FIND CUSTOM READ IN FUNCTIONS UTILITY ================================
+#===== FIND CUSTOM READ IN FUNCTIONS UTILITY =====
 
 
 #'find_read_in_func_call
-#'@description Checks if a custom read_in function was defined for nodes with the given name
+#'@description Checks if a custom read_in function was defined for nodes
+#' with the given name
 #'@param node_name The name of an XML node
-#'@return A ready-to-call string if a corresponding function was found, an empty string otherwise
+#'@return A ready-to-call string if a corresponding function was found, an
+#' empty string otherwise
 find_read_in_func_call <- function(node_name){
 
     assertthat::assert_that(assertthat::is.string(node_name))
@@ -420,7 +410,8 @@ find_read_in_func_call <- function(node_name){
 }
 
 
-#============================== FILE HANDLING UTILITY ================================
+#===== FILE HANDLING UTILITY  =====
+
 
 #'check_file_extension
 #'@description Helper function to check the extension of a file
@@ -432,14 +423,17 @@ check_file_extension <- function(file, expected_extension){
     assertthat::assert_that(assertthat::is.string(expected_extension))
 
     if(tools::file_ext(file) != expected_extension){
-        stop(paste("File must have extension", expected_extension), call. = FALSE)
+        stop(paste("File must have extension", expected_extension),
+             call. = FALSE)
     }
 }
 
 
-#Source: https://stackoverflow.com/questions/48218491/os-independent-way-to-select-directory-interactively-in-r/48296736
+#Source: https://stackoverflow.com/questions/48218491/os-independent-way-to-
+# select-directory-interactively-in-r/48296736
 #Helper function for choosing a directory (platform independent!)
-choose_directory = function(ini_dir = getwd(), caption = 'Select data directory') {
+choose_directory = function(ini_dir = getwd(),
+                            caption = 'Select data directory') {
     if (exists('utils::choose.dir')) {
         utils::choose.dir(default = ini_dir, caption = caption)
     } else {
