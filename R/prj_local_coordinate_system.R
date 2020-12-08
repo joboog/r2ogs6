@@ -34,7 +34,6 @@ new_r2ogs6_local_coordinate_system <- function(basis_vector_0,
             basis_vector_0 = basis_vector_0,
             basis_vector_1 = basis_vector_1,
             basis_vector_2 = basis_vector_2,
-            tag_name = "local_coordinate_system",
             is_subclass = FALSE,
             attr_names = character(),
             flatten_on_exp = character()
