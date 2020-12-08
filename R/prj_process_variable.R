@@ -9,6 +9,9 @@
 #'@param order string | double:
 #'@param initial_condition string:
 #'@param boundary_conditions list, r2ogs6_boundary_condition:
+#'@param source_terms Optional: list, r2ogs6_source_term:
+#'@param mesh Optional: string: list:
+#'@param deactivated_subdomains Optional: list, r2ogs6_deactivated_subdomain:
 #'@export
 r2ogs6_process_variable <- function(name,
                                     components,
@@ -60,7 +63,7 @@ new_r2ogs6_process_variable <- function(name,
 
     validate_is_null_or_string(mesh)
 
-    if(!is.null(source_terms)){
+    if(!is.null(deactivated_subdomains)){
         validate_wrapper_list(deactivated_subdomains,
                               "r2ogs6_deactivated_subdomain")
     }
@@ -73,7 +76,6 @@ new_r2ogs6_process_variable <- function(name,
                    source_terms = source_terms,
                    mesh = mesh,
                    deactivated_subdomains = deactivated_subdomains,
-                   tag_name = "process_variable",
                    is_subclass = FALSE,
                    attr_names = character(),
                    flatten_on_exp = character()
@@ -219,7 +221,7 @@ new_r2ogs6_boundary_condition <- function(type,
                                threshold_parameter,
                                comparison_operator)
 
-    validate_true_false_str(flush_stdout)
+    validate_is_null_or_str_flag(flush_stdout)
 
     time_interval <- validate_time_interval(time_interval,
                                             is_optional = TRUE)
@@ -252,7 +254,6 @@ new_r2ogs6_boundary_condition <- function(type,
                    threshold_parameter = threshold_parameter,
                    comparison_operator = comparison_operator,
                    time_interval = time_interval,
-                   tag_name = "boundary_condition",
                    is_subclass = TRUE,
                    attr_names = character(),
                    flatten_on_exp = character()
@@ -313,7 +314,6 @@ new_r2ogs6_source_term <- function(type,
                    geometry = geometry,
                    mesh = mesh,
                    source_term_object = source_term_object,
-                   tag_name = "source_term",
                    is_subclass = TRUE,
                    attr_names = character(),
                    flatten_on_exp = character()
@@ -351,7 +351,6 @@ new_r2ogs6_deactivated_subdomain <- function(time_interval,
 
     structure(list(time_interval = time_interval,
                    material_ids = material_ids,
-                   tag_name = "deactivated_subdomain",
                    is_subclass = TRUE,
                    attr_names = character(),
                    flatten_on_exp = character()
