@@ -29,7 +29,6 @@ new_r2ogs6_search_length_algorithm <- function(type,
         list(
             type = type,
             value = value,
-            tag_name = "search_length_algorithm",
             is_subclass = FALSE,
             attr_names = character(),
             flatten_on_exp = character()
