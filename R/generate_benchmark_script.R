@@ -1,9 +1,12 @@
 
+#===== generate_all_benchmarks (WIP) =====
+
 
 #'generate_all_benchmarks
-#'@description Collector function to generate benchmarks from all .prj files in a directory
-#'@param path Optional: A path to a benchmark directory to generate scripts from
-#' (defaults to 'extdata/benchmarks' package folder)
+#'@description Collector function to generate benchmarks from all .prj files in
+#' a directory
+#'@param path Optional: A path to a benchmark directory to generate scripts
+#' from (defaults to 'extdata/benchmarks' package folder)
 #'@param dest_dir Optional: The directory to write the scripts to
 #' (defaults to 'extdata/benchmark_scripts' package folder)
 generate_all_benchmarks <- function(path = "extdata/benchmarks/",
@@ -35,17 +38,20 @@ generate_all_benchmarks <- function(path = "extdata/benchmarks/",
 }
 
 
+#===== generate_benchmark_script =====
+
 #'generate_benchmark_script
 #'@description Generates a benchmark script from an existing .prj file.
 #'@param prj_path The path to the project file the script will be based on
 #'@param dest_dir Optional: The directory to write the script to
 #'@export
-generate_benchmark_script <- function(prj_path, dest_dir = "extdata/benchmark_scripts/") {
+generate_benchmark_script <- function(prj_path,
+                                      dest_dir = "extdata/benchmark_scripts/") {
 
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(dest_dir))
 
-    #We'll construct an object from a benchmark and then work our way back from there
+    #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
                          sim_id = 1,
                          sim_path = "",
@@ -68,18 +74,19 @@ generate_benchmark_script <- function(prj_path, dest_dir = "extdata/benchmark_sc
         get_component_call <- paste0("ogs6_obj$", names(impl_classes)[[i]])
         ogs6_component <- eval(parse(text = get_component_call))
 
-        #If the benchmark doesn't have any components of the specified name defined, skip
+        #If benchmark doesn't have components of specified name, skip
         if(is.null(ogs6_component) || length(ogs6_component) == 0){
             next
         }
 
-        #If objects are not in a wrapper list, wrap them up so seq_along yields desired results
+        #If objects are not in wrapper list, wrap them up for seq_along()
         if(any(grepl("r2ogs6_", class(ogs6_component), fixed = TRUE))){
             ogs6_component <- list(ogs6_component)
         }
 
         for(j in seq_along(ogs6_component)){
-            add_call_str <- paste0(construct_add_call(ogs6_component[[j]]), "\n\n")
+            add_call_str <- paste0(construct_add_call(ogs6_component[[j]]),
+                                   "\n\n")
             script_str <- paste0(script_str, add_call_str)
         }
     }
@@ -102,10 +109,12 @@ generate_benchmark_script <- function(prj_path, dest_dir = "extdata/benchmark_sc
 
 
 #'construct_add_call
-#'@description Constructs a call based on an OGS6 component. This is a recursive function
-#' and its feelings are easily hurt. Please handle it with care.
-#'@param object An object (numeric, character, list, NULL, or r2ogs6 class object)
-#'@param nested_call Optional: For recursion purposes, you should leave this as it is.
+#'@description Constructs a call based on an OGS6 component. This is a
+#' recursive function, handle with care.
+#'@param object An object (numeric, character, list, NULL, or r2ogs6 class
+#' object)
+#'@param nested_call Optional: For recursion purposes, you should leave this as
+#' it is.
 #'@return A string representing the code with which the component would be added
 #' to an OGS6 object
 construct_add_call <- function(object, nested_call = FALSE) {
@@ -125,9 +134,10 @@ construct_add_call <- function(object, nested_call = FALSE) {
     #For r2ogs6 objects we need to use recursion
     if(any(grepl("r2ogs6_", class(object), fixed = TRUE))){
         class_name <- class(object)
-        tag_name <- paste(utils::tail(unlist(strsplit(class_name, "_")), -1), collapse = "_")
+        tag_name <- paste(utils::tail(unlist(strsplit(class_name, "_")), -1),
+                          collapse = "_")
 
-        #Grab the constructor since the helper might have extra parameters that will be coerced
+        #Grab constructor since the helper might have coercable parameters
         param_names <- names(as.list(formals(paste0("new_", class_name))))
         param_strs <- list()
 
@@ -139,15 +149,22 @@ construct_add_call <- function(object, nested_call = FALSE) {
             param_strs <- c(param_strs, list(param_str))
         }
 
-        content_str <- paste(param_names, param_strs, sep = " = ", collapse = ",\n")
+        content_str <- paste(param_names,
+                             param_strs,
+                             sep = " = ",
+                             collapse = ",\n")
 
-        #If the call is nested, it's a subclass object without an OGS6$add_* function
+        #If call is nested, it's a subclass object without OGS6$add_* function
         if(nested_call){
             ret_str <- paste0(class_name, "(", content_str, ")")
+            ret_str <- delete_nulls_from_str(ret_str)
             return(invisible(ret_str))
         }
 
-        ret_str <- paste0("ogs6_obj$add_", tag_name, "(", class_name, "(", content_str, "))\n")
+        ret_str <- paste0("ogs6_obj$add_",
+                          tag_name,
+                          "(", class_name, "(", content_str, "))\n")
+        ret_str <- delete_nulls_from_str(ret_str)
         return(invisible(ret_str))
     }
 
@@ -158,8 +175,8 @@ construct_add_call <- function(object, nested_call = FALSE) {
         return(invisible(ret_str))
     }
 
-    #Positioning is very important here since r2ogs6 objects are built on top of lists!
-    #If is.list is checked before the class, the results will not be as intended!
+    #Positioning is important here - r2ogs6 objects are built on top of lists!
+    #If is.list is checked before class, results will not be as intended!
 
     #For lists we need to use recursion
     if(is.list(object)){
@@ -170,10 +187,40 @@ construct_add_call <- function(object, nested_call = FALSE) {
            rlist::list.any(names(object) == "")){
             content_str <- paste(element_strs, collapse = ",\n")
         }else{
-            content_str <- paste(names(object), element_strs, sep = " = ", collapse = ",\n")
+            content_str <- paste(names(object),
+                                 element_strs,
+                                 sep = " = ",
+                                 collapse = ",\n")
         }
 
         ret_str <- paste0("list(", content_str, ")")
         return(invisible(ret_str))
     }
+}
+
+
+
+#'delete_nulls_from_str
+#'@description Utility function to delete "param_name = NULL" from a string,
+#' this isn't necessary for functionality of generate_benchmark_script but will
+#' make generated scripts way more readable.
+#'@param string A string
+delete_nulls_from_str <- function(string){
+
+    #For single line calls
+    #Match in beginning of call
+    string <- stringr::str_remove_all(string, "[\\w_]* = NULL, ")
+
+    #Match in middle or at end of call
+    string <- stringr::str_remove_all(string, ", [\\w_]* = NULL")
+
+
+    #For multi line calls
+    #Match in beginning of call
+    string <- stringr::str_remove_all(string, "[\\w_]* = NULL,\n")
+
+    #Match in middle or at end of call
+    string <- stringr::str_remove_all(string, ",\n[\\w_]* = NULL")
+
+    return(invisible(string))
 }
