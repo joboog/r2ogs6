@@ -4,17 +4,49 @@
 \alias{r2ogs6_parameter}
 \title{r2ogs6_parameter}
 \usage{
-r2ogs6_parameter(name, type, values = NULL, value = NULL)
+r2ogs6_parameter(
+  name,
+  type,
+  value = NULL,
+  values = NULL,
+  curve = NULL,
+  parameter = NULL,
+  group_id_property = NULL,
+  index_values = NULL,
+  field_name = NULL,
+  mesh = NULL,
+  expression = NULL,
+  time_series = NULL,
+  use_local_coordinate_system = NULL
+)
 }
 \arguments{
-\item{name}{The parameter name}
+\item{name}{string:}
 
-\item{type}{The parameter type}
-
-\item{values}{Optional: string | numeric: Parameter values}
+\item{type}{string:}
 
 \item{value}{Optional: string | double: Parameter value}
+
+\item{values}{Optional: string | double: Parameter values}
+
+\item{curve}{Optional: string:}
+
+\item{parameter}{Optional: string:}
+
+\item{group_id_property}{Optional: string:}
+
+\item{index_values}{Optional: list:}
+
+\item{field_name}{Optional: string:}
+
+\item{mesh}{Optional: string:}
+
+\item{expression}{Optional: string:}
+
+\item{time_series}{Optional: list:}
+
+\item{use_local_coordinate_system}{Optional: string, "true" | "false":}
 }
 \description{
-S3 class describing a .prj parameter
+tag: parameter
 }

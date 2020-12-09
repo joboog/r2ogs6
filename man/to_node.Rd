@@ -12,17 +12,19 @@ to_node(
 )
 }
 \arguments{
-\item{object}{An object (so far works for r2ogs6 class objects, strings, numbers, lists and vectors)}
+\item{object}{An object (so far works for r2ogs6 class objects, strings,
+numbers, lists and vectors)}
 
 \item{object_name}{Optional: The object name. If not supplied, this function
 will try to guess the tag name by deparsing the 'object' parameter}
 
-\item{attribute_names}{Optional: A character vector containing names of attributes
-or attribute nodes}
+\item{attribute_names}{Optional: A character vector containing names of
+attributes or attribute nodes}
 
-\item{flatten_on_exp}{Optional: This is for vectors which will be flattened to a string in XML}
+\item{flatten_on_exp}{Optional: This is for vectors which will be flattened
+to a string in XML}
 }
 \description{
-Recursive function to restructure objects so xml2::as_xml_document()
-function will convert them to the desired XML format
+Recursive function to restructure objects so
+xml2::as_xml_document() function will convert them to the desired XML format
 }

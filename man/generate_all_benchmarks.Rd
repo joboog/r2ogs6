@@ -10,12 +10,13 @@ generate_all_benchmarks(
 )
 }
 \arguments{
-\item{path}{Optional: A path to a benchmark directory to generate scripts from
-(defaults to 'extdata/benchmarks' package folder)}
+\item{path}{Optional: A path to a benchmark directory to generate scripts
+from (defaults to 'extdata/benchmarks' package folder)}
 
 \item{dest_dir}{Optional: The directory to write the scripts to
 (defaults to 'extdata/benchmark_scripts' package folder)}
 }
 \description{
-Collector function to generate benchmarks from all .prj files in a directory
+Collector function to generate benchmarks from all .prj files in
+a directory
 }
