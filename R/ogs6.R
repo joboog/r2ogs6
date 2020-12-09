@@ -1,31 +1,22 @@
 
-#===== OGS6 documentation =====
-
-#'OGS6
-#'
-#'The OpenGeoSys6 simulation class, core of the r2ogs6 package
-#'
-#'@docType class
-#'
-#'
-NULL
-
 #===== OGS6 =====
 
 
 #'OGS6
 #'@description Constructor for the OGS6 base class
-#'@param sim_name The name of the simulation
-#'@param sim_id The ID of the simulation
-#'@param sim_path The path where all relevant files for the simulation will be
-#' saved
-#'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
-#'@param test_mode In test mode, sim_path and ogs_bin_path will not be
-#' validated. If you're not a developer, please leave this variable as it is :)
 #'@export
 OGS6 <- R6::R6Class("OGS6",
   public = list(
 
+    #'@description
+    #'Creates new OGS6 object
+    #'@param sim_name string: Simulation name
+    #'@param sim_id double: Simulation ID
+    #'@param sim_path string: Path where all files for the simulation will be
+    #' saved
+    #'@param ogs_bin_path string: Path to OpenGeoSys6 /bin directory
+    #'@param test_mode In test mode, sim_path and ogs_bin_path will not be
+    #' validated. If you're not a developer, please leave this as it is :)
     initialize = function(sim_name,
                           sim_id,
                           sim_path,
@@ -50,15 +41,29 @@ OGS6 <- R6::R6Class("OGS6",
         private$.ogs_bin_path <- ogs_bin_path
     },
 
+
+    #===== ADDING COMPONENTS =====
+
+
+    #'@description
+    #'... (WIP)
+    #'@param name ...
+    #'@param value ...
     add_sim_output = function(name, value) {
         private$.sim_output[[name]] <- value
     },
 
+    #'@description
+    #'Adds a r2ogs6_mesh object
+    #'@param mesh r2ogs6_mesh
     add_mesh = function(mesh){
       assertthat::assert_that(class(mesh) == "r2ogs6_mesh")
       private$.meshes <- c(private$.meshes, list(mesh))
     },
 
+    #'@description
+    #'Adds a r2ogs6_gml object
+    #'@param gml r2ogs6_gml
     add_gml = function(gml){
       assertthat::assert_that(class(gml) == "r2ogs6_gml")
       if(!is.null(private$.gml)){
@@ -70,6 +75,9 @@ OGS6 <- R6::R6Class("OGS6",
       private$.geometry <- paste0(gml$name, ".gml")
     },
 
+    #'@description
+    #'Adds a python script
+    #'@param python_script string: File name of python script
     add_python_script = function(python_script){
       assertthat::assert_that(assertthat::is.string(python_script))
       if(!is.null(private$.python_script)){
@@ -80,11 +88,17 @@ OGS6 <- R6::R6Class("OGS6",
       private$.python_script <- python_script
     },
 
+    #'@description
+    #'Adds a r2ogs6_process object
+    #'@param process r2ogs6_process
     add_process = function(process){
       assertthat::assert_that(class(process) == "r2ogs6_process")
       private$.processes <- c(private$.processes, list(process))
     },
 
+    #'@description
+    #'Adds a r2ogs6_time_loop object
+    #'@param time_loop r2ogs6_time_loop
     add_time_loop = function(time_loop){
       assertthat::assert_that(class(time_loop) == "r2ogs6_time_loop")
       if(!is.null(private$.time_loop)){
@@ -93,6 +107,9 @@ OGS6 <- R6::R6Class("OGS6",
       private$.time_loop <- time_loop
     },
 
+    #'@description
+    #'Adds a r2ogs6_local_coordinate_system object
+    #'@param local_coordinate_system r2ogs6_local_coordinate_system
     add_local_coordinate_system = function(local_coordinate_system){
       assertthat::assert_that(class(local_coordinate_system) ==
                                 "r2ogs6_local_coordinate_system")
@@ -103,21 +120,33 @@ OGS6 <- R6::R6Class("OGS6",
       private$.local_coordinate_system <- local_coordinate_system
     },
 
+    #'@description
+    #'Adds a r2ogs6_medium object
+    #'@param medium r2ogs6_medium
     add_medium = function(medium){
       assertthat::assert_that(class(medium) == "r2ogs6_medium")
       private$.media <- c(private$.media, list(medium))
     },
 
+    #'@description
+    #'Adds a r2ogs6_parameter object
+    #'@param parameter r2ogs6_parameter
     add_parameter = function(parameter){
       assertthat::assert_that(class(parameter) == "r2ogs6_parameter")
       private$.parameters <- c(private$.parameters, list(parameter))
     },
 
+    #'@description
+    #'Adds a r2ogs6_curve object
+    #'@param curve r2ogs6_curve
     add_curve = function(curve){
       assertthat::assert_that(class(curve) == "r2ogs6_curve")
       private$.curves <- c(private$.curves, list(curve))
     },
 
+    #'@description
+    #'Adds a r2ogs6_process_variable object
+    #'@param process_variable r2ogs6_process_variable
     add_process_variable = function(process_variable){
       assertthat::assert_that(class(process_variable) ==
                                 "r2ogs6_process_variable")
@@ -125,6 +154,9 @@ OGS6 <- R6::R6Class("OGS6",
                                       list(process_variable))
     },
 
+    #'@description
+    #'Adds a r2ogs6_nonlinear_solver object
+    #'@param nonlinear_solver r2ogs6_nonlinear_solver
     add_nonlinear_solver = function(nonlinear_solver){
       assertthat::assert_that(class(nonlinear_solver) ==
                                 "r2ogs6_nonlinear_solver")
@@ -132,16 +164,25 @@ OGS6 <- R6::R6Class("OGS6",
                                       list(nonlinear_solver))
     },
 
+    #'@description
+    #'Adds a r2ogs6_linear_solver object
+    #'@param linear_solver r2ogs6_linear_solver
     add_linear_solver = function(linear_solver){
       assertthat::assert_that(class(linear_solver) == "r2ogs6_linear_solver")
       private$.linear_solvers <- c(private$.linear_solvers, list(linear_solver))
     },
 
+    #'@description
+    #'Adds a r2ogs6_vtkdiff object
+    #'@param vtkdiff r2ogs6_vtkdiff
     add_vtkdiff = function(vtkdiff){
       assertthat::assert_that(class(vtkdiff) == "r2ogs6_vtkdiff")
       private$.test_definition <- c(private$.test_definition, list(vtkdiff))
     },
 
+    #'@description
+    #'Adds a r2ogs6_insitu object
+    #'@param insitu r2ogs6_insitu
     add_insitu = function(insitu){
       assertthat::assert_that(class(insitu) == "r2ogs6_insitu")
 
@@ -151,6 +192,13 @@ OGS6 <- R6::R6Class("OGS6",
       private$.insitu <- insitu
     },
 
+
+    #===== UTILITY FUNCTIONS =====
+
+
+    #'@description
+    #'Checks if the OGS6 object has all necessary parameters for
+    #' starting a simulation
     get_status = function(){
 
       flag <- TRUE
@@ -191,6 +239,11 @@ OGS6 <- R6::R6Class("OGS6",
       return(invisible(flag))
     },
 
+    #'@description
+    #'Clears components from the OGS6 object
+    #'@param which character: The names of the components (all by default).
+    #' If you want to delete only some components, run
+    #' names(get_implemented_classes()) for the available options.
     clear = function(which = names(get_implemented_classes())){
 
       assertthat::assert_that(is.character(which))
@@ -221,171 +274,130 @@ OGS6 <- R6::R6Class("OGS6",
 
   ),
 
+
+  #===== ACTIVE FIELDS =====
+
+
   active = list(
+
+      #'@field sim_output
+      #'Getter for OGS6 private parameter '.sim_output'
       sim_output = function(value) {
-        if (missing(value)) {
-          private$.sim_output
-        } else {
-          stop("To modify `$sim_output`, use set_sim_output().", call. = FALSE)
-        }
+        private$.sim_output
       },
 
-      sim_name = function(value) {
-          if (missing(value)) {
-              private$.sim_name
-          } else {
-              stop("`$sim_name` is read only", call. = FALSE)
-          }
+      #'@field sim_name
+      #'Getter for OGS6 private parameter '.sim_name'
+      sim_name = function() {
+        private$.sim_name
       },
 
-      sim_id = function(value) {
-          if (missing(value)) {
-              private$.sim_id
-          } else {
-              stop("`$sim_id` is read only", call. = FALSE)
-          }
+      #'@field sim_id
+      #'Getter for OGS6 private parameter '.sim_id'
+      sim_id = function() {
+        private$.sim_id
       },
 
-      sim_path = function(value) {
-          if (missing(value)) {
-              private$.sim_path
-          } else {
-              stop("`$sim_path` is read only", call. = FALSE)
-          }
+      #'@field sim_path
+      #'Getter for OGS6 private parameter '.sim_path'
+      sim_path = function() {
+        private$.sim_path
       },
 
-      ogs_bin_path = function(value) {
-        if (missing(value)) {
-          private$.ogs_bin_path
-        } else {
-          stop("`$ogs_bin_path` is read only", call. = FALSE)
-        }
+      #'@field ogs_bin_path
+      #'Getter for OGS6 private parameter '.ogs_bin_path'
+      ogs_bin_path = function() {
+        private$.ogs_bin_path
       },
 
-      gml = function(value) {
-        if (missing(value)) {
-          private$.gml
-        } else {
-          stop("`To modify `$gml`, use add_gml().", call. = FALSE)
-        }
+      #'@field gml
+      #'Getter for OGS6 private parameter '.gml'
+      gml = function() {
+        private$.gml
       },
 
-      meshes = function(value) {
-        if (missing(value)) {
-          private$.meshes
-        } else {
-          stop("`$meshes` is read only", call. = FALSE)
-        }
+      #'@field meshes
+      #'Getter for OGS6 private parameter '.meshes'
+      meshes = function() {
+        private$.meshes
       },
 
-      geometry = function(value) {
-        if (missing(value)) {
-          private$.geometry
-        } else {
-          stop("`$geometry` is read only", call. = FALSE)
-        }
+      #'@field geometry
+      #'Getter for OGS6 private parameter '.geometry'
+      geometry = function() {
+        private$.geometry
       },
 
-      python_script = function(value) {
-        if (missing(value)) {
-          private$.python_script
-        } else {
-          stop("`$python_script` is read only", call. = FALSE)
-        }
+      #'@field python_script
+      #'Getter for OGS6 private parameter '.python_script'
+      python_script = function() {
+        private$.python_script
       },
 
-      processes = function(value) {
-        if (missing(value)) {
-          private$.processes
-        } else {
-          stop("`To modify `$processes`, use add_process().", call. = FALSE)
-        }
+      #'@field processes
+      #'Getter for OGS6 private parameter '.processes'
+      processes = function() {
+        private$.processes
       },
 
-      time_loop = function(value) {
-        if (missing(value)) {
-          private$.time_loop
-        } else {
-          stop("`To modify `$time_loop`, use add_time_loop().", call. = FALSE)
-        }
+      #'@field time_loop
+      #'Getter for OGS6 private parameter '.time_loop'
+      time_loop = function() {
+        private$.time_loop
       },
 
-      local_coordinate_system = function(value) {
-        if (missing(value)) {
-          private$.local_coordinate_system
-        } else {
-          stop(paste("`To modify `$local_coordinate_system`,",
-                     "use add_local_coordinate_system()."),
-               call. = FALSE)
-        }
+      #'@field local_coordinate_system
+      #'Getter for OGS6 private parameter '.local_coordinate_system'
+      local_coordinate_system = function() {
+        private$.local_coordinate_system
       },
 
-      media = function(value) {
-        if (missing(value)) {
-          private$.media
-        } else {
-          stop("`To modify `$media`, use add_medium().", call. = FALSE)
-        }
+      #'@field media
+      #'Getter for OGS6 private parameter '.media'
+      media = function() {
+        private$.media
       },
 
-      parameters = function(value) {
-        if (missing(value)) {
-          private$.parameters
-        } else {
-          stop("`To modify `$parameters`, use add_parameter().", call. = FALSE)
-        }
+      #'@field parameters
+      #'Getter for OGS6 private parameter '.parameters'
+      parameters = function() {
+        private$.parameters
       },
 
-      curves = function(value) {
-        if (missing(value)) {
-          private$.curves
-        } else {
-          stop("`To modify `$curves`, use add_curve().", call. = FALSE)
-        }
+      #'@field curves
+      #'Getter for OGS6 private parameter '.curves'
+      curves = function() {
+        private$.curves
       },
 
-      process_variables = function(value) {
-        if (missing(value)) {
-          private$.process_variables
-        } else {
-          stop("`To modify `$process_variables`, use add_process_variable().",
-               call. = FALSE)
-        }
+      #'@field process_variables
+      #'Getter for OGS6 private parameter '.process_variables'
+      process_variables = function() {
+        private$.process_variables
       },
 
-      nonlinear_solvers = function(value) {
-        if (missing(value)) {
-          private$.nonlinear_solvers
-        } else {
-          stop("`To modify `$nonlinear_solvers`, use add_nonlinear_solver().",
-               call. = FALSE)
-        }
+      #'@field nonlinear_solvers
+      #'Getter for OGS6 private parameter '.nonlinear_solvers'
+      nonlinear_solvers = function() {
+        private$.nonlinear_solvers
       },
 
-      linear_solvers = function(value) {
-        if (missing(value)) {
-          private$.linear_solvers
-        } else {
-          stop("`To modify `$linear_solvers`, use add_linear_solver().",
-               call. = FALSE)
-        }
+      #'@field linear_solvers
+      #'Getter for OGS6 private parameter '.linear_solvers'
+      linear_solvers = function() {
+        private$.linear_solvers
       },
 
-      test_definition = function(value) {
-        if (missing(value)) {
-          private$.test_definition
-        } else {
-          stop("`To modify `$test_definition`, use add_vtkdiff().",
-               call. = FALSE)
-        }
+      #'@field test_definition
+      #'Getter for OGS6 private parameter '.test_definition'
+      test_definition = function() {
+        private$.test_definition
       },
 
-      insitu = function(value) {
-        if (missing(value)) {
-          private$.insitu
-        } else {
-          stop("`To modify `$insitu`, use add_insitu().", call. = FALSE)
-        }
+      #'@field insitu
+      #'Getter for OGS6 private parameter '.insitu'
+      insitu = function() {
+        private$.insitu
       }
   ),
 
@@ -417,4 +429,3 @@ OGS6 <- R6::R6Class("OGS6",
       .insitu = NULL
   )
 )
-
