@@ -18,6 +18,6 @@ test_that("OGS6 clear function works as expected", {
     ))
 
     expect_equal(length(ogs6_obj$parameters), 1)
-    expect_warning(ogs6_obj$clear(c("pamameter", "parameters")))
+    expect_warning(ogs6_obj$clear(c("elephant", "parameters")))
     expect_equal(length(ogs6_obj$parameters), 0)
 })
