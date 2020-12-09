@@ -21,7 +21,7 @@ test_that("download_benchmark works", {
                          "flow_no_strain.prj"),
         path = path)
 
-    expect_equal(file.exists(paste0(path, "flow_no_strain.prj")), TRUE)
+    expect_equal(file.exists(paste0(path, "/flow_no_strain.prj")), TRUE)
 
     do.call(file.remove, list(list.files(path, full.names = TRUE)))
 })
