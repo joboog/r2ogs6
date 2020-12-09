@@ -1,14 +1,16 @@
 
 
 #'to_node
-#'@description Recursive function to restructure objects so xml2::as_xml_document()
-#' function will convert them to the desired XML format
-#'@param object An object (so far works for r2ogs6 class objects, strings, numbers, lists and vectors)
+#'@description Recursive function to restructure objects so
+#' xml2::as_xml_document() function will convert them to the desired XML format
+#'@param object An object (so far works for r2ogs6 class objects, strings,
+#' numbers, lists and vectors)
 #'@param object_name Optional: The object name. If not supplied, this function
 #' will try to guess the tag name by deparsing the 'object' parameter
-#'@param attribute_names Optional: A character vector containing names of attributes
-#' or attribute nodes
-#'@param flatten_on_exp Optional: This is for vectors which will be flattened to a string in XML
+#'@param attribute_names Optional: A character vector containing names of
+#' attributes or attribute nodes
+#'@param flatten_on_exp Optional: This is for vectors which will be flattened
+#' to a string in XML
 to_node <- function(object, object_name = "",
                     attribute_names = character(),
                     flatten_on_exp = character()){
@@ -88,9 +90,11 @@ to_node <- function(object, object_name = "",
 
             #Handle depending on if it's a child or attribute
             if(is.list(param_node)){
-                object_node[[1]][[length(object_node[[1]])+1]] <- param_node
+                object_node[[1]][[length(object_node[[1]])+1]] <-
+                    param_node
             }else{
-                attr(object_node[[1]], names(param_node)[[1]]) <- param_node[[1]]
+                attr(object_node[[1]], names(param_node)[[1]]) <-
+                    param_node[[1]]
             }
         }
         return(invisible(object_node))
