@@ -150,7 +150,7 @@ test_that("to_node works for classes that have attributes", {
             reltols = "5e-8 1e10 1e10"
         ),
         time_discretization = list(type = "BackwardEuler"),
-        time_stepping = list(
+        time_stepping = r2ogs6_time_stepping(
             type = "FixedTimeStepping",
             t_initial = 0,
             t_end = 100,

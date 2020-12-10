@@ -16,6 +16,13 @@ test_that("read_in works for process objects", {
             "/OpenGeoSysProject/processes/process")
 
     expect_equal(length(ogs6_obj$processes), 1)
+
+    process <- ogs6_obj$processes[[1]]
+
+    expect_equal(process$name, "HM")
+    expect_equal(process$type, "HYDRO_MECHANICS")
+    expect_equal(process$integration_order, 3)
+    expect_equal(length(process$process_variables), 2)
 })
 
 
@@ -55,6 +62,9 @@ test_that("read_in works for time_loop objects", {
             "/OpenGeoSysProject/time_loop")
 
     expect_equal(is.null(ogs6_obj$time_loop), FALSE)
+    expect_equal(ogs6_obj$time_loop$output$type, "VTK")
+    expect_equal(names(ogs6_obj$time_loop$output$timesteps), c("pair"))
+    expect_equal(ogs6_obj$time_loop$output$timesteps[[1]][["repeat"]], 1)
 })
 
 

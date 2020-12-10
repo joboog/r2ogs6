@@ -32,3 +32,20 @@ test_that("select_fitting_subclass works for linear_solver objects", {
 
     expect_equal(subclass_name, "r2ogs6_eigen")
 })
+
+
+#===== General validation =====
+
+
+test_that("validate_is_dir_path works", {
+
+    path <- "test/path"
+    path_2 <- "test\\path\\"
+
+
+    path <- validate_is_dir_path(path)
+    path_2 <- validate_is_dir_path(path_2)
+
+    expect_equal(path, "test/path/")
+    expect_equal(path_2, "test\\path\\")
+})
