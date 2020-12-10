@@ -54,7 +54,7 @@ new_r2ogs6_time_loop <- function(processes,
 #'@param nonlinear_solver string:
 #'@param convergence_criterion r2ogs6_convergence_criterion:
 #'@param time_discretization vector:
-#'@param time_stepping list:
+#'@param time_stepping r2ogs6_time_stepping:
 #'@param compensate_non_equilibrium_initial_residuum string: Optional: Either
 #'"true" or "false"
 #'@export
@@ -69,13 +69,14 @@ r2ogs6_tl_process <- function(ref,
     #Make this more user friendly
     #...
 
-    validate_r2ogs6_tl_process(
-        new_r2ogs6_tl_process(ref,
-                              nonlinear_solver,
-                              convergence_criterion,
-                              time_discretization,
-                              time_stepping,
-                              compensate_non_equilibrium_initial_residuum))
+    new_r2ogs6_tl_process(
+        ref,
+        nonlinear_solver,
+        convergence_criterion,
+        time_discretization,
+        time_stepping,
+        compensate_non_equilibrium_initial_residuum
+    )
 }
 
 
@@ -95,10 +96,7 @@ new_r2ogs6_tl_process <- function(ref,
 
     assertthat::assert_that(is.vector(time_discretization))
 
-    time_stepping <- validate_param_list(time_stepping, c("type",
-                                                          "t_initial",
-                                                          "t_end",
-                                                          "timesteps"))
+    assertthat::assert_that(class(time_stepping) == "r2ogs6_time_stepping")
 
     validate_is_null_or_str_flag(compensate_non_equilibrium_initial_residuum)
 
@@ -116,26 +114,6 @@ new_r2ogs6_tl_process <- function(ref,
         ),
         class = "r2ogs6_tl_process"
     )
-}
-
-
-validate_r2ogs6_tl_process <- function(r2ogs6_tl_process) {
-
-    #Coerce input
-    if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[2]])){
-        r2ogs6_tl_process$time_stepping[[2]] <-
-            as.double(r2ogs6_tl_process$time_stepping[[2]])
-    }
-
-    if(assertthat::is.string(r2ogs6_tl_process$time_stepping[[3]])){
-        r2ogs6_tl_process$time_stepping[[3]] <-
-            as.double(r2ogs6_tl_process$time_stepping[[3]])
-    }
-
-    r2ogs6_tl_process$time_stepping[[4]] <-
-        validate_timesteps(r2ogs6_tl_process$time_stepping[[4]])
-
-    return(invisible(r2ogs6_tl_process))
 }
 
 
@@ -338,6 +316,140 @@ new_r2ogs6_convergence_criterion <- function(type,
             flatten_on_exp = c("abstols", "reltols")
         ),
         class = "r2ogs6_convergence_criterion"
+    )
+}
+
+
+#===== r2ogs6_time_stepping =====
+
+
+#'r2ogs6_time_stepping
+#'@description tag: time_stepping
+#'@param type string:
+#'@param t_initial Optional: string | double:
+#'@param t_end Optional: string | double:
+#'@param timesteps Optional: list:
+#'@param initial_dt Optional: string | double:
+#'@param minimum_dt Optional: string | double:
+#'@param maximum_dt Optional: string | double:
+#'@param number_iterations Optional: string | numeric:
+#'@param multiplier Optional: string | numeric:
+#'@param dt_guess Optional: string | double:
+#'@param dt_min Optional: string | double:
+#'@param dt_max Optional: string | double:
+#'@param rel_dt_min Optional: string | double:
+#'@param rel_dt_max Optional: string | double:
+#'@param tol Optional: string | double:
+#'@export
+r2ogs6_time_stepping <- function(type,
+                                 t_initial = NULL,
+                                 t_end = NULL,
+                                 timesteps = NULL,
+                                 initial_dt = NULL,
+                                 minimum_dt = NULL,
+                                 maximum_dt = NULL,
+                                 number_iterations = NULL,
+                                 multiplier = NULL,
+                                 dt_guess = NULL,
+                                 dt_min = NULL,
+                                 dt_max = NULL,
+                                 rel_dt_min = NULL,
+                                 rel_dt_max = NULL,
+                                 tol = NULL) {
+
+    # Coerce input
+    t_initial <- coerce_string_to_numeric(t_initial)
+    t_end <- coerce_string_to_numeric(t_end)
+    initial_dt <- coerce_string_to_numeric(initial_dt)
+    minimum_dt <- coerce_string_to_numeric(minimum_dt)
+    maximum_dt <- coerce_string_to_numeric(maximum_dt)
+    dt_guess <- coerce_string_to_numeric(dt_guess)
+    dt_min <- coerce_string_to_numeric(dt_min)
+    dt_max <- coerce_string_to_numeric(dt_max)
+    rel_dt_min <- coerce_string_to_numeric(rel_dt_min)
+    rel_dt_max <- coerce_string_to_numeric(rel_dt_max)
+    tol <- coerce_string_to_numeric(tol)
+
+    number_iterations <- coerce_string_to_numeric(number_iterations, TRUE)
+    multiplier <- coerce_string_to_numeric(multiplier, TRUE)
+
+    new_r2ogs6_time_stepping(type,
+                             t_initial,
+                             t_end,
+                             timesteps,
+                             initial_dt,
+                             minimum_dt,
+                             maximum_dt,
+                             number_iterations,
+                             multiplier,
+                             dt_guess,
+                             dt_min,
+                             dt_max,
+                             rel_dt_min,
+                             rel_dt_max,
+                             tol)
+}
+
+
+new_r2ogs6_time_stepping <- function(type,
+                                     t_initial = NULL,
+                                     t_end = NULL,
+                                     timesteps = NULL,
+                                     initial_dt = NULL,
+                                     minimum_dt = NULL,
+                                     maximum_dt = NULL,
+                                     number_iterations = NULL,
+                                     multiplier = NULL,
+                                     dt_guess = NULL,
+                                     dt_min = NULL,
+                                     dt_max = NULL,
+                                     rel_dt_min = NULL,
+                                     rel_dt_max = NULL,
+                                     tol = NULL) {
+
+    validate_is_string(type)
+
+    validate_is_null_or_number(t_initial,
+                               t_end,
+                               initial_dt,
+                               minimum_dt,
+                               maximum_dt,
+                               dt_guess,
+                               dt_min,
+                               dt_max,
+                               rel_dt_min,
+                               rel_dt_max,
+                               tol)
+
+    validate_is_null_or_numeric(number_iterations,
+                                multiplier)
+
+    if(!is.null(timesteps)){
+        timesteps <- validate_timesteps(timesteps)
+    }
+
+
+    structure(list(type = type,
+                   t_initial = t_initial,
+                   t_end = t_end,
+                   timesteps = timesteps,
+                   initial_dt = initial_dt,
+                   minimum_dt = minimum_dt,
+                   maximum_dt = maximum_dt,
+                   number_iterations = number_iterations,
+                   multiplier = multiplier,
+                   dt_guess = dt_guess,
+                   dt_min = dt_min,
+                   dt_max = dt_max,
+                   rel_dt_min = rel_dt_min,
+                   rel_dt_max = rel_dt_max,
+                   tol = tol,
+                   is_subclass = TRUE,
+                   attr_names = character(),
+                   flatten_on_exp = c("number_iterations",
+                                      "multiplier")
+    ),
+    class = "r2ogs6_time_stepping"
     )
 }
 
