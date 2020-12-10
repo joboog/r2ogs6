@@ -1,5 +1,5 @@
-#Functions to read in data from a .prj file to an OGS6 object
 
+#===== read_in_prj =====
 
 #'read_in_prj
 #'@description Wrapper function to read in a whole .prj file
@@ -14,7 +14,7 @@ read_in_prj <- function(ogs6_obj, prj_path){
     from_other_path <- (dirname(ogs6_obj$sim_path) != dirname(prj_path))
 
     #Geometry reference
-    gml_ref_node <- xml2::xml_find_first(xml_doc, "//geometry")
+    gml_ref_node <- xml2::xml_find_first(xml_doc, "/OpenGeoSysProject/geometry")
 
     #Meshes references
     vtu_ref_nodes <- NULL
@@ -23,9 +23,10 @@ read_in_prj <- function(ogs6_obj, prj_path){
         gml_path <- paste0(dirname(prj_path), "/",
                            xml2::xml_text(gml_ref_node))
         read_in_gml(ogs6_obj, gml_path)
-        vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "//mesh")
+        vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "/OpenGeoSysProject/mesh")
     }else{
-        vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "//meshes/*")
+        vtu_ref_nodes <- xml2::xml_find_all(xml_doc,
+                                            "/OpenGeoSysProject/meshes/*")
     }
 
     for(i in seq_along(vtu_ref_nodes)){
@@ -39,57 +40,21 @@ read_in_prj <- function(ogs6_obj, prj_path){
         }
     }
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/processes/process")
+    impl_classes <- get_implemented_classes()
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/search_length_algorithm")
+    for(i in seq_len(length(impl_classes))){
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/media/medium")
+        class_tag_name <- get_class_tag_name(impl_classes[[i]])
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/time_loop")
-
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/local_coordinate_system")
-
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
-
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/curves/curve")
-
-    read_in(ogs6_obj, prj_path,
-            "/OpenGeoSysProject/process_variables/process_variable")
-
-    read_in(ogs6_obj, prj_path,
-            "/OpenGeoSysProject/nonlinear_solvers/nonlinear_solver")
-
-    read_in(ogs6_obj, prj_path,
-            "/OpenGeoSysProject/linear_solvers/linear_solver")
-
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/test_definition/vtkdiff")
-
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/insitu")
-}
-
-
-#===== SPECIAL CASES =====
-
-#This part is for read_in functions dealing with elements that need special
-#handling because they have a structure that guess_structure
-#from read_in_utils.R doesn't know how to deal with
-
-#'read_in_timesteps_node
-#'@description Reads in a timesteps node
-#'@param timesteps_node The timesteps node
-read_in_timesteps_node <- function(timesteps_node){
-
-    timesteps_list <- list()
-
-    for(i in seq_along(xml2::xml_children(timesteps_node))){
-        pair_node <- xml2::xml_children(timesteps_node)[[i]]
-
-        val_1 <- xml2::xml_double(xml2::xml_children(pair_node)[[1]])
-        val_2 <- xml2::xml_double(xml2::xml_children(pair_node)[[2]])
-
-        timesteps_list <- c(timesteps_list, list(pair = c(val_1, val_2)))
+        # Differentiate between wrapper lists and singular objects
+        if(class_tag_name != names(impl_classes)[[i]]){
+            read_in(ogs6_obj, prj_path, paste0("/OpenGeoSysProject/",
+                                               names(impl_classes)[[i]],
+                                               "/",
+                                               class_tag_name))
+        }else{
+            read_in(ogs6_obj, prj_path, paste0("/OpenGeoSysProject/",
+                                               class_tag_name))
+        }
     }
-
-    return(invisible(timesteps_list))
 }
-
