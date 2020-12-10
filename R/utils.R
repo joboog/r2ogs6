@@ -66,6 +66,19 @@ get_subclass_names <- function(class_name) {
 
   switch(class_name,
 
+         r2ogs6_process = {
+           subclasses_names <- c("r2ogs6_fracture_model",
+                                 "r2ogs6_fracture_properties",
+                                 "r2ogs6_jacobian_assembler",
+                                 "r2ogs6_phasefield_parameters",
+                                 "r2ogs6_borehole_heat_exchanger",
+                                 "r2ogs6_flow_and_temperature_control",
+                                 "r2ogs6_pipes",
+                                 "r2ogs6_material_property",
+                                 "r2ogs6_fluid",
+                                 "r2ogs6_porous_medium",
+                                 "r2ogs6_capillary_pressure")
+         },
          r2ogs6_chemical_system = {
            subclasses_names <- c("r2ogs6_solution",
                                  "r2ogs6_phase_component",
@@ -90,7 +103,8 @@ get_subclass_names <- function(class_name) {
            subclasses_names <- c("r2ogs6_tl_process",
                                  "r2ogs6_output",
                                  "r2ogs6_global_processes_coupling",
-                                 "r2ogs6_convergence_criterion")
+                                 "r2ogs6_convergence_criterion",
+                                 "r2ogs6_time_stepping")
          }
   )
 
@@ -252,6 +266,26 @@ coerce_string_to_numeric <- function(obj, split = FALSE){
 
 
 #===== VALIDATION UTILITY =====
+
+#===== General validation =====
+
+
+#'validate_is_dir_path
+#'@description Checks if a given path ends on '/'
+#'@param path string: A path
+validate_is_dir_path <- function(path){
+
+  assertthat::assert_that(assertthat::is.string(path))
+
+  nchar <- nchar(path)
+
+  if(substring(path, nchar, nchar) != "/" &&
+     substring(path, nchar, nchar) != "\\"){
+    path <- paste0(path, "/")
+  }
+
+  return(invisible(path))
+}
 
 
 #===== Validation helpers for required parameters =====
