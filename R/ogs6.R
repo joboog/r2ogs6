@@ -30,7 +30,25 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(assertthat::is.string(ogs_bin_path))
 
       if(!test_mode){
-        validate_paths(sim_path, ogs_bin_path)
+        sim_path <- validate_is_dir_path(sim_path)
+        ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
+
+        if(!dir.exists(sim_path)){
+          dir.create(sim_path)
+        }else{
+          if(length(dir(sim_path, all.files = TRUE)) != 0){
+            warning(paste0("The defined sim_path directory '",
+                           sim_path,
+                           "' is not empty. Files may be overwritten."),
+                    call. = FALSE)
+          }
+        }
+
+        if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
+          stop(paste("Could not find executable file",
+                     "generateStructuredMesh.exe at location",
+                     ogs_bin_path), call. = FALSE)
+        }
       }
 
         private$.sim_output <- list()
