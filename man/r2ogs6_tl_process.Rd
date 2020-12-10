@@ -22,7 +22,7 @@ r2ogs6_tl_process(
 
 \item{time_discretization}{vector:}
 
-\item{time_stepping}{list:}
+\item{time_stepping}{r2ogs6_time_stepping:}
 
 \item{compensate_non_equilibrium_initial_residuum}{string: Optional: Either
 "true" or "false"}

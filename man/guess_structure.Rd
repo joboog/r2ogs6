@@ -7,16 +7,16 @@
 guess_structure(xml_node, xpath_expr, subclasses_names = character())
 }
 \arguments{
-\item{xml_node}{An XML node (of class xml2::xml_node)}
+\item{xml_node}{xml2::xml_node: XML node}
 
-\item{xpath_expr}{An XPath expression (for subclass differentiation)}
+\item{xpath_expr}{string: XPath expression (for subclass differentiation)}
 
-\item{subclasses_names}{Optional: A character vector containing the names of
-r2ogs6 subclasses (r2ogs6 classes without a method for input_add)}
+\item{subclasses_names}{Optional: character: Names of r2ogs6 subclasses
+(r2ogs6 classes without a OGS6$add method)}
 }
 \description{
 Guesses the R representation of an XML node and adds it to
-parameter list
+parameter list. This is a recursive function.
 ASSUMPTIONS:
 1) Leaf nodes will have EITHER a value OR attributes (and will not be missing
 both, e.g. '<a/>').

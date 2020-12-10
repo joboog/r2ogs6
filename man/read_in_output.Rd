@@ -10,6 +10,7 @@ read_in_output(ogs6_obj)
 \item{ogs6_obj}{A OGS6 class object}
 }
 \description{
-After a OGS6 simulation was run, reads in the generated .vtu files as new input for
+After a OGS6 simulation was run, reads in the generated .vtu
+files as new input for
 the .prj file
 }

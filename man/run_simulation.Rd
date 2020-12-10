@@ -14,5 +14,6 @@ run_simulation(ogs6_obj, iter_n = 1, output_to_log_file = TRUE)
 \item{output_to_log_file}{Should the output be written to a log file?}
 }
 \description{
-Calls OGS6 object validator functions, exports all necessary files and starts OpenGeoSys6
+Calls OGS6 object validator functions, exports all necessary
+files and starts OpenGeoSys6
 }
