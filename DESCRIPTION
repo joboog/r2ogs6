@@ -36,6 +36,7 @@ Imports:
     RCurl,
     curl,
     xtable,
-    dplyr
+    dplyr,
+    rlang
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
