@@ -1,8 +1,10 @@
-#This script contains functions to start the simulation
+
+#===== run_simulation =====
 
 
 #'run_simulation
-#'@description Calls OGS6 object validator functions, exports all necessary files and starts OpenGeoSys6
+#'@description Calls OGS6 object validator functions, exports all necessary
+#' files and starts OpenGeoSys6
 #'@param ogs6_obj A OGS6 class object
 #'@param iter_n The number of iterations (for simulation chains)
 #'@param output_to_log_file Should the output be written to a log file?
@@ -10,7 +12,8 @@
 run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
-    assertthat::assert_that(is.numeric(iter_n), iter_n > 0, iter_n < 500)
+    assertthat::assert_that(assertthat::is.number(iter_n),
+                            iter_n > 0, iter_n < 500)
 
     #Call all validators
     validate_all(ogs6_obj)
@@ -29,8 +32,11 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
     for(i in seq_len(iter_n)){
 
         #Call OGS6
-        system(command = paste0(ogs6_obj$ogs_bin_path, "ogs.exe ",
-                                ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj -o ",
+        system(command = paste0(ogs6_obj$ogs_bin_path,
+                                "ogs.exe ",
+                                ogs6_obj$sim_path,
+                                ogs6_obj$sim_name,
+                                ".prj -o ",
                                 ogs6_obj$sim_path))
 
         # read_in_output(ogs6_obj)
@@ -40,7 +46,7 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 }
 
 
-#============================== VALIDATION UTILITY ================================
+#===== VALIDATION UTILITY =====
 
 
 #'validate_all
@@ -49,46 +55,28 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 validate_all <- function(ogs6_obj) {
 
     if(!ogs6_obj$get_status()){
-        stop("There are some components missing from your OGS6 object.", call. = FALSE)
+        stop("There are some components missing from your OGS6 object.",
+             call. = FALSE)
     }
 
     if(is.null(ogs6_obj$gml)){
         if(length(ogs6_obj$meshes) < 2){
-            stop("If you don't want to specify a gml object, you must have multiple
-                      meshes. You can define more by calling the function generate_structured_mesh.", call. = FALSE)
+            stop(paste("If you don't want to specify a gml object, you must",
+                       "have multiple meshes. You can define more by calling",
+                       "generate_structured_mesh()."), call. = FALSE)
         }
     }else if(length(ogs6_obj$meshes) != 1){
-        stop("If you want to specify a gml object, there must be only one mesh (one vtk file).", call. = FALSE)
+        stop(paste("If you want to specify a gml object, there may only be",
+                   "one mesh (one vtk file)."), call. = FALSE)
     }
 
     #...
 }
 
 
-#'validate_paths
-#'@description Helper function to pull path validation out of already large class OGS6
-#'@param sim_path The path where all relevant files for the simulation will be saved
-#'@param ogs_bin_path Path to OpenGeoSys6 /bin directory
-validate_paths <- function(sim_path, ogs_bin_path){
-    if(!dir.exists(sim_path)){
-        dir.create(sim_path)
-    }else{
-        if(length(dir(sim_path, all.files = TRUE)) != 0){
-            warning(paste0("The sim_path directory you defined ('", sim_path,
-                           "') already exists (that is ok). However, ",
-                           "it is not empty. Files may be overwritten."), call. = FALSE)
-        }
-    }
-
-    if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
-        stop(paste("Could not find executable file generateStructuredMesh.exe at location",
-                   ogs_bin_path), call. = FALSE)
-    }
-}
-
-
 #'read_in_output
-#'@description After a OGS6 simulation was run, reads in the generated .vtu files as new input for
+#'@description After a OGS6 simulation was run, reads in the generated .vtu
+#' files as new input for
 #' the .prj file
 #'@param ogs6_obj A OGS6 class object
 read_in_output <- function(ogs6_obj) {
