@@ -5,9 +5,9 @@
 #'run_simulation
 #'@description Calls OGS6 object validator functions, exports all necessary
 #' files and starts OpenGeoSys6
-#'@param ogs6_obj A OGS6 class object
-#'@param iter_n The number of iterations (for simulation chains)
-#'@param output_to_log_file Should the output be written to a log file?
+#'@param ogs6_obj OGS6: Simulation object
+#'@param iter_n number: Number of iterations (for simulation chains)
+#'@param output_to_log_file flag: Should output be written to a log file?
 #'@export
 run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
 
