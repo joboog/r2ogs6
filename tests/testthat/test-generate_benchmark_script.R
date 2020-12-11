@@ -54,3 +54,13 @@ test_that("delete_nulls_from_str works", {
   expect_equal(test_str_2, "r2ogs6_object(two = 3)")
 
 })
+
+
+test_that("delete_keywords_from_str works", {
+
+  test_str <- "r2ogs6_object(a = \"foo\", repeat = \"bar\")"
+
+  test_str <- delete_keywords_from_str(test_str)
+  expect_equal(test_str, "r2ogs6_object(a = \"foo\", \"bar\")")
+
+})
