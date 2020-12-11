@@ -7,7 +7,7 @@
 polylines_to_xml(polylines)
 }
 \arguments{
-\item{polylines}{A list of polylines}
+\item{polylines}{list: The specified polylines}
 }
 \value{
 An XML node containing the polylines

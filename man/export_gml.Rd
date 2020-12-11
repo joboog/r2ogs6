@@ -7,8 +7,8 @@
 export_gml(ogs6_obj)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{ogs6_obj}{OGS6: Simulation object to export r2ogs6_gml object from}
 }
 \description{
-Wrapper function to create a .gml XML document based on the user input data
+Creates a .gml XML document based on  user input data
 }

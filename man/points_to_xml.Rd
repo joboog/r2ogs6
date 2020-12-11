@@ -7,7 +7,7 @@
 points_to_xml(points)
 }
 \arguments{
-\item{points}{The specified tibble}
+\item{points}{tibble: The specified points}
 }
 \value{
 An XML node containing the points
