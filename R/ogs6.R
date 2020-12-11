@@ -29,10 +29,10 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(assertthat::is.string(sim_path))
       assertthat::assert_that(assertthat::is.string(ogs_bin_path))
 
-      if(!test_mode){
-        sim_path <- validate_is_dir_path(sim_path)
-        ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
+      sim_path <- validate_is_dir_path(sim_path)
+      ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
 
+      if(!test_mode){
         if(!dir.exists(sim_path)){
           dir.create(sim_path)
         }else{
@@ -87,7 +87,6 @@ OGS6 <- R6::R6Class("OGS6",
       if(!is.null(private$.gml)){
         warning("Overwriting gml and geometry variable of OGS6 object",
                 call. = FALSE)
-
       }
       private$.gml <- gml
       private$.geometry <- paste0(gml$name, ".gml")
@@ -220,31 +219,14 @@ OGS6 <- R6::R6Class("OGS6",
     get_status = function(){
 
       flag <- TRUE
+      impl_classes <- get_implemented_classes()
 
-      #.gml
-      #flag <- obj_is_defined(flag, private$.gml, "gml")
+      for(i in seq_len(length(impl_classes))){
+        status_call <- paste0("get_obj_status(flag, private$.",
+                              names(impl_classes)[[i]], ")")
 
-      #.vtu
-      flag <- get_list_status(flag, private$.meshes, "mesh")
-
-      #.prj
-      flag <- get_list_status(flag, private$.processes, "process")
-      flag <- obj_is_defined(flag, private$.time_loop, "time_loop")
-      flag <- obj_is_defined(flag, private$.local_coordinate_system,
-                             "local_coordinate_system", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.media, "medium", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.parameters, "parameter")
-      flag <- get_list_status(flag, private$.curves, "curve", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.process_variables,
-                              "process_variable")
-      flag <- get_list_status(flag, private$.nonlinear_solvers,
-                              "nonlinear_solver")
-      flag <- get_list_status(flag, private$.linear_solvers,
-                              "linear_solver")
-      flag <- get_list_status(flag, private$.test_definition,
-                              "vtkdiff", is_opt = TRUE)
-      flag <- obj_is_defined(flag, private$.insitu,
-                             "insitu", is_opt = TRUE)
+        flag <- eval(parse(text = status_call))
+      }
 
       if(flag){
         cat(paste0("Your simulation object has all necessary components.\n",
