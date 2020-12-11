@@ -65,7 +65,8 @@ generate_benchmark_script <- function(prj_path,
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
     script_str <- paste0("library(r2ogs6)\n\n",
-                         "ogs6_obj <- OGS6$new(sim_name = ", sim_name, ",\n",
+                         "ogs6_obj <- OGS6$new(sim_name = \"",
+                         sim_name, "\",\n",
                          "sim_id = 1,\n",
                          "sim_path = \"your_sim_path\",\n",
                          "ogs_bin_path = \"your_bin_path\")\n\n\n")
@@ -158,6 +159,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
         if(nested_call){
             ret_str <- paste0(class_name, "(", content_str, ")")
             ret_str <- delete_nulls_from_str(ret_str)
+            ret_str <- delete_keywords_from_str(ret_str)
             return(invisible(ret_str))
         }
 
@@ -165,6 +167,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
                           tag_name,
                           "(", class_name, "(", content_str, "))\n")
         ret_str <- delete_nulls_from_str(ret_str)
+        ret_str <- delete_keywords_from_str(ret_str)
         return(invisible(ret_str))
     }
 
@@ -204,7 +207,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
 #'@description Utility function to delete "param_name = NULL" from a string,
 #' this isn't necessary for functionality of generate_benchmark_script but will
 #' make generated scripts way more readable.
-#'@param string A string
+#'@param string string
 delete_nulls_from_str <- function(string){
 
     #For single line calls
@@ -221,6 +224,20 @@ delete_nulls_from_str <- function(string){
 
     #Match in middle or at end of call
     string <- stringr::str_remove_all(string, ",\n[\\w_]* = NULL")
+
+    return(invisible(string))
+}
+
+
+#'delete_keywords_from_str
+#'@description Utility function to delete keywords from a string,
+#' this important because there is a <repeat> tag in <time_loop> and
+#' "repeat" is a reserved word in R (extend this function if you find more
+#' reserved words)
+#'@param string string
+delete_keywords_from_str <- function(string){
+
+    string <- stringr::str_remove_all(string, "repeat = ")
 
     return(invisible(string))
 }
