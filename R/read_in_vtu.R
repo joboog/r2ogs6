@@ -1,5 +1,6 @@
-#Functions to read in data from a .vtu file to an OGS6 object
-#WIP, so far only creates the reference for the project file, might add analysis functions later!
+# Functions to read in data from a .vtu file to an OGS6 object
+# WIP, so far only creates the reference for the project file, might add
+# analysis functions later!
 
 
 #'pick_vtu_file
@@ -13,7 +14,7 @@ pick_vtu_file <- function(ogs6_obj) {
     file <- file.choose()
     check_file_extension(file, "vtu")
 
-    ogs6_obj$add_mesh(basename(file))
+    ogs6_obj$add_mesh(r2ogs6_mesh(basename(file)))
     file.copy(file, ogs6_obj$sim_path)
 }
 
