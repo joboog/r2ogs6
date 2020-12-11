@@ -3,7 +3,6 @@
 export(OGS6)
 export(generate_benchmark_script)
 export(generate_structured_mesh)
-export(input_add.r2ogs6_gml)
 export(pick_vtu_file)
 export(r2ogs6_borehole_heat_exchanger)
 export(r2ogs6_boundary_condition)
