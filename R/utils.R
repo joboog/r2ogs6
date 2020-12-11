@@ -181,60 +181,56 @@ get_implemented_classes <- function(){
 #===== INFO UTILITY =====
 
 
-#'get_list_status
-#'@description Helper function for get_status() to check if a list has at least
-#' one element.
-#'@param flag Boolean flag to keep track of missing components
-#'@param obj_list The specified list
-#'@param element_type Optional: What kind of elements are in the list?
-#'@param is_opt flag: Does the list need at least one element?
-get_list_status <- function(flag,
-                            obj_list,
-                            element_type = "list element",
-                            is_opt = FALSE){
+#'get_obj_status
+#'@description Helper function for get_status() to check the status of an OGS6
+#' parameter
+#'@param flag flag: To keep track of missing components
+#'@param obj OGS6 parameter: Either a wrapper list or an r2ogs6 class object
+get_obj_status <- function(flag, obj){
 
-  sim_ready <- flag
+  assertthat::assert_that(assertthat::is.flag(flag))
 
-  if(length(obj_list) == 0){
-    if(!is_opt){
-      cat(crayon::red("\u2717"))
-      sim_ready <- FALSE
+  ogs6_parameter_name <- unlist(strsplit(deparse(substitute(obj)),
+                                         ".",
+                                         fixed = TRUE))[[2]]
+
+  is_optional <- is_optional_sim_component(ogs6_parameter_name)
+
+  if(is.null(obj) || length(obj) == 0){
+    if(!is_optional){
+      cat(crayon::red("\u2717\t"))
+      flag <- FALSE
     }else{
-      cat(crayon::yellow("()"))
+      cat(crayon::yellow("()\t"))
     }
   }else{
-    cat(crayon::green("\u2713"))
+    cat(crayon::green("\u2713\t"))
   }
 
-  cat(" At least one", element_type, "was defined", "\n")
+  # Check if parameter is r2ogs6 class object or wrapper list
+  if(any(grepl("r2ogs6_", class(obj), fixed = TRUE))){
+    cat("OGS6$", ogs6_parameter_name, " is defined\n", sep = "")
+  }else{
+    cat("OGS6$", ogs6_parameter_name, " has at least one element\n", sep = "")
+  }
 
-  return(invisible(sim_ready))
+  return(invisible(flag))
 }
 
 
-#'obj_is_defined
-#'@description Helper function for get_status() to check if an object was
-#' defined
-#'@param flag Boolean flag to keep track of missing components
-#'@param obj The specified object
-#'@param obj_type Optional: What kind of object is this?
-#'@param is_opt flag: Is the element optional i.e. can it be NULL?
-obj_is_defined <- function(flag,
-                           obj,
-                           obj_type = "",
-                           is_opt = FALSE){
-  is_defined <- flag
+#'is_optional_sim_component
+#'@description Checks if a simulation component is optional
+#'@param ogs6_parameter_name string: Name of a OGS6 parameter
+is_optional_sim_component <- function(ogs6_parameter_name){
 
-  if(is.null(obj)){
-    cat(crayon::red("\u2717"))
-    is_defined <- FALSE
-  }else{
-    cat(crayon::green("\u2713"))
-  }
+  optional_sim_components <- c("gml",
+                               "local_coordinate_system",
+                               "curves",
+                               "search_length_algorithm",
+                               "test_definition",
+                               "insitu")
 
-  cat(" ", obj_type, "object is not NULL", "\n")
-
-  return(invisible(is_defined))
+  return(invisible(ogs6_parameter_name %in% optional_sim_components))
 }
 
 
