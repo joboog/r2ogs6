@@ -1,0 +1,104 @@
+---
+title: "r2ogs6 User Guide"
+author: "Anna Heinrich"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{r2ogs6 User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(r2ogs6)
+```
+
+## Prerequisites
+Apart from having the library itself loaded, you need to have OpenGeoSys 6 installed to be able to use `r2ogs6`. 
+
+## Creating your simulation object
+...
+To represent a simulation object, `r2ogs6` uses an R6 class called 'OGS6'. (...). 
+
+Don't let ... intimidate you, though. Working with your simulation object is easier than it sounds, so let's get to it. 
+
+Before we can work with an object, we need to create it. To create it, we need to call the class constructor and provide it with some parameters:
+
+* `sim_name` The name of your simulation
+
+* `sim_id` A simulation ID (defaults to 1, this is used for chaining simulations)
+
+* `sim_path` All relevant files for your simulation will be in here
+
+* `ogs_bin_path` This is the path to the `bin` folder of your OpenGeoSys 6 distribution
+
+* `test_mode` (This defaults to `FALSE` and should be left alone. I'm setting it to `TRUE` for this vignette because it turns off path validation and we haven't supplied a valid `ogs_bin_path`)
+
+Usually, you will only ever define `sim_name`, `sim_path` and `ogs_bin_path`.
+
+```{r}
+ogs6_obj <- OGS6$new(sim_name = "my_simulation",
+                     sim_id = 1,
+                     sim_path = "C:\\my_sim_folder\\",
+                     ogs_bin_path ="C:\\Programs\\OpenGeoSys\\...\\bin\\",
+                     test_mode = TRUE)
+```
+
+And that's it, we now have a simulation object. 
+
+
+## Loading an OpenGeoSys 6 simulation from a project file
+The quickest and easiest way to load a simulation is by using an already existing benchmark. If you take a look at the [OpenGeoSys documentation](https://www.opengeosys.org/docs/benchmarks/elliptic/elliptic-dirichlet/), you'll find plenty of benchmarks to choose from along with a link to their project file on GitLab at the top of the respective page.
+
+For demonstration purposes, I will use a project from the `HydroMechanics` benchmarks, which can be found [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/HydroMechanics/IdealGas/flow_free_expansion).
+
+NOTE: `r2ogs6` has not been tested with every existing benchmark. Due to the large number of input parameters, you might encounter cases where the import fails.
+
+
+## Setting up your own OpenGeoSys 6 simulation
+(...)
+
+
+### Check the status of your OGS6 simulation object
+Since there's plenty of required and optional input parameters, you might get lost while setting up your simulation. To get a brief overview of your simulation, you can use the `OGS6` function `get_status()`. This tells you which input parameters are missing before you can run a simulation.
+
+```{r}
+# Call on the OGS6 object (note the R6 style)
+ogs6_obj$get_status()
+```
+
+Since we haven't defined anything so far, you'll see a lot of red there. 
+
+### Knowing what kind of data to add to your OGS6 simulation object
+
+The results of `get_status()` already gave us a hint what we can add. We'll go from there and try to find out more about the possible input data. Say we want to find out more about `process` objects.
+
+```r
+# To take a look at the documentation, use ? followed by the name of a class
+?r2ogs6_process
+```
+
+As a rule of thumb, classes are named with the prefix `r2ogs6_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `r2ogs6_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `r2ogs6_tl_process`.
+
+(...)
+
+
+
+Let's try adding something now.
+
+### Adding input data via input_add()
+
+
+
+### Adding input data via add_*
+
+
+
+
+

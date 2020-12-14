@@ -14,8 +14,29 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    devtools
 Imports: 
     purrr,
-    magrittr
+    xml2,
+    tibble,
+    R6,
+    stringr,
+    readr,
+    assertthat,
+    crayon,
+    rlist,
+    utils,
+    qpdf,
+    rmarkdown,
+    rvest,
+    pbapply,
+    httr,
+    RCurl,
+    curl,
+    xtable,
+    dplyr,
+    rlang
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr

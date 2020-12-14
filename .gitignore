@@ -1,10 +1,7 @@
+.Rproj.user
 .Rhistory
 .RData
-.Rproj.user
 .Ruserdata
-
-*.html
-*.pdf
-*.png
-
 packrat/lib*/
+packrat/src/
+inst/doc
