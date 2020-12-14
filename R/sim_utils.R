@@ -14,6 +14,7 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(assertthat::is.number(iter_n),
                             iter_n > 0, iter_n < 500)
+    assertthat::assert_that(assertthat::is.flag(output_to_log_file))
 
     #Call all validators
     validate_all(ogs6_obj)
@@ -22,9 +23,42 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
     export_gml(ogs6_obj)
     export_prj(ogs6_obj)
 
+    #Construct the system call
+    ogs6_call <- paste0(ogs6_obj$ogs_bin_path,
+                        "ogs.exe ",
+                        ogs6_obj$sim_path,
+                        ogs6_obj$sim_name,
+                        ".prj -o ",
+                        ogs6_obj$sim_path)
+
+    system_call <- ogs6_call
+
     #Direct simulation output to log file
     if(output_to_log_file){
-        log_file <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, "_log.txt")
+
+        # Create logfile directory
+        logfile_dir <- paste0(ogs6$sim_path, "logfiles/")
+
+        if(!dir.exists(logfile_dir)){
+            dir.create(logfile_dir)
+        }else{
+            warning("Logfile directory already exists", call. = FALSE)
+        }
+
+        for(i in seq_len(iter_n)){
+
+            logfile_path <- paste0(logfile_dir,
+                                   ogs6_obj$sim_name,
+                                   "_log_", iter_n, ".txt")
+
+            #Call OGS6
+            system(command = paste("R CMD BATCH --no-echo",
+                                   script_path,
+                                   logfile_path))
+
+            # read_in_output(ogs6_obj)
+        }
+
         #Write to file...
     }
 
@@ -32,12 +66,7 @@ run_simulation <- function(ogs6_obj, iter_n = 1, output_to_log_file = TRUE) {
     for(i in seq_len(iter_n)){
 
         #Call OGS6
-        system(command = paste0(ogs6_obj$ogs_bin_path,
-                                "ogs.exe ",
-                                ogs6_obj$sim_path,
-                                ogs6_obj$sim_name,
-                                ".prj -o ",
-                                ogs6_obj$sim_path))
+        system(command = ogs6_call)
 
         # read_in_output(ogs6_obj)
     }
@@ -72,6 +101,9 @@ validate_all <- function(ogs6_obj) {
 
     #...
 }
+
+
+#===== CHAINING UTILITY (WIP) =====
 
 
 #'read_in_output
