@@ -38,3 +38,37 @@
 #     # Clean up folder
 #     do.call(file.remove, list(list.files(sim_path, full.names = TRUE)))
 # })
+
+
+test_that("setup_logging works", {
+
+    # Create placeholder sim parameters
+    sim_name <- "test"
+    ogs6_call <- "ogs6 call"
+
+    # Create placeholder sim_path directory
+    extdata_path <- system.file("extdata/", package = "r2ogs6")
+
+    sim_path <- paste0(extdata_path, "/log_test")
+    dir.create(sim_path)
+
+    batch_str <- setup_logging(sim_name,
+                               sim_path,
+                               ogs6_call)
+
+    # Check if logfile directory was written
+    expect_equal(dir.exists(paste0(sim_path, "/logfiles")), TRUE)
+
+    script_path <- paste0(sim_path, "/logfiles/sim_init.R")
+
+    # Check if initialization script was written
+    expect_equal(file.exists(script_path), TRUE)
+
+    # Check contents of initialization script
+    expect_equal(readLines(script_path), "system(command = \"ogs6 call\")")
+
+    # Clean up folder
+    unlink(sim_path, recursive = TRUE)
+})
+
+
