@@ -1,5 +1,7 @@
 
 
+#===== S3 class generation =====
+
 #===== generate_constructor =====
 
 
@@ -211,6 +213,175 @@ flags_to_doc_str <- function(flags, print_result = FALSE){
     }
 
     flag_str <- paste(flag_strs, collapse = "\n")
+
+    if(print_result){
+        cat(flag_str, "\n")
+    }
+
+    return(invisible(flag_str))
+}
+
+
+
+#===== R6 class generation =====
+
+#===== generate_R6 =====
+
+
+#'generate_R6
+#'@description Helper function to generate a R6 class out of a tag name
+#' and a flag vector
+#'@param tag_name The name of the XML element the class will be based on
+#'@param param_flags The parameters for the class and if they are required or
+#' not (i.e. 'c(a = TRUE, b = FALSE)')
+#'@param prefix Optional: For subclasses whose represented elements have
+#' the same tag name as an element for which a class was already specified,
+#' a prefix must be appended to the class name
+#'@param print_result flag: Should the result be printed to the console?
+generate_R6 <- function(tag_name,
+                        param_flags,
+                        prefix = "",
+                        print_result = TRUE){
+
+    default_af_str <- paste0("#'@field is_subclass\n",
+                             "#'Access to private parameter ",
+                             "'.is_subclass'\n",
+                             "is_subclass = function() {\n",
+                             "private$.is_subclass\n},\n\n",
+                             "#'@field subclasses_names\n",
+                             "#'Access to private parameter ",
+                             "'.subclasses_names'\n",
+                             "subclasses_names = function() {\n",
+                             "private$.subclasses_names\n},\n\n",
+                             "#'@field attr_names\n",
+                             "#'Access to private parameter '.attr_names'\n",
+                             "attr_names = function() {\n",
+                             "private$.attr_names\n}")
+
+    r6_str <- paste0("OGS6_", tag_name, " <- R6::R6Class(\"OGS6_", tag_name,
+                     "\",\n",
+                     "public = list(\n",
+                     "initialize = function(", "){\n",
+                     flags_to_r6_init_str(param_flags),
+                     "\n}\n),\n\n",
+                     "active = list(\n",
+                     flags_to_r6_active_field_str(param_flags), ",\n\n",
+                     default_af_str, "\n",
+                     "),\n\n",
+                     "private = list(\n",
+                     flags_to_r6_private_str(param_flags), ",\n",
+                     ".is_subclass = TRUE,\n",
+                     ".subclasses_names = character(),\n",
+                     ".attr_names = character()\n",
+                     ")\n)")
+
+
+    if(print_result){
+        cat(r6_str, "\n")
+    }
+
+    return(invisible(r6_str))
+}
+
+
+#'flags_to_r6_init_str
+#'@description Helper function to generate a string out of a flag vector
+#'@param flags vector: Flags
+#'@param print_result flag: Should the result be printed to the console?
+flags_to_r6_init_str <- function(flags, print_result = FALSE){
+
+    assertthat::assert_that(is.logical(flags))
+    assertthat::assert_that(assertthat::is.flag(print_result))
+
+    init_strs <- c()
+
+    for(i in seq_len(length(flags))){
+
+        param_name <- names(flags)[[i]]
+
+        init_str <- paste0("self$", param_name, " <- ", param_name)
+
+        init_strs <- c(init_strs, c(init_str))
+    }
+
+    init_str <- paste(init_strs, collapse = "\n")
+
+    if(print_result){
+        cat(init_str, "\n")
+    }
+
+    return(invisible(init_str))
+}
+
+
+#'flags_to_r6_active_field_str
+#'@description Helper function to generate a string out of a flag vector
+#'@param flags vector: Flags
+#'@param mutable flag: On per default, turn off if parameters are static
+#'@param print_result flag: Should the result be printed to the console?
+flags_to_r6_active_field_str <- function(flags,
+                                         mutable = TRUE,
+                                         print_result = FALSE){
+
+    assertthat::assert_that(is.logical(flags))
+    assertthat::assert_that(assertthat::is.flag(print_result))
+    assertthat::assert_that(assertthat::is.flag(mutable))
+
+    af_strs <- c()
+
+    for(i in seq_len(length(flags))){
+
+        af_str <- paste0("#'@field ", names(flags)[[i]], "\n",
+                         "#'Access to private parameter '.",
+                         names(flags)[[i]], "'\n")
+
+        if(mutable){
+            af_str <- paste0(af_str,
+                             names(flags)[[i]], " = function(value) {\n",
+                             "if(missing(value)) {\n",
+                             "private$.", names(flags)[[i]], "\n",
+                             "}else{\n",
+                             "private$.", names(flags)[[i]], " <- value\n",
+                             "}\n")
+
+        }else{
+            af_str <- paste0(af_str,
+                             names(flags)[[i]], " = function() {\n",
+                             "private$.", names(flags)[[i]], "\n")
+        }
+
+        af_str <- paste0(af_str, "}")
+
+        af_strs <- c(af_strs, c(af_str))
+    }
+
+    af_str <- paste(af_strs, collapse = ",\n\n")
+
+    if(print_result){
+        cat(af_str, "\n")
+    }
+
+    return(invisible(af_str))
+}
+
+
+#'flags_to_r6_private_str
+#'@description Helper function to generate a string out of a flag vector
+#'@param flags vector: Flags
+#'@param print_result flag: Should the result be printed to the console?
+flags_to_r6_private_str <- function(flags, print_result = FALSE){
+
+    assertthat::assert_that(is.logical(flags))
+    assertthat::assert_that(assertthat::is.flag(print_result))
+
+    for(i in seq_len(length(flags))){
+        names(flags)[[i]] <- paste0(".", names(flags)[[i]])
+    }
+
+    flag_str <- paste(names(flags),
+                      rep("NULL", length(names(flags))),
+                      sep = " = ",
+                      collapse = ",\n")
 
     if(print_result){
         cat(flag_str, "\n")
