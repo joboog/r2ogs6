@@ -4,12 +4,10 @@
 \alias{run_simulation}
 \title{run_simulation}
 \usage{
-run_simulation(ogs6_obj, iter_n = 1, output_to_log_file = TRUE)
+run_simulation(ogs6_obj, output_to_log_file = TRUE)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
-
-\item{iter_n}{number: Number of iterations (for simulation chains)}
 
 \item{output_to_log_file}{flag: Should output be written to a log file?}
 }

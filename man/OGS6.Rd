@@ -9,45 +9,43 @@ Constructor for the OGS6 base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{sim_output}}{Getter for OGS6 private parameter '.sim_output'}
-
 \item{\code{sim_name}}{Getter for OGS6 private parameter '.sim_name'}
 
 \item{\code{sim_id}}{Getter for OGS6 private parameter '.sim_id'}
 
-\item{\code{sim_path}}{Getter for OGS6 private parameter '.sim_path'}
+\item{\code{sim_path}}{Access to private parameter '.sim_path'}
 
 \item{\code{ogs_bin_path}}{Getter for OGS6 private parameter '.ogs_bin_path'}
 
-\item{\code{gml}}{Getter for OGS6 private parameter '.gml'}
-
-\item{\code{meshes}}{Getter for OGS6 private parameter '.meshes'}
-
 \item{\code{geometry}}{Getter for OGS6 private parameter '.geometry'}
 
-\item{\code{python_script}}{Getter for OGS6 private parameter '.python_script'}
+\item{\code{gml}}{Getter for OGS6 private parameter '.gml'}
 
-\item{\code{processes}}{Getter for OGS6 private parameter '.processes'}
+\item{\code{meshes}}{Access to private parameter '.meshes'}
 
-\item{\code{time_loop}}{Getter for OGS6 private parameter '.time_loop'}
+\item{\code{python_script}}{Access to private parameter '.python_script'}
 
-\item{\code{local_coordinate_system}}{Getter for OGS6 private parameter '.local_coordinate_system'}
+\item{\code{processes}}{Access to private parameter '.processes'}
 
-\item{\code{media}}{Getter for OGS6 private parameter '.media'}
+\item{\code{time_loop}}{Access to private parameter '.time_loop'}
 
-\item{\code{parameters}}{Getter for OGS6 private parameter '.parameters'}
+\item{\code{local_coordinate_system}}{Access to private parameter '.local_coordinate_system'}
 
-\item{\code{curves}}{Getter for OGS6 private parameter '.curves'}
+\item{\code{media}}{Access to private parameter '.media'}
 
-\item{\code{process_variables}}{Getter for OGS6 private parameter '.process_variables'}
+\item{\code{parameters}}{Access to private parameter '.parameters'}
 
-\item{\code{nonlinear_solvers}}{Getter for OGS6 private parameter '.nonlinear_solvers'}
+\item{\code{curves}}{Access to private parameter '.curves'}
 
-\item{\code{linear_solvers}}{Getter for OGS6 private parameter '.linear_solvers'}
+\item{\code{process_variables}}{Access to private parameter '.process_variables'}
 
-\item{\code{test_definition}}{Getter for OGS6 private parameter '.test_definition'}
+\item{\code{nonlinear_solvers}}{Access to private parameter '.nonlinear_solvers'}
 
-\item{\code{insitu}}{Getter for OGS6 private parameter '.insitu'}
+\item{\code{linear_solvers}}{Access to private parameter '.linear_solvers'}
+
+\item{\code{test_definition}}{Access to private parameter '.test_definition'}
+
+\item{\code{insitu}}{Access to private parameter '.insitu'}
 }
 \if{html}{\out{</div>}}
 }
@@ -55,7 +53,6 @@ Constructor for the OGS6 base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
-\item \href{#method-add_sim_output}{\code{OGS6$add_sim_output()}}
 \item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
@@ -96,27 +93,8 @@ saved}
 
 \item{\code{ogs_bin_path}}{string: Path to OpenGeoSys6 /bin directory}
 
-\item{\code{test_mode}}{In test mode, sim_path and ogs_bin_path will not be
-validated. If you're not a developer, please leave this as it is :)}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_sim_output"></a>}}
-\if{latex}{\out{\hypertarget{method-add_sim_output}{}}}
-\subsection{Method \code{add_sim_output()}}{
-... (WIP)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_sim_output(name, value)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{...}
-
-\item{\code{value}}{...}
+\item{\code{test_mode}}{In test mode, ogs_bin_path will not be
+validated. Unless you're a dev, please don't touch.}
 }
 \if{html}{\out{</div>}}
 }
