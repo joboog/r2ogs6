@@ -1,7 +1,7 @@
 
 
 
-test_that("OGS6 clear function works as expected", {
+test_that("OGS6$clear() works as expected", {
 
     ogs6_obj <- OGS6$new(
         sim_name = "sim",
