@@ -112,7 +112,7 @@ generate_benchmark_script <- function(prj_path,
 #'construct_add_call
 #'@description Constructs a call based on an OGS6 component. This is a
 #' recursive function, handle with care.
-#'@param object An object (numeric, character, list, NULL, or r2ogs6 class
+#'@param object An object (numeric, character, list, NULL, OGS6 or r2ogs6 class
 #' object)
 #'@param nested_call Optional: For recursion purposes, you should leave this as
 #' it is.
@@ -133,13 +133,34 @@ construct_add_call <- function(object, nested_call = FALSE) {
     }
 
     #For r2ogs6 objects we need to use recursion
-    if(any(grepl("r2ogs6_", class(object), fixed = TRUE))){
-        class_name <- class(object)
+    if(any(grepl("r2ogs6", class(object), fixed = TRUE)) ||
+       any(grepl("OGS6", class(object), fixed = TRUE))){
+
+        class_name <- ""
+        formals_call <- ""
+        init_prefix <- ""
+        use_s3_syntax <- TRUE
+
+        if(any(grepl("r2ogs6", class(object), fixed = TRUE))){
+            class_name <- grep("r2ogs6", class(object),
+                               fixed = TRUE, value = TRUE)
+            formals_call <- paste0("new_", class_name)
+        }else{
+            class_name <- grep("OGS6", class(object),
+                               fixed = TRUE, value = TRUE)
+            use_s3_syntax <- FALSE
+            formals_call <- paste0(class_name,
+                                   "$public_methods$initialize")
+            init_prefix <- "$new"
+        }
+
+        assertthat::assert_that(length(class_name) == 1)
+
         tag_name <- paste(utils::tail(unlist(strsplit(class_name, "_")), -1),
                           collapse = "_")
 
         #Grab constructor since the helper might have coercable parameters
-        param_names <- names(as.list(formals(paste0("new_", class_name))))
+        param_names <- names(as.list(formals(eval(parse(text = formals_call)))))
         param_strs <- list()
 
         for(i in seq_len(length(param_names))){
@@ -155,19 +176,17 @@ construct_add_call <- function(object, nested_call = FALSE) {
                              sep = " = ",
                              collapse = ",\n")
 
-        #If call is nested, it's a subclass object without OGS6$add_* function
-        if(nested_call){
-            ret_str <- paste0(class_name, "(", content_str, ")")
-            ret_str <- delete_nulls_from_str(ret_str)
-            ret_str <- delete_keywords_from_str(ret_str)
-            return(invisible(ret_str))
+        ret_str <- paste0(class_name, init_prefix,
+                          "(", content_str, ")")
+
+        #If call isn't nested, it has a OGS6$add_* function
+        if(!nested_call){
+            ret_str <- paste0("ogs6_obj$add_", tag_name, "(", ret_str, ")\n")
         }
 
-        ret_str <- paste0("ogs6_obj$add_",
-                          tag_name,
-                          "(", class_name, "(", content_str, "))\n")
         ret_str <- delete_nulls_from_str(ret_str)
         ret_str <- delete_keywords_from_str(ret_str)
+
         return(invisible(ret_str))
     }
 
