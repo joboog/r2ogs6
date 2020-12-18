@@ -12,7 +12,7 @@ export_prj <- function(ogs6_obj) {
     if(is.null(ogs6_obj$geometry)) {
         meshes_node <- to_node(ogs6_obj$meshes, "meshes")
     }else{
-        meshes_node <- to_node(ogs6_obj$meshes[[1]]$mesh_ref, "mesh")
+        meshes_node <- to_node(ogs6_obj$meshes[[1]]$mesh_filename, "mesh")
     }
 
     # First instantiate our big wrapper list
