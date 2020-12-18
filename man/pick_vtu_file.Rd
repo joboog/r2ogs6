@@ -7,8 +7,9 @@
 pick_vtu_file(ogs6_obj)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{ogs6_obj}{OGS6: Simulation object}
 }
 \description{
-Lets the user pick a .vtu file and adds it to the specified OGS6 class object
+Lets the user pick a .vtu file and adds it to the specified OGS6
+class object
 }

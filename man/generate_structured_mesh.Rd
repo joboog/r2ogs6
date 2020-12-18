@@ -7,15 +7,16 @@
 generate_structured_mesh(ogs6_obj, call_str)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object (containing the path to the ogs6 bin/ folder)}
+\item{ogs6_obj}{OGS6: Simulation object}
 
-\item{call_str}{The arguments the script will be called with (EXCEPT -o output_file_name, this will
-be generated automatically!)}
+\item{call_str}{The arguments the script will be called with
+(EXCEPT -o output_file_name, this will be generated automatically!)}
 }
 \value{
 The newly generated .vtu file path
 }
 \description{
-Wrapper function to call generateStructuredMesh.exe (VTK mesh generator).
-For full documentation see https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
+Wrapper function to call generateStructuredMesh.exe
+(VTK mesh generator). For full documentation see
+https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
 }

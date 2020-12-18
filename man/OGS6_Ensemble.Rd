@@ -31,7 +31,7 @@ Constructor for the OGS6_Ensemble base class
 \subsection{Method \code{new()}}{
 Creates new OGS6_Ensemble object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$new(ogs6_obj, parameters)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$new(ogs6_obj, parameters, ens_dir_name = "Ensemble")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

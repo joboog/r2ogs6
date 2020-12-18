@@ -7,7 +7,7 @@
 read_in_vtu(ogs6_obj, vtu_path)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{ogs6_obj}{OGS6: Simulation object}
 
 \item{vtu_path}{The path to the mesh file that should be read in}
 }
