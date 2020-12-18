@@ -21,21 +21,20 @@ OGS6_Ensemble <- R6::R6Class(
 
             assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
 
-            private$.ogs6_obj_ref <-
-                deparse(substitute(ogs6_obj))
-
-            private$.sim_name <- ogs6_obj$sim_name
-
             ens_path_split <-
                 unlist(strsplit(ogs6_obj$sim_path, "/",
-                                fixed == TRUE))
+                                fixed = TRUE))
 
             ens_dir_name <-
                 paste0(ogs6_obj$sim_name, "_ensemble")
 
-            append(ens_path_split,
-                   ens_dir_name,
-                   after = length(ens_path_split - 1))
+            if(length(ens_path_split) == 1){
+                ens_path_split <- paste0(ens_dir_name, ens_path_split)
+            }else{
+                ens_path_split <- append(ens_path_split,
+                                         ens_dir_name,
+                                         after = length(ens_path_split - 1))
+            }
 
             private$.ens_path <-
                 paste0(paste(ens_path_split,
@@ -44,27 +43,82 @@ OGS6_Ensemble <- R6::R6Class(
 
             private$.ensemble <- list(ogs6_obj)
 
-            self$parameters <- parameters
+            # Add all parameters to corresponding list
+            assertthat::assert_that(is.list(parameters))
+
+            ogs6_obj_ref <- deparse(substitute(ogs6_obj))
+
+            for(i in seq_len(length(parameters))){
+                dp_param <- deparse(substitute(parameters[[i]]))
+                private$add_parameter(parameters[[i]],
+                                      dp_param,
+                                      ogs6_obj_ref)
+            }
+
             private$make_ensemble()
         },
 
         #'@description
-        #'Adds a parameter.
-        #'@param parameter list, length == 2: The first element references an
-        #' OGS6 parameter, the second one is a list or vector of values.
-        #' To find out how many values you need to supply, call ensemble_size
-        #' on this object.
-        add_parameter = function(parameter) {
-            self$parameters <- c(self$parameters, list(parameter))
-        },
+        #'Runs the simulation. This calls r2ogs6::run_simulation() internally.
+        #' For ensembles, output will be written to logfiles.
+        #'@param parallel flag: Should the function be run in parallel?
+        #' This is implementented via the 'parallel' package.
+        run_simulation = function(parallel = FALSE){
 
-        #'@description
-        #'Runs the simulation. This calls run_simulation() internally. For
-        #' ensembles, logfiles will never be written to console. This function
-        #' should be suited for parallelization.
-        run_simulation = function(){
-            for(i in seq_len(length(self$ensemble))){
-                run_simulation(self$ensemble[[i]])
+            assertthat::assert_that(assertthat::is.flag(parallel))
+
+            if(parallel){
+
+                # Forking is not possible in Windows
+                use_socket <- (Sys.info()["sysname"] == "Windows")
+
+                n_cores <- parallel::detectCores()
+
+                cat("Detected ", n_cores, " cores.\n",
+                    "Detected ", parallel::detectCores(logical = FALSE),
+                    " logical cores.\n", sep = "")
+
+                if(use_socket){
+                    log_path <- paste0(self$ens_path, "cluster_log.txt")
+
+                    socket_cl <- parallel::makeCluster(n_cores,
+                                                       outfile = log_path)
+
+                    # Load required libraries for each process
+                    parallel::clusterEvalQ(socket_cl, {
+                        library(xml2)
+                        library(stringr)
+                    })
+
+                    # Export all functions from our package to the other nodes
+                    all_r2ogs6_functions <- lsf.str("package:r2ogs6")
+                    parallel::clusterExport(socket_cl, all_r2ogs6_functions)
+
+                    # Computation
+                    parallel::parLapply(socket_cl,
+                                        self$ensemble,
+                                        run_simulation,
+                                        write_logfile = TRUE)
+
+                    # Cleanup
+                    parallel::stopCluster(socket_cluster)
+
+                }else{
+
+                    # For OSs other than Windows where forking is possible, we
+                    # utilize it with mclapply
+
+                    parallel::mclapply(self$ensemble,
+                                       run_simulation,
+                                       write_logfile = TRUE,
+                                       mc.cores = n_cores)
+                }
+            }else{
+
+                # For serial ensembles, we can use lapply
+                lapply(self$ensemble,
+                       run_simulation,
+                       write_logfile = TRUE)
             }
         }
     ),
@@ -72,23 +126,9 @@ OGS6_Ensemble <- R6::R6Class(
     active = list(
 
         #'@field parameters
-        #'Access to private parameter '.parameters'
-        parameters = function(value) {
-            if (missing(value)) {
-                private$.parameters
-            } else{
-                validate_ensemble_parameters(value, private$.ogs6_obj_ref)
-                private$.parameters <-
-                    value
-                private$.ensemble <-
-                    private$.make_ensemble()
-            }
-        },
-
-        #'@field sim_name
-        #'Getter for private parameter '.sim_name'
-        sim_name = function(value) {
-            private$.sim_name
+        #'Getter for private parameter '.parameters'
+        parameters = function() {
+            private$.parameters
         },
 
         #'@field ens_path
@@ -105,18 +145,77 @@ OGS6_Ensemble <- R6::R6Class(
     ),
 
     private = list(
+
+        #@description
+        #Adds a parameter.
+        #@param parameter list, length == 2: The first element references an
+        # OGS6 parameter, the second one is a list or vector of values.
+        # To find out how many values you need to supply, call ensemble_size
+        # on this object.
+        #@param dp_param string: Deparsed paramter
+        add_parameter = function(parameter,
+                                 dp_param,
+                                 ogs6_obj_ref) {
+
+            assertthat::assert_that(assertthat::is.string(dp_param))
+            assertthat::assert_that(is.list(parameter))
+
+            assertthat::assert_that(length(parameter) == 2)
+
+            # The parameter must have been defined previously!
+            assertthat::assert_that(length(parameter[[1]]) != 0)
+
+            if(length(self$parameters) != 0){
+                assertthat::assert_that(
+                    length(parameter[[2]]) ==
+                        length(self$parameters[[1]][[2]]))
+            }
+
+            # To validate the original reference, deparse the parameter
+            dp_param <- unlist(strsplit(dp_param,
+                                        "list(list(",
+                                        fixed = TRUE))[[2]]
+
+            dp_param <- unlist(strsplit(dp_param,
+                                        ",",
+                                        fixed = TRUE))[[1]]
+
+            com_str <- unlist(strsplit(dp_param,
+                                       "$",
+                                       fixed = TRUE))[[1]]
+
+            if(ogs6_obj_ref != com_str){
+                stop(paste("Added parameters must belong to the OGS6 object",
+                           "the ensemble is based on!"),
+                     call. = FALSE)
+            }
+
+            # After validating the original reference, replace it for
+            # internal use
+            dp_param_split <- unlist(strsplit(dp_param,
+                                              "$",
+                                              fixed = TRUE))
+
+            dp_param_split[[1]] <- "ogs6_obj"
+            dp_param <- paste(dp_param_split,
+                              collapse = "$")
+
+            parameter[[1]] <- dp_param
+
+            private$.parameters <- c(private$.parameters, list(parameter))
+        },
+
+        #@description
+        #Creates the actual ensemble.
         make_ensemble = function() {
 
             ogs6_obj <- self$ensemble[[1]]
-
-            parameters <-
-                private$.parameters
+            parameters <- private$.parameters
 
             # n iterations in first loop == n objects to create
             for (i in seq_len(length(parameters[[1]][[2]]))) {
                 # Clone object, update parameter of clone
-                ogs6_obj <-
-                    ogs6_obj$clone()
+                ogs6_obj <- ogs6_obj$clone()
 
                 ogs6_obj$sim_name <-
                     paste0(self$sim_name,
@@ -128,54 +227,19 @@ OGS6_Ensemble <- R6::R6Class(
                            "/")
 
                 for (j in seq_len(length(parameters))) {
-                    # Deparse call
-                    param_ref <-
-                        deparse(substitute(parameters[[j]][[1]]))
                     set_param_call <-
-                        paste0(param_ref,
+                        paste0(parameters[[j]][[1]],
                                " <- parameters[[j]][[2]][[i]]")
-
                     eval(parse(text = set_param_call))
                 }
 
                 # Add clone to list of simulation objects
-                append(private$.ensemble, list(ogs6_obj))
+                private$.ensemble <- c(private$.ensemble, list(ogs6_obj))
             }
         },
 
-        .ogs6_obj_ref = NULL,
-        .sim_name = NULL,
         .ens_path = NULL,
-        .ensemble = NULL,
-        .parameters = NULL
+        .ensemble = list(),
+        .parameters = list()
     )
 )
-
-
-#'validate_ensemble_parameters
-#'@description Validates the parameters given to an OGS6_Ensemble object
-#'@param parameters list: The specified parameters
-#'@param ogs6_obj_ref string: Deparsed argument, for checking if the parameters
-#' came from the same OGS6 object that the OGS6_Ensemble is based on
-validate_ensemble_parameters <- function(parameters, ogs6_obj_ref){
-
-    for(i in seq_len(length(parameters))){
-
-        assertthat::assert_that(is.list(parameters[[i]]))
-        assertthat::assert_that(length(parameters[[i]]) == 2)
-
-        assertthat::assert_that(length(parameters[[i]][[2]]) ==
-                                    length(parameters[[1]][[2]]))
-
-        #Check if referenced parameters belong to ogs6_obj
-
-        comp_str <- unlist(strsplit(parameters[[i]][[1]], "$",
-                                    fixed = TRUE))[[1]]
-
-        if(ogs6_obj_ref != comp_str){
-            stop(paste0("The parameters referenced in parameters[[i]][[1]]",
-                        "must belong to the ogs6_obj you are referencing!"),
-                 call. = FALSE)
-        }
-    }
-}
