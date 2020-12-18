@@ -5,21 +5,22 @@
 #'@description Wrapper function to read in a whole .prj file
 #'@param ogs6_obj A OGS6 class object
 #'@param prj_path The path to the project file that should be read in
+#'@param read_in_vtu flag: Should .vtu file be copied or read in?
 #'@export
-read_in_prj <- function(ogs6_obj, prj_path){
+read_in_prj <- function(ogs6_obj,
+                        prj_path,
+                        read_in_vtu = FALSE){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(prj_path)
 
-    from_other_path <- (dirname(ogs6_obj$sim_path) != dirname(prj_path))
-
-    #Geometry reference
+    # Geometry reference
     gml_ref_node <- xml2::xml_find_first(xml_doc, "/OpenGeoSysProject/geometry")
 
-    #Meshes references
+    # Meshes references
     vtu_ref_nodes <- NULL
 
-    if(class(gml_ref_node) != "xml_missing"){
+    if(!any(grepl("xml_missing", class(gml_ref_node), fixed = TRUE))){
         gml_path <- paste0(dirname(prj_path), "/",
                            xml2::xml_text(gml_ref_node))
         read_in_gml(ogs6_obj, gml_path)
@@ -31,13 +32,8 @@ read_in_prj <- function(ogs6_obj, prj_path){
 
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
-        ogs6_obj$add_mesh(r2ogs6_mesh(vtu_ref))
-
-        if(from_other_path){
-            #Copy file into ogs6_obj$sim_path folder
-            file.copy(paste0(dirname(prj_path), "/",
-                             vtu_ref), ogs6_obj$sim_path)
-        }
+        vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
+        ogs6_obj$add_mesh(OGS6_mesh$new(vtu_path))
     }
 
     impl_classes <- get_implemented_classes()
