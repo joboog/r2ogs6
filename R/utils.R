@@ -159,7 +159,7 @@ get_nonstandard_tag_names <- function(){
 #' <name_of_corresponding_OGS6_parameter> = <name_of_your_class>
 get_implemented_classes <- function(){
 
-  class_names <- c(meshes = "r2ogs6_mesh",
+  class_names <- c(meshes = "OGS6_mesh",
                    gml = "r2ogs6_gml",
                    search_length_algorithm = "r2ogs6_search_length_algorithm",
                    processes = "r2ogs6_process",
@@ -175,6 +175,49 @@ get_implemented_classes <- function(){
                    insitu = "r2ogs6_insitu")
 
   return(invisible(class_names))
+}
+
+
+#===== R6 UTILITY =====
+
+
+add_wrapper <- function(x, to_obj){
+
+  assertthat::assert_that(is.list(x))
+  assertthat::assert_that(any(grepl("OGS6_", class(to_obj), fixed = TRUE)))
+
+  for(i in seq_len(length(x))){
+    add_component(x, to_obj)
+  }
+
+}
+
+
+add_component <- function(x, to_obj){
+
+  if(any(grepl("OGS6_", class(x), fixed = TRUE))){
+
+    x_class_name <- grep("OGS6_", class(x), fixed = TRUE, value = TRUE)
+
+    assertthat::assert_that(length(x_class_name) == 1)
+
+    x_tag_name <- get_class_tag_name(x_class_name)
+
+    component_af <- ""
+    af_call <- ""
+
+    if(0){
+      af_call <- paste0("to_obj$", x_tag_name, " <- c( , list(x))")
+    }else{
+      af_call <- paste0("to_obj$", x_tag_name, " <- x")
+    }
+
+    eval(parse(af_call))
+
+  }else{
+    warning(paste("This component cannot be added via add_component."),
+            call. = FALSE)
+  }
 }
 
 
@@ -273,10 +316,11 @@ validate_is_dir_path <- function(path){
 
   assertthat::assert_that(assertthat::is.string(path))
 
+  path <- gsub("\\", "/", path, fixed = TRUE)
+
   nchar <- nchar(path)
 
-  if(substring(path, nchar, nchar) != "/" &&
-     substring(path, nchar, nchar) != "\\"){
+  if(substring(path, nchar, nchar) != "/"){
     path <- paste0(path, "/")
   }
 
@@ -381,7 +425,7 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
   assertthat::assert_that(is.list(wrapper_list))
 
   lapply(wrapper_list, function(x){
-    if(class(x) != expected_element_class){
+    if(!any(grepl(expected_element_class, class(x), fixed = TRUE))){
       stop(paste("List has at least one element whose class is not",
                  expected_element_class),
            call. = FALSE)}
