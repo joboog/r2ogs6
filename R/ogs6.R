@@ -24,9 +24,9 @@ OGS6 <- R6::R6Class("OGS6",
                           test_mode = FALSE) {
 
       # Basic validation
-      assertthat::assert_that(assertthat::is.string(sim_name))
       assertthat::assert_that(assertthat::is.number(sim_id))
 
+      self$sim_name <- sim_name
       self$sim_path <- sim_path
 
       if(!test_mode){
@@ -198,6 +198,16 @@ OGS6 <- R6::R6Class("OGS6",
       return(invisible(flag))
     },
 
+    #'print_log
+    #'@description Prints logfile to console (if it exists)
+    print_log = function(){
+      if(!is.null(self$logfile)){
+        writeLines(readLines(self$logfile))
+      }else{
+        cat("There is no logfile associated with this OGS6 object.\n")
+      }
+    },
+
     #'@description
     #'Clears components from the OGS6 object
     #'@param which character: The names of the components (all by default).
@@ -240,9 +250,14 @@ OGS6 <- R6::R6Class("OGS6",
   active = list(
 
       #'@field sim_name
-      #'Getter for OGS6 private parameter '.sim_name'
-      sim_name = function() {
-        private$.sim_name
+      #'Access to private parameter '.sim_name'
+      sim_name = function(value) {
+        if(missing(value)) {
+          private$.sim_name
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.sim_name <- value
+        }
       },
 
       #'@field sim_id
@@ -259,6 +274,17 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           value <- validate_is_dir_path(value)
           private$.sim_path <- value
+        }
+      },
+
+      #'@field logfile
+      #'Access to private parameter '.logfile'
+      logfile = function(value) {
+        if(missing(value)) {
+          private$.logfile
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.logfile <- value
         }
       },
 
@@ -447,6 +473,8 @@ OGS6 <- R6::R6Class("OGS6",
       .sim_id = NULL,
       .sim_path = NULL,
       .ogs_bin_path = NULL,
+
+      .logfile = NULL,
 
       #.gml parameters
       .gml = NULL,
