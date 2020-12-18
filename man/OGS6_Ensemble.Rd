@@ -9,9 +9,7 @@ Constructor for the OGS6_Ensemble base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parameters}}{Access to private parameter '.parameters'}
-
-\item{\code{sim_name}}{Getter for private parameter '.sim_name'}
+\item{\code{parameters}}{Getter for private parameter '.parameters'}
 
 \item{\code{ens_path}}{Getter for private parameter '.ens_path'}
 
@@ -23,7 +21,6 @@ Constructor for the OGS6_Ensemble base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_Ensemble$new()}}
-\item \href{#method-add_parameter}{\code{OGS6_Ensemble$add_parameter()}}
 \item \href{#method-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
 \item \href{#method-clone}{\code{OGS6_Ensemble$clone()}}
 }
@@ -51,36 +48,23 @@ have the same length.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_parameter"></a>}}
-\if{latex}{\out{\hypertarget{method-add_parameter}{}}}
-\subsection{Method \code{add_parameter()}}{
-Adds a parameter.
+\if{html}{\out{<a id="method-run_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-run_simulation}{}}}
+\subsection{Method \code{run_simulation()}}{
+Runs the simulation. This calls r2ogs6::run_simulation() internally.
+For ensembles, output will be written to logfiles.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$add_parameter(parameter)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{parameter}}{list, length == 2: The first element references an
-OGS6 parameter, the second one is a list or vector of values.
-To find out how many values you need to supply, call ensemble_size
-on this object.}
+\item{\code{parallel}}{flag: Should the function be run in parallel?
+This is implementented via the 'parallel' package.}
 }
 \if{html}{\out{</div>}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run_simulation"></a>}}
-\if{latex}{\out{\hypertarget{method-run_simulation}{}}}
-\subsection{Method \code{run_simulation()}}{
-Runs the simulation. This calls run_simulation() internally. For
-ensembles, logfiles will never be written to console. This function
-should be suited for parallelization.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

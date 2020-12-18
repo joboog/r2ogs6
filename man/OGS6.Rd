@@ -9,11 +9,13 @@ Constructor for the OGS6 base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{sim_name}}{Getter for OGS6 private parameter '.sim_name'}
+\item{\code{sim_name}}{Access to private parameter '.sim_name'}
 
 \item{\code{sim_id}}{Getter for OGS6 private parameter '.sim_id'}
 
 \item{\code{sim_path}}{Access to private parameter '.sim_path'}
+
+\item{\code{logfile}}{Access to private parameter '.logfile'}
 
 \item{\code{ogs_bin_path}}{Getter for OGS6 private parameter '.ogs_bin_path'}
 
@@ -68,6 +70,7 @@ Constructor for the OGS6 base class
 \item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
 \item \href{#method-add_insitu}{\code{OGS6$add_insitu()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-print_log}{\code{OGS6$print_log()}}
 \item \href{#method-clear}{\code{OGS6$clear()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
 }
@@ -343,8 +346,19 @@ Adds a r2ogs6_insitu object
 \subsection{Method \code{get_status()}}{
 Checks if the OGS6 object has all necessary parameters for
 starting a simulation
+print_log
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print_log"></a>}}
+\if{latex}{\out{\hypertarget{method-print_log}{}}}
+\subsection{Method \code{print_log()}}{
+Prints logfile to console (if it exists)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$print_log()}\if{html}{\out{</div>}}
 }
 
 }

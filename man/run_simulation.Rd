@@ -4,12 +4,12 @@
 \alias{run_simulation}
 \title{run_simulation}
 \usage{
-run_simulation(ogs6_obj, output_to_log_file = TRUE)
+run_simulation(ogs6_obj, write_logfile = TRUE)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
 
-\item{output_to_log_file}{flag: Should output be written to a log file?}
+\item{write_logfile}{flag: Should output be written to a logfile?}
 }
 \description{
 Calls OGS6 object validator functions, exports all necessary
