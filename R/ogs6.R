@@ -272,8 +272,7 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.sim_path
         }else{
-          value <- validate_is_dir_path(value)
-          private$.sim_path <- value
+          private$.sim_path <- validate_is_dir_path(value)
         }
       },
 
