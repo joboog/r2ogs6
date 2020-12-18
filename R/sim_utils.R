@@ -36,6 +36,11 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
     export_gml(ogs6_obj)
     export_prj(ogs6_obj)
 
+    # Copy all referenced .vtu files to ogs6_obj$sim_path
+    for(i in seq_len(length(ogs6_obj$meshes))){
+        file.copy(ogs6_obj$meshes[[i]]$mesh_path, ogs6_obj$sim_path)
+    }
+
     # Construct the call
     ogs6_command_str <- paste0(ogs6_obj$ogs_bin_path, "ogs.exe")
     sim_path_full <- paste0(ogs6_obj$sim_path,
@@ -70,8 +75,6 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
     }
 
     closeAllConnections()
-
-    cat("\nCaught exit code", exit_code, "\n")
 
     return(invisible(exit_code))
 }
