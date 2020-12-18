@@ -17,42 +17,30 @@ OGS6_Ensemble <- R6::R6Class(
     #' have the same length.
     public = list(
         initialize = function(ogs6_obj,
-                              parameters) {
+                              parameters,
+                              ens_dir_name = "Ensemble") {
+
+            # Deparse ogs6_obj BEFORE evaluating it for the first time!
+            ogs6_obj_sub <- deparse(substitute(ogs6_obj))
 
             assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
 
-            ens_path_split <-
-                unlist(strsplit(ogs6_obj$sim_path, "/",
-                                fixed = TRUE))
+            private$.ens_path <- paste0(ogs6_obj$sim_path,
+                                        validate_is_dir_path(ens_dir_name))
 
-            ens_dir_name <-
-                paste0(ogs6_obj$sim_name, "_ensemble")
-
-            if(length(ens_path_split) == 1){
-                ens_path_split <- paste0(ens_dir_name, ens_path_split)
-            }else{
-                ens_path_split <- append(ens_path_split,
-                                         ens_dir_name,
-                                         after = length(ens_path_split - 1))
-            }
-
-            private$.ens_path <-
-                paste0(paste(ens_path_split,
-                             collapse = "/"),
-                       "/")
+            ogs6_obj$sim_path <- paste0(private$.ens_path, ogs6_obj$sim_name)
 
             private$.ensemble <- list(ogs6_obj)
 
             # Add all parameters to corresponding list
             assertthat::assert_that(is.list(parameters))
 
-            ogs6_obj_ref <- deparse(substitute(ogs6_obj))
-
             for(i in seq_len(length(parameters))){
                 dp_param <- deparse(substitute(parameters[[i]]))
+
                 private$add_parameter(parameters[[i]],
                                       dp_param,
-                                      ogs6_obj_ref)
+                                      ogs6_obj_sub)
             }
 
             private$make_ensemble()
@@ -66,6 +54,10 @@ OGS6_Ensemble <- R6::R6Class(
         run_simulation = function(parallel = FALSE){
 
             assertthat::assert_that(assertthat::is.flag(parallel))
+
+            # Create ensemble directory
+            assertthat::assert_that(!dir.exists(self$ens_path))
+            dir.create(self$ens_path)
 
             if(parallel){
 
@@ -133,7 +125,7 @@ OGS6_Ensemble <- R6::R6Class(
 
         #'@field ens_path
         #'Getter for private parameter '.ens_path'
-        ens_path = function(value) {
+        ens_path = function() {
             private$.ens_path
         },
 
@@ -155,12 +147,11 @@ OGS6_Ensemble <- R6::R6Class(
         #@param dp_param string: Deparsed paramter
         add_parameter = function(parameter,
                                  dp_param,
-                                 ogs6_obj_ref) {
+                                 ogs6_obj_sub) {
 
-            assertthat::assert_that(assertthat::is.string(dp_param))
             assertthat::assert_that(is.list(parameter))
-
             assertthat::assert_that(length(parameter) == 2)
+            assertthat::assert_that(assertthat::is.string(dp_param))
 
             # The parameter must have been defined previously!
             assertthat::assert_that(length(parameter[[1]]) != 0)
@@ -172,19 +163,17 @@ OGS6_Ensemble <- R6::R6Class(
             }
 
             # To validate the original reference, deparse the parameter
-            dp_param <- unlist(strsplit(dp_param,
-                                        "list(list(",
-                                        fixed = TRUE))[[2]]
 
-            dp_param <- unlist(strsplit(dp_param,
-                                        ",",
-                                        fixed = TRUE))[[1]]
+            regexp <- paste0("(.*list[:space:]*\\(list[:space:]*\\([:space:]*)",
+                             "|(,.*)")
+
+            dp_param <- stringr::str_remove_all(dp_param, regexp)
 
             com_str <- unlist(strsplit(dp_param,
                                        "$",
                                        fixed = TRUE))[[1]]
 
-            if(ogs6_obj_ref != com_str){
+            if(ogs6_obj_sub != com_str){
                 stop(paste("Added parameters must belong to the OGS6 object",
                            "the ensemble is based on!"),
                      call. = FALSE)
@@ -210,6 +199,10 @@ OGS6_Ensemble <- R6::R6Class(
         make_ensemble = function() {
 
             ogs6_obj <- self$ensemble[[1]]
+
+            orig_sim_name <- ogs6_obj$sim_name
+            orig_sim_path <- ogs6_obj$sim_path
+
             parameters <- private$.parameters
 
             # n iterations in first loop == n objects to create
@@ -217,14 +210,13 @@ OGS6_Ensemble <- R6::R6Class(
                 # Clone object, update parameter of clone
                 ogs6_obj <- ogs6_obj$clone()
 
-                ogs6_obj$sim_name <-
-                    paste0(self$sim_name,
-                           "_", (i + 1))
+                ogs6_obj$sim_name <- paste0(orig_sim_name, "_", (i + 1))
 
-                ogs6_obj$sim_path <-
-                    paste0(self$ens_path,
-                           ogs6_obj$sim_name,
-                           "/")
+                new_path <- substr(orig_sim_path,
+                                   start = 1,
+                                   stop = nchar(orig_sim_path) - 1)
+
+                ogs6_obj$sim_path <- paste0(new_path, "_", (i + 1))
 
                 for (j in seq_len(length(parameters))) {
                     set_param_call <-
