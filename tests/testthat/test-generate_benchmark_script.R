@@ -19,10 +19,10 @@ test_that("construct_add_call works", {
   list_call <- construct_add_call(my_list)
   expect_equal(list_call, "list(a = c(2, 3, 4),\nb = c(\"a\", \"b\", \"c\"))")
 
-  ogs_mesh <- r2ogs6_mesh("my_mesh")
+  ogs_mesh <- OGS6_mesh$new("my_mesh")
   ogs_mesh_call <- construct_add_call(ogs_mesh)
   expect_equal(ogs_mesh_call,
-               "ogs6_obj$add_mesh(r2ogs6_mesh(mesh_ref = \"my_mesh\"))\n")
+               "ogs6_obj$add_mesh(OGS6_mesh$new(mesh_path = \"my_mesh\"))\n")
 
   ogs_param <- r2ogs6_parameter("a",
                                 "t",

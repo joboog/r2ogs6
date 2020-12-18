@@ -47,5 +47,5 @@ test_that("validate_is_dir_path works", {
     path_2 <- validate_is_dir_path(path_2)
 
     expect_equal(path, "test/path/")
-    expect_equal(path_2, "test\\path\\")
+    expect_equal(path_2, "test/path/")
 })
