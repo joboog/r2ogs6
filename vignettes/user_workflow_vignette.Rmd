@@ -92,13 +92,61 @@ As a rule of thumb, classes are named with the prefix `r2ogs6_` followed by thei
 
 Let's try adding something now.
 
-### Adding input data via input_add()
-
-
-
 ### Adding input data via add_*
 
+To add data to our simulation object, we use one of ... . 
+
+```{r}
+    ogs6_obj$add_parameter(r2ogs6_parameter(
+        name = "pressure0",
+        type = "Constant",
+        value = 1
+    ))
+```
 
 
+## Running the simulation
+
+As soon as we've added all necessary parameters, we can try starting our simulation by calling `run_simulation(ogs6_obj, write_logfile = TRUE)`. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console. 
+
+## Running multiple simulations
+
+If we want to run not one but multiple simulations, we can use the simulation object we just created as a blueprint for an ensemble or chain run.
+
+### Ensemble runs
+
+To set up an ensemble run, we first need a base simulation object. Conveniently, we already have `ogs6_obj`, so we can go from there. We will pass this object to another one, namely an object of class `OGS6_Ensemble`. Additionally, we have to define which parameters should vary between the different simulations and provide their respective values. The syntax for this is as follows:
+
+```{r}
+    ogs6_ens <- OGS6_Ensemble$new(
+        ogs6_obj = ogs6_obj,
+        parameters = list(list(ogs6_obj$parameters[[1]]$value, c(2, 3, 4)))
+    )
+```
+
+Internally, the `OGS6_Ensemble` object clones the `OGS6` object provided to it and for these clones, it overwrites the parameters we defined with the values we provided. The parameters we define must belong to the same `OGS6` object we passed to the ensemble object as a blueprint via the `ogs6_obj` argument. 
+
+Note that for our example, I'm altering the first object in `ogs6_obj$parameters` because so far, one `r2ogs6_parameter` is the only thing we have added to our simulation. Don't let the `parameters` argument of the `OGS6_Ensemble` constructor confuse you though - you can define all kinds of parameters here and aren't limited to variables of `r2ogs6_parameter`. If we had defined a `r2ogs6_process` already, we could have passed the variable `ogs6_obj$processes[[1]]$reference_temperature` along with the value vector `c(20, 30, 40)` to the `OGS6_Ensemble` constructor.
+
+We can check if the initialization of our ensemble object worked like this:
+
+```{r}
+    ogs6_ens$ensemble[[2]]$parameters[[1]]$value
+```
+
+`ensemble` returns the list of all `OGS6` objects we want to run the simulation on. Since we provided the vector `c(2, 3, 4)` when initializing the ensemble object, `ensemble` will have a length of four (since it contains the original `OGS6` object plus three almost-identical clones). So when we reference the second `OGS6` object in the list and inspect the `value` variable of its first `parameter` object, the return value is `2` because that's the value we defined for this parameter in our vector. 
+
+Note that the class variables of `OGS6_Ensemble` objects are read-only, so be sure to define all parameters during initialization.
+
+To start an ensemble run, we call `ogs6_ens$run_simulation(parallel = FALSE)`. This calls `run_simulation()` on each of the simulation objects in `ogs6_ens$ensemble`. Depending on the size of our ensemble and the available system resources, it might make sense to set the `parallel` parameter to `TRUE`. 
+
+NOTE: Parallelization depends on the OS: A fork cluster is used on UNIX-like Systems while on Windows systems, a socket cluster is used. Parallelization hasn't been tested on Windows yet.
 
 
+### Chain runs
+
+Chaining simulations works in a similar manner to creating ensembles. The main difference is how we define the relevant parameters. Like with an ensemble, for chains we use a special class object to pass our base simulation object to, only this time, the class we use is called `OGS6_Chain`. And while we define parameters along with their values for `OGS6_Ensemble` objects, the `parameter` argument of `OGS6_Chain` only refers to the parameter definitions, not their values (which will be calculated along the chain). 
+
+...
+
+To start a chain run, we call `ogs6_chain$run_simulation()`. This calls `run_simulation()` on the base object and then reads in the information required to start the next simulation from the output files produced by OpenGeoSys 6 (based on the parameters we defined). Since chain runs can't be parallelized, this might take a while.
