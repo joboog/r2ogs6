@@ -159,7 +159,7 @@ get_nonstandard_tag_names <- function(){
 #' <name_of_corresponding_OGS6_parameter> = <name_of_your_class>
 get_implemented_classes <- function(){
 
-  class_names <- c(meshes = "OGS6_mesh",
+  class_names <- c(vtus = "OGS6_vtu",
                    gml = "r2ogs6_gml",
                    search_length_algorithm = "r2ogs6_search_length_algorithm",
                    processes = "r2ogs6_process",
@@ -178,6 +178,21 @@ get_implemented_classes <- function(){
 }
 
 
+#'is_wrapper
+#'@description Helper function, checks if an OGS6 parameter is a wrapper
+#'@param ogs6_param_name string: Name of an OGS6 parameter
+is_wrapper <- function(ogs6_param_name){
+
+  singletons <- c("gml",
+                  "search_length_algorithm",
+                  "time_loop",
+                  "local_coordinate_system",
+                  "insitu")
+
+  return(!(ogs6_param_name %in% singletons))
+}
+
+
 #===== R6 UTILITY =====
 
 
@@ -193,32 +208,6 @@ add_wrapper <- function(x, to_obj){
 }
 
 
-add_component <- function(x, to_obj){
-
-  if(any(grepl("OGS6_", class(x), fixed = TRUE))){
-
-    x_class_name <- grep("OGS6_", class(x), fixed = TRUE, value = TRUE)
-
-    assertthat::assert_that(length(x_class_name) == 1)
-
-    x_tag_name <- get_class_tag_name(x_class_name)
-
-    component_af <- ""
-    af_call <- ""
-
-    if(0){
-      af_call <- paste0("to_obj$", x_tag_name, " <- c( , list(x))")
-    }else{
-      af_call <- paste0("to_obj$", x_tag_name, " <- x")
-    }
-
-    eval(parse(af_call))
-
-  }else{
-    warning(paste("This component cannot be added via add_component."),
-            call. = FALSE)
-  }
-}
 
 
 #===== INFO UTILITY =====
@@ -239,25 +228,29 @@ get_obj_status <- function(flag, obj){
 
   is_optional <- is_optional_sim_component(ogs6_parameter_name)
 
+  status_str <- ""
+
   if(is.null(obj) || length(obj) == 0){
     if(!is_optional){
-      cat(crayon::red("\u2717\t"))
+      status_str <- crayon::red("\u2717 ")
       flag <- FALSE
     }else{
-      cat(crayon::yellow("()\t"))
+      status_str <- crayon::yellow("\u2717 ")
     }
   }else{
-    cat(crayon::green("\u2713\t"))
+    status_str <- crayon::green("\u2713 ")
   }
 
   # Check if parameter is r2ogs6 class object or wrapper list
   if(any(grepl("r2ogs6_", class(obj), fixed = TRUE))){
-    cat("OGS6$", ogs6_parameter_name, " is defined\n", sep = "")
+    status_str <- paste0(status_str,
+                         "OGS6$", ogs6_parameter_name, " is defined\n")
   }else{
-    cat("OGS6$", ogs6_parameter_name, " has at least one element\n", sep = "")
+    status_str <- paste0(status_str, "OGS6$", ogs6_parameter_name,
+                         " has at least one element\n")
   }
 
-  return(invisible(flag))
+  return(invisible(list(flag, status_str)))
 }
 
 
