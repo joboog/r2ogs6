@@ -39,7 +39,7 @@ read_in_prj(ogs6_obj, prj_path)
 
 ogs6_ens <- OGS6_Ensemble$new(
     ogs6_obj = ogs6_obj,
-    parameters = list(list(ogs6_obj$parameters[[2]]$value, c(.4, .5, .6)))
+    parameters = list(list(ogs6_obj$parameters[[2]]$value, c(.3)))
 )
 
 
@@ -48,4 +48,6 @@ ogs6_ens <- OGS6_Ensemble$new(
 
 #Calls OGS6 validators, exports all necessary files and starts OpenGeoSys6
 
-ogs6_ens$run_simulation()
+# Should works on machines with more RAM
+ogs6_ens$run_simulation(parallel = TRUE)
+
