@@ -47,11 +47,63 @@ OGS6 <- R6::R6Class("OGS6",
 
 
     #'@description
+    #'Adds a simulation component (WIP)
+    #'@param x OGS6_*: An object of a class listed in get_implemented_classes()
+    add_component = function(x){
+
+      class_prefix <- "r2ogs6_"
+
+      # Assert that x is OGS6 class object
+      assertthat::assert_that(any(grepl(class_prefix, class(x), fixed = TRUE)))
+
+      # Get exact class name of x
+      x_class_name <- grep(class_prefix, class(x), fixed = TRUE, value = TRUE)
+
+      assertthat::assert_that(length(x_class_name) == 1)
+
+      # Assert that class name is in implemented classes for OGS6
+      impl_classes <- get_implemented_classes()
+
+      assertthat::assert_that(x_class_name %in% impl_classes)
+
+      # Get name of corresponding OGS6 parameter
+      variable_name <- ""
+
+      for(i in seq_len(length(impl_classes))){
+        if(impl_classes[[i]] == x_class_name){
+          variable_name <- names(impl_classes)[[i]]
+          break
+        }
+      }
+
+      af_call <- ""
+
+      if (is_wrapper(variable_name)) {
+        af_call <- paste0("self$", variable_name,
+                          " <- c(self$", variable_name, ", list(x))")
+      } else{
+        af_call <- paste0("self$", variable_name, " <- x")
+      }
+
+      eval(parse(text = af_call))
+
+      # If class has `name` variable, make it accessable by name
+      if("name" %in% names(as.list(formals(x_class_name)))){
+
+        name_call <- paste0("names(self$", variable_name, ")[[length(self$",
+                            variable_name, ")]] <- x$name")
+
+        eval(parse(text = name_call))
+      }
+    },
+
+
+    #'@description
     #'Adds a r2ogs6_mesh object
     #'@param mesh r2ogs6_mesh
     add_mesh = function(mesh){
-      self$meshes <- c(self$meshes,
-                       list(mesh))
+      assertthat::assert_that(assertthat::is.string(mesh))
+      self$meshes <- c(self$meshes, mesh = mesh)
     },
 
     #'@description
@@ -62,6 +114,17 @@ OGS6 <- R6::R6Class("OGS6",
 
       private$.gml <- gml
       private$.geometry <- paste0(gml$name, ".gml")
+    },
+
+    #'@description
+    #'Adds a r2ogs6_gml object
+    #'@param vtu r2ogs6_vtu
+    #'@param filename string:
+    add_vtu = function(vtu, filename){
+      assertthat::assert_that(class(vtu) == "r2ogs6_vtu")
+
+      private$.vtus <- c(private$.vtus, list(vtu))
+      self$meshes <- c(self$meshes, mesh = filename)
     },
 
     #'@description
@@ -175,24 +238,37 @@ OGS6 <- R6::R6Class("OGS6",
     #'@description
     #'Checks if the OGS6 object has all necessary parameters for
     #' starting a simulation
-    get_status = function(){
+    #'@param print_status flag: Should the status be printed to the console?
+    get_status = function(print_status = TRUE){
+
+      assertthat::assert_that(assertthat::is.flag(print_status))
 
       flag <- TRUE
       impl_classes <- get_implemented_classes()
+
+      status_strs <- character()
 
       for(i in seq_len(length(impl_classes))){
         status_call <- paste0("get_obj_status(flag, private$.",
                               names(impl_classes)[[i]], ")")
 
-        flag <- eval(parse(text = status_call))
+        status <- eval(parse(text = status_call))
+        flag <- status[[1]]
+        status_strs <- c(status_strs, status[[2]])
       }
 
-      if(flag){
-        cat(paste0("Your simulation object has all necessary components.\n",
-        "You can try to start the simulation by calling run_simulation() ",
-        "on your OGS6 object.\n",
-        "Note that this will call more validation functions, ",
-        "so you may not be done just yet.\n"))
+      status_str <- paste0(paste(status_strs, collapse = ""), "\n")
+
+      if(print_status){
+
+        cat(status_str)
+
+        if(flag){
+          cat(paste0("Your OGS6 object has all necessary components.\n",
+                     "You can try calling run_simulation().",
+                     "Note that this calls more validation functions, ",
+                     "so you may not be done just yet.\n"))
+        }
       }
 
       return(invisible(flag))
@@ -293,16 +369,16 @@ OGS6 <- R6::R6Class("OGS6",
         private$.ogs_bin_path
       },
 
-      #'@field geometry
-      #'Getter for OGS6 private parameter '.geometry'
-      geometry = function() {
-        private$.geometry
-      },
-
       #'@field gml
       #'Getter for OGS6 private parameter '.gml'
       gml = function() {
         private$.gml
+      },
+
+      #'@field geometry
+      #'Getter for OGS6 private parameter '.geometry'
+      geometry = function() {
+        private$.geometry
       },
 
       #'@field meshes
@@ -311,9 +387,23 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.meshes
         }else{
-          validate_wrapper_list(value,
-                                get_implemented_classes()[["meshes"]])
+          assertthat::assert_that(is.list(value))
+          lapply(value, function(x){
+            assertthat::assert_that(assertthat::is.string(x))
+          })
           private$.meshes <- value
+        }
+      },
+
+      #'@field vtus
+      #'Access to private parameter '.vtus'
+      vtus = function(value) {
+        if(missing(value)) {
+          private$.vtus
+        }else{
+          validate_wrapper_list(value,
+                                get_implemented_classes()[["vtus"]])
+          private$.vtus <- value
         }
       },
 
@@ -478,9 +568,17 @@ OGS6 <- R6::R6Class("OGS6",
       #.gml parameters
       .gml = NULL,
 
+      #.vtu parameters
+      .vtus = NULL,
+
       #.prj parameters
-      .meshes = list(),
+
+      #.gml reference
       .geometry = NULL,
+
+      #.vtu reference(s)
+      .meshes = list(),
+
       .python_script = NULL,
       .processes = list(),
       .time_loop = NULL,
