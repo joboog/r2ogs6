@@ -21,3 +21,25 @@ test_that("OGS6$clear() works as expected", {
     expect_warning(ogs6_obj$clear(c("elephant", "parameters")))
     expect_equal(length(ogs6_obj$parameters), 0)
 })
+
+
+test_that("add_component works", {
+
+    ogs6_obj <- OGS6$new(
+        sim_name = "sim",
+        sim_id = 1,
+        sim_path = "sim_path",
+        ogs_bin_path = "ogs_bin_path",
+        test_mode = TRUE
+    )
+
+    ogs6_obj$add_component(r2ogs6_parameter(
+        name = "pressure0",
+        type = "Constant",
+        values = 1e5
+    ))
+
+    expect_equal(length(ogs6_obj$parameters), 1)
+    expect_equal(ogs6_obj$parameters[[1]]$values, 1e5)
+})
+
