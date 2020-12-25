@@ -33,7 +33,14 @@ read_in_prj <- function(ogs6_obj,
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
         vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
-        ogs6_obj$add_mesh(OGS6_mesh$new(vtu_path))
+
+
+        # Read in .vtu file(s) or just save their path
+        if(read_in_vtu){
+            read_in_vtu(ogs6_obj, vtu_path)
+        }else{
+            ogs6_obj$add_mesh(vtu_path)
+        }
     }
 
     impl_classes <- get_implemented_classes()
