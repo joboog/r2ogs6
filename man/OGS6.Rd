@@ -346,11 +346,18 @@ Adds a r2ogs6_insitu object
 \subsection{Method \code{get_status()}}{
 Checks if the OGS6 object has all necessary parameters for
 starting a simulation
-print_log
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status(print_status = TRUE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{print_status}}{flag: Should the status be printed to the console?
+print_log}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print_log"></a>}}
