@@ -9,20 +9,22 @@
 #'@description Helper function to generate a constructor out of a tag name
 #' and a flag vector
 #'@param tag_name The name of the XML element the class will be based on
-#'@param param_flags The parameters for the class and if they are required or
-#' not (i.e. 'c(a = TRUE, b = FALSE)')
+#'@param params list: (Return value of analyse_xml())
 #'@param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #'@param print_result flag: Should the result be printed to the console?
-generate_constructor <- function(tag_name,
-                                 param_flags,
+generate_constructor <- function(params,
                                  prefix = "",
                                  print_result = FALSE){
 
-    assertthat::assert_that(assertthat::is.string(tag_name))
-    assertthat::assert_that(is.logical(param_flags))
+    assertthat::assert_that(is.list(params))
+    assertthat::assert_that(length(params) == 4)
     assertthat::assert_that(assertthat::is.string(prefix))
+
+    tag_name <- params[[1]]
+    attr_flags <- params[[3]]
+    param_flags <- params[[4]]
 
     class_name <- paste0("r2ogs6_", prefix, tag_name)
 
@@ -31,13 +33,21 @@ generate_constructor <- function(tag_name,
 
     con_str <- paste0("new_", class_name, " <- function(", param_str, ") {\n")
 
+    attr_names <- ""
+
+    if(length(attr_flags) > 0){
+        attr_names <- paste0("\"",
+                             paste(names(attr_flags), collapse = "\", \""),
+                             "\"")
+    }
+
     #Add validation utility here
 
     con_str <- paste0(con_str,
                       "structure(list(",
                       assign_str, ",\n",
                       "is_subclass = TRUE,\n",
-                      "attr_names = ", ",\n",
+                      "attr_names = c(", attr_names , "),\n",
                       "flatten_on_exp = character()\n",
                       "),\n",
                       "class = \"", class_name, "\"\n",
@@ -58,21 +68,21 @@ generate_constructor <- function(tag_name,
 #'generate_helper
 #'@description Helper function to generate a helper out of a tag name
 #' and a flag vector
-#'@param tag_name The name of the XML element the helper will be based on
-#'@param param_flags The parameters for the class and if they are required or
-#' not (i.e. 'c(a = TRUE, b = FALSE)')
+#'@param params list: (Return value of analyse_xml())
 #'@param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #'@param print_result flag: Should the result be printed to the console?
-generate_helper <- function(tag_name,
-                            param_flags,
+generate_helper <- function(params,
                             prefix = "",
                             print_result = FALSE){
 
-    assertthat::assert_that(assertthat::is.string(tag_name))
-    assertthat::assert_that(is.logical(param_flags))
+    assertthat::assert_that(is.list(params))
+    assertthat::assert_that(length(params) == 4)
     assertthat::assert_that(assertthat::is.string(prefix))
+
+    tag_name <- params[[1]]
+    param_flags <- params[[4]]
 
     class_name <- paste0("r2ogs6_", prefix, tag_name)
 
@@ -231,17 +241,21 @@ flags_to_doc_str <- function(flags, print_result = FALSE){
 #'generate_R6
 #'@description Helper function to generate a R6 class out of a tag name
 #' and a flag vector
-#'@param tag_name The name of the XML element the class will be based on
-#'@param param_flags The parameters for the class and if they are required or
-#' not (i.e. 'c(a = TRUE, b = FALSE)')
+#'@param params list: (Return value of analyse_xml())
 #'@param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #'@param print_result flag: Should the result be printed to the console?
-generate_R6 <- function(tag_name,
-                        param_flags,
+generate_R6 <- function(params,
                         prefix = "",
                         print_result = TRUE){
+
+    assertthat::assert_that(is.list(params))
+    assertthat::assert_that(length(params) == 4)
+
+    tag_name <- params[[1]]
+    attr_flags <- params[[3]]
+    param_flags <- params[[4]]
 
     default_af_str <- paste0("#'@field is_subclass\n",
                              "#'Access to private parameter ",
@@ -258,10 +272,23 @@ generate_R6 <- function(tag_name,
                              "attr_names = function() {\n",
                              "private$.attr_names\n}")
 
-    r6_str <- paste0("OGS6_", tag_name, " <- R6::R6Class(\"OGS6_", tag_name,
-                     "\",\n",
+    attr_names <- ""
+
+    if(length(attr_flags) > 0){
+        attr_names <- paste0("\"",
+                             paste(names(attr_flags), collapse = "\", \""),
+                             "\"")
+    }
+
+    r6_str <- paste0("OGS6_", tag_name, " <- R6::R6Class(\"OGS6_",
+                     tag_name, "\",\n",
                      "public = list(\n",
-                     "initialize = function(", "){\n",
+                     "#'@description\n",
+                     "#'Creates new OGS6_", tag_name, "object\n",
+                     flags_to_doc_str(param_flags),
+                     "initialize = function(",
+                     flags_to_con_str(param_flags),
+                     "){\n",
                      flags_to_r6_init_str(param_flags),
                      "\n}\n),\n\n",
                      "active = list(\n",
@@ -272,7 +299,7 @@ generate_R6 <- function(tag_name,
                      flags_to_r6_private_str(param_flags), ",\n",
                      ".is_subclass = TRUE,\n",
                      ".subclasses_names = character(),\n",
-                     ".attr_names = character()\n",
+                     ".attr_names = c(", attr_names , "),\n",
                      ")\n)")
 
 
