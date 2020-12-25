@@ -37,14 +37,14 @@ new_r2ogs6_gml <- function(name,
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    validate_points(points)
+    points <- validate_points(points)
 
     if(!is.null(polylines)){
-        validate_polylines(polylines)
+        polylines <- validate_polylines(polylines)
     }
 
     if(!is.null(surfaces)){
-        validate_surfaces(surfaces)
+        surfaces <- validate_surfaces(surfaces)
     }
 
     structure(
@@ -53,7 +53,7 @@ new_r2ogs6_gml <- function(name,
              polylines = polylines,
              surfaces = surfaces,
              is_subclass = TRUE,
-             attr_names = character(),
+             attr_names = c("point", "name", "id", "element"),
              flatten_on_exp = character()
              ),
 
@@ -165,8 +165,8 @@ validate_polylines <- function(polylines) {
         assertthat::assert_that(assertthat::is.string(polylines[[i]][[1]]))
         assertthat::assert_that(is.numeric(polylines[[i]][[2]]))
         names(polylines[[i]])[[1]] <- c("name")
-        names(polylines[[i]])[[2]] <- rep("pnt",
-                                          length(names(polylines[[i]])[[2]]))
+        names(polylines[[i]][[2]]) <- rep("pnt",
+                                          length(names(polylines[[i]][[2]])))
 
         #Check for duplicate points / polylines?
     }
@@ -188,21 +188,23 @@ validate_surfaces <- function(surfaces) {
     assertthat::assert_that(is.list(surfaces))
 
     for(i in 1:length(surfaces)){
-        surface <- surfaces[[i]]
+        surfaces[[i]]
 
-        assertthat::assert_that(is.list(surface))
-        assertthat::assert_that(length(surface) == 3)
-        names(surface)[[1]] <- c("name")
+        assertthat::assert_that(is.list(surfaces[[i]]))
+        assertthat::assert_that(length(surfaces[[i]]) == 3)
+        names(surfaces[[i]])[[1]] <- c("name")
 
-        assertthat::assert_that(is.numeric(surface[[2]]))
-        assertthat::assert_that(length(surface[[2]]) == 3)
-        names(surface)[[2]] <- c("element")
+        assertthat::assert_that(is.numeric(surfaces[[i]][[2]]))
+        assertthat::assert_that(length(surfaces[[i]][[2]]) == 3)
+        names(surfaces[[i]])[[2]] <- c("element")
+        names(surfaces[[i]][[2]]) <- c("p1", "p2", "p3")
 
-        assertthat::assert_that(is.numeric(surface[[3]]))
-        assertthat::assert_that(length(surface[[3]]) == 3)
-        names(surface)[[3]] <- c("element")
+        assertthat::assert_that(is.numeric(surfaces[[i]][[3]]))
+        assertthat::assert_that(length(surfaces[[i]][[3]]) == 3)
+        names(surfaces[[i]])[[3]] <- c("element")
+        names(surfaces[[i]][[3]]) <- c("p1", "p2", "p3")
 
-        validate_surface_elements(surface[[2]], surface[[3]])
+        validate_surface_elements(surfaces[[i]][[2]], surfaces[[i]][[3]])
 
         #Check for duplicate points / surfaces?
     }
