@@ -10,9 +10,10 @@ export_prj <- function(ogs6_obj) {
 
     #If there is a .gml defined, add "mesh" node, else add "meshes" node
     if(is.null(ogs6_obj$geometry)) {
-        meshes_node <- to_node(ogs6_obj$meshes, "meshes")
+        basenames <- lapply(ogs6_obj$meshes, function(x){basename(x)})
+        meshes_node <- to_node(basenames, "meshes")
     }else{
-        meshes_node <- to_node(ogs6_obj$meshes[[1]]$mesh_filename, "mesh")
+        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]))
     }
 
     # First instantiate our big wrapper list

@@ -22,7 +22,8 @@ to_node <- function(object, object_name = "",
         object_name <- deparse(substitute(object))
 
         if(any(grep("\\$", object_name))){
-            object_name <- unlist(strsplit(object_name, "$", fixed = TRUE))[[2]]
+            split_name <- unlist(strsplit(object_name, "$", fixed = TRUE))
+            object_name <- split_name[[length(split_name)]]
         }
     }
 
@@ -100,7 +101,8 @@ to_node <- function(object, object_name = "",
         return(invisible(object_node))
     }
 
-    if(is.list(object) || is.vector(object)){
+    if(is.list(object) ||
+       is.vector(object)){
 
         object_node <- list(structure(list()))
         names(object_node)[[1]] <- object_name
@@ -111,7 +113,16 @@ to_node <- function(object, object_name = "",
                                     names(object)[[i]],
                                     attribute_names)
 
-            object_node[[1]] <- c(object_node[[1]], element_node)
+            #Handle depending on if it's a child or attribute
+            if(is.list(element_node)){
+                object_node[[1]][[length(object_node[[1]])+1]] <-
+                    element_node
+            }else{
+                attr(object_node[[1]], names(element_node)[[1]]) <-
+                    element_node[[1]]
+            }
+
+            # object_node[[1]] <- c(object_node[[1]], element_node)
         }
 
         return(invisible(object_node))
