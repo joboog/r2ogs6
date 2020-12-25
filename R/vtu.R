@@ -1,16 +1,16 @@
 
-#===== OGS6_mesh =====
+#===== OGS6_vtu =====
 
 
-#'OGS6_mesh
-#'@description Constructor for the OGS6_mesh base class
+#'OGS6_vtu
+#'@description Constructor for the OGS6_vtu base class
 #'@export
-OGS6_mesh <- R6::R6Class(
-    "OGS6_mesh",
+OGS6_vtu <- R6::R6Class(
+    "OGS6_vtu",
     public = list(
 
         #'@description
-        #'Creates new OGS6_mesh object
+        #'Creates new OGS6_vtu object
         #'@param mesh_path string:
         initialize = function(mesh_path) {
             self$mesh_path <- mesh_path
@@ -286,7 +286,7 @@ generate_structured_mesh = function(ogs6_obj, call_str) {
     system(command = paste0(ogs6_obj$ogs_bin_path, "generateStructuredMesh.exe",
                             " -o ", mesh_path, " ", call_str))
 
-    ogs6_obj$add_mesh(OGS6_mesh$new(mesh_path))
+    ogs6_obj$add_vtu(OGS6_vtu$new(mesh_path), mesh_path)
 
     return(invisible(mesh_path))
 }
