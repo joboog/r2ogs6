@@ -15,6 +15,7 @@ OGS6_Ensemble <- R6::R6Class(
     #' of a sublist references an OGS6 parameter, the second one is a list or
     #' vector of values. Note that the second elements of the sublists must
     #' have the same length.
+    #'@importFrom foreach %dopar%
     public = list(
         initialize = function(ogs6_obj,
                               parameters,
@@ -65,32 +66,30 @@ OGS6_Ensemble <- R6::R6Class(
                 use_socket <- (Sys.info()["sysname"] == "Windows")
 
                 n_cores <- parallel::detectCores()
+                n_logical_cores <- parallel::detectCores(logical = FALSE)
 
                 cat("Detected ", n_cores, " cores.\n",
-                    "Detected ", parallel::detectCores(logical = FALSE),
-                    " logical cores.\n", sep = "")
+                    "Detected ", n_logical_cores, " logical cores.\n", sep = "")
 
                 if(use_socket){
                     log_path <- paste0(self$ens_path, "cluster_log.txt")
 
-                    socket_cl <- parallel::makeCluster(n_cores,
+                    socket_cl <- parallel::makeCluster((n_cores - 1),
                                                        outfile = log_path)
 
-                    # Load required libraries for each process
+                    doParallel::registerDoParallel(socket_cl)
+
                     parallel::clusterEvalQ(socket_cl, {
-                        library(xml2)
-                        library(stringr)
+                        library(r2ogs6)
                     })
 
-                    # Export all functions from our package to the other nodes
-                    all_r2ogs6_functions <- lsf.str("package:r2ogs6")
-                    parallel::clusterExport(socket_cl, all_r2ogs6_functions)
+                    ensemble <- self$ensemble
 
-                    # Computation
-                    parallel::parLapply(socket_cl,
-                                        self$ensemble,
-                                        run_simulation,
-                                        write_logfile = TRUE)
+                    foreach::foreach(i = seq_along(ensemble)) %dopar% {
+                        ogs6_obj <- ensemble[[i]]
+                        r2ogs6::run_simulation(ogs6_obj,
+                                               write_logfile = TRUE)
+                    }
 
                     # Cleanup
                     parallel::stopCluster(socket_cluster)
