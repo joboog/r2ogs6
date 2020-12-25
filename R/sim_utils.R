@@ -33,7 +33,7 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
     }
 
     # Export the simulation files
-    export_gml(ogs6_obj)
+    export_gml(ogs6_obj$gml, ogs6_obj$sim_path)
     export_prj(ogs6_obj)
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
@@ -88,7 +88,7 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
 #'@param ogs6_obj A OGS6 class object
 validate_all <- function(ogs6_obj) {
 
-    if(!ogs6_obj$get_status()){
+    if(!ogs6_obj$get_status(print_status = FALSE)){
         stop("There are some components missing from your OGS6 object.",
              call. = FALSE)
     }
