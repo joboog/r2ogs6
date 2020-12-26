@@ -31,6 +31,16 @@ export_gml <- function(gml, path) {
     })
   }
 
+  # The points need an extra 'id' attribute
+  for(i in seq_len(length(points_list))){
+    points_list[[i]] <- c(points_list[[i]], id = (i - 1))
+
+    # Remove empty names
+    if(points_list[[i]][["name"]] == ""){
+      points_list[[i]][["name"]] <- NULL
+    }
+  }
+
   xml2::xml_add_child(gml_xml,
                       xml2::as_xml_document(
                         to_node(points_list,

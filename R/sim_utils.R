@@ -38,7 +38,7 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
     for(i in seq_len(length(ogs6_obj$meshes))){
-        file.copy(ogs6_obj$meshes[[i]]$mesh_path, ogs6_obj$sim_path)
+        file.copy(ogs6_obj$meshes[[i]], ogs6_obj$sim_path)
     }
 
     # Construct the call

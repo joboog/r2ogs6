@@ -13,7 +13,7 @@ export_prj <- function(ogs6_obj) {
         basenames <- lapply(ogs6_obj$meshes, function(x){basename(x)})
         meshes_node <- to_node(basenames, "meshes")
     }else{
-        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]))
+        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
     }
 
     # First instantiate our big wrapper list

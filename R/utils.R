@@ -260,6 +260,7 @@ get_obj_status <- function(flag, obj){
 is_optional_sim_component <- function(ogs6_parameter_name){
 
   optional_sim_components <- c("gml",
+                               "vtus",
                                "local_coordinate_system",
                                "curves",
                                "search_length_algorithm",
