@@ -5,16 +5,16 @@
 #'validate_read_in_xml
 #'@description Utility function, tries parsing the provided file as an XML
 #' document
-#'@param file A file to be parsed as XML
+#'@param path string: A file to be parsed as XML
 #'@return The parsed XML file (as class object of type xml2::xml_document)
-validate_read_in_xml <- function(file){
+validate_read_in_xml <- function(path){
 
-    assertthat::assert_that(assertthat::is.string(file))
+    assertthat::assert_that(assertthat::is.string(path))
 
     #Attempt to read in file
     xml_doc <- tryCatch(
         {
-            return(invisible(xml2::read_xml(file, encoding="ISO-8859-1")))
+            return(invisible(xml2::read_xml(path, encoding="ISO-8859-1")))
         },
         error = function(e){
             print(e)
