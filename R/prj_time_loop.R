@@ -148,6 +148,10 @@ r2ogs6_output <- function(type,
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times, TRUE)
 
+    if(is.list(meshes)){
+        meshes <- unlist(meshes)
+    }
+
     new_r2ogs6_output(type,
                          prefix,
                          variables,
@@ -276,6 +280,8 @@ r2ogs6_convergence_criterion <- function(type,
                                          reltols = NULL) {
 
     #Coerce input
+    abstol <- coerce_string_to_numeric(abstol)
+    reltol <- coerce_string_to_numeric(reltol)
     abstols <- coerce_string_to_numeric(abstols, TRUE)
     reltols <- coerce_string_to_numeric(reltols, TRUE)
 

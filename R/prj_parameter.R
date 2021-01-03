@@ -11,12 +11,12 @@
 #'@param curve Optional: string:
 #'@param parameter Optional: string:
 #'@param group_id_property Optional: string:
-#'@param index_values Optional: list:
 #'@param field_name Optional: string:
 #'@param mesh Optional: string:
 #'@param expression Optional: string:
 #'@param time_series Optional: list:
 #'@param use_local_coordinate_system Optional: string, "true" | "false":
+#'@param ... Optional: for index_values tags (since there can be multiple)
 #'@export
 r2ogs6_parameter <- function(name,
                              type,
@@ -25,16 +25,18 @@ r2ogs6_parameter <- function(name,
                              curve = NULL,
                              parameter = NULL,
                              group_id_property = NULL,
-                             index_values = NULL,
                              field_name = NULL,
                              mesh = NULL,
                              expression = NULL,
                              time_series = NULL,
-                             use_local_coordinate_system = NULL) {
+                             use_local_coordinate_system = NULL,
+                             ...) {
 
     #Coerce input
     value <- coerce_string_to_numeric(value)
     values <- coerce_string_to_numeric(values, TRUE)
+
+    index_values <- list(...)
 
     new_r2ogs6_parameter(name,
                          type,
@@ -81,7 +83,10 @@ new_r2ogs6_parameter <- function(name,
 
     validate_is_null_or_str_flag(use_local_coordinate_system)
 
-    index_values <- validate_index_values(index_values)
+
+    for(i in seq_len(length(index_values))){
+        index_values[[i]] <- validate_index_values(index_values[[i]])
+    }
 
     if(!is.null(time_series)){
         assertthat::assert_that(is.list(time_series))
@@ -109,7 +114,8 @@ new_r2ogs6_parameter <- function(name,
                    use_local_coordinate_system = use_local_coordinate_system,
                    is_subclass = TRUE,
                    attr_names = character(),
-                   flatten_on_exp = c("values")
+                   flatten_on_exp = c("values"),
+                   unwrap_on_exp = c("index_values")
     ),
     class = "r2ogs6_parameter"
     )
@@ -121,9 +127,12 @@ new_r2ogs6_parameter <- function(name,
 
 validate_index_values <- function(index_values){
 
+    # cat("\nindex_values:", class(index_values),"\n")
+    # print(index_values)
+
     if(!is.null(index_values)){
         assertthat::assert_that(is.list(index_values))
-        assertthat::assert_that(length(index_values == 2))
+        assertthat::assert_that(length(index_values) == 2)
 
         #Coerce index
         index_values[[1]] <- coerce_string_to_numeric(index_values[[1]])

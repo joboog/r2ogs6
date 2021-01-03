@@ -37,3 +37,25 @@ test_that("guess_structure works for simple lists", {
     expect_equal(my_list, list(b = "1", b = "2"))
 })
 
+
+test_that("order_parameters works for classes with Ellipsis argument", {
+
+    ogs_parameter <- r2ogs6_parameter(name = "test",
+                                      type = "test",
+                                      index_values = list("1", "1 2"))
+
+    parameters <- list(type = "test",
+                       index_values = list("1", "1 2"),
+                       name = "test")
+
+    class_name <- "r2ogs6_parameter"
+
+    ordered_parameters <- order_parameters(parameters,
+                                           class_name)
+
+    expect_equal(ordered_parameters, list(name = "test",
+                                          type = "test",
+                                          index_values = list("1", "1 2")))
+})
+
+

@@ -38,6 +38,23 @@ test_that("construct_add_call works", {
 })
 
 
+test_that("construct_add_call handles Ellipsis correctly", {
+
+  ogs_parameter <- r2ogs6_parameter(name = "test",
+                                    type = "test",
+                                    index_values = list("1", "1 2"))
+
+  ogs_param_call <- construct_add_call(ogs_parameter)
+
+  expect_equal(ogs_param_call,
+               paste0("ogs6_obj$add_parameter(r2ogs6_parameter(name = ",
+                      "\"test\",\ntype = \"test\",\nindex_values = ",
+                      "list(index_values = list(index = 1,\n",
+                      "values = c(1, 2)))))\n"))
+})
+
+
+
 test_that("delete_nulls_from_str works", {
 
   #Single line strings

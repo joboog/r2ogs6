@@ -167,6 +167,25 @@ test_that("to_node works for classes that have attributes", {
 })
 
 
+test_that("to_node works for classes that have non-exported wrappers", {
+
+    #Test for a single class element
+    parameter <- r2ogs6_parameter(name = "pressure0",
+                                  type = "Constant",
+                                  values = 1e5,
+                                  index_values = list("1", "1 2"),
+                                  index_values = list("2", "2 3"))
+
+    parameter_node <- to_node(parameter)
+    parameter_xml <- xml2::as_xml_document(parameter_node)
+
+    index_value_nodes <- xml2::xml_find_all(parameter_xml,
+                                            "/parameter/index_values")
+
+    expect_equal(length(index_value_nodes), 2)
+})
+
+
 test_that("to_node works for r2ogs6_process class", {
 
     process <- r2ogs6_process(

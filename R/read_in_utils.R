@@ -74,6 +74,7 @@ read_in <- function(ogs6_obj,
                                          subclasses_names)
 
         #Add r2ogs6_obj with code snippet
+        # cat("\n", add_call, "\n")
         eval(parse(text = add_call))
     }
 
@@ -156,11 +157,11 @@ node_to_r2ogs6_obj <- function(xml_node,
 #'order_parameters
 #'@description Orders a list of parameters corresponding to the argument order
 #' of a class
-#'@param parameter_list A list of parameters
-#'@param class_name The name of a class
-order_parameters <- function(parameter_list, class_name){
+#'@param parameters list: Parameters
+#'@param class_name string: The name of a class
+order_parameters <- function(parameters, class_name){
 
-    assertthat::assert_that(is.list(parameter_list))
+    assertthat::assert_that(is.list(parameters))
     assertthat::assert_that(assertthat::is.string(class_name))
 
     ordered_parameters <- list()
@@ -168,33 +169,36 @@ order_parameters <- function(parameter_list, class_name){
     #Gets the class parameters in the correct order
     class_args <- names(as.list(formals(class_name)))
 
-    #Check for length mismatches
-    if(length(parameter_list) > length(class_args)){
-        stop(paste0("order_parameters: More parameters in parameter_list",
-                    "than parameters in definition of class '", class_name,
-                    "'. Please check the class definition!"), call. = FALSE)
-    }
+    #Check for length and value mismatches if class does not have Ellipsis
+    if(!"..." %in% class_args){
+        assertthat::assert_that(length(parameters) <= length(class_args))
 
-    #Check for value mismatches
-    for(i in seq_len(length(parameter_list))){
-        if(!names(parameter_list)[[i]] %in% class_args){
-            stop(paste0("order_parameters: Found element named '",
-                        names(parameter_list)[[i]],
-                        "', in parameter_list.",
-                        " This element is not a parameter of class '",
-                        class_name,
-                        "'. Please check the class definition!"),
-                 call. = FALSE)
+        for(i in seq_len(length(parameters))){
+            # cat(names(parameters)[[i]], "\n")
+            assertthat::assert_that(names(parameters)[[i]] %in% class_args)
         }
     }
 
+    # Order regular arguments
     for(i in seq_len(length(class_args))){
-        if(!class_args[[i]] %in% names(parameter_list)){
-            ordered_parameters[[class_args[[i]]]] <- NULL
-        }else{
-            ordered_parameters[[class_args[[i]]]] <-
-                parameter_list[[class_args[[i]]]]
+        if(class_args[[i]] != "..."){
+            if(!class_args[[i]] %in% names(parameters)){
+                ordered_parameters[[class_args[[i]]]] <- NULL
+            }else{
+                ordered_parameters[[class_args[[i]]]] <-
+                    parameters[[class_args[[i]]]]
+            }
         }
+    }
+
+    # Add ellipsis content at the end
+    ellipsis_content <- parameters[!names(parameters) %in% class_args]
+
+    for(i in seq_len(length(ellipsis_content))){
+        ordered_parameters[[length(ordered_parameters) + 1]] <-
+            ellipsis_content[[i]]
+        names(ordered_parameters)[[length(ordered_parameters)]] <-
+            names(ellipsis_content)[[i]]
     }
 
     return(invisible(ordered_parameters))

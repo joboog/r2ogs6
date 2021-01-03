@@ -34,8 +34,8 @@ new_r2ogs6_linear_solver <- function(name,
     validate_is_null_or_string(lis)
 
     if(!is.null(petsc)){
-        assertthat::assert_that(is.character(petsc))
-        assertthat::assert_that(lengths(petsc) %in% c(1, 2))
+        assertthat::assert_that(is.list(petsc))
+        assertthat::assert_that(length(petsc) %in% c(1, 2))
 
         if(length(petsc) == 1){
             names(petsc) <- c("parameters")

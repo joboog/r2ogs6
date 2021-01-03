@@ -5,18 +5,20 @@
 #' xml2::as_xml_document() function will convert them to the desired XML format
 #'@param object An object (so far works for r2ogs6 class objects, strings,
 #' numbers, lists and vectors)
-#'@param object_name Optional: The object name. If not supplied, this function
-#' will try to guess the tag name by deparsing the 'object' parameter
+#'@param object_name string: Optional: The object name. If not supplied, this
+#' function tries to guess the tag name by deparsing the 'object' parameter
 #'@param attribute_names Optional: A character vector containing names of
 #' attributes or attribute nodes
 #'@param flatten_on_exp Optional: This is for vectors which will be flattened
 #' to a string in XML
 to_node <- function(object, object_name = "",
                     attribute_names = character(),
-                    flatten_on_exp = character()){
+                    flatten_on_exp = character(),
+                    unwrap_on_exp = character()){
 
     assertthat::assert_that(is.character(attribute_names))
     assertthat::assert_that(is.character(flatten_on_exp))
+    assertthat::assert_that(is.character(unwrap_on_exp))
 
     if(is.null(object_name) || object_name == ""){
         object_name <- deparse(substitute(object))
@@ -73,9 +75,22 @@ to_node <- function(object, object_name = "",
 
         param_names <- names(as.list(formals(paste0("new_", class_name))))
 
+        unwrap_on_exp <- character()
+        unwrapped_params <- list(structure(list()))
+
+        #This works because r2ogs6 S3 classes are built on lists
+        if("unwrap_on_exp" %in% names(object)){
+            unwrap_on_exp <- object$unwrap_on_exp
+
+            for(i in seq_len(length(unwrap_on_exp))){
+                param_names <- param_names[param_names != unwrap_on_exp[[i]]]
+            }
+        }
+
         object_node <- list(structure(list()))
         names(object_node)[[1]] <- get_class_tag_name(class_name)
 
+        # For normal class variables we just get the parameter value
         for(i in seq_len(length(param_names))){
             get_param_call <- paste0("object$", param_names[[i]])
             param_value <- eval(parse(text = get_param_call))
@@ -87,7 +102,8 @@ to_node <- function(object, object_name = "",
             param_node <- to_node(param_value,
                                   param_names[[i]],
                                   object$attr_names,
-                                  object$flatten_on_exp)
+                                  object$flatten_on_exp,
+                                  unwrap_on_exp)
 
             #Handle depending on if it's a child or attribute
             if(is.list(param_node)){
@@ -98,6 +114,29 @@ to_node <- function(object, object_name = "",
                     param_node[[1]]
             }
         }
+
+        # For non-exported wrappers we need to strip a layer
+        for(i in seq_len(length(unwrap_on_exp))){
+            get_wrapper_call <- paste0("object$", unwrap_on_exp[[i]])
+            wrapper <- eval(parse(text = get_wrapper_call))
+
+            for(j in seq_len(length(wrapper))){
+
+                if(is.null(wrapper[[j]])){
+                    next
+                }
+
+                param_node <- to_node(wrapper[[j]],
+                                      unwrap_on_exp[[i]],
+                                      object$attr_names,
+                                      object$flatten_on_exp,
+                                      unwrap_on_exp)
+
+                object_node[[1]][[length(object_node[[1]])+1]] <-
+                    param_node
+            }
+        }
+
         return(invisible(object_node))
     }
 
@@ -111,7 +150,8 @@ to_node <- function(object, object_name = "",
 
             element_node <- to_node(object[[i]],
                                     names(object)[[i]],
-                                    attribute_names)
+                                    attribute_names,
+                                    unwrap_on_exp)
 
             #Handle depending on if it's a child or attribute
             if(is.list(element_node)){
@@ -121,8 +161,6 @@ to_node <- function(object, object_name = "",
                 attr(object_node[[1]], names(element_node)[[1]]) <-
                     element_node[[1]]
             }
-
-            # object_node[[1]] <- c(object_node[[1]], element_node)
         }
 
         return(invisible(object_node))

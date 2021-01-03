@@ -843,6 +843,12 @@ validate_process_variables <- function(process_variables){
 
 validate_secondary_variables <- function(secondary_variables){
 
+    if(length(clean_up_imported_list(list(secondary_variables))) == 0){
+        return(invisible(NULL))
+    }
+
+    secondary_variables
+
     if(!is.null(secondary_variables)){
 
         assertthat::assert_that(is.list(secondary_variables))

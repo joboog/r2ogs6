@@ -1,55 +1,77 @@
 
-#===== generate_all_benchmarks (WIP) =====
+#===== generate_all_benchmarks =====
 
 
-#'generate_all_benchmarks
-#'@description Collector function to generate benchmarks from all .prj files in
-#' a directory
-#'@param path Optional: A path to a benchmark directory to generate scripts
-#' from (defaults to 'extdata/benchmarks' package folder)
-#'@param dest_dir Optional: The directory to write the scripts to
-#' (defaults to 'extdata/benchmark_scripts' package folder)
-generate_all_benchmarks <- function(path = "extdata/benchmarks/",
-                                    dest_dir = "extdata/benchmark_scripts/"){
+#'generate_all_benchmark_scripts
+#'@description Wrapper function to generate benchmark scripts from all .prj
+#' files in a directory
+#'@param path string: Path to a benchmark directory to generate scripts from
+#'@param scripts_path string: Optional: Path where benchmark scripts will be
+#' saved. Change this to fit your system!
+#'@param starting_from_prj_path string: Optional:
+generate_all_benchmark_scripts <-
+    function(path,
+             scripts_path = "D:/OGS_scripts/",
+             starting_from_prj_path = ""){
 
-    prj_files <- list.files(path = path, pattern = "\\.prj$", recursive = TRUE)
+    if(missing(path) ||
+       !assertthat::is.string(path) ||
+       path == ""){
+        path <- get_default_benchmark_path()
+    }
 
-    for(i in seq_len(length(prj_files))){
+    path <- validate_is_dir_path(path)
+    scripts_path <- validate_is_dir_path(scripts_path)
 
-        prj_file <- paste0(path, prj_files[[i]])
+    prj_paths <- list.files(path = path,
+                            pattern = "\\.prj$",
+                            recursive = TRUE,
+                            full.names = TRUE)
+
+    # If we know the benchmarks up to a specific file are working, skip them
+    if(starting_from_prj_path != ""){
+        prj_paths <- get_path_sublist(prj_paths, starting_from_prj_path)
+    }
+
+    for(i in seq_len(length(prj_paths))){
 
         skip_to_next <- FALSE
 
         out<- tryCatch(
             {
-                xml2::read_xml(prj_file, encoding="ISO-8859-1")
+                xml2::read_xml(prj_paths[[i]],
+                               encoding="ISO-8859-1")
             },
             error = function(cond){
                 skip_to_next <<- TRUE
             }
         )
 
+        cat("\nGenerating script from path", prj_paths[[i]])
+
         if(skip_to_next){
             next
         }
 
-        generate_benchmark_script(prj_file, dest_dir)
+        generate_benchmark_script(prj_paths[[i]], scripts_path)
     }
 }
 
 
 #===== generate_benchmark_script =====
 
+
 #'generate_benchmark_script
 #'@description Generates a benchmark script from an existing .prj file.
 #'@param prj_path The path to the project file the script will be based on
-#'@param dest_dir Optional: The directory to write the script to
+#'@param script_path string: Optional: Path where benchmark script will be
+#' saved. Change this to fit your system!
 #'@export
 generate_benchmark_script <- function(prj_path,
-                                      dest_dir = "extdata/benchmark_scripts/") {
+                                      script_path = "D:/OGS_scripts/") {
 
     assertthat::assert_that(assertthat::is.string(prj_path))
-    assertthat::assert_that(assertthat::is.string(dest_dir))
+    assertthat::assert_that(assertthat::is.string(script_path))
 
     #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
@@ -95,12 +117,12 @@ generate_benchmark_script <- function(prj_path,
     script_str <- paste0(script_str, "run_simulation(ogs6_obj)\n")
 
     #If no destination file was defined, print output to console
-    if(dest_dir != ""){
-        if(!dir.exists(dest_dir)){
-            dir.create(dest_dir, showWarnings = FALSE)
+    if(script_path != ""){
+        if(!dir.exists(script_path)){
+            dir.create(script_path, showWarnings = FALSE)
         }
 
-        cat(script_str, file = paste0(dest_dir, sim_name, ".R"))
+        cat(script_str, file = paste0(script_path, sim_name, ".R"))
     }else{
         cat(script_str)
     }
@@ -144,7 +166,8 @@ construct_add_call <- function(object, nested_call = FALSE) {
         if(any(grepl("r2ogs6", class(object), fixed = TRUE))){
             class_name <- grep("r2ogs6", class(object),
                                fixed = TRUE, value = TRUE)
-            formals_call <- paste0("new_", class_name)
+            # formals_call <- paste0("new_", class_name)
+            formals_call <- class_name
         }else{
             class_name <- grep("OGS6", class(object),
                                fixed = TRUE, value = TRUE)
@@ -159,8 +182,15 @@ construct_add_call <- function(object, nested_call = FALSE) {
         tag_name <- paste(utils::tail(unlist(strsplit(class_name, "_")), -1),
                           collapse = "_")
 
-        #Grab constructor since the helper might have coercable parameters
+        #Grab helper
         param_names <- names(as.list(formals(eval(parse(text = formals_call)))))
+
+        #Handle Ellipsis if it exists by removing and substituting it
+        if("..." %in% param_names){
+            param_names <- param_names[param_names != "..."]
+            param_names <- c(param_names, object$unwrap_on_exp)
+        }
+
         param_strs <- list()
 
         for(i in seq_len(length(param_names))){
@@ -184,8 +214,10 @@ construct_add_call <- function(object, nested_call = FALSE) {
             ret_str <- paste0("ogs6_obj$add_", tag_name, "(", ret_str, ")\n")
         }
 
+
         ret_str <- delete_nulls_from_str(ret_str)
         ret_str <- delete_keywords_from_str(ret_str)
+        ret_str <- delete_empty_from_str(ret_str)
 
         return(invisible(ret_str))
     }
@@ -221,7 +253,6 @@ construct_add_call <- function(object, nested_call = FALSE) {
 }
 
 
-
 #'delete_nulls_from_str
 #'@description Utility function to delete "param_name = NULL" from a string,
 #' this isn't necessary for functionality of generate_benchmark_script but will
@@ -229,20 +260,28 @@ construct_add_call <- function(object, nested_call = FALSE) {
 #'@param string string
 delete_nulls_from_str <- function(string){
 
-    #For single line calls
-    #Match in beginning of call
-    string <- stringr::str_remove_all(string, "[\\w_]* = NULL, ")
+    regexp_1 <- ",[\n|[:space:]]?[\\w_]* = NULL"
+    regexp_2 <- "[\\w_]* = NULL,[\n|[:space:]]?"
 
-    #Match in middle or at end of call
-    string <- stringr::str_remove_all(string, ", [\\w_]* = NULL")
+    string <- stringr::str_remove_all(string, regexp_1)
+    string <- stringr::str_remove_all(string, regexp_2)
+
+    return(invisible(string))
+}
 
 
-    #For multi line calls
-    #Match in beginning of call
-    string <- stringr::str_remove_all(string, "[\\w_]* = NULL,\n")
+#'delete_empty_from_str
+#'@description Utility function to delete "param_name = list()" from a string,
+#' this isn't necessary for functionality of generate_benchmark_script but will
+#' make generated scripts way more readable.
+#'@param string string
+delete_empty_from_str <- function(string){
 
-    #Match in middle or at end of call
-    string <- stringr::str_remove_all(string, ",\n[\\w_]* = NULL")
+    regexp_1 <- ",[\n|[:space:]]?[\\w_]* = list\\(\\)"
+    regexp_2 <- "[\\w_]* = list\\(\\),[\n|[:space:]]?"
+
+    string <- stringr::str_remove_all(string, regexp_1)
+    string <- stringr::str_remove_all(string, regexp_2)
 
     return(invisible(string))
 }

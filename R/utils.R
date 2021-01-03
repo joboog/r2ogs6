@@ -17,8 +17,10 @@ select_fitting_subclass <- function(xpath_expr, subclasses_names){
 
   split_path <- unlist(strsplit(xpath_expr, "/", fixed = TRUE))
 
-  if(identical(sort(unique(names(subclasses_names))),
-               sort(names(subclasses_names)))){
+
+  # If name of subclass tag is unique
+  if(length(subclasses_names[names(subclasses_names) ==
+                             split_path[[length(split_path)]]]) == 1){
     tag_name <- split_path[[length(split_path)]]
     return(invisible(subclasses_names[[tag_name]]))
   }
@@ -92,6 +94,7 @@ get_subclass_names <- function(class_name) {
            subclasses_names <- c("r2ogs6_phase",
                                  "r2ogs6_pr_property",
                                  "r2ogs6_ph_property",
+                                 "r2ogs6_component",
                                  "r2ogs6_com_property")
          },
          r2ogs6_process_variable = {
@@ -321,6 +324,28 @@ validate_is_dir_path <- function(path){
   return(invisible(path))
 }
 
+#'clean_up_imported_list
+#'@description Cleans an imported list because sometimes strings containing
+#' only newline characters and spaces get imported in
+#'@param list list: A list
+clean_up_imported_list <- function(list){
+
+  cleaned_list <- list()
+
+  for(i in seq_len(length(list))){
+    if(is.character(list[[i]]) &&
+       length(list[[i]]) == 1){
+      if(stringr::str_remove_all(list[[i]], "[\n|[:space:]]") == ""){
+        next
+      }else{
+        cleaned_list <- c(cleaned_list, list(list[[i]]))
+      }
+    }
+  }
+
+  return(invisible(cleaned_list))
+}
+
 
 #===== Validation helpers for required parameters =====
 
@@ -532,6 +557,40 @@ validate_is_null_or_param_list <- function(obj, default_names){
 
 
 #===== OTHERS =====
+
+
+#'get_path_sublist
+#'@description Helper function to speed up tests
+#'@param prj_paths character: .prj paths
+#'@param starting_from_prj_path string: .prj path to start from
+#'@return
+get_path_sublist <- function(prj_paths, starting_from_prj_path){
+
+  assertthat::assert_that(is.character(prj_paths))
+  assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
+
+  found_starting_path <- FALSE
+
+  for (i in seq_len(length(prj_paths))) {
+    if (prj_paths[[i]] == starting_from_prj_path) {
+      prj_paths <- prj_paths[i:length(prj_paths)]
+      found_starting_path <- TRUE
+      break
+    }
+  }
+
+  if (!found_starting_path) {
+    warning(
+      paste(
+        "Couldn't find .prj path to start from.",
+        "Running all benchmarks in 'path'"
+      ),
+      call. = FALSE
+    )
+  }
+
+  return(invisible(prj_paths))
+}
 
 
 #Test if S3 object in R6 class inherits reference semantics

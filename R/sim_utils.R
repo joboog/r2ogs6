@@ -139,7 +139,8 @@ get_default_ogs_bin_path <- function(){
 #'@description Utility function for quick benchmark runs
 #'@param prj_path string:
 #'@param ogs_bin_path string:
-#'@param sim_path string:
+#'@param sim_path string: Optional: Path where simulation files will be saved.
+#' Change this to fit your system!
 run_benchmark <- function(prj_path,
                           ogs_bin_path,
                           sim_path = "D:/OGS_all_simulations/"){
@@ -206,7 +207,10 @@ run_all_benchmarks <- function(path,
     assertthat::assert_that(assertthat::is.flag(print_failed_prj_paths))
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
 
-    prj_paths <- list.files(path = path, pattern = ".prj", recursive = TRUE)
+    prj_paths <- list.files(path = path,
+                            pattern = "\\.prj$",
+                            recursive = TRUE,
+                            full.names = TRUE)
 
 
     if(length(prj_paths) == 0) {
@@ -215,24 +219,8 @@ run_all_benchmarks <- function(path,
 
     # If we know the benchmarks up to a specific file are working, skip them
     if(starting_from_prj_path != ""){
-
-        found_starting_path <- FALSE
-
-        for(i in seq_len(length(prj_paths))){
-            if(prj_paths[[i]] == starting_from_prj_path){
-                prj_paths <- prj_paths[i : length(prj_paths)]
-                found_starting_path <- TRUE
-                break
-            }
-        }
-
-        if(!found_starting_path){
-            warning(paste("Couldn't find .prj path to start from.",
-                          "Running all benchmarks in 'path'"),
-                    call. = FALSE)
-        }
+        prj_paths <- get_path_sublist(prj_paths, starting_from_prj_path)
     }
-
 
     # Filter invalid .prj files
     invalid_prj_paths <- character()

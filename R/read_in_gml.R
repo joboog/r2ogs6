@@ -96,14 +96,20 @@ read_in_surfaces <- function(xml_doc) {
         return(invisible(NULL))
     }
 
-    for(i in seq_along(surfaces_nodeset)){
+    for(i in seq_len(length(surfaces_nodeset))){
         attrs <- xml2::xml_attrs(surfaces_nodeset[[i]])
         element_nodeset <- xml2::xml_children(surfaces_nodeset[[i]])
 
         element_1 <- as.double(xml2::xml_attrs(element_nodeset[[1]]))
-        element_2 <- as.double(xml2::xml_attrs(element_nodeset[[2]]))
 
-        surface <- list(name = attrs[[2]], element_1, element_2)
+        surface <- list(name = attrs[[2]],
+                        element = element_1)
+
+        if(length(element_nodeset) == 2){
+            element_2 <- as.double(xml2::xml_attrs(element_nodeset[[2]]))
+            surface <- c(surface, list(element = element_2))
+        }
+
         surfaces_list <- c(surfaces_list, list(surface))
     }
 

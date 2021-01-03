@@ -135,6 +135,13 @@ OGS6 <- R6::R6Class("OGS6",
     },
 
     #'@description
+    #'Adds a r2ogs6_search_length_algorithm object
+    #'@param search_length_algorithm r2ogs6_search_length_algorithm
+    add_search_length_algorithm = function(search_length_algorithm){
+      self$search_length_algorithm <- search_length_algorithm
+    },
+
+    #'@description
     #'Adds a r2ogs6_process object
     #'@param process r2ogs6_process
     add_process = function(process){
@@ -418,6 +425,19 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
+      #'@field search_length_algorithm
+      #'Access to private parameter '.search_length_algorithm'
+      search_length_algorithm = function(value) {
+        if(missing(value)) {
+          private$.search_length_algorithm
+        }else{
+          assertthat::assert_that(
+            get_implemented_classes()[["search_length_algorithm"]] %in%
+              class(value))
+          private$.search_length_algorithm <- value
+        }
+      },
+
       #'@field processes
       #'Access to private parameter '.processes'
       processes = function(value) {
@@ -580,6 +600,7 @@ OGS6 <- R6::R6Class("OGS6",
       .meshes = list(),
 
       .python_script = NULL,
+      .search_length_algorithm = NULL,
       .processes = list(),
       .time_loop = NULL,
       .local_coordinate_system = NULL,

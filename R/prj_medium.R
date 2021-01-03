@@ -5,11 +5,11 @@
 #'r2ogs6_medium
 #'@description tag: medium, a specific medium with optional id corresponding
 #' to the MaterialIDs
-#'@param phases list, r2ogs6_phase: Medium phases
-#'@param properties list, r2ogs6_pr_property: Medium properties
-#'@param id string | double: ID corresponding to the MaterialIDs
+#'@param phases list, r2ogs6_phase: Optional: Medium phases
+#'@param properties list, r2ogs6_pr_property: Optional: Medium properties
+#'@param id string | double: Optional: ID corresponding to the MaterialIDs
 #'@export
-r2ogs6_medium <- function(phases,
+r2ogs6_medium <- function(phases = NULL,
                           properties = NULL,
                           id = NULL) {
 
@@ -22,11 +22,13 @@ r2ogs6_medium <- function(phases,
 }
 
 
-new_r2ogs6_medium <- function(phases,
+new_r2ogs6_medium <- function(phases = NULL,
                               properties = NULL,
                               id = NULL) {
 
-    validate_wrapper_list(phases, "r2ogs6_phase")
+    if(length(phases) != 0){
+        validate_wrapper_list(phases, "r2ogs6_phase")
+    }
 
     if(!is.null(properties)){
         validate_wrapper_list(properties, "r2ogs6_pr_property")
@@ -477,6 +479,10 @@ new_r2ogs6_component <- function(name,
 
     assertthat::assert_that(assertthat::is.string(name))
 
+    for(i in seq_len(length(properties))){
+        print(attributes(properties[[i]]))
+    }
+
     validate_wrapper_list(properties, "r2ogs6_com_property")
 
     structure(
@@ -511,10 +517,10 @@ r2ogs6_com_property <- function(name,
     #Coerce input
     value <- coerce_string_to_numeric(value)
 
-    new_r2ogs6_ph_property(name,
-                               type,
-                               value,
-                               parameter_name)
+    new_r2ogs6_com_property(name,
+                            type,
+                            value,
+                            parameter_name)
 }
 
 

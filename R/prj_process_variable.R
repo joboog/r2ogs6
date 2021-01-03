@@ -52,6 +52,8 @@ new_r2ogs6_process_variable <- function(name,
     assertthat::assert_that(assertthat::is.string(initial_condition))
 
     if(!is.null(boundary_conditions)){
+        boundary_conditions <- clean_up_imported_list(boundary_conditions)
+
         validate_wrapper_list(boundary_conditions,
                               "r2ogs6_boundary_condition")
     }
@@ -189,9 +191,12 @@ new_r2ogs6_boundary_condition <- function(type,
                                           property_name = NULL,
                                           initial_value_parameter = NULL,
                                           constant_name = NULL,
-                                          coefficient_current_variable_name = NULL,
-                                          coefficient_other_variable_name = NULL,
-                                          coefficient_mixed_variables_name = NULL,
+                                          coefficient_current_variable_name =
+                                              NULL,
+                                          coefficient_other_variable_name =
+                                              NULL,
+                                          coefficient_mixed_variables_name =
+                                              NULL,
                                           threshold_parameter = NULL,
                                           comparison_operator = NULL,
                                           time_interval = NULL){
