@@ -13,9 +13,6 @@ r2ogs6_medium <- function(phases = NULL,
                           properties = NULL,
                           id = NULL) {
 
-    #Coerce input
-    id <- coerce_string_to_numeric(id)
-
     new_r2ogs6_medium(phases,
                       properties,
                       id)
@@ -34,7 +31,7 @@ new_r2ogs6_medium <- function(phases = NULL,
         validate_wrapper_list(properties, "r2ogs6_pr_property")
     }
 
-    validate_is_null_or_number(id)
+    validate_is_null_or_string(id)
 
     structure(
         list(

@@ -189,8 +189,7 @@ new_r2ogs6_output <- function(type,
         timesteps <- validate_timesteps(timesteps, TRUE)
     }
 
-    validate_is_null_or_str_flag(compress_output,
-                                 output_iteration_results)
+    validate_is_null_or_str_flag(compress_output)
 
     if(!is.null(meshes)){
         assertthat::assert_that(is.character(meshes))

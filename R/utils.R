@@ -105,7 +105,7 @@ get_subclass_names <- function(class_name) {
          r2ogs6_time_loop = {
            subclasses_names <- c("r2ogs6_tl_process",
                                  "r2ogs6_output",
-                                 "r2ogs6_global_processes_coupling",
+                                 "r2ogs6_global_process_coupling",
                                  "r2ogs6_convergence_criterion",
                                  "r2ogs6_time_stepping")
          }
@@ -330,6 +330,8 @@ validate_is_dir_path <- function(path){
 #'@param list list: A list
 clean_up_imported_list <- function(list){
 
+  # assertthat::assert_that(is.list(list))
+
   cleaned_list <- list()
 
   for(i in seq_len(length(list))){
@@ -425,8 +427,8 @@ validate_param_list <- function(param_list, default_names) {
       "Renaming elements of ",
       deparse(quote(param_list)),
       " to fit their default names: '",
-      paste(default_names, collapse = "', '")
-    ))
+      paste(default_names, collapse = "', '"),
+      "'"))
   }
 
   return(invisible(param_list))

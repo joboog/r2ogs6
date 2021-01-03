@@ -21,7 +21,6 @@
 #'@param darcy_gravity Optional:
 #'@param reference_temperature Optional:
 #'@param fracture_model Optional:
-#'@param fracture_properties Optional:
 #'@param jacobian_assembler Optional:
 #'@param internal_length Optional:
 #'@param mass_lumping Optional:
@@ -74,6 +73,7 @@
 #'@param density_solid Optional:
 #'@param latent_heat_evaporation Optional:
 #'@param pf_irrv Optional:
+#'@param ... Optional: fracture_properties
 #'@export
 r2ogs6_process <- function(name,
                            type,
@@ -92,7 +92,6 @@ r2ogs6_process <- function(name,
                            darcy_gravity = NULL,
                            reference_temperature = NULL,
                            fracture_model = NULL,
-                           fracture_properties = NULL,
                            jacobian_assembler = NULL,
                            internal_length = NULL,
                            mass_lumping = NULL,
@@ -144,7 +143,8 @@ r2ogs6_process <- function(name,
                            molecular_diffusion_coefficient = NULL,
                            density_solid = NULL,
                            latent_heat_evaporation = NULL,
-                           pf_irrv = NULL){
+                           pf_irrv = NULL,
+                           ...){
 
     #Coerce input
     integration_order <- coerce_string_to_numeric(integration_order)
@@ -152,7 +152,6 @@ r2ogs6_process <- function(name,
     dimension <- coerce_string_to_numeric(dimension)
     reference_temperature <- coerce_string_to_numeric(reference_temperature)
     internal_length <- coerce_string_to_numeric(internal_length)
-    porosity <- coerce_string_to_numeric(porosity)
     fluid_specific_heat_source <-
         coerce_string_to_numeric(fluid_specific_heat_source)
     fluid_specific_isobaric_heat_capacity <-
@@ -178,9 +177,9 @@ r2ogs6_process <- function(name,
     at_num <- coerce_string_to_numeric(at_num)
     split_method <- coerce_string_to_numeric(split_method)
     reg_param <- coerce_string_to_numeric(reg_param)
-    deactivate_matrix_in_flow <-
-        coerce_string_to_numeric(deactivate_matrix_in_flow)
     pf_irrv <- coerce_string_to_numeric(pf_irrv)
+
+    fracture_properties <- list(...)
 
     new_r2ogs6_process(
         name,
@@ -408,13 +407,14 @@ new_r2ogs6_process <- function(name,
                                solute_dispersivity_transverse,
                                molecular_diffusion_coefficient,
                                density_solid,
-                               latent_heat_evaporation)
+                               latent_heat_evaporation,
+                               porosity,
+                               deactivate_matrix_in_flow)
 
 
     validate_is_null_or_number(dimension,
                                reference_temperature,
                                internal_length,
-                               porosity,
                                fluid_specific_heat_source,
                                fluid_specific_isobaric_heat_capacity,
                                solid_hydraulic_permeability,
@@ -432,7 +432,6 @@ new_r2ogs6_process <- function(name,
                                at_num,
                                split_method,
                                reg_param,
-                               deactivate_matrix_in_flow,
                                pf_irrv)
 
     validate_is_null_or_str_flag(mass_lumping,
@@ -518,7 +517,8 @@ new_r2ogs6_process <- function(name,
             tag_name = "process",
             is_subclass = FALSE,
             attr_names = c("secondary_variable"),
-            flatten_on_exp = c("specific_body_force")
+            flatten_on_exp = c("specific_body_force"),
+            unwrap_on_exp = c("fracture_properties")
         ),
 
         class = "r2ogs6_process"
@@ -665,14 +665,16 @@ new_r2ogs6_fracture_properties <- function(material_id,
     validate_is_null_or_string(specific_storage,
                                biot_coefficient)
 
+
+
     if(!is.null(permeability_model)){
         assertthat::assert_that(any(is.list(permeability_model),
                                     is.character(permeability_model)))
 
-        assertthat::assert_that(any(length(permeability_model) == 1,
-                                    length(permeability_model) == 2))
+        assertthat::assert_that(length(permeability_model) == 1 ||
+                                    length(permeability_model) == 2)
 
-        if(length(permeability_model == 1)){
+        if(length(permeability_model) == 1){
             permeability_model <-
                 validate_param_list(permeability_model, c("type"))
         }else{
