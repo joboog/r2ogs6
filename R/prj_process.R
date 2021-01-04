@@ -1075,34 +1075,35 @@ validate_process_variables <- function(process_variables){
 
 validate_secondary_variables <- function(secondary_variables){
 
-    secondary_variables <- clean_up_imported_list(secondary_variables)
-
-    if(length(secondary_variables) == 0){
+    if(assertthat::is.string(secondary_variables) ||
+       is.null(secondary_variables)){
         return(invisible(NULL))
     }
 
-    if(!is.null(secondary_variables)){
+    secondary_variables <-
+        clean_up_imported_list(secondary_variables)
 
-        assertthat::assert_that(is.list(secondary_variables))
 
-        for(i in seq_len(length(secondary_variables))){
+    for (i in seq_len(length(secondary_variables))) {
+        assertthat::assert_that(length(secondary_variables[[i]]) == 2 ||
+                                    length(secondary_variables[[i]]) == 3)
 
-            assertthat::assert_that(length(secondary_variables[[i]]) == 1 ||
-                                        length(secondary_variables[[i]]) == 2)
-
-            if(length(secondary_variables[[i]]) == 1){
-                secondary_variables[[i]] <-
-                    c(secondary_variables[[i]][[1]],
-                      secondary_variables[[i]][[1]])
-            }
-
-            names(secondary_variables[[i]]) <- c("internal_name",
-                                                 "output_name")
+        if (length(secondary_variables[[i]]) == 2) {
+            secondary_variables[[i]] <-
+                validate_param_list(secondary_variables[[i]],
+                                    c("internal_name",
+                                      "output_name"))
+        }else{
+            secondary_variables[[i]] <-
+                validate_param_list(secondary_variables[[i]],
+                                    c("type",
+                                      "internal_name",
+                                      "output_name"))
         }
-
-        names(secondary_variables) <- rep("secondary_variable",
-                                          length(secondary_variables))
     }
+
+    names(secondary_variables) <- rep("secondary_variable",
+                                      length(secondary_variables))
 
     return(invisible(secondary_variables))
 }

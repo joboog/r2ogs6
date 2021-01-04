@@ -51,9 +51,11 @@ new_r2ogs6_process_variable <- function(name,
     assertthat::assert_that(assertthat::is.number(order))
     assertthat::assert_that(assertthat::is.string(initial_condition))
 
-    if(!is.null(boundary_conditions)){
-        boundary_conditions <- clean_up_imported_list(boundary_conditions)
+    if(assertthat::is.string(boundary_conditions)){
+        boundary_conditions <- NULL
+    }
 
+    if(!is.null(boundary_conditions)){
         validate_wrapper_list(boundary_conditions,
                               "r2ogs6_boundary_condition")
     }
