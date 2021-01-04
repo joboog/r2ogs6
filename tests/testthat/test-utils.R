@@ -49,3 +49,15 @@ test_that("validate_is_dir_path works", {
     expect_equal(path, "test/path/")
     expect_equal(path_2, "test/path/")
 })
+
+
+test_that("clean_up_imported_list works", {
+
+    test_list <- list(list(1, 2), list("a", "b"), "\n    ")
+
+    test_list <- clean_up_imported_list(test_list)
+
+    expect_equal(length(test_list), 2)
+    expect_equal(test_list[[1]], list(1, 2))
+    expect_equal(test_list[[2]], list("a", "b"))
+})

@@ -193,7 +193,7 @@ test_that("to_node works for r2ogs6_process class", {
         type = "HYDRO_MECHANICS",
         integration_order = 3,
         dimension = 2,
-        constitutive_relation = c(
+        constitutive_relation = r2ogs6_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",
             poissons_ratio = "nu"

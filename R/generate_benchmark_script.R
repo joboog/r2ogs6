@@ -10,15 +10,16 @@
 #' saved. Change this to fit your system!
 #'@param starting_from_prj_path string: Optional:
 #'@param skip_prj_paths character: Optional: .prj paths to skip
+#'@param test_mode flag: Optional: In test mode, if `path` is missing,
+#' internal function `get_default_benchmark_path()` will be called
 generate_all_benchmark_scripts <-
     function(path,
              scripts_path = "D:/OGS_scripts/",
              starting_from_prj_path = "",
-             skip_prj_paths = character()){
+             skip_prj_paths = character(),
+             test_mode = FALSE){
 
-    if(missing(path) ||
-       !assertthat::is.string(path) ||
-       path == ""){
+    if(missing(path) && test_mode){
         path <- get_default_benchmark_path()
     }
 
@@ -26,6 +27,7 @@ generate_all_benchmark_scripts <-
     scripts_path <- validate_is_dir_path(scripts_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
+    assertthat::assert_that(assertthat::is.flag(test_mode))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",

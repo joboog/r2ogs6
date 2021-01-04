@@ -328,21 +328,19 @@ validate_is_dir_path <- function(path){
 #'@description Cleans an imported list because sometimes strings containing
 #' only newline characters and spaces get imported in
 #'@param list list: A list
-clean_up_imported_list <- function(list){
+clean_up_imported_list <- function(imported_list){
 
-  # assertthat::assert_that(is.list(list))
+  assertthat::assert_that(is.list(imported_list))
 
   cleaned_list <- list()
 
-  for(i in seq_len(length(list))){
-    if(is.character(list[[i]]) &&
-       length(list[[i]]) == 1){
-      if(stringr::str_remove_all(list[[i]], "[\n|[:space:]]") == ""){
-        next
-      }else{
-        cleaned_list <- c(cleaned_list, list(list[[i]]))
-      }
+  for(i in seq_len(length(imported_list))){
+    if(assertthat::is.string(imported_list[[i]]) &&
+       stringr::str_remove_all(imported_list[[i]], "[\n|[:space:]]") == ""){
+      next
     }
+    cleaned_list <- c(cleaned_list, list(imported_list[[i]]))
+    names(cleaned_list)[[length(cleaned_list)]] <- names(imported_list)[[i]]
   }
 
   return(invisible(cleaned_list))
