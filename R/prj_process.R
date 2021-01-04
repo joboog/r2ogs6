@@ -10,7 +10,6 @@
 #'@param process_variables list, character:
 #'@param secondary_variables Optional:
 #'@param specific_body_force Optional:
-#'@param constitutive_relation Optional:
 #'@param solid_density Optional:
 #'@param dimension Optional:
 #'@param coupling_scheme Optional:
@@ -73,7 +72,7 @@
 #'@param density_solid Optional:
 #'@param latent_heat_evaporation Optional:
 #'@param pf_irrv Optional:
-#'@param ... Optional: fracture_properties
+#'@param ... Optional: fracture_properties, constitutive_relation
 #'@export
 r2ogs6_process <- function(name,
                            type,
@@ -81,7 +80,6 @@ r2ogs6_process <- function(name,
                            process_variables,
                            secondary_variables = NULL,
                            specific_body_force = NULL,
-                           constitutive_relation = NULL,
                            solid_density = NULL,
                            dimension = NULL,
                            coupling_scheme = NULL,
@@ -150,7 +148,6 @@ r2ogs6_process <- function(name,
     integration_order <- coerce_string_to_numeric(integration_order)
     specific_body_force <- coerce_string_to_numeric(specific_body_force, TRUE)
     dimension <- coerce_string_to_numeric(dimension)
-    reference_temperature <- coerce_string_to_numeric(reference_temperature)
     internal_length <- coerce_string_to_numeric(internal_length)
     fluid_specific_heat_source <-
         coerce_string_to_numeric(fluid_specific_heat_source)
@@ -173,13 +170,18 @@ r2ogs6_process <- function(name,
         coerce_string_to_numeric(characteristic_temperature)
     characteristic_vapour_mass_fraction <-
         coerce_string_to_numeric(characteristic_vapour_mass_fraction)
-    output_element_matrices <- coerce_string_to_numeric(output_element_matrices)
     at_num <- coerce_string_to_numeric(at_num)
     split_method <- coerce_string_to_numeric(split_method)
     reg_param <- coerce_string_to_numeric(reg_param)
     pf_irrv <- coerce_string_to_numeric(pf_irrv)
 
-    fracture_properties <- list(...)
+    ellipsis_list <- list(...)
+
+    fracture_properties <-
+        ellipsis_list[names(ellipsis_list) == "fracture_properties"]
+
+    constitutive_relation <-
+        ellipsis_list[names(ellipsis_list) == "constitutive_relation"]
 
     new_r2ogs6_process(
         name,
@@ -340,7 +342,10 @@ new_r2ogs6_process <- function(name,
 
     validate_is_null_or_numeric(specific_body_force)
 
-    validate_constitutive_relation(constitutive_relation)
+    if(!is.null(constitutive_relation)){
+        validate_wrapper_list(constitutive_relation,
+                              "r2ogs6_constitutive_relation")
+    }
 
     if(!is.null(darcy_gravity)){
         darcy_gravity <- validate_param_list(darcy_gravity,
@@ -369,7 +374,7 @@ new_r2ogs6_process <- function(name,
     if(!is.null(thermal_parameters)){
         thermal_parameters <-
             validate_param_list(thermal_parameters,
-                                c("linear_thermal_expansion_coefficien",
+                                c("linear_thermal_expansion_coefficient",
                                   "specific_heat_capacity",
                                   "thermal_conductivity",
                                   "residual_thermal_conductivity"))
@@ -409,11 +414,12 @@ new_r2ogs6_process <- function(name,
                                density_solid,
                                latent_heat_evaporation,
                                porosity,
-                               deactivate_matrix_in_flow)
+                               deactivate_matrix_in_flow,
+                               output_element_matrices,
+                               reference_temperature)
 
 
     validate_is_null_or_number(dimension,
-                               reference_temperature,
                                internal_length,
                                fluid_specific_heat_source,
                                fluid_specific_isobaric_heat_capacity,
@@ -428,11 +434,14 @@ new_r2ogs6_process <- function(name,
                                characteristic_pressure,
                                characteristic_temperature,
                                characteristic_vapour_mass_fraction,
-                               output_element_matrices,
                                at_num,
                                split_method,
                                reg_param,
                                pf_irrv)
+
+    if(!is.null(mass_lumping)){
+        mass_lumping <- stringr::str_remove_all(mass_lumping, "[:space:]*")
+    }
 
     validate_is_null_or_str_flag(mass_lumping,
                                  non_advective_form)
@@ -518,10 +527,230 @@ new_r2ogs6_process <- function(name,
             is_subclass = FALSE,
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
-            unwrap_on_exp = c("fracture_properties")
+            unwrap_on_exp = c("fracture_properties", "constitutive_relation")
         ),
 
         class = "r2ogs6_process"
+    )
+}
+
+
+#===== r2ogs6_constitutive_relation =====
+
+
+#'r2ogs6_constitutive_relation
+#'@description tag: constitutive_relation
+#'@param type string:
+#'@param id Optional:
+#'@param youngs_modulus Optional:
+#'@param poissons_ratio Optional:
+#'@param nonlinear_solver Optional:
+#'@param behaviour Optional:
+#'@param material_properties Optional:
+#'@param shear_modulus Optional:
+#'@param bulk_modulus Optional:
+#'@param kappa Optional:
+#'@param beta Optional:
+#'@param gamma Optional:
+#'@param hardening_modulus Optional:
+#'@param alpha Optional:
+#'@param delta Optional:
+#'@param eps Optional:
+#'@param m Optional:
+#'@param alphap Optional:
+#'@param deltap Optional:
+#'@param epsp Optional:
+#'@param mp Optional:
+#'@param betap Optional:
+#'@param gammap Optional:
+#'@param tangent_type Optional:
+#'@param damage_properties Optional:
+#'@param youngs_moduli Optional:
+#'@param shear_moduli Optional:
+#'@param poissons_ratios Optional:
+#'@param a Optional:
+#'@param n Optional:
+#'@param sigma0 Optional:
+#'@param q Optional:
+#'@param kelvin_shear_modulus Optional:
+#'@param kelvin_viscosity Optional:
+#'@param maxwell_shear_modulus Optional:
+#'@param maxwell_bulk_modulus Optional:
+#'@param maxwell_viscosity Optional:
+#'@param dependency_parameter_mk Optional:
+#'@param dependency_parameter_mvk Optional:
+#'@param dependency_parameter_mvm Optional:
+r2ogs6_constitutive_relation <- function(type,
+                                         id = NULL,
+                                         youngs_modulus = NULL,
+                                         poissons_ratio = NULL,
+                                         nonlinear_solver = NULL,
+                                         behaviour = NULL,
+                                         material_properties = NULL,
+                                         shear_modulus = NULL,
+                                         bulk_modulus = NULL,
+                                         kappa = NULL,
+                                         beta = NULL,
+                                         gamma = NULL,
+                                         hardening_modulus = NULL,
+                                         alpha = NULL,
+                                         delta = NULL,
+                                         eps = NULL,
+                                         m = NULL,
+                                         alphap = NULL,
+                                         deltap = NULL,
+                                         epsp = NULL,
+                                         mp = NULL,
+                                         betap = NULL,
+                                         gammap = NULL,
+                                         tangent_type = NULL,
+                                         damage_properties = NULL,
+                                         youngs_moduli = NULL,
+                                         shear_moduli = NULL,
+                                         poissons_ratios = NULL,
+                                         a = NULL,
+                                         n = NULL,
+                                         sigma0 = NULL,
+                                         q = NULL,
+                                         kelvin_shear_modulus = NULL,
+                                         kelvin_viscosity = NULL,
+                                         maxwell_shear_modulus = NULL,
+                                         maxwell_bulk_modulus = NULL,
+                                         maxwell_viscosity = NULL,
+                                         dependency_parameter_mk = NULL,
+                                         dependency_parameter_mvk = NULL,
+                                         dependency_parameter_mvm = NULL) {
+
+    # Add coercing utility here
+
+    new_r2ogs6_constitutive_relation(type,
+                                     id,
+                                     youngs_modulus,
+                                     poissons_ratio,
+                                     nonlinear_solver,
+                                     behaviour,
+                                     material_properties,
+                                     shear_modulus,
+                                     bulk_modulus,
+                                     kappa,
+                                     beta,
+                                     gamma,
+                                     hardening_modulus,
+                                     alpha,
+                                     delta,
+                                     eps,
+                                     m,
+                                     alphap,
+                                     deltap,
+                                     epsp,
+                                     mp,
+                                     betap,
+                                     gammap,
+                                     tangent_type,
+                                     damage_properties,
+                                     youngs_moduli,
+                                     shear_moduli,
+                                     poissons_ratios,
+                                     a,
+                                     n,
+                                     sigma0,
+                                     q,
+                                     kelvin_shear_modulus,
+                                     kelvin_viscosity,
+                                     maxwell_shear_modulus,
+                                     maxwell_bulk_modulus,
+                                     maxwell_viscosity,
+                                     dependency_parameter_mk,
+                                     dependency_parameter_mvk,
+                                     dependency_parameter_mvm)
+}
+
+
+new_r2ogs6_constitutive_relation <- function(type,
+                                             id = NULL,
+                                             youngs_modulus = NULL,
+                                             poissons_ratio = NULL,
+                                             nonlinear_solver = NULL,
+                                             behaviour = NULL,
+                                             material_properties = NULL,
+                                             shear_modulus = NULL,
+                                             bulk_modulus = NULL,
+                                             kappa = NULL,
+                                             beta = NULL,
+                                             gamma = NULL,
+                                             hardening_modulus = NULL,
+                                             alpha = NULL,
+                                             delta = NULL,
+                                             eps = NULL,
+                                             m = NULL,
+                                             alphap = NULL,
+                                             deltap = NULL,
+                                             epsp = NULL,
+                                             mp = NULL,
+                                             betap = NULL,
+                                             gammap = NULL,
+                                             tangent_type = NULL,
+                                             damage_properties = NULL,
+                                             youngs_moduli = NULL,
+                                             shear_moduli = NULL,
+                                             poissons_ratios = NULL,
+                                             a = NULL,
+                                             n = NULL,
+                                             sigma0 = NULL,
+                                             q = NULL,
+                                             kelvin_shear_modulus = NULL,
+                                             kelvin_viscosity = NULL,
+                                             maxwell_shear_modulus = NULL,
+                                             maxwell_bulk_modulus = NULL,
+                                             maxwell_viscosity = NULL,
+                                             dependency_parameter_mk = NULL,
+                                             dependency_parameter_mvk = NULL,
+                                             dependency_parameter_mvm = NULL) {
+    structure(list(type = type,
+                   id = id,
+                   youngs_modulus = youngs_modulus,
+                   poissons_ratio = poissons_ratio,
+                   nonlinear_solver = nonlinear_solver,
+                   behaviour = behaviour,
+                   material_properties = material_properties,
+                   shear_modulus = shear_modulus,
+                   bulk_modulus = bulk_modulus,
+                   kappa = kappa,
+                   beta = beta,
+                   gamma = gamma,
+                   hardening_modulus = hardening_modulus,
+                   alpha = alpha,
+                   delta = delta,
+                   eps = eps,
+                   m = m,
+                   alphap = alphap,
+                   deltap = deltap,
+                   epsp = epsp,
+                   mp = mp,
+                   betap = betap,
+                   gammap = gammap,
+                   tangent_type = tangent_type,
+                   damage_properties = damage_properties,
+                   youngs_moduli = youngs_moduli,
+                   shear_moduli = shear_moduli,
+                   poissons_ratios = poissons_ratios,
+                   a = a,
+                   n = n,
+                   sigma0 = sigma0,
+                   q = q,
+                   kelvin_shear_modulus = kelvin_shear_modulus,
+                   kelvin_viscosity = kelvin_viscosity,
+                   maxwell_shear_modulus = maxwell_shear_modulus,
+                   maxwell_bulk_modulus = maxwell_bulk_modulus,
+                   maxwell_viscosity = maxwell_viscosity,
+                   dependency_parameter_mk = dependency_parameter_mk,
+                   dependency_parameter_mvk = dependency_parameter_mvk,
+                   dependency_parameter_mvm = dependency_parameter_mvm,
+                   is_subclass = TRUE,
+                   attr_names = c("id", "material_property"),
+                   flatten_on_exp = character()
+    ),
+    class = "r2ogs6_constitutive_relation"
     )
 }
 
@@ -712,8 +941,8 @@ r2ogs6_jacobian_assembler <- function(type,
                                       relative_epsilons = NULL) {
 
     # Add coercing utility here
-    component_magnitudes <- coerce_string_to_numeric(component_magnitudes)
-    relative_epsilons <- coerce_string_to_numeric(relative_epsilons)
+    component_magnitudes <- coerce_string_to_numeric(component_magnitudes, TRUE)
+    relative_epsilons <- coerce_string_to_numeric(relative_epsilons, TRUE)
 
     new_r2ogs6_jacobian_assembler(type,
                                   component_magnitudes,
@@ -726,8 +955,9 @@ new_r2ogs6_jacobian_assembler <- function(type,
                                           relative_epsilons = NULL) {
 
     validate_is_string(type)
-    validate_is_null_or_number(component_magnitudes,
-                               relative_epsilons)
+
+    validate_is_null_or_numeric(component_magnitudes,
+                                relative_epsilons)
 
     structure(list(type = type,
                    component_magnitudes = component_magnitudes,
@@ -876,62 +1106,6 @@ validate_secondary_variables <- function(secondary_variables){
     }
 
     return(invisible(secondary_variables))
-}
-
-
-validate_constitutive_relation <- function(constitutive_relation){
-
-    if(!is.null(constitutive_relation)){
-        assertthat::assert_that(is.list(constitutive_relation) ||
-                                is.character(constitutive_relation))
-
-        valid_cr_names <- c("type",
-                            "youngs_modulus",
-                            "poissons_ratio",
-                            "nonlinear_solver",
-                            "behaviour",
-                            "material_properties",
-                            "shear_modulus",
-                            "bulk_modulus",
-                            "kappa",
-                            "beta",
-                            "gamma",
-                            "hardening_modulus",
-                            "alpha",
-                            "delta",
-                            "eps",
-                            "m",
-                            "alphap",
-                            "deltap",
-                            "epsp",
-                            "mp",
-                            "betap",
-                            "gammap",
-                            "tangent_type",
-                            "damage_properties",
-                            "youngs_moduli",
-                            "shear_moduli",
-                            "poissons_ratios",
-                            "a",
-                            "n",
-                            "sigma0",
-                            "q",
-                            "kelvin_shear_modulus",
-                            "kelvin_viscosity",
-                            "maxwell_shear_modulus",
-                            "maxwell_bulk_modulus",
-                            "maxwell_viscosity",
-                            "dependency_parameter_mk",
-                            "dependency_parameter_mvk",
-                            "dependency_parameter_mvm")
-
-        for(i in seq_len(length(constitutive_relation))){
-            assertthat::assert_that(names(constitutive_relation)[[i]] %in%
-                                        valid_cr_names)
-        }
-    }
-
-    return(invisible(constitutive_relation))
 }
 
 

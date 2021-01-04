@@ -228,8 +228,9 @@ new_r2ogs6_boundary_condition <- function(type,
 
     validate_is_null_or_str_flag(flush_stdout)
 
-    time_interval <- validate_time_interval(time_interval,
-                                            is_optional = TRUE)
+    if(!is.null(time_interval)){
+        time_interval <- validate_param_list(time_interval, c("start", "end"))
+    }
 
     structure(list(type = type,
                    parameter = parameter,
@@ -350,7 +351,7 @@ r2ogs6_deactivated_subdomain <- function(time_interval,
 new_r2ogs6_deactivated_subdomain <- function(time_interval,
                                              material_ids){
 
-    time_interval <- validate_time_interval(time_interval)
+    time_interval <- validate_param_list(time_interval, c("start", "end"))
 
     assertthat::assert_that(assertthat::is.number(material_ids))
 
@@ -362,26 +363,4 @@ new_r2ogs6_deactivated_subdomain <- function(time_interval,
     ),
     class = "r2ogs6_deactivated_subdomain"
     )
-}
-
-
-#===== time_interval =====
-
-
-validate_time_interval <- function(time_interval,
-                                   is_optional = FALSE){
-
-    if(is_optional && is.null(time_interval)){
-        return(invisible(time_interval))
-    }
-
-    assertthat::assert_that(is.list(time_interval))
-
-    for(i in seq_len(length(time_interval))){
-        time_interval[[i]] <-
-            validate_param_list(time_interval[[i]],
-                                c("start", "end"))
-    }
-
-    return(invisible(time_interval))
 }

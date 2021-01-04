@@ -16,16 +16,14 @@ select_fitting_subclass <- function(xpath_expr, subclasses_names){
   assertthat::assert_that(is.character(subclasses_names))
 
   split_path <- unlist(strsplit(xpath_expr, "/", fixed = TRUE))
+  grandparent_path <- paste(utils::tail(split_path, 3), collapse = "/")
 
+  tag_name <- split_path[[length(split_path)]]
 
   # If name of subclass tag is unique
-  if(length(subclasses_names[names(subclasses_names) ==
-                             split_path[[length(split_path)]]]) == 1){
-    tag_name <- split_path[[length(split_path)]]
+  if(length(subclasses_names[names(subclasses_names) == tag_name]) == 1){
     return(invisible(subclasses_names[[tag_name]]))
   }
-
-  grandparent_path <- paste(utils::tail(split_path, 3), collapse = "/")
 
   subclass_name <- ""
 
@@ -69,7 +67,8 @@ get_subclass_names <- function(class_name) {
   switch(class_name,
 
          r2ogs6_process = {
-           subclasses_names <- c("r2ogs6_fracture_model",
+           subclasses_names <- c("r2ogs6_constitutive_relation",
+                                 "r2ogs6_fracture_model",
                                  "r2ogs6_fracture_properties",
                                  "r2ogs6_jacobian_assembler",
                                  "r2ogs6_phasefield_parameters",
@@ -79,6 +78,7 @@ get_subclass_names <- function(class_name) {
                                  "r2ogs6_material_property",
                                  "r2ogs6_fluid",
                                  "r2ogs6_porous_medium",
+                                 "r2ogs6_relative_permeability",
                                  "r2ogs6_capillary_pressure")
          },
          r2ogs6_chemical_system = {

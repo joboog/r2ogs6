@@ -9,11 +9,6 @@ r2ogs6_local_coordinate_system <- function(basis_vector_0,
                                            basis_vector_1,
                                            basis_vector_2 = NULL) {
 
-    #Coerce input
-    basis_vector_0 <- coerce_string_to_numeric(basis_vector_0)
-    basis_vector_1 <- coerce_string_to_numeric(basis_vector_1)
-    basis_vector_2 <- coerce_string_to_numeric(basis_vector_2)
-
     new_r2ogs6_local_coordinate_system(basis_vector_0,
                                        basis_vector_1,
                                        basis_vector_2)
@@ -24,10 +19,10 @@ new_r2ogs6_local_coordinate_system <- function(basis_vector_0,
                                                basis_vector_1,
                                                basis_vector_2 = NULL) {
 
-    assertthat::assert_that(is.double(basis_vector_0))
-    assertthat::assert_that(is.double(basis_vector_1))
+    assertthat::assert_that(assertthat::is.string(basis_vector_0))
+    assertthat::assert_that(assertthat::is.string(basis_vector_1))
 
-    validate_is_null_or_number(basis_vector_1)
+    validate_is_null_or_string(basis_vector_2)
 
     structure(
         list(

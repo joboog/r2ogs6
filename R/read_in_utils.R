@@ -25,6 +25,55 @@ validate_read_in_xml <- function(path){
 }
 
 
+has_ambiguous_representation <- function(tag_name) {
+    ambiguous_tags <- c("material_property",
+                        "fluid",
+                        "porous_medium",
+                        "relative_permeability",
+                        "capillary_pressure")
+
+    return(invisible(tag_name %in% ambiguous_tags))
+}
+
+
+check_could_be_subclass <- function(tag_name, xpath_expr) {
+    could_be_subclass <- TRUE
+
+    if(has_ambiguous_representation(tag_name)){
+
+        non_subclass_paths <-
+            c("constitutive_relation/material_properties/material_property",
+              "processes/process/fluid",
+              "processes/process/porous_medium",
+              "material_property/porous_medium",
+              paste0("material_property/porous_medium/porous_medium/",
+                     "relative_permeability"),
+              "process/process_variables/capillary_pressure")
+
+        for(i in seq_len(length(non_subclass_paths))){
+            split_ncp <-
+                unlist(strsplit(non_subclass_paths[[i]], "/", fixed = TRUE))
+
+            regex_friendly_ncp <- paste(split_ncp, collapse = "  ")
+
+            split_xpth <-
+                unlist(strsplit(xpath_expr, "/", fixed = TRUE))
+            regex_friendly_xpth <- paste(split_xpth, collapse = "  ")
+
+            # cat("\n", regex_friendly_ncp, "\n")
+            # cat("\n", regex_friendly_xpth, "\n")
+
+            if(grepl(paste0(regex_friendly_ncp, "$"), regex_friendly_xpth)){
+                could_be_subclass <- FALSE
+                break
+            }
+        }
+    }
+
+    return(invisible(could_be_subclass))
+}
+
+
 #===== GENERAL READ IN UTILITY =====
 
 
@@ -62,15 +111,11 @@ read_in <- function(ogs6_obj,
     #Code to be parsed when r2ogs6_obj has been defined
     add_call <- paste0("ogs6_obj$add_", child_name, "(r2ogs6_obj)")
 
-    #If selection_vector was NULL, parse all children
+    #Parse all children
     for (i in seq_along(nodes)) {
 
-        new_xpath_expr <- paste0(xpath_expr,
-                             "/",
-                             xml2::xml_name(nodes[[i]]))
-
         r2ogs6_obj <- node_to_r2ogs6_obj(nodes[[i]],
-                                         new_xpath_expr,
+                                         xpath_expr,
                                          subclasses_names)
 
         #Add r2ogs6_obj with code snippet
@@ -169,12 +214,15 @@ order_parameters <- function(parameters, class_name){
     #Gets the class parameters in the correct order
     class_args <- names(as.list(formals(class_name)))
 
+    # cat("\nParameter names not in class arguments:")
+    # print(names(parameters)[!names(parameters) %in% class_args])
+
     #Check for length and value mismatches if class does not have Ellipsis
     if(!"..." %in% class_args){
         assertthat::assert_that(length(parameters) <= length(class_args))
 
         for(i in seq_len(length(parameters))){
-            # cat(names(parameters)[[i]], "\n")
+            # cat("\n", names(parameters)[[i]], "\n")
             assertthat::assert_that(names(parameters)[[i]] %in% class_args)
         }
     }
@@ -232,6 +280,9 @@ guess_structure <- function(xml_node,
     assertthat::assert_that("xml_node" %in% class(xml_node))
     assertthat::assert_that(assertthat::is.string(xpath_expr))
 
+    node_name <- xml2::xml_name(xml_node)
+    # cat("\n", xpath_expr, check_could_be_subclass(node_name, xpath_expr), "\n")
+
     #Node is leaf
     if(length(xml2::xml_children(xml_node)) == 0){
         if(xml2::xml_text(xml_node) != ""){
@@ -241,7 +292,8 @@ guess_structure <- function(xml_node,
         }
 
     #Node is represented by subclass
-    }else if(xml2::xml_name(xml_node) %in% names(subclasses_names)){
+    }else if(node_name %in% names(subclasses_names) &&
+             check_could_be_subclass(node_name, xpath_expr)){
         return(invisible(node_to_r2ogs6_obj(xml_node,
                                             xpath_expr,
                                             subclasses_names)))
@@ -261,7 +313,8 @@ guess_structure <- function(xml_node,
                                      "/",
                                      child_name)
 
-            if (child_name %in% names(subclasses_names)) {
+            if (child_name %in% names(subclasses_names) &&
+                check_could_be_subclass(child_name, new_xpath_expr)) {
                 list_content <- node_to_r2ogs6_obj(child_node,
                                                    new_xpath_expr,
                                                    subclasses_names)

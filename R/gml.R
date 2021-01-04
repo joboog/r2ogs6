@@ -127,24 +127,24 @@ validate_points <- function(points) {
 
     has_names <- (length(points) == 4)
 
-    #Find overlapping points and duplicate names
-    for(i in 1:(length(points[[1]])-1)){
-        for(j in (i+1):length(points[[1]])){
-            if(points[[1]][[i]] == points[[1]][[j]] &&
-               points[[2]][[i]] == points[[2]][[j]] &&
-               points[[3]][[i]] == points[[3]][[j]]){
-                stop("Overlapping .gml points detected", call. = FALSE)
-            }
-
-            if(has_names){
-                if(points[[4]][[i]] == points[[4]][[j]] &&
-                   points[[4]][[i]] != ""){
-                    warning("Duplicate .gml point names detected",
-                            call. = FALSE)
-                }
-            }
-        }
-    }
+    # #Find overlapping points and duplicate names
+    # for(i in 1:(length(points[[1]])-1)){
+    #     for(j in (i+1):length(points[[1]])){
+    #         if(points[[1]][[i]] == points[[1]][[j]] &&
+    #            points[[2]][[i]] == points[[2]][[j]] &&
+    #            points[[3]][[i]] == points[[3]][[j]]){
+    #             stop("Overlapping .gml points detected", call. = FALSE)
+    #         }
+    #
+    #         if(has_names){
+    #             if(points[[4]][[i]] == points[[4]][[j]] &&
+    #                points[[4]][[i]] != ""){
+    #                 warning("Duplicate .gml point names detected",
+    #                         call. = FALSE)
+    #             }
+    #         }
+    #     }
+    # }
 
     return(invisible(points))
 }

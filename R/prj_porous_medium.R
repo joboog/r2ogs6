@@ -54,20 +54,11 @@ new_r2ogs6_porous_medium <- function(id,
     assertthat::assert_that(class(capillary_pressure) ==
                                 "r2ogs6_capillary_pressure")
 
-    assertthat::assert_that(is.list(relative_permeability))
-
-    for (i in seq_len(length(relative_permeability))) {
-        relative_permeability[[i]] <-
-            validate_param_list(relative_permeability[[i]],
-                                c("type",
-                                  "krel_min",
-                                  "m",
-                                  "smax",
-                                  "sr"))
+    if(!"r2ogs6_relative_permeability" %in%
+       class(relative_permeability)){
+        validate_wrapper_list(relative_permeability,
+                              "r2ogs6_relative_permeability")
     }
-
-    names(relative_permeability) <- rep("relative_permeability",
-                                        length(relative_permeability))
 
     structure(list(id = id,
                    permeability = permeability,
@@ -142,6 +133,11 @@ new_r2ogs6_capillary_pressure <- function(type,
                                m,
                                pc_max)
 
+    if(!is.null(has_regularized)){
+        has_regularized <- stringr::str_remove_all(has_regularized,
+                                                   "[:space:]*")
+    }
+
     validate_is_null_or_str_flag(has_regularized)
 
     validate_is_null_or_param_list(curve, c("coords", "values"))
@@ -169,3 +165,54 @@ new_r2ogs6_capillary_pressure <- function(type,
     class = "r2ogs6_capillary_pressure"
     )
 }
+
+
+#===== r2ogs6_relative_permeability =====
+
+
+#'r2ogs6_relative_permeability
+#'@description tag: relative_permeability
+#'@param id
+#'@param type
+#'@param sr
+#'@param smax
+#'@param m
+#'@param krel_min
+r2ogs6_relative_permeability <- function(type,
+                                         sr,
+                                         smax,
+                                         m,
+                                         krel_min,
+                                         id = NULL) {
+
+    # Add coercing utility here
+
+    new_r2ogs6_relative_permeability(type,
+                                     sr,
+                                     smax,
+                                     m,
+                                     krel_min,
+                                     id)
+}
+
+
+new_r2ogs6_relative_permeability <- function(type,
+                                             sr,
+                                             smax,
+                                             m,
+                                             krel_min,
+                                             id = NULL) {
+    structure(list(type = type,
+                   sr = sr,
+                   smax = smax,
+                   m = m,
+                   krel_min = krel_min,
+                   id = id,
+                   is_subclass = TRUE,
+                   attr_names = c("id"),
+                   flatten_on_exp = character()
+    ),
+    class = "r2ogs6_relative_permeability"
+    )
+}
+

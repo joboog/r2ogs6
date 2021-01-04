@@ -9,10 +9,12 @@
 #'@param scripts_path string: Optional: Path where benchmark scripts will be
 #' saved. Change this to fit your system!
 #'@param starting_from_prj_path string: Optional:
+#'@param skip_prj_paths character: Optional: .prj paths to skip
 generate_all_benchmark_scripts <-
     function(path,
              scripts_path = "D:/OGS_scripts/",
-             starting_from_prj_path = ""){
+             starting_from_prj_path = "",
+             skip_prj_paths = character()){
 
     if(missing(path) ||
        !assertthat::is.string(path) ||
@@ -22,6 +24,8 @@ generate_all_benchmark_scripts <-
 
     path <- validate_is_dir_path(path)
     scripts_path <- validate_is_dir_path(scripts_path)
+    assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
+    assertthat::assert_that(is.character(skip_prj_paths))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
@@ -33,9 +37,16 @@ generate_all_benchmark_scripts <-
         prj_paths <- get_path_sublist(prj_paths, starting_from_prj_path)
     }
 
+    invalid_xml_paths <- character()
+
     for(i in seq_len(length(prj_paths))){
 
+        if(prj_paths[[i]] %in% skip_prj_paths){
+            next
+        }
+
         skip_to_next <- FALSE
+        invalid_xml_path <- ""
 
         out<- tryCatch(
             {
@@ -44,17 +55,24 @@ generate_all_benchmark_scripts <-
             },
             error = function(cond){
                 skip_to_next <<- TRUE
+                invalid_xml_path <<- prj_paths[[i]]
             }
         )
 
-        cat("\nGenerating script from path", prj_paths[[i]])
-
         if(skip_to_next){
+            invalid_xml_paths <- c(invalid_xml_paths, invalid_xml_path)
             next
         }
 
+        cat("\nGenerating script from path", prj_paths[[i]])
+
         generate_benchmark_script(prj_paths[[i]], scripts_path)
     }
+
+    cat("\nFailed parsing the following files:")
+    print(invalid_xml_paths)
+
+    return(invisible())
 }
 
 
@@ -122,7 +140,22 @@ generate_benchmark_script <- function(prj_path,
             dir.create(script_path, showWarnings = FALSE)
         }
 
-        cat(script_str, file = paste0(script_path, sim_name, ".R"))
+        filename <- paste0(script_path, sim_name, ".R")
+
+        if(file.exists(filename)){
+            filename <- paste0(script_path,
+                               basename(dirname(prj_path)),
+                               "__",
+                               sim_name,
+                               ".R")
+
+            if(file.exists(filename)){
+                warning("\nMultiple .prj files with same name in 'path'\n",
+                        call. = FALSE)
+            }
+        }
+
+        cat(script_str, file = filename)
     }else{
         cat(script_str)
     }

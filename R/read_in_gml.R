@@ -38,13 +38,13 @@ read_in_points <- function(xml_doc) {
         point_name <- ""
 
         if(length(attrs) == 5){
-            point_name <- attrs[[5]]
+            point_name <- attrs[["name"]]
         }
 
         points_tibble <- tibble::add_row(points_tibble,
-                                        x = as.double(attrs[[2]]),
-                                        y = as.double(attrs[[3]]),
-                                        z = as.double(attrs[[4]]),
+                                        x = as.double(attrs[["x"]]),
+                                        y = as.double(attrs[["y"]]),
+                                        z = as.double(attrs[["z"]]),
                                         name = point_name,
                                         )
     }

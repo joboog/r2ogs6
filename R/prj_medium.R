@@ -60,7 +60,7 @@ new_r2ogs6_medium <- function(phases = NULL,
 #'@param residual_liquid_saturation Optional: string | double:
 #'@param residual_gas_saturation Optional: string | double:
 #'@param p_b Optional: string | double: string | double:
-#'@param independent_variable Optional: string:
+#'@param independent_variable Optional: string
 #'@param curve Optional: string:
 #'@param minimum_relative_permeability_liquid Optional:
 #'@param lambda Optional: string | double:
@@ -101,7 +101,7 @@ r2ogs6_pr_property <- function(name,
                                min_relative_permeability_gas = NULL) {
 
     #Coerce input
-    value <- coerce_string_to_numeric(value)
+    value <- coerce_string_to_numeric(value, TRUE)
     exponent <- coerce_string_to_numeric(exponent)
     residual_liquid_saturation <-
         coerce_string_to_numeric(residual_liquid_saturation)
@@ -181,8 +181,9 @@ new_r2ogs6_pr_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(value,
-                               exponent,
+    validate_is_null_or_numeric(value)
+
+    validate_is_null_or_number(exponent,
                                residual_liquid_saturation,
                                residual_gas_saturation,
                                p_b,
@@ -308,7 +309,6 @@ get_valid_phase_types <- function(){
 #'@param type string: Property type
 #'@param value Optional: string | double: ...
 #'@param reference_value Optional: string | double:
-#'@param independent_variable Optional: list:
 #'@param initial_porosity Optional: string:
 #'@param minimal_porosity Optional: string | double:
 #'@param maximal_porosity Optional: string | double:
@@ -320,12 +320,12 @@ get_valid_phase_types <- function(){
 #'@param lower_saturation_limit Optional: string | double:
 #'@param upper_saturation_limit Optional: string | double:
 #'@param intrinsic_permeabilities Optional: string | numeric:
+#'@param ... independent_variable
 #'@export
 r2ogs6_ph_property <- function(name,
                                type,
                                value = NULL,
                                reference_value = NULL,
-                               independent_variable = NULL,
                                initial_porosity = NULL,
                                minimal_porosity = NULL,
                                maximal_porosity = NULL,
@@ -336,11 +336,12 @@ r2ogs6_ph_property <- function(name,
                                swelling_pressures = NULL,
                                lower_saturation_limit = NULL,
                                upper_saturation_limit = NULL,
-                               intrinsic_permeabilities = NULL) {
+                               intrinsic_permeabilities = NULL,
+                               ...) {
 
 
     #Coerce input
-    value <- coerce_string_to_numeric(value)
+    value <- coerce_string_to_numeric(value, TRUE)
     reference_value <- coerce_string_to_numeric(reference_value)
     minimal_porosity <- coerce_string_to_numeric(minimal_porosity)
     maximal_porosity <- coerce_string_to_numeric(maximal_porosity)
@@ -351,6 +352,10 @@ r2ogs6_ph_property <- function(name,
     upper_saturation_limit <- coerce_string_to_numeric(upper_saturation_limit)
     intrinsic_permeabilities <-
         coerce_string_to_numeric(intrinsic_permeabilities, TRUE)
+
+    ellipsis_list <- list(...)
+    independent_variable <-
+        ellipsis_list[names(ellipsis_list) == "independent_variable"]
 
     new_r2ogs6_ph_property(
         name,
@@ -393,8 +398,9 @@ new_r2ogs6_ph_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(value,
-                               reference_value,
+    validate_is_null_or_numeric(value)
+
+    validate_is_null_or_number(reference_value,
                                minimal_porosity,
                                maximal_porosity,
                                offset,
@@ -409,11 +415,13 @@ new_r2ogs6_ph_property <- function(name,
                                parameter_name)
 
     if (!is.null(independent_variable)) {
-        independent_variable <-
-            validate_param_list(independent_variable,
-                                c("variable_name",
-                                  "reference_condition",
-                                  "slope"))
+        for(i in seq_len(length(independent_variable))){
+            independent_variable[[i]] <-
+                validate_param_list(independent_variable[[i]],
+                                    c("variable_name",
+                                      "reference_condition",
+                                      "slope"))
+        }
     }
 
     if (!is.null(exponent)) {
@@ -445,7 +453,8 @@ new_r2ogs6_ph_property <- function(name,
             attr_names = character(),
             flatten_on_exp = c("exponents",
                                "swelling_pressures",
-                               "intrinsic_permeabilities")
+                               "intrinsic_permeabilities"),
+            unwrap_on_exp = c("independent_variable")
         ),
         class = "r2ogs6_ph_property"
     )
@@ -475,10 +484,6 @@ new_r2ogs6_component <- function(name,
                                  properties) {
 
     assertthat::assert_that(assertthat::is.string(name))
-
-    for(i in seq_len(length(properties))){
-        print(attributes(properties[[i]]))
-    }
 
     validate_wrapper_list(properties, "r2ogs6_com_property")
 

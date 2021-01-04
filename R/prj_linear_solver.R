@@ -79,7 +79,6 @@ r2ogs6_eigen <- function(solver_type,
     #Coerce input
     max_iteration_step <- coerce_string_to_numeric(max_iteration_step)
     error_tolerance <- coerce_string_to_numeric(error_tolerance)
-    scaling <- coerce_string_to_numeric(scaling)
     restart <- coerce_string_to_numeric(restart)
 
     new_r2ogs6_eigen(solver_type,
@@ -100,10 +99,10 @@ new_r2ogs6_eigen <- function(solver_type,
 
     assertthat::assert_that(assertthat::is.string(solver_type))
 
-    validate_is_null_or_string(precon_type)
+    validate_is_null_or_string(precon_type,
+                               scaling)
     validate_is_null_or_number(max_iteration_step,
                                error_tolerance,
-                               scaling,
                                restart)
 
     structure(list(solver_type = solver_type,

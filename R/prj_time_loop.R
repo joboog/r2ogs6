@@ -98,6 +98,12 @@ new_r2ogs6_tl_process <- function(ref,
 
     assertthat::assert_that(class(time_stepping) == "r2ogs6_time_stepping")
 
+    if(!is.null(compensate_non_equilibrium_initial_residuum)){
+        compensate_non_equilibrium_initial_residuum <-
+            stringr::str_remove_all(compensate_non_equilibrium_initial_residuum,
+                                    "[:space:]*")
+    }
+
     validate_is_null_or_str_flag(compensate_non_equilibrium_initial_residuum)
 
     structure(

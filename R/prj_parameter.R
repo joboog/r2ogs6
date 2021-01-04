@@ -13,10 +13,10 @@
 #'@param group_id_property Optional: string:
 #'@param field_name Optional: string:
 #'@param mesh Optional: string:
-#'@param expression Optional: string:
 #'@param time_series Optional: list:
 #'@param use_local_coordinate_system Optional: string, "true" | "false":
-#'@param ... Optional: for index_values tags (since there can be multiple)
+#'@param ... Optional: for index_values and expression tags (since there can be
+#' multiple)
 #'@export
 r2ogs6_parameter <- function(name,
                              type,
@@ -27,7 +27,6 @@ r2ogs6_parameter <- function(name,
                              group_id_property = NULL,
                              field_name = NULL,
                              mesh = NULL,
-                             expression = NULL,
                              time_series = NULL,
                              use_local_coordinate_system = NULL,
                              ...) {
@@ -36,7 +35,10 @@ r2ogs6_parameter <- function(name,
     value <- coerce_string_to_numeric(value)
     values <- coerce_string_to_numeric(values, TRUE)
 
-    index_values <- list(...)
+    ellipsis_list <- list(...)
+
+    index_values <- ellipsis_list[names(ellipsis_list) == "index_values"]
+    expression <- ellipsis_list[names(ellipsis_list) == "expression"]
 
     new_r2ogs6_parameter(name,
                          type,
@@ -78,8 +80,11 @@ new_r2ogs6_parameter <- function(name,
                                parameter,
                                group_id_property,
                                field_name,
-                               mesh,
-                               expression)
+                               mesh)
+
+    lapply(expression, function(x){
+        assertthat::assert_that(assertthat::is.string(x))
+    })
 
     validate_is_null_or_str_flag(use_local_coordinate_system)
 
@@ -115,7 +120,7 @@ new_r2ogs6_parameter <- function(name,
                    is_subclass = TRUE,
                    attr_names = character(),
                    flatten_on_exp = c("values"),
-                   unwrap_on_exp = c("index_values")
+                   unwrap_on_exp = c("index_values", "expression")
     ),
     class = "r2ogs6_parameter"
     )
