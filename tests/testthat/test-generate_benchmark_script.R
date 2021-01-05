@@ -19,11 +19,6 @@ test_that("construct_add_call works", {
   list_call <- construct_add_call(my_list)
   expect_equal(list_call, "list(a = c(2, 3, 4),\nb = c(\"a\", \"b\", \"c\"))")
 
-  ogs_mesh <- OGS6_vtu$new("my_mesh")
-  ogs_mesh_call <- construct_add_call(ogs_mesh)
-  expect_equal(ogs_mesh_call,
-               "ogs6_obj$add_vtu(OGS6_vtu$new(mesh_path = \"my_mesh\"))\n")
-
   ogs_param <- r2ogs6_parameter("a",
                                 "t",
                                 NULL,

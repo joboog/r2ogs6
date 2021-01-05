@@ -80,14 +80,14 @@ check_could_be_subclass <- function(tag_name, xpath_expr) {
 #'read_in
 #'@description Reads in elements from a file
 #'@param ogs6_obj A OGS6 class object
-#'@param prj_path string: Path to project file the elements should be read from
+#'@param path string: Path to file XML elements should be read from
 #'@param xpath_expr string: An XPath expression (should be absolute!)
 read_in <- function(ogs6_obj,
-                    prj_path,
+                    path,
                     xpath_expr){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
-    xml_doc <- validate_read_in_xml(prj_path)
+    xml_doc <- validate_read_in_xml(path)
 
     assertthat::assert_that(assertthat::is.string(xpath_expr))
 
@@ -95,15 +95,10 @@ read_in <- function(ogs6_obj,
     child_name <- split_path[[length(split_path)]]
     subclasses_names <- get_subclass_names(paste0("r2ogs6_", child_name))
 
-    for(i in seq_len(length(subclasses_names))){
-        names(subclasses_names)[[i]] <-
-            get_class_tag_name(subclasses_names[[i]])
-    }
-
     nodes <- xml2::xml_find_all(xml_doc, xpath_expr)
 
     if(length(nodes) == 0){
-        return(invisible(FALSE))
+        return(invisible(NULL))
     }
 
     r2ogs6_obj <- NULL
@@ -123,7 +118,7 @@ read_in <- function(ogs6_obj,
         eval(parse(text = add_call))
     }
 
-    return(invisible(TRUE))
+    return(invisible(r2ogs6_obj))
 }
 
 
@@ -142,6 +137,8 @@ node_to_r2ogs6_obj <- function(xml_node,
     parameter_nodes <- xml2::xml_children(xml_node)
 
     parameters <- list()
+
+    init_prefix <- ""
 
     if(length(xml2::xml_attrs(xml_node)) != 0){
         parameters <- c(parameters, xml2::xml_attrs(xml_node))
@@ -164,29 +161,37 @@ node_to_r2ogs6_obj <- function(xml_node,
     }
 
     class_name <- ""
+    tag_name <- xml2::xml_name(xml_node)
 
     #If node represented by subclass, get class name
-    if(xml2::xml_name(xml_node) %in% names(subclasses_names)){
+    if(tag_name %in% names(subclasses_names)){
         class_name <- select_fitting_subclass(xpath_expr, subclasses_names)
 
     #Else assume class name is r2ogs6_ + node name
     }else{
-        class_name <- paste0("r2ogs6_", xml2::xml_name(xml_node))
+        class_name <- get_tag_class_name(tag_name)
+    }
+
+    #If it's an R6 class, we need to alter constructor syntax a bit
+    if(grepl("OGS6", class_name)){
+        init_prefix <- "$new"
     }
 
     ordered_parameters <- order_parameters(parameters, class_name)
 
+    param_call_strs <- lapply(names(parameters), function(x){
+        call_str <- paste0("parameters[[\"", x, "\"]]")
+        return(call_str)
+    })
+
     #Construct the call to the r2ogs6_object helper
     class_constructor_call <-
         paste0(class_name,
+               init_prefix,
                "(",
                paste(
                    names(parameters),
-                   lapply(parameters,
-                          function(x) {
-                              paste(utils::capture.output(dput(x)),
-                                    collapse = "\n")
-                          }),
+                   param_call_strs,
                    sep = " = ",
                    collapse = ", "
                ),
@@ -196,6 +201,23 @@ node_to_r2ogs6_obj <- function(xml_node,
     r2ogs6_obj <- eval(parse(text = class_constructor_call))
 
     return(invisible(r2ogs6_obj))
+}
+
+
+get_class_args <- function(class_name){
+
+    assertthat::assert_that(assertthat::is.string(class_name))
+
+    formals_call <- class_name
+
+    if(grepl("OGS6", class_name, fixed = TRUE)){
+        formals_call <- paste0(class_name,
+                               "$public_methods$initialize")
+    }
+
+    class_args <- names(as.list(formals(eval(parse(text = formals_call)))))
+
+    return(invisible(class_args))
 }
 
 
@@ -211,10 +233,9 @@ order_parameters <- function(parameters, class_name){
 
     ordered_parameters <- list()
 
-    #Gets the class parameters in the correct order
-    class_args <- names(as.list(formals(class_name)))
+    class_args <- get_class_args(class_name)
 
-    # cat("\nParameter names not in class arguments:")
+    # cat("\nParameter names not in", class_name, "class arguments:")
     # print(names(parameters)[!names(parameters) %in% class_args])
 
     #Check for length and value mismatches if class does not have Ellipsis
@@ -332,6 +353,20 @@ guess_structure <- function(xml_node,
         return(invisible(wrapper_list))
     }
 }
+
+
+#===== RECURSIVE IMPORT (WIP)  =====
+
+
+#
+# to_object <- function(xml_node,
+#                       xpath_expr,
+#                       subclasses_names = character()){
+#
+#
+#
+#
+# }
 
 
 #===== FILE HANDLING UTILITY  =====

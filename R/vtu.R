@@ -11,29 +11,118 @@ OGS6_vtu <- R6::R6Class(
 
         #'@description
         #'Creates new OGS6_vtu object
-        #'@param mesh_path string:
-        initialize = function(mesh_path) {
-            self$mesh_path <- mesh_path
+        #'@param type string:
+        #'@param version string:
+        #'@param byte_order string:
+        #'@param UnstructuredGrid OGS6_UnstructuredGrid:
+        #'@param header_type string: Optional:
+        #'@param compressor string: Optional:
+        #'@param AppendedData string: Optional:
+        initialize = function(type,
+                              version,
+                              byte_order,
+                              UnstructuredGrid,
+                              header_type = NULL,
+                              compressor = NULL,
+                              AppendedData = NULL) {
+
+            self$type <- type
+            self$version <- version
+            self$byte_order <- byte_order
+            self$UnstructuredGrid <- UnstructuredGrid
+
+            if(!is.null(header_type)){
+                self$header_type <- header_type
+            }
+
+            if(!is.null(compressor)){
+                self$compressor <- compressor
+            }
+
+            if(!is.null(AppendedData)){
+                self$AppendedData <- AppendedData
+            }
         }
     ),
 
     active = list(
-        #'@field mesh_path
-        #'Access to private parameter '.mesh_path'
-        mesh_path = function(value) {
-            if (missing(value)) {
-                private$.mesh_path
-            } else{
+
+        #'@field type
+        #'Access to private parameter '.type'
+        type = function(value) {
+            if(missing(value)) {
+                private$.type
+            }else{
                 assertthat::assert_that(assertthat::is.string(value))
-                private$.mesh_path <- value
-                private$.mesh_filename <- basename(value)
+                private$.type <- value
             }
         },
 
-        #'@field mesh_filename
-        #'Access to private parameter '.mesh_filename'
-        mesh_filename = function() {
-            private$.mesh_filename
+        #'@field version
+        #'Access to private parameter '.version'
+        version = function(value) {
+            if(missing(value)) {
+                private$.version
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.version <- value
+            }
+        },
+
+        #'@field byte_order
+        #'Access to private parameter '.byte_order'
+        byte_order = function(value) {
+            if(missing(value)) {
+                private$.byte_order
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.byte_order <- value
+            }
+        },
+
+        #'@field UnstructuredGrid
+        #'Access to private parameter '.UnstructuredGrid'
+        UnstructuredGrid = function(value) {
+            if(missing(value)) {
+                private$.UnstructuredGrid
+            }else{
+                assertthat::assert_that("OGS6_UnstructuredGrid" %in%
+                                            class(value))
+                private$.UnstructuredGrid <- value
+            }
+        },
+
+        #'@field header_type
+        #'Access to private parameter '.header_type'
+        header_type = function(value) {
+            if(missing(value)) {
+                private$.header_type
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.header_type <- value
+            }
+        },
+
+        #'@field compressor
+        #'Access to private parameter '.compressor'
+        compressor = function(value) {
+            if(missing(value)) {
+                private$.compressor
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.compressor <- value
+            }
+        },
+
+        #'@field AppendedData
+        #'Access to private parameter '.AppendedData '
+        AppendedData  = function(value) {
+            if(missing(value)) {
+                private$.AppendedData
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.AppendedData  <- value
+            }
         },
 
         #'@field is_subclass
@@ -42,25 +131,34 @@ OGS6_vtu <- R6::R6Class(
             private$.is_subclass
         },
 
-        #'@field subclasses_names
-        #'Access to private parameter '.subclasses_names'
-        subclasses_names = function() {
-            private$.subclasses_names
-        },
-
         #'@field attr_names
         #'Access to private parameter '.attr_names'
         attr_names = function() {
             private$.attr_names
+        },
+
+        #'@field flatten_on_exp
+        #'Access to private parameter '.flatten_on_exp'
+        flatten_on_exp = function() {
+            private$.flatten_on_exp
         }
     ),
 
     private = list(
-        .mesh_path = NULL,
-        .mesh_filename = NULL,
+        .type = NULL,
+        .version = NULL,
+        .byte_order = NULL,
+        .UnstructuredGrid = NULL,
+        .header_type = NULL,
+        .compressor = NULL,
+        .AppendedData = NULL,
         .is_subclass = FALSE,
-        .subclasses_names = character(),
-        .attr_names = character()
+        .attr_names = c("type",
+                        "version",
+                        "byte_order",
+                        "header_type",
+                        "compressor"),
+        .flatten_on_exp = character()
     )
 )
 
@@ -78,11 +176,14 @@ OGS6_UnstructuredGrid <- R6::R6Class(
         #'@description
         #'Creates new OGS6_UnstructuredGrid object
         #'@param Piece OGS6_Piece:
-        #'@param FieldData character, length == 2:
+        #'@param FieldData character, length == 2: Optional:
         initialize = function(Piece,
                               FieldData = NULL) {
             self$Piece <- Piece
-            self$FieldData <- FieldData
+
+            if(!is.null(FieldData)){
+                self$FieldData <- FieldData
+            }
         }
     ),
 
@@ -92,7 +193,8 @@ OGS6_UnstructuredGrid <- R6::R6Class(
         Piece = function(value) {
             if (missing(value)) {
                 private$.Piece
-            } else{
+            }else{
+                assertthat::assert_that("OGS6_Piece" %in% class(value))
                 private$.Piece <- value
             }
         },
@@ -113,16 +215,16 @@ OGS6_UnstructuredGrid <- R6::R6Class(
             private$.is_subclass
         },
 
-        #'@field subclasses_names
-        #'Access to private parameter '.subclasses_names'
-        subclasses_names = function() {
-            private$.subclasses_names
-        },
-
         #'@field attr_names
         #'Access to private parameter '.attr_names'
         attr_names = function() {
             private$.attr_names
+        },
+
+        #'@field flatten_on_exp
+        #'Access to private parameter '.flatten_on_exp'
+        flatten_on_exp = function() {
+            private$.flatten_on_exp
         }
     ),
 
@@ -130,8 +232,8 @@ OGS6_UnstructuredGrid <- R6::R6Class(
         .Piece = NULL,
         .FieldData = NULL,
         .is_subclass = TRUE,
-        .subclasses_names = character(),
-        .attr_names = character()
+        .attr_names = character(),
+        .flatten_on_exp = character()
     )
 )
 
@@ -139,9 +241,21 @@ OGS6_UnstructuredGrid <- R6::R6Class(
 #===== OGS6_Piece =====
 
 
+#'OGS6_Piece
+#'@description Constructor for the OGS6_Piece base class
+#'@export
 OGS6_Piece <- R6::R6Class(
     "OGS6_Piece",
     public = list(
+
+        #'@description
+        #'Creates new OGS6_Piece object
+        #'@param NumberOfPoints string | number:
+        #'@param NumberOfCells string | number:
+        #'@param PointData list, :
+        #'@param Points list, :
+        #'@param Cells list, :
+        #'@param CellData list, : Optional:
         initialize = function(NumberOfPoints,
                               NumberOfCells,
                               PointData,
@@ -154,7 +268,10 @@ OGS6_Piece <- R6::R6Class(
             self$PointData <- PointData
             self$Points <- Points
             self$Cells <- Cells
-            self$CellData <- CellData
+
+            if(!is.null(CellData)){
+                self$CellData <- CellData
+            }
         }
     ),
 
@@ -247,9 +364,9 @@ OGS6_Piece <- R6::R6Class(
         .Cells = NULL,
         .CellData = NULL,
         .is_subclass = TRUE,
-        .subclasses_names = character(),
         .attr_names = c("NumberOfPoints",
-                        "NumberOfCells")
+                        "NumberOfCells"),
+        .flatten_on_exp = character()
     )
 )
 
@@ -262,11 +379,14 @@ OGS6_Piece <- R6::R6Class(
 #' (VTK mesh generator). For full documentation see
 #'https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
 #'@param ogs6_obj OGS6: Simulation object
-#'@param call_str The arguments the script will be called with
+#'@param call_str string: The arguments the script will be called with
 #' (EXCEPT -o output_file_name, this will be generated automatically!)
-#'@return The newly generated .vtu file path
+#'@param read_in_vtu flag: Should .vtu file just be copied or read in too?
+#'@return string: .vtu file path
 #'@export
-generate_structured_mesh = function(ogs6_obj, call_str) {
+generate_structured_mesh = function(ogs6_obj,
+                                    call_str,
+                                    read_in_vtu) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(assertthat::is.string(call_str))
@@ -279,14 +399,18 @@ generate_structured_mesh = function(ogs6_obj, call_str) {
         mesh_number <- length(ogs6_obj$meshes) + 1
     }
 
-    mesh_dir_path <- tempdir()
-    mesh_output_file_name <- paste0(ogs6_obj$sim_name, "_", mesh_number, ".vtu")
-    mesh_path <- paste0(mesh_dir_path, mesh_output_file_name)
+    vtu_dir_path <- tempdir()
+    vtu_output_filename <- paste0(ogs6_obj$sim_name, "_", mesh_number, ".vtu")
+    vtu_path <- paste0(vtu_dir_path, vtu_output_filename)
 
     system(command = paste0(ogs6_obj$ogs_bin_path, "generateStructuredMesh.exe",
-                            " -o ", mesh_path, " ", call_str))
+                            " -o ", vtu_path, " ", call_str))
 
-    ogs6_obj$add_vtu(OGS6_vtu$new(mesh_path), mesh_path)
+    if(read_in_vtu){
+        read_in_vtu(ogs6_obj, vtu_path)
+    }else{
+        ogs6_obj$add_mesh(vtu_path)
+    }
 
-    return(invisible(mesh_path))
+    return(invisible(vtu_path))
 }

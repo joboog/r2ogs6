@@ -64,52 +64,78 @@ get_subclass_names <- function(class_name) {
 
   subclasses_names <- character()
 
-  switch(class_name,
+  switch(
+    class_name,
 
-         r2ogs6_process = {
-           subclasses_names <- c("r2ogs6_constitutive_relation",
-                                 "r2ogs6_fracture_model",
-                                 "r2ogs6_fracture_properties",
-                                 "r2ogs6_jacobian_assembler",
-                                 "r2ogs6_phasefield_parameters",
-                                 "r2ogs6_borehole_heat_exchanger",
-                                 "r2ogs6_flow_and_temperature_control",
-                                 "r2ogs6_pipes",
-                                 "r2ogs6_material_property",
-                                 "r2ogs6_fluid",
-                                 "r2ogs6_porous_medium",
-                                 "r2ogs6_relative_permeability",
-                                 "r2ogs6_capillary_pressure")
-         },
-         r2ogs6_chemical_system = {
-           subclasses_names <- c("r2ogs6_solution",
-                                 "r2ogs6_phase_component",
-                                 "r2ogs6_kinetic_reactant",
-                                 "r2ogs6_rate")
-         },
-         r2ogs6_linear_solver = {
-           subclasses_names <- c("r2ogs6_eigen")
-         },
-         r2ogs6_medium = {
-           subclasses_names <- c("r2ogs6_phase",
-                                 "r2ogs6_pr_property",
-                                 "r2ogs6_ph_property",
-                                 "r2ogs6_component",
-                                 "r2ogs6_com_property")
-         },
-         r2ogs6_process_variable = {
-           subclasses_names <- c("r2ogs6_boundary_condition",
-                                 "r2ogs6_source_term",
-                                 "r2ogs6_deactivated_subdomain")
-         },
-         r2ogs6_time_loop = {
-           subclasses_names <- c("r2ogs6_tl_process",
-                                 "r2ogs6_output",
-                                 "r2ogs6_global_process_coupling",
-                                 "r2ogs6_convergence_criterion",
-                                 "r2ogs6_time_stepping")
-         }
+    OGS6_vtu = {
+      subclasses_names <- c("OGS6_UnstructuredGrid",
+                            "OGS6_AppendedData",
+                            "OGS6_Piece")
+    },
+
+    r2ogs6_process = {
+      subclasses_names <- c(
+        "r2ogs6_constitutive_relation",
+        "r2ogs6_fracture_model",
+        "r2ogs6_fracture_properties",
+        "r2ogs6_jacobian_assembler",
+        "r2ogs6_phasefield_parameters",
+        "r2ogs6_borehole_heat_exchanger",
+        "r2ogs6_flow_and_temperature_control",
+        "r2ogs6_pipes",
+        "r2ogs6_material_property",
+        "r2ogs6_fluid",
+        "r2ogs6_porous_medium",
+        "r2ogs6_relative_permeability",
+        "r2ogs6_capillary_pressure"
+      )
+    },
+
+    r2ogs6_chemical_system = {
+      subclasses_names <- c(
+        "r2ogs6_solution",
+        "r2ogs6_phase_component",
+        "r2ogs6_kinetic_reactant",
+        "r2ogs6_rate"
+      )
+    },
+
+    r2ogs6_linear_solver = {
+      subclasses_names <- c("r2ogs6_eigen")
+    },
+
+    r2ogs6_medium = {
+      subclasses_names <- c(
+        "r2ogs6_phase",
+        "r2ogs6_pr_property",
+        "r2ogs6_ph_property",
+        "r2ogs6_component",
+        "r2ogs6_com_property"
+      )
+    },
+
+    r2ogs6_process_variable = {
+      subclasses_names <- c(
+        "r2ogs6_boundary_condition",
+        "r2ogs6_source_term",
+        "r2ogs6_deactivated_subdomain"
+      )
+    },
+
+    r2ogs6_time_loop = {
+      subclasses_names <- c(
+        "r2ogs6_tl_process",
+        "r2ogs6_output",
+        "r2ogs6_global_process_coupling",
+        "r2ogs6_convergence_criterion",
+        "r2ogs6_time_stepping"
+      )
+    }
   )
+
+  for(i in seq_len(length(subclasses_names))){
+    names(subclasses_names)[[i]] <- get_class_tag_name(subclasses_names[[i]])
+  }
 
   return(invisible(subclasses_names))
 }
@@ -139,6 +165,29 @@ get_class_tag_name <- function(class_name) {
 }
 
 
+#'get_tag_class_name
+#'@description Utility function, returns the class name of an XML tag
+#'@param tag_name string: An XML tag
+#'@return string: The class name corresponding to tag_name
+get_tag_class_name <- function(tag_name) {
+
+  assertthat::assert_that(assertthat::is.string(tag_name))
+
+  class_name <- ""
+  ntn <- get_nonstandard_tag_names()
+
+  if(tag_name %in% ntn &&
+     assertthat::is.string(names(ntn)[ntn == tag_name]) &&
+     grepl("OGS6", names(ntn)[ntn == tag_name])){
+    class_name <- names(ntn)[ntn == tag_name]
+  }else{
+    class_name <- paste0("r2ogs6_", tag_name)
+  }
+
+  return(invisible(class_name))
+}
+
+
 #'get_nonstandard_tag_names
 #'@description Utility function, returns nonstandard tag names
 #'@return character: The tag names of classes that are not named after the
@@ -146,7 +195,8 @@ get_class_tag_name <- function(class_name) {
 #' If you as a dev create new classes like that, just add them to the list :)
 get_nonstandard_tag_names <- function(){
 
-  tag_names <- c(r2ogs6_tl_process = "process",
+  tag_names <- c(OGS6_vtu = "VTKFile",
+                 r2ogs6_tl_process = "process",
                  r2ogs6_pr_property = "property",
                  r2ogs6_ph_property = "property",
                  r2ogs6_com_property = "property")

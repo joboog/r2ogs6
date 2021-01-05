@@ -99,8 +99,8 @@ OGS6 <- R6::R6Class("OGS6",
 
 
     #'@description
-    #'Adds a r2ogs6_mesh object
-    #'@param mesh r2ogs6_mesh
+    #'Adds a reference to a .vtu file
+    #'@param mesh string: .vtu path
     add_mesh = function(mesh){
       assertthat::assert_that(assertthat::is.string(mesh))
       self$meshes <- c(self$meshes, mesh = mesh)
@@ -383,9 +383,14 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field geometry
-      #'Getter for OGS6 private parameter '.geometry'
-      geometry = function() {
-        private$.geometry
+      #'Access to private parameter '.geometry'
+      geometry = function(value) {
+        if(missing(value)) {
+          private$.geometry
+        }else{
+          assertthat::assert_that(is.string(value))
+          private$.geometry <- value
+        }
       },
 
       #'@field meshes

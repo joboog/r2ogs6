@@ -198,18 +198,14 @@ construct_add_call <- function(object, nested_call = FALSE) {
         init_prefix <- ""
         use_s3_syntax <- TRUE
 
-        if(any(grepl("r2ogs6", class(object), fixed = TRUE))){
-            class_name <- grep("r2ogs6", class(object),
-                               fixed = TRUE, value = TRUE)
-            # formals_call <- paste0("new_", class_name)
-            formals_call <- class_name
-        }else{
+        if("R6" %in% class(object)){
             class_name <- grep("OGS6", class(object),
                                fixed = TRUE, value = TRUE)
             use_s3_syntax <- FALSE
-            formals_call <- paste0(class_name,
-                                   "$public_methods$initialize")
             init_prefix <- "$new"
+        }else{
+            class_name <- grep("r2ogs6", class(object),
+                               fixed = TRUE, value = TRUE)
         }
 
         assertthat::assert_that(length(class_name) == 1)
@@ -218,7 +214,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
                           collapse = "_")
 
         #Grab helper
-        param_names <- names(as.list(formals(eval(parse(text = formals_call)))))
+        param_names <- get_class_args(class_name)
 
         #Handle Ellipsis if it exists by removing and substituting it
         if("..." %in% param_names){

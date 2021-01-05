@@ -1,6 +1,6 @@
 
 
-test_that("select_fitting_subclass works for medium objects", {
+test_that("select_fitting_subclass works", {
 
     subclass_names <- get_subclass_names("r2ogs6_medium")
 
@@ -14,10 +14,7 @@ test_that("select_fitting_subclass works for medium objects", {
                                 subclass_names)
 
     expect_equal(subclass_name, "r2ogs6_ph_property")
-})
 
-
-test_that("select_fitting_subclass works for linear_solver objects", {
 
     subclass_names <- get_subclass_names("r2ogs6_linear_solver")
 
@@ -31,6 +28,18 @@ test_that("select_fitting_subclass works for linear_solver objects", {
                                 subclass_names)
 
     expect_equal(subclass_name, "r2ogs6_eigen")
+})
+
+
+test_that("get_subclass_names works", {
+
+    subclass_names <- get_subclass_names("r2ogs6_chemical_system")
+
+    expect_equal(subclass_names,
+                 c(solution = "r2ogs6_solution",
+                   phase_component = "r2ogs6_phase_component",
+                   kinetic_reactant = "r2ogs6_kinetic_reactant",
+                   rate = "r2ogs6_rate"))
 })
 
 
