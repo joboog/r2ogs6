@@ -7,7 +7,7 @@
 analyse_xml(
   path,
   pattern,
-  element_name,
+  tag_name,
   xpath_prefix = "//",
   print_findings = TRUE
 )
@@ -17,7 +17,7 @@ analyse_xml(
 
 \item{pattern}{string: A regex pattern}
 
-\item{element_name}{string: The name of the XML element to look for}
+\item{tag_name}{string: The name of the XML element to look for}
 
 \item{xpath_prefix}{string: Optional: The XPath prefix to use
 (defaults to "//")}

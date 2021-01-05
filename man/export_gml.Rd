@@ -4,10 +4,10 @@
 \alias{export_gml}
 \title{export_gml}
 \usage{
-export_gml(ogs6_obj)
+export_gml(gml, path)
 }
 \arguments{
-\item{ogs6_obj}{OGS6: Simulation object to export r2ogs6_gml object from}
+\item{gml}{OGS6_gml:}
 }
 \description{
 Creates a .gml XML document based on  user input data

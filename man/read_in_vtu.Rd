@@ -4,12 +4,13 @@
 \alias{read_in_vtu}
 \title{read_in_vtu}
 \usage{
-read_in_vtu(ogs6_obj, vtu_path)
+read_in_vtu(vtu_path)
 }
 \arguments{
-\item{ogs6_obj}{OGS6: Simulation object}
-
-\item{vtu_path}{The path to the mesh file that should be read in}
+\item{vtu_path}{string: Path to .vtu file that should be read in}
+}
+\value{
+OGS6_vtu: Mesh object
 }
 \description{
 Wrapper function to read in a whole .vtu file

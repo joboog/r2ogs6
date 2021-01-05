@@ -4,10 +4,12 @@
 \alias{pick_vtu_file}
 \title{pick_vtu_file}
 \usage{
-pick_vtu_file(ogs6_obj)
+pick_vtu_file(ogs6_obj, read_in_vtu = FALSE)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
+
+\item{read_in_vtu}{flag: Should .vtu file just be copied or read in too?}
 }
 \description{
 Lets the user pick a .vtu file and adds it to the specified OGS6

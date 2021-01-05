@@ -19,13 +19,17 @@ Constructor for the OGS6 base class
 
 \item{\code{ogs_bin_path}}{Getter for OGS6 private parameter '.ogs_bin_path'}
 
-\item{\code{geometry}}{Getter for OGS6 private parameter '.geometry'}
-
 \item{\code{gml}}{Getter for OGS6 private parameter '.gml'}
+
+\item{\code{geometry}}{Access to private parameter '.geometry'}
 
 \item{\code{meshes}}{Access to private parameter '.meshes'}
 
+\item{\code{vtus}}{Access to private parameter '.vtus'}
+
 \item{\code{python_script}}{Access to private parameter '.python_script'}
+
+\item{\code{search_length_algorithm}}{Access to private parameter '.search_length_algorithm'}
 
 \item{\code{processes}}{Access to private parameter '.processes'}
 
@@ -55,9 +59,12 @@ Constructor for the OGS6 base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
+\item \href{#method-add_component}{\code{OGS6$add_component()}}
 \item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
+\item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
 \item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
+\item \href{#method-add_search_length_algorithm}{\code{OGS6$add_search_length_algorithm()}}
 \item \href{#method-add_process}{\code{OGS6$add_process()}}
 \item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
 \item \href{#method-add_local_coordinate_system}{\code{OGS6$add_local_coordinate_system()}}
@@ -103,10 +110,27 @@ validated. Unless you're a dev, please don't touch.}
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_component"></a>}}
+\if{latex}{\out{\hypertarget{method-add_component}{}}}
+\subsection{Method \code{add_component()}}{
+Adds a simulation component (WIP)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_component(x)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{OGS6_*: An object of a class listed in get_implemented_classes()}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_mesh"></a>}}
 \if{latex}{\out{\hypertarget{method-add_mesh}{}}}
 \subsection{Method \code{add_mesh()}}{
-Adds a r2ogs6_mesh object
+Adds a reference to a .vtu file
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_mesh(mesh)}\if{html}{\out{</div>}}
 }
@@ -114,7 +138,7 @@ Adds a r2ogs6_mesh object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{mesh}}{r2ogs6_mesh}
+\item{\code{mesh}}{string: .vtu path}
 }
 \if{html}{\out{</div>}}
 }
@@ -137,6 +161,25 @@ Adds a r2ogs6_gml object
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_vtu"></a>}}
+\if{latex}{\out{\hypertarget{method-add_vtu}{}}}
+\subsection{Method \code{add_vtu()}}{
+Adds a r2ogs6_gml object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(vtu, filename)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vtu}}{r2ogs6_vtu}
+
+\item{\code{filename}}{string:}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_python_script"></a>}}
 \if{latex}{\out{\hypertarget{method-add_python_script}{}}}
 \subsection{Method \code{add_python_script()}}{
@@ -149,6 +192,23 @@ Adds a python script
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{python_script}}{string: File name of python script}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_search_length_algorithm"></a>}}
+\if{latex}{\out{\hypertarget{method-add_search_length_algorithm}{}}}
+\subsection{Method \code{add_search_length_algorithm()}}{
+Adds a r2ogs6_search_length_algorithm object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_search_length_algorithm(search_length_algorithm)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{search_length_algorithm}}{r2ogs6_search_length_algorithm}
 }
 \if{html}{\out{</div>}}
 }

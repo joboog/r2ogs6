@@ -4,13 +4,10 @@
 \alias{generate_R6}
 \title{generate_R6}
 \usage{
-generate_R6(tag_name, param_flags, prefix = "", print_result = TRUE)
+generate_R6(params, prefix = "", print_result = TRUE)
 }
 \arguments{
-\item{tag_name}{The name of the XML element the class will be based on}
-
-\item{param_flags}{The parameters for the class and if they are required or
-not (i.e. 'c(a = TRUE, b = FALSE)')}
+\item{params}{list: (Return value of analyse_xml())}
 
 \item{prefix}{Optional: For subclasses whose represented elements have
 the same tag name as an element for which a class was already specified,

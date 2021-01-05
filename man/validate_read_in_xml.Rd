@@ -4,10 +4,10 @@
 \alias{validate_read_in_xml}
 \title{validate_read_in_xml}
 \usage{
-validate_read_in_xml(file)
+validate_read_in_xml(path)
 }
 \arguments{
-\item{file}{A file to be parsed as XML}
+\item{path}{string: A file to be parsed as XML}
 }
 \value{
 The parsed XML file (as class object of type xml2::xml_document)

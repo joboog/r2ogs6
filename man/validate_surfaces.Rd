@@ -11,7 +11,7 @@ validate_surfaces(surfaces)
 }
 \description{
 Checks if the input is a list, if this list consists of other
-lists and if those lists have the correct structure (length of 3, first
+lists and if those lists have the correct structure (length of 2 or 3, first
 element is a string named 'name', second and third element are numeric
 vectors)
 }

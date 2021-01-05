@@ -4,12 +4,13 @@
 \alias{generate_benchmark_script}
 \title{generate_benchmark_script}
 \usage{
-generate_benchmark_script(prj_path, dest_dir = "extdata/benchmark_scripts/")
+generate_benchmark_script(prj_path, script_path = "D:/OGS_scripts/")
 }
 \arguments{
 \item{prj_path}{The path to the project file the script will be based on}
 
-\item{dest_dir}{Optional: The directory to write the script to}
+\item{script_path}{string: Optional: Path where benchmark script will be
+saved. Change this to fit your system!}
 }
 \description{
 Generates a benchmark script from an existing .prj file.

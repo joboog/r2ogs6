@@ -4,14 +4,14 @@
 \alias{r2ogs6_medium}
 \title{r2ogs6_medium}
 \usage{
-r2ogs6_medium(phases, properties = NULL, id = NULL)
+r2ogs6_medium(phases = NULL, properties = NULL, id = NULL)
 }
 \arguments{
-\item{phases}{list, r2ogs6_phase: Medium phases}
+\item{phases}{list, r2ogs6_phase: Optional: Medium phases}
 
-\item{properties}{list, r2ogs6_pr_property: Medium properties}
+\item{properties}{list, r2ogs6_pr_property: Optional: Medium properties}
 
-\item{id}{string | double: ID corresponding to the MaterialIDs}
+\item{id}{string | double: Optional: ID corresponding to the MaterialIDs}
 }
 \description{
 tag: medium, a specific medium with optional id corresponding

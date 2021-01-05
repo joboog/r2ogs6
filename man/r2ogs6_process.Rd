@@ -11,7 +11,6 @@ r2ogs6_process(
   process_variables,
   secondary_variables = NULL,
   specific_body_force = NULL,
-  constitutive_relation = NULL,
   solid_density = NULL,
   dimension = NULL,
   coupling_scheme = NULL,
@@ -22,7 +21,6 @@ r2ogs6_process(
   darcy_gravity = NULL,
   reference_temperature = NULL,
   fracture_model = NULL,
-  fracture_properties = NULL,
   jacobian_assembler = NULL,
   internal_length = NULL,
   mass_lumping = NULL,
@@ -74,7 +72,8 @@ r2ogs6_process(
   molecular_diffusion_coefficient = NULL,
   density_solid = NULL,
   latent_heat_evaporation = NULL,
-  pf_irrv = NULL
+  pf_irrv = NULL,
+  ...
 )
 }
 \arguments{
@@ -89,8 +88,6 @@ r2ogs6_process(
 \item{secondary_variables}{Optional:}
 
 \item{specific_body_force}{Optional:}
-
-\item{constitutive_relation}{Optional:}
 
 \item{solid_density}{Optional:}
 
@@ -111,8 +108,6 @@ r2ogs6_process(
 \item{reference_temperature}{Optional:}
 
 \item{fracture_model}{Optional:}
-
-\item{fracture_properties}{Optional:}
 
 \item{jacobian_assembler}{Optional:}
 
@@ -217,6 +212,8 @@ r2ogs6_process(
 \item{latent_heat_evaporation}{Optional:}
 
 \item{pf_irrv}{Optional:}
+
+\item{...}{Optional: fracture_properties, constitutive_relation}
 }
 \description{
 tag: process (parent tag: processes)

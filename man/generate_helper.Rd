@@ -4,13 +4,10 @@
 \alias{generate_helper}
 \title{generate_helper}
 \usage{
-generate_helper(tag_name, param_flags, prefix = "", print_result = FALSE)
+generate_helper(params, prefix = "", print_result = FALSE)
 }
 \arguments{
-\item{tag_name}{The name of the XML element the helper will be based on}
-
-\item{param_flags}{The parameters for the class and if they are required or
-not (i.e. 'c(a = TRUE, b = FALSE)')}
+\item{params}{list: (Return value of analyse_xml())}
 
 \item{prefix}{Optional: For subclasses whose represented elements have
 the same tag name as an element for which a class was already specified,

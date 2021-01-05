@@ -4,16 +4,18 @@
 \alias{generate_structured_mesh}
 \title{generate_structured_mesh}
 \usage{
-generate_structured_mesh(ogs6_obj, call_str)
+generate_structured_mesh(ogs6_obj, call_str, read_in_vtu)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
 
-\item{call_str}{The arguments the script will be called with
+\item{call_str}{string: The arguments the script will be called with
 (EXCEPT -o output_file_name, this will be generated automatically!)}
+
+\item{read_in_vtu}{flag: Should .vtu file just be copied or read in too?}
 }
 \value{
-The newly generated .vtu file path
+string: .vtu file path
 }
 \description{
 Wrapper function to call generateStructuredMesh.exe

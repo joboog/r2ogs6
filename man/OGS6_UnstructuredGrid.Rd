@@ -15,9 +15,9 @@ Constructor for the OGS6_UnstructuredGrid base class
 
 \item{\code{is_subclass}}{Access to private parameter '.is_subclass'}
 
-\item{\code{subclasses_names}}{Access to private parameter '.subclasses_names'}
-
 \item{\code{attr_names}}{Access to private parameter '.attr_names'}
+
+\item{\code{flatten_on_exp}}{Access to private parameter '.flatten_on_exp'}
 }
 \if{html}{\out{</div>}}
 }
@@ -42,7 +42,7 @@ Creates new OGS6_UnstructuredGrid object
 \describe{
 \item{\code{Piece}}{OGS6_Piece:}
 
-\item{\code{FieldData}}{character, length == 2:}
+\item{\code{FieldData}}{character, length == 2: Optional:}
 }
 \if{html}{\out{</div>}}
 }

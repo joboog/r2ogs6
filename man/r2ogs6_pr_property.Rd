@@ -47,7 +47,7 @@ r2ogs6_pr_property(
 
 \item{p_b}{Optional: string | double: string | double:}
 
-\item{independent_variable}{Optional: string:}
+\item{independent_variable}{Optional: string}
 
 \item{curve}{Optional: string:}
 
