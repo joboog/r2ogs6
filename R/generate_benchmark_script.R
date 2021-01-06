@@ -6,28 +6,45 @@
 #'@description Wrapper function to generate benchmark scripts from all .prj
 #' files in a directory
 #'@param path string: Path to a benchmark directory to generate scripts from
-#'@param scripts_path string: Optional: Path where benchmark scripts will be
-#' saved. Change this to fit your system!
+#'@param sim_path string: Path where all simulation files will be saved
+#'@param scripts_path string: Path where benchmark scripts will be saved
 #'@param starting_from_prj_path string: Optional:
 #'@param skip_prj_paths character: Optional: .prj paths to skip
+#'@param read_in_vtus flag: Optional: Should .vtu files just be copied or read
+#' in too?
+#'@param read_in_gmls flag: Optional: Should .gml files just be copied or read
+#' in too?
 #'@param test_mode flag: Optional: In test mode, if `path` is missing,
 #' internal function `get_default_benchmark_path()` will be called
 generate_all_benchmark_scripts <-
     function(path,
-             scripts_path = "D:/OGS_scripts/",
+             sim_path,
+             scripts_path,
              starting_from_prj_path = "",
              skip_prj_paths = character(),
+             read_in_vtus = FALSE,
+             read_in_gmls = TRUE,
              test_mode = FALSE){
+
+    assertthat::assert_that(assertthat::is.flag(test_mode))
 
     if(missing(path) && test_mode){
         path <- get_default_benchmark_path()
+    }
+
+    if(missing(sim_path) && test_mode){
+        sim_path <- get_default_sim_path()
+    }
+
+    if(missing(scripts_path) && test_mode){
+        scripts_path <- get_default_script_path()
     }
 
     path <- validate_is_dir_path(path)
     scripts_path <- validate_is_dir_path(scripts_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
-    assertthat::assert_that(assertthat::is.flag(test_mode))
+    assertthat::assert_that(assertthat::is.flag(read_in_vtus))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
@@ -68,7 +85,18 @@ generate_all_benchmark_scripts <-
 
         cat("\nGenerating script from path", prj_paths[[i]])
 
-        generate_benchmark_script(prj_paths[[i]], scripts_path)
+        # Put simulations in their own subfolders under sim_path
+        sim_subdir <-
+            paste0(sim_path,
+                   basename(dirname(prj_paths[[i]])), "_",
+                   tools::file_path_sans_ext(basename(prj_paths[[i]])))
+
+        generate_benchmark_script(prj_path = prj_paths[[i]],
+                                  sim_path = sim_subdir,
+                                  script_path = scripts_path,
+                                  read_in_vtu = read_in_vtus,
+                                  read_in_gml = read_in_gmls,
+                                  test_mode = test_mode)
     }
 
     cat("\nFailed parsing the following files:")
@@ -83,15 +111,41 @@ generate_all_benchmark_scripts <-
 
 #'generate_benchmark_script
 #'@description Generates a benchmark script from an existing .prj file.
-#'@param prj_path The path to the project file the script will be based on
-#'@param script_path string: Optional: Path where benchmark script will be
-#' saved. Change this to fit your system!
+#'@param prj_path string: .prj file the script will be based on
+#'@param sim_path string: Path where all simulation files will be saved
+#'@param ogs_bin_path string: OpenGeoSys bin folder path
+#'@param script_path string: Path where benchmark script will be saved
+#'@param read_in_vtu flag: Optional: Should .vtu file(s) just be copied or read
+#' in too?
+#'@param read_in_gml flag: Optional: Should .gml file just be copied or read
+#' in too?
+#'@param test_mode flag: Optional: In test mode, if `ogs_bin_path` is missing,
+#' internal function `get_default_ogs_bin_path()` will be called
 #'@export
 generate_benchmark_script <- function(prj_path,
-                                      script_path = "D:/OGS_scripts/") {
+                                      sim_path,
+                                      ogs_bin_path,
+                                      script_path,
+                                      read_in_vtu = FALSE,
+                                      read_in_gml = TRUE,
+                                      test_mode = FALSE) {
+
+    assertthat::assert_that(assertthat::is.flag(test_mode))
+
+    if(missing(ogs_bin_path) && test_mode){
+        ogs_bin_path <- get_default_ogs_bin_path()
+    }
+
+    if(missing(script_path) && test_mode){
+        script_path <- get_default_script_path()
+    }
 
     assertthat::assert_that(assertthat::is.string(prj_path))
+    assertthat::assert_that(assertthat::is.string(sim_path))
+    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
     assertthat::assert_that(assertthat::is.string(script_path))
+    assertthat::assert_that(assertthat::is.flag(read_in_vtu))
+    assertthat::assert_that(assertthat::is.flag(read_in_gml))
 
     #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
@@ -100,7 +154,10 @@ generate_benchmark_script <- function(prj_path,
                          ogs_bin_path = "",
                          test_mode = TRUE)
 
-    read_in_prj(ogs6_obj, prj_path)
+    read_in_prj(ogs6_obj,
+                prj_path,
+                read_in_vtu,
+                read_in_gml)
 
     impl_classes = get_implemented_classes()
 
@@ -110,20 +167,47 @@ generate_benchmark_script <- function(prj_path,
                          "ogs6_obj <- OGS6$new(sim_name = \"",
                          sim_name, "\",\n",
                          "sim_id = 1,\n",
-                         "sim_path = \"your_sim_path\",\n",
-                         "ogs_bin_path = \"your_bin_path\")\n\n\n")
+                         "sim_path = \"", sim_path, "\",\n",
+                         "ogs_bin_path = \"", ogs_bin_path, "\")\n\n\n")
 
+    # If there is a .gml but it shouldn't be read in, add reference
+    if (!is.null(ogs6_obj$geometry) && !read_in_gml) {
+        script_str <- paste0(
+            script_str,
+            "ogs6_obj$add_gml(",
+            construct_add_call(ogs6_obj$geometry),
+            ")\n\n"
+        )
+    }
+
+    # Add .vtu references and optionally, OGS6_vtu objects
+    for(i in seq_len(length(ogs6_obj$meshes))){
+        script_str <- paste0(script_str,
+                             "ogs6_obj$add_vtu(",
+                             construct_add_call(ogs6_obj$meshes[[i]]), ",\n",
+                             read_in_vtu,
+                             ")\n\n")
+    }
+
+    # Add class objects (and such in wrapper lists)
     for(i in seq_len(length(impl_classes))){
+
+        # We already handled the .vtus above
+        if(impl_classes[[i]] == "OGS6_vtu"){
+            next
+        }
+
         get_component_call <- paste0("ogs6_obj$", names(impl_classes)[[i]])
         ogs6_component <- eval(parse(text = get_component_call))
 
-        #If benchmark doesn't have components of specified name, skip
+        # If benchmark doesn't have components of specified name, skip
         if(is.null(ogs6_component) || length(ogs6_component) == 0){
             next
         }
 
         #If objects are not in wrapper list, wrap them up for seq_along()
-        if(any(grepl("r2ogs6_", class(ogs6_component), fixed = TRUE))){
+        if(any(grepl("r2ogs6_", class(ogs6_component), fixed = TRUE)) ||
+           any(grepl("OGS6_", class(ogs6_component), fixed = TRUE))){
             ogs6_component <- list(ogs6_component)
         }
 
@@ -242,7 +326,14 @@ construct_add_call <- function(object, nested_call = FALSE) {
 
         #If call isn't nested, it has a OGS6$add_* function
         if(!nested_call){
-            ret_str <- paste0("ogs6_obj$add_", tag_name, "(", ret_str, ")\n")
+
+            # if(tag_name == "vtu"){
+            #     filename_str <- paste0(",\npaste0(ogs6_obj$sim_path,\n",
+            #                            "basename(ogs6_obj$geometry))")
+            # }
+
+            ret_str <- paste0("ogs6_obj$add_", tag_name,
+                              "(", ret_str, ")\n")
         }
 
 

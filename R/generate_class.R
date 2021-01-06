@@ -8,7 +8,6 @@
 #'generate_constructor
 #'@description Helper function to generate a constructor out of a tag name
 #' and a flag vector
-#'@param tag_name The name of the XML element the class will be based on
 #'@param params list: (Return value of analyse_xml())
 #'@param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
