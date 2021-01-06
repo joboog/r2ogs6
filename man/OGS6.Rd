@@ -60,7 +60,6 @@ Constructor for the OGS6 base class
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
 \item \href{#method-add_component}{\code{OGS6$add_component()}}
-\item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
 \item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
@@ -127,27 +126,10 @@ Adds a simulation component (WIP)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_mesh"></a>}}
-\if{latex}{\out{\hypertarget{method-add_mesh}{}}}
-\subsection{Method \code{add_mesh()}}{
-Adds a reference to a .vtu file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_mesh(mesh)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{mesh}}{string: .vtu path}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_gml"></a>}}
 \if{latex}{\out{\hypertarget{method-add_gml}{}}}
 \subsection{Method \code{add_gml()}}{
-Adds a r2ogs6_gml object
+Adds a reference to a .gml file and optionally, a OGS6_gml object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_gml(gml)}\if{html}{\out{</div>}}
 }
@@ -155,7 +137,8 @@ Adds a r2ogs6_gml object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{gml}}{r2ogs6_gml}
+\item{\code{gml}}{string | r2ogs6_gml: Either a path to a file with extension
+.gml or a r2ogs6_gml object.}
 }
 \if{html}{\out{</div>}}
 }
@@ -164,17 +147,18 @@ Adds a r2ogs6_gml object
 \if{html}{\out{<a id="method-add_vtu"></a>}}
 \if{latex}{\out{\hypertarget{method-add_vtu}{}}}
 \subsection{Method \code{add_vtu()}}{
-Adds a r2ogs6_gml object
+Adds a reference to a .vtu file and optionally, a OGS6_vtu object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(vtu, filename)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{vtu}}{r2ogs6_vtu}
+\item{\code{path}}{string:}
 
-\item{\code{filename}}{string:}
+\item{\code{read_in_vtu}}{flag: Optional: Should .vtu file just be copied or
+read in too?}
 }
 \if{html}{\out{</div>}}
 }

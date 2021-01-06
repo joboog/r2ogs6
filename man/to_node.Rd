@@ -22,8 +22,11 @@ function tries to guess the tag name by deparsing the 'object' parameter}
 \item{attribute_names}{Optional: A character vector containing names of
 attributes or attribute nodes}
 
-\item{flatten_on_exp}{Optional: This is for vectors which will be flattened
-to a string in XML}
+\item{flatten_on_exp}{character: Optional: This is for vectors which will be
+flattened to a string in XML}
+
+\item{unwrap_on_exp}{character: Optional: This is for lists which will not
+be exported to XML}
 }
 \description{
 Recursive function to restructure objects so

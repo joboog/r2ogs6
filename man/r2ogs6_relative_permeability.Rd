@@ -6,6 +6,19 @@
 \usage{
 r2ogs6_relative_permeability(type, sr, smax, m, krel_min, id = NULL)
 }
+\arguments{
+\item{type}{string:}
+
+\item{sr}{string | number:}
+
+\item{smax}{string | number:}
+
+\item{m}{string | number:}
+
+\item{krel_min}{string | number:}
+
+\item{id}{string: Optional:}
+}
 \description{
 tag: relative_permeability
 }

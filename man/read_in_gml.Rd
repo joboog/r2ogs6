@@ -4,11 +4,9 @@
 \alias{read_in_gml}
 \title{read_in_gml}
 \usage{
-read_in_gml(ogs6_obj, gml_path)
+read_in_gml(gml_path)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
-
 \item{gml_path}{The path to the geometry file that should be read in}
 }
 \description{

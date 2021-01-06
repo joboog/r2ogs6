@@ -9,6 +9,7 @@ generate_all_benchmark_scripts(
   scripts_path = "D:/OGS_scripts/",
   starting_from_prj_path = "",
   skip_prj_paths = character(),
+  read_in_vtus = TRUE,
   test_mode = FALSE
 )
 }
@@ -21,6 +22,9 @@ saved. Change this to fit your system!}
 \item{starting_from_prj_path}{string: Optional:}
 
 \item{skip_prj_paths}{character: Optional: .prj paths to skip}
+
+\item{read_in_vtus}{flag: Optional: Should .vtu file just be copied or read
+in too?}
 
 \item{test_mode}{flag: Optional: In test mode, if `path` is missing,
 internal function `get_default_benchmark_path()` will be called}

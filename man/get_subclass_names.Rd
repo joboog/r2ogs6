@@ -4,7 +4,7 @@
 \alias{get_subclass_names}
 \title{get_subclass_names}
 \usage{
-get_subclass_names(class_name, file_type = ".prj")
+get_subclass_names(class_name)
 }
 \arguments{
 \item{class_name}{string: The name of a r2ogs6 class}

@@ -8,6 +8,8 @@ export_gml(gml, path)
 }
 \arguments{
 \item{gml}{OGS6_gml:}
+
+\item{path}{string:}
 }
 \description{
 Creates a .gml XML document based on  user input data

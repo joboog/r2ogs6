@@ -14,8 +14,6 @@ the same tag name as an element for which a class was already specified,
 a prefix must be appended to the class name}
 
 \item{print_result}{flag: Should the result be printed to the console?}
-
-\item{tag_name}{The name of the XML element the class will be based on}
 }
 \description{
 Helper function to generate a constructor out of a tag name

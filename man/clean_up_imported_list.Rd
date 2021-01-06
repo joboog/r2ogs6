@@ -7,7 +7,7 @@
 clean_up_imported_list(imported_list)
 }
 \arguments{
-\item{list}{list: A list}
+\item{imported_list}{list: A list}
 }
 \description{
 Cleans an imported list because sometimes strings containing

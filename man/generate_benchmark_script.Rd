@@ -4,13 +4,24 @@
 \alias{generate_benchmark_script}
 \title{generate_benchmark_script}
 \usage{
-generate_benchmark_script(prj_path, script_path = "D:/OGS_scripts/")
+generate_benchmark_script(
+  prj_path,
+  script_path = "D:/OGS_scripts/",
+  read_in_vtu = FALSE,
+  read_in_gml = TRUE
+)
 }
 \arguments{
 \item{prj_path}{The path to the project file the script will be based on}
 
 \item{script_path}{string: Optional: Path where benchmark script will be
 saved. Change this to fit your system!}
+
+\item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
+in too?}
+
+\item{read_in_gml}{flag: Optional: Should .gml file just be copied or read
+in too?}
 }
 \description{
 Generates a benchmark script from an existing .prj file.

@@ -12,7 +12,7 @@ get_path_sublist(prj_paths, starting_from_prj_path)
 \item{starting_from_prj_path}{string: .prj path to start from}
 }
 \value{
-
+character: The sublist starting from `starting_from_prj_path`
 }
 \description{
 Helper function to speed up tests
