@@ -38,7 +38,8 @@ Imports:
     xtable,
     dplyr,
     rlang,
-    doParallel
+    doParallel,
+    stats
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Depends: 
