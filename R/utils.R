@@ -255,7 +255,7 @@ add_wrapper <- function(x, to_obj){
   assertthat::assert_that(any(grepl("OGS6_", class(to_obj), fixed = TRUE)))
 
   for(i in seq_len(length(x))){
-    add_component(x, to_obj)
+    to_obj$add_component(x)
   }
 
 }
@@ -377,7 +377,7 @@ validate_is_dir_path <- function(path){
 #'clean_up_imported_list
 #'@description Cleans an imported list because sometimes strings containing
 #' only newline characters and spaces get imported in
-#'@param list list: A list
+#'@param imported_list list: A list
 clean_up_imported_list <- function(imported_list){
 
   assertthat::assert_that(is.list(imported_list))
@@ -613,7 +613,7 @@ validate_is_null_or_param_list <- function(obj, default_names){
 #'@description Helper function to speed up tests
 #'@param prj_paths character: .prj paths
 #'@param starting_from_prj_path string: .prj path to start from
-#'@return
+#'@return character: The sublist starting from `starting_from_prj_path`
 get_path_sublist <- function(prj_paths, starting_from_prj_path){
 
   assertthat::assert_that(is.character(prj_paths))
