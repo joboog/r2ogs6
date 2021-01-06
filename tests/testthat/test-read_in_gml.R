@@ -23,6 +23,8 @@ test_that("read_in_polylines correctly reads polyline list from file", {
     expect_equal(length(polyline_list), 12)
     expect_equal(length(polyline_list[[1]]), 2)
     expect_equal(length(polyline_list[[1]][[2]]), 2)
+
+    expect_equal(names(polyline_list[[1]][[2]]), c("pnt", "pnt"))
 })
 
 

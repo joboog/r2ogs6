@@ -30,6 +30,13 @@ test_that("construct_add_call works", {
                                       "r2ogs6_parameter(name = \"a\",\n",
                                       "type = \"t\",\n",
                                       "values = c(0, 1)))\n"))
+
+  ogs_meshes <- list("mesh_1",
+                     "mesh_2")
+
+  ogs_mesh_call <- construct_add_call(ogs_meshes)
+
+  expect_equal(ogs_mesh_call, paste0("list(\"mesh_1\",\n\"mesh_2\")"))
 })
 
 
