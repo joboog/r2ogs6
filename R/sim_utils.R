@@ -33,13 +33,21 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
     }
 
     # Export the simulation files
-    export_gml(ogs6_obj$gml, ogs6_obj$sim_path)
+    if(!is.null(ogs6_obj$gml)){
+        export_gml(ogs6_obj$gml,
+                   paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
+    }else if(!is.null(ogs6_obj$geometry)){
+        file.copy(ogs6_obj$geometry, ogs6_obj$sim_path)
+    }
+
     export_prj(ogs6_obj)
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
-    for(i in seq_len(length(ogs6_obj$meshes))){
-        file.copy(ogs6_obj$meshes[[i]], ogs6_obj$sim_path)
-    }
+    lapply(ogs6_obj$meshes, function(x){
+        file.copy(x, ogs6_obj$sim_path)
+    })
+
+    # Copy referenced ...
 
     # Construct the call
     ogs6_command_str <- paste0(ogs6_obj$ogs_bin_path, "ogs.exe")
@@ -109,30 +117,6 @@ validate_all <- function(ogs6_obj) {
 
 
 #===== Test benchmarks (not in tests because of paths) =====
-
-
-#'get_default_benchmark_path
-#'@description Utility function for testing, change this to fit your system!
-get_default_benchmark_path <- function(){
-
-    default_benchmark_path <-
-        "D:/Programme/OpenGeoSys/ogs-master-Tests-Data/Tests/Data/"
-
-    return(default_benchmark_path)
-}
-
-
-#'get_default_ogs_bin_path
-#'@description Utility function for testing, change this to fit your system!
-get_default_ogs_bin_path <- function(){
-
-    default_ogs_bin_path <-
-        paste0("D:/Programme/OpenGeoSys/",
-               "ogs-6.3.2-Windows-10.0.14393-x64-python-3.7.2-de-utils",
-               "/bin/")
-
-    return(default_ogs_bin_path)
-}
 
 
 #'run_benchmark
