@@ -13,6 +13,10 @@ r2ogs6_medium <- function(phases = NULL,
                           properties = NULL,
                           id = NULL) {
 
+    if(is.character(phases)){
+        phases <- NULL
+    }
+
     new_r2ogs6_medium(phases,
                       properties,
                       id)

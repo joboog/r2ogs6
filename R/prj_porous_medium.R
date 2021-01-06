@@ -172,12 +172,12 @@ new_r2ogs6_capillary_pressure <- function(type,
 
 #'r2ogs6_relative_permeability
 #'@description tag: relative_permeability
-#'@param id
-#'@param type
-#'@param sr
-#'@param smax
-#'@param m
-#'@param krel_min
+#'@param type string:
+#'@param sr string | number:
+#'@param smax string | number:
+#'@param m string | number:
+#'@param krel_min string | number:
+#'@param id string: Optional:
 r2ogs6_relative_permeability <- function(type,
                                          sr,
                                          smax,
@@ -186,6 +186,11 @@ r2ogs6_relative_permeability <- function(type,
                                          id = NULL) {
 
     # Add coercing utility here
+
+    sr <- coerce_string_to_numeric(sr)
+    smax <- coerce_string_to_numeric(smax)
+    m <- coerce_string_to_numeric(m)
+    krel_min <- coerce_string_to_numeric(krel_min)
 
     new_r2ogs6_relative_permeability(type,
                                      sr,
@@ -202,6 +207,14 @@ new_r2ogs6_relative_permeability <- function(type,
                                              m,
                                              krel_min,
                                              id = NULL) {
+    validate_is_string(type)
+    validate_is_null_or_string(id)
+
+    validate_is_number(sr,
+                       smax,
+                       m,
+                       krel_min)
+
     structure(list(type = type,
                    sr = sr,
                    smax = smax,
