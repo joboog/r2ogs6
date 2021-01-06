@@ -3,12 +3,10 @@
 
 #'read_in_gml
 #'@description Wrapper function to read in a whole .gml file
-#'@param ogs6_obj A OGS6 class object
 #'@param gml_path The path to the geometry file that should be read in
 #'@export
-read_in_gml <- function(ogs6_obj, gml_path) {
+read_in_gml <- function(gml_path) {
 
-    assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(gml_path)
 
     name <- xml2::xml_text(xml2::xml_find_first(xml_doc, "//name"))
@@ -16,7 +14,10 @@ read_in_gml <- function(ogs6_obj, gml_path) {
     polylines <- read_in_polylines(xml_doc)
     surfaces <- read_in_surfaces(xml_doc)
 
-    ogs6_obj$add_gml(r2ogs6_gml(name, points, polylines, surfaces))
+    return(invisible(r2ogs6_gml(name,
+                                points,
+                                polylines,
+                                surfaces)))
 }
 
 
@@ -73,6 +74,7 @@ read_in_polylines <- function(xml_doc) {
 
         for(j in seq_along(pnt_nodeset)){
             pnt_vector <- c(pnt_vector, xml2::xml_double(pnt_nodeset[[j]]))
+            names(pnt_vector) <- rep("pnt", length(pnt_vector))
         }
 
         polyline <- list(name = attrs[[2]], pnt_vector)

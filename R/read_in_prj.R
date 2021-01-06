@@ -30,9 +30,9 @@ read_in_prj <- function(ogs6_obj,
                            xml2::xml_text(gml_ref_node))
 
         if(read_in_gml){
-            read_in_gml(ogs6_obj, gml_path)
+            ogs6_obj$add_gml(read_in_gml(gml_path))
         }else{
-            ogs6_obj$geometry <- gml_path
+            ogs6_obj$add_gml(gml_path)
         }
 
         vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "/OpenGeoSysProject/mesh")
@@ -45,13 +45,9 @@ read_in_prj <- function(ogs6_obj,
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
         vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
 
-
         # Read in .vtu file(s) or just save their path
-        if(read_in_vtu){
-            ogs6_obj$add_vtu(read_in_vtu(vtu_path))
-        }else{
-            ogs6_obj$add_mesh(vtu_path)
-        }
+        ogs6_obj$add_vtu(path = vtu_path,
+                         read_in_vtu = read_in_vtu)
     }
 
     impl_classes <- get_implemented_classes()
