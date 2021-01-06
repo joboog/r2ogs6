@@ -5,7 +5,10 @@
 #'export_gml
 #'@description Creates a .gml XML document based on  user input data
 #'@param gml OGS6_gml:
+#'@param path string:
 export_gml <- function(gml, path) {
+
+  assertthat::assert_that(assertthat::is.string(path))
 
   gml_xml <- xml2::xml_new_root(
     .value = "OpenGeoSysGLI",
@@ -22,9 +25,9 @@ export_gml <- function(gml, path) {
   points_list <- gml$points
 
   if(tibble::is_tibble(gml$points)){
-    points_list <- setNames(split(gml$points,
-                                  seq(nrow(gml$points))),
-                            rep("point", nrow(gml$points)))
+    points_list <- stats::setNames(split(gml$points,
+                                         seq(nrow(gml$points))),
+                                   rep("point", nrow(gml$points)))
 
     points_list <- lapply(points_list, function(x){
       as.list(x)
@@ -85,9 +88,7 @@ export_gml <- function(gml, path) {
                         .copy = FALSE)
   }
 
-  file <- paste0(path, gml$name, ".gml")
-
-  xml2::write_xml(gml_xml, file, options = "format", encoding="ISO-8859-1")
+  xml2::write_xml(gml_xml, path, options = "format", encoding="ISO-8859-1")
 
   return(invisible())
 }
