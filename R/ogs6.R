@@ -97,34 +97,46 @@ OGS6 <- R6::R6Class("OGS6",
       }
     },
 
-
     #'@description
-    #'Adds a reference to a .vtu file
-    #'@param mesh string: .vtu path
-    add_mesh = function(mesh){
-      assertthat::assert_that(assertthat::is.string(mesh))
-      self$meshes <- c(self$meshes, mesh = mesh)
-    },
-
-    #'@description
-    #'Adds a r2ogs6_gml object
-    #'@param gml r2ogs6_gml
+    #'Adds a reference to a .gml file and optionally, a OGS6_gml object
+    #'@param gml string | r2ogs6_gml: Either a path to a file with extension
+    #' .gml or a r2ogs6_gml object.
+    #@examples
     add_gml = function(gml){
-      assertthat::assert_that(class(gml) == "r2ogs6_gml")
 
-      private$.gml <- gml
-      private$.geometry <- paste0(gml$name, ".gml")
+      if(assertthat::is.string(gml)){
+        check_file_extension(gml, "gml")
+        private$.geometry <- gml
+      }else{
+        assertthat::assert_that(class(gml) == "r2ogs6_gml")
+        private$.gml <- gml
+
+        if(!is.null(private$.geometry)){
+          warning(paste("OGS6 parameter 'geometry' now refers",
+                        "to a different .gml object"), call. = FALSE)
+        }
+        private$.geometry <- paste0(gml$name, ".gml")
+      }
     },
 
     #'@description
-    #'Adds a r2ogs6_gml object
-    #'@param vtu r2ogs6_vtu
-    #'@param filename string:
-    add_vtu = function(vtu, filename){
-      assertthat::assert_that(class(vtu) == "r2ogs6_vtu")
+    #'Adds a reference to a .vtu file and optionally, a OGS6_vtu object
+    #'@param path string:
+    #'@param read_in_vtu flag: Optional: Should .vtu file just be copied or
+    #' read in too?
+    add_vtu = function(path,
+                       read_in_vtu = FALSE){
+      assertthat::assert_that(assertthat::is.string(path))
+      assertthat::assert_that(grepl("\\.vtu$", path) ||
+                                grepl("\\.vtk$", path) ||
+                                grepl("\\.msh$", path))
+      assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
-      private$.vtus <- c(private$.vtus, list(vtu))
-      self$meshes <- c(self$meshes, mesh = filename)
+      self$meshes <- c(self$meshes, mesh = path)
+
+      if(read_in_vtu){
+        private$.vtus <- c(private$.vtus, list(read_in_vtu(path)))
+      }
     },
 
     #'@description
