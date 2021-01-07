@@ -6,6 +6,12 @@
 #'@param ogs6_obj OGS6: Simulation object
 export_prj <- function(ogs6_obj) {
 
+    prj_xml <- xml2::xml_new_root(
+        .value = "OpenGeoSysProject",
+        .version = "1.0",
+        .encoding = "ISO-8859-1"
+    )
+
     meshes_node <- NULL
 
     #If there is a .gml defined, add "mesh" node, else add "meshes" node
@@ -16,17 +22,18 @@ export_prj <- function(ogs6_obj) {
         meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
     }
 
-    # First instantiate our big wrapper list
-    prj_node <- list(OpenGeoSysProject = list())
-
-    special_cases <- c("meshes",
+    special_cases <- c("vtus",
+                       "meshes",
                        "gml")
 
     #Handle special cases
-    prj_node[[1]] <- c(prj_node[[1]], list(meshes_node))
+    xml2::xml_add_child(prj_xml,
+                        xml2::as_xml_document(meshes_node))
 
     if(!is.null(ogs6_obj$geometry)){
-        prj_node[[1]] <- c(prj_node[[1]], list(to_node(ogs6_obj$geometry)))
+        xml2::xml_add_child(
+            prj_xml,
+            xml2::as_xml_document(to_node(ogs6_obj$geometry)))
     }
 
     #Get implemented classes
@@ -35,6 +42,8 @@ export_prj <- function(ogs6_obj) {
     #Add default cases
     for(i in seq_len(length(impl_classes))){
         param_name <- names(impl_classes)[[i]]
+
+        # cat("\nHandling param", param_name, "\n")
 
         #If parameter was a special case we already handled, skip
         if(param_name %in% special_cases){
@@ -51,14 +60,20 @@ export_prj <- function(ogs6_obj) {
 
         to_node_call <- paste0("to_node(ogs6_obj$", param_name, ")")
         param_node <- eval(parse(text = to_node_call))
-        prj_node[[1]] <- c(prj_node[[1]], list(param_node))
+
+        xml2::xml_add_child(prj_xml,
+                            xml2::as_xml_document(param_node))
     }
 
     file <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj")
 
-    prj_xml <- xml2::as_xml_document(prj_node)
+    cat("\nWriting XML to ", file, "\n")
+    xml2::write_xml(prj_xml,
+                    file,
+                    options = "format",
+                    encoding="ISO-8859-1")
 
-    xml2::write_xml(prj_xml, file, options = "format", encoding="ISO-8859-1")
+    cat("\nDone writing XML.\n")
 
-    return(invisible())
+    return(invisible(TRUE))
 }

@@ -18,8 +18,7 @@ export_gml <- function(gml, path) {
 
   xml2::xml_add_child(gml_xml,
                       xml2::as_xml_document(
-                        to_node(gml$name)),
-                      .copy = FALSE)
+                        to_node(gml$name)))
 
   # If the points are in a tibble, coerce it to list for exporting
   points_list <- gml$points
@@ -47,8 +46,7 @@ export_gml <- function(gml, path) {
   xml2::xml_add_child(gml_xml,
                       xml2::as_xml_document(
                         to_node(points_list,
-                                "points", c("point"))),
-                      .copy = FALSE)
+                                "points", c("point"))))
 
   if(!is.null(gml$polylines)){
 
@@ -66,8 +64,7 @@ export_gml <- function(gml, path) {
                         xml2::as_xml_document(
                           to_node(polylines_with_ids,
                                   "polylines", c("name",
-                                                 "id"))),
-                        .copy = FALSE)
+                                                 "id"))))
   }
 
   if(!is.null(gml$surfaces)){
@@ -84,8 +81,7 @@ export_gml <- function(gml, path) {
                           to_node(surfaces_with_ids,
                                   "surfaces", c("name",
                                                 "id",
-                                                "element"))),
-                        .copy = FALSE)
+                                                "element"))))
   }
 
   xml2::write_xml(gml_xml, path, options = "format", encoding="ISO-8859-1")
