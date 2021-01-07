@@ -32,22 +32,8 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
         }
     }
 
-    # Export the simulation files
-    if(!is.null(ogs6_obj$gml)){
-        export_gml(ogs6_obj$gml,
-                   paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
-    }else if(!is.null(ogs6_obj$geometry)){
-        file.copy(ogs6_obj$geometry, ogs6_obj$sim_path)
-    }
-
-    export_prj(ogs6_obj)
-
-    # Copy all referenced .vtu files to ogs6_obj$sim_path
-    lapply(ogs6_obj$meshes, function(x){
-        file.copy(x, ogs6_obj$sim_path)
-    })
-
-    # Copy referenced ...
+    # Export (and / or copy referenced) simulation files
+    export_all_sim_files(ogs6_obj)
 
     # Construct the call
     ogs6_command_str <- paste0(ogs6_obj$ogs_bin_path, "ogs.exe")
@@ -74,6 +60,8 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
         assertthat::assert_that(!file.exists(ogs6_obj$logfile))
         file.create(ogs6_obj$logfile)
 
+        cat("\nRunning sim...\n")
+
         exit_code <- system2(command = ogs6_command_str,
                              args = ogs6_args,
                              stdout = ogs6_obj$logfile)
@@ -88,12 +76,45 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
 }
 
 
+#===== Export utility =====
+
+
+#'export_all_sim_files
+#'@description Exports and / or copies all simulation files to
+#' `ogs6_obj$sim_path`
+#'@param ogs6_obj OGS6: Simulation object
+export_all_sim_files <- function(ogs6_obj){
+
+    assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
+
+    if(!is.null(ogs6_obj$gml)){
+        export_gml(ogs6_obj$gml,
+                   paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
+    }else if(!is.null(ogs6_obj$geometry)){
+        file.copy(ogs6_obj$geometry, ogs6_obj$sim_path)
+    }
+
+    # Copy all referenced .vtu files to ogs6_obj$sim_path
+    lapply(ogs6_obj$meshes, function(x){
+        file.copy(x, ogs6_obj$sim_path)
+    })
+
+    if(!is.null(ogs6_obj$python_script)){
+        file.copy(ogs6_obj$python_script, ogs6_obj$sim_path)
+    }
+
+    export_prj(ogs6_obj)
+
+    return(invisible())
+}
+
+
 #===== Validation utility =====
 
 
 #'validate_all
 #'@description Validates all necessary parameters
-#'@param ogs6_obj A OGS6 class object
+#'@param ogs6_obj OGS6: Simulation object
 validate_all <- function(ogs6_obj) {
 
     if(!ogs6_obj$get_status(print_status = FALSE)){
@@ -123,26 +144,26 @@ validate_all <- function(ogs6_obj) {
 #'@description Utility function for quick benchmark runs
 #'@param prj_path string:
 #'@param ogs_bin_path string:
-#'@param sim_path string: Optional: Path where simulation files will be saved.
-#' Change this to fit your system!
+#'@param sim_path string: Path where simulation files will be saved.
 run_benchmark <- function(prj_path,
                           ogs_bin_path,
-                          sim_path = "D:/OGS_all_simulations/"){
+                          sim_path){
 
-    if(missing(ogs_bin_path) ||
-       !assertthat::is.string(ogs_bin_path) ||
-       ogs_bin_path == ""){
-        ogs_bin_path <- get_default_ogs_bin_path()
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
+    }
+
+    if(missing(sim_path)){
+        sim_path <- options("r2ogs6.default_sim_path")
     }
 
     assertthat::assert_that(assertthat::is.string(prj_path))
+    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
 
     sim_path <- validate_is_dir_path(sim_path)
 
-    sim_name <- substr(basename(prj_path),
-                       start = 0,
-                       stop = nchar(basename(prj_path)) - 4)
+    sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
     sim_subdir_path <- paste0(sim_path,
                               basename(dirname(prj_path)),
@@ -156,7 +177,8 @@ run_benchmark <- function(prj_path,
 
     read_in_prj(ogs6_obj = ogs6_obj,
                 prj_path = prj_path,
-                read_in_vtu = FALSE)
+                read_in_vtu = FALSE,
+                read_in_gml = TRUE)
 
     return(invisible(run_simulation(ogs6_obj)))
 }
@@ -168,28 +190,31 @@ run_benchmark <- function(prj_path,
 #'@param path string:
 #'@param ogs_bin_path string:
 #'@param sim_path string:
-#'@param starting_from_prj_path string:
-#'@param print_failed_prj_paths flag:
+#'@param starting_from_prj_path string: .prj path to start from
+#'@param print_failed_prj_paths flag: Output paths where `read_in_prj()` failed?
 run_all_benchmarks <- function(path,
                                ogs_bin_path,
-                               sim_path = "D:/OGS_all_simulations/",
+                               sim_path,
                                starting_from_prj_path = "",
                                print_failed_prj_paths = TRUE){
 
-    if(missing(path) ||
-       !assertthat::is.string(path) ||
-       path == ""){
-        path <- get_default_benchmark_path()
+    if(missing(path)){
+        path <- options("r2ogs6.default_benchmark_path")
     }
 
-    if(missing(ogs_bin_path) ||
-       !assertthat::is.string(ogs_bin_path) ||
-       ogs_bin_path == ""){
-        ogs_bin_path <- get_default_ogs_bin_path()
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
     }
 
-    assertthat::assert_that(assertthat::is.flag(print_failed_prj_paths))
+    if(missing(sim_path)){
+        sim_path <- options("r2ogs6.default_sim_path")
+    }
+
+    assertthat::assert_that(assertthat::is.string(path))
+    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+    assertthat::assert_that(assertthat::is.string(sim_path))
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
+    assertthat::assert_that(assertthat::is.flag(print_failed_prj_paths))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",

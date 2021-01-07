@@ -14,8 +14,6 @@
 #' in too?
 #'@param read_in_gmls flag: Optional: Should .gml files just be copied or read
 #' in too?
-#'@param test_mode flag: Optional: In test mode, if `path` is missing,
-#' internal function `get_default_benchmark_path()` will be called
 generate_all_benchmark_scripts <-
     function(path,
              sim_path,
@@ -23,21 +21,18 @@ generate_all_benchmark_scripts <-
              starting_from_prj_path = "",
              skip_prj_paths = character(),
              read_in_vtus = FALSE,
-             read_in_gmls = TRUE,
-             test_mode = FALSE){
+             read_in_gmls = TRUE){
 
-    assertthat::assert_that(assertthat::is.flag(test_mode))
-
-    if(missing(path) && test_mode){
-        path <- get_default_benchmark_path()
+    if(missing(path)){
+        path <- options("r2ogs6.default_benchmark_path")
     }
 
-    if(missing(sim_path) && test_mode){
-        sim_path <- get_default_sim_path()
+    if(missing(sim_path)){
+        sim_path <- options("r2ogs6.default_sim_path")
     }
 
-    if(missing(scripts_path) && test_mode){
-        scripts_path <- get_default_script_path()
+    if(missing(scripts_path)){
+        scripts_path <- options("r2ogs6.default_script_path")
     }
 
     path <- validate_is_dir_path(path)
@@ -95,8 +90,7 @@ generate_all_benchmark_scripts <-
                                   sim_path = sim_subdir,
                                   script_path = scripts_path,
                                   read_in_vtu = read_in_vtus,
-                                  read_in_gml = read_in_gmls,
-                                  test_mode = test_mode)
+                                  read_in_gml = read_in_gmls)
     }
 
     cat("\nFailed parsing the following files:")
@@ -119,25 +113,20 @@ generate_all_benchmark_scripts <-
 #' in too?
 #'@param read_in_gml flag: Optional: Should .gml file just be copied or read
 #' in too?
-#'@param test_mode flag: Optional: In test mode, if `ogs_bin_path` is missing,
-#' internal function `get_default_ogs_bin_path()` will be called
 #'@export
 generate_benchmark_script <- function(prj_path,
                                       sim_path,
                                       ogs_bin_path,
                                       script_path,
                                       read_in_vtu = FALSE,
-                                      read_in_gml = TRUE,
-                                      test_mode = FALSE) {
+                                      read_in_gml = TRUE) {
 
-    assertthat::assert_that(assertthat::is.flag(test_mode))
-
-    if(missing(ogs_bin_path) && test_mode){
-        ogs_bin_path <- get_default_ogs_bin_path()
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- options("r2ogs6.default_bin_path")
     }
 
-    if(missing(script_path) && test_mode){
-        script_path <- get_default_script_path()
+    if(missing(script_path)){
+        script_path <- options("r2ogs6.default_script_path")
     }
 
     assertthat::assert_that(assertthat::is.string(prj_path))

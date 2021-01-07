@@ -107,7 +107,7 @@ read_in <- function(ogs6_obj,
     add_call <- paste0("ogs6_obj$add_", child_name, "(r2ogs6_obj)")
 
     #Parse all children
-    for (i in seq_along(nodes)) {
+    for (i in seq_len(length(nodes))) {
 
         r2ogs6_obj <- node_to_r2ogs6_obj(nodes[[i]],
                                          xpath_expr,
@@ -144,7 +144,7 @@ node_to_r2ogs6_obj <- function(xml_node,
         parameters <- c(parameters, xml2::xml_attrs(xml_node))
     }
 
-    for(i in seq_along(parameter_nodes)){
+    for(i in seq_len(length(parameter_nodes))){
 
         new_xpath_expr <- paste0(xpath_expr,
                              "/",
@@ -324,7 +324,7 @@ guess_structure <- function(xml_node,
 
         wrapper_list <- list()
 
-        for (i in seq_along(xml2::xml_children(xml_node))) {
+        for (i in seq_len(length((xml2::xml_children(xml_node))))) {
             child_node <- xml2::xml_children(xml_node)[[i]]
             child_name <- xml2::xml_name(child_node)
 

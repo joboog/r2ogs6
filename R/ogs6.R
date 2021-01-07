@@ -27,7 +27,14 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(assertthat::is.number(sim_id))
 
       self$sim_name <- sim_name
-      self$sim_path <- sim_path
+
+      if(missing(sim_path)){
+        sim_path <- options("r2ogs6.default_sim_path")
+      }
+
+      if(missing(ogs_bin_path)){
+        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
+      }
 
       if(!test_mode){
         if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
@@ -37,8 +44,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       }
 
-        private$.sim_name <- sim_name
         private$.sim_id <- sim_id
+        self$sim_path <- sim_path
         private$.ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
     },
 
