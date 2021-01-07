@@ -28,7 +28,6 @@ Imports:
     crayon,
     rlist,
     utils,
-    qpdf,
     rmarkdown,
     rvest,
     pbapply,
