@@ -4,15 +4,14 @@
 \alias{run_benchmark}
 \title{run_benchmark}
 \usage{
-run_benchmark(prj_path, ogs_bin_path, sim_path = "D:/OGS_all_simulations/")
+run_benchmark(prj_path, ogs_bin_path, sim_path)
 }
 \arguments{
 \item{prj_path}{string:}
 
 \item{ogs_bin_path}{string:}
 
-\item{sim_path}{string: Optional: Path where simulation files will be saved.
-Change this to fit your system!}
+\item{sim_path}{string: Path where simulation files will be saved.}
 }
 \description{
 Utility function for quick benchmark runs

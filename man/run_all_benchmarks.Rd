@@ -7,7 +7,7 @@
 run_all_benchmarks(
   path,
   ogs_bin_path,
-  sim_path = "D:/OGS_all_simulations/",
+  sim_path,
   starting_from_prj_path = "",
   print_failed_prj_paths = TRUE
 )
@@ -19,9 +19,9 @@ run_all_benchmarks(
 
 \item{sim_path}{string:}
 
-\item{starting_from_prj_path}{string:}
+\item{starting_from_prj_path}{string: .prj path to start from}
 
-\item{print_failed_prj_paths}{flag:}
+\item{print_failed_prj_paths}{flag: Output paths where `read_in_prj()` failed?}
 }
 \description{
 Utility function, for quick benchmark runs. Calls

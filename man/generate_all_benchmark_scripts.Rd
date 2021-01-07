@@ -6,28 +6,30 @@
 \usage{
 generate_all_benchmark_scripts(
   path,
-  scripts_path = "D:/OGS_scripts/",
+  sim_path,
+  scripts_path,
   starting_from_prj_path = "",
   skip_prj_paths = character(),
-  read_in_vtus = TRUE,
-  test_mode = FALSE
+  read_in_vtus = FALSE,
+  read_in_gmls = TRUE
 )
 }
 \arguments{
 \item{path}{string: Path to a benchmark directory to generate scripts from}
 
-\item{scripts_path}{string: Optional: Path where benchmark scripts will be
-saved. Change this to fit your system!}
+\item{sim_path}{string: Path where all simulation files will be saved}
+
+\item{scripts_path}{string: Path where benchmark scripts will be saved}
 
 \item{starting_from_prj_path}{string: Optional:}
 
 \item{skip_prj_paths}{character: Optional: .prj paths to skip}
 
-\item{read_in_vtus}{flag: Optional: Should .vtu file just be copied or read
+\item{read_in_vtus}{flag: Optional: Should .vtu files just be copied or read
 in too?}
 
-\item{test_mode}{flag: Optional: In test mode, if `path` is missing,
-internal function `get_default_benchmark_path()` will be called}
+\item{read_in_gmls}{flag: Optional: Should .gml files just be copied or read
+in too?}
 }
 \description{
 Wrapper function to generate benchmark scripts from all .prj

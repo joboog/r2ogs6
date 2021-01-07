@@ -6,16 +6,21 @@
 \usage{
 generate_benchmark_script(
   prj_path,
-  script_path = "D:/OGS_scripts/",
+  sim_path,
+  ogs_bin_path,
+  script_path,
   read_in_vtu = FALSE,
   read_in_gml = TRUE
 )
 }
 \arguments{
-\item{prj_path}{The path to the project file the script will be based on}
+\item{prj_path}{string: .prj file the script will be based on}
 
-\item{script_path}{string: Optional: Path where benchmark script will be
-saved. Change this to fit your system!}
+\item{sim_path}{string: Path where all simulation files will be saved}
+
+\item{ogs_bin_path}{string: OpenGeoSys bin folder path}
+
+\item{script_path}{string: Path where benchmark script will be saved}
 
 \item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
 in too?}
