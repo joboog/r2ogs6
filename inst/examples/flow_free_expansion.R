@@ -11,7 +11,7 @@ ogs6_obj <- OGS6$new(
 )
 
 
-pick_vtu_file(ogs6_obj)
+ogs6_obj$add_vtu(file.choose(), read_in_vtu = FALSE)
 
 
 ogs6_obj$add_gml(
@@ -93,7 +93,7 @@ ogs6_obj$add_process(
             secondary_variable = c(internal_name = "velocity", output_name = "velocity")
         ),
         specific_body_force = c(0, 0, 0),
-        constitutive_relation = list(
+        constitutive_relation = r2ogs6_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",
             poissons_ratio = "nu"
