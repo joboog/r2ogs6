@@ -23,7 +23,7 @@ test_that("OGS6$clear() works as expected", {
 })
 
 
-test_that("add_component works", {
+test_that("OGS6$add() works", {
 
     ogs6_obj <- OGS6$new(
         sim_name = "sim",
@@ -33,7 +33,7 @@ test_that("add_component works", {
         test_mode = TRUE
     )
 
-    ogs6_obj$add_component(r2ogs6_parameter(
+    ogs6_obj$add(r2ogs6_parameter(
         name = "pressure0",
         type = "Constant",
         values = 1e5

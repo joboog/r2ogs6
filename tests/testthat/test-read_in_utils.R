@@ -27,12 +27,12 @@ test_that("guess_structure works for simple r2ogs6 classes", {
 })
 
 
-test_that("guess_structure works for simple lists", {
+test_that("node_to_object works for simple lists", {
 
     my_xml <- xml2::read_xml("<a><b>1</b><b>2</b></a>")
     my_node <- xml2::xml_find_first(my_xml, "/a")
 
-    my_list <- guess_structure(my_xml, "/a")
+    my_list <- node_to_object(my_xml, "/a")
 
     expect_equal(my_list, list(b = "1", b = "2"))
 })
