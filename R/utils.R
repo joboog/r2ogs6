@@ -206,10 +206,12 @@ get_nonstandard_tag_names <- function(){
 
 
 #'get_implemented_classes
-#'@description Utility function, returns the names of all classes implemented
-#' so far. Change this if you implement new classes or delete old ones!
-#' If you implement a new class, you add the following to the character vector:
-#' <name_of_corresponding_OGS6_parameter> = <name_of_your_class>
+#'@description Returns class names (and variable names) of `OGS6` variables.
+#' Change this if you implement new `OGS6` variables or delete old ones!
+#' If you implement a new variable, you add the following the `class_names`
+#' vector: `name_of_OGS6_variable = "name_of_your_class"`
+#'@return character: Named vector containing class names of `OGS6` variables
+#' and their corresponding variable name
 get_implemented_classes <- function(){
 
   class_names <- c(vtus = "OGS6_vtu",
@@ -244,23 +246,6 @@ is_wrapper <- function(ogs6_param_name){
 
   return(!(ogs6_param_name %in% singletons))
 }
-
-
-#===== R6 UTILITY =====
-
-
-add_wrapper <- function(x, to_obj){
-
-  assertthat::assert_that(is.list(x))
-  assertthat::assert_that(any(grepl("OGS6_", class(to_obj), fixed = TRUE)))
-
-  for(i in seq_len(length(x))){
-    to_obj$add_component(x)
-  }
-
-}
-
-
 
 
 #===== INFO UTILITY =====
