@@ -150,11 +150,11 @@ run_benchmark <- function(prj_path,
                           sim_path){
 
     if(missing(ogs_bin_path)){
-        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
     }
 
     if(missing(sim_path)){
-        sim_path <- options("r2ogs6.default_sim_path")
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
     }
 
     assertthat::assert_that(assertthat::is.string(prj_path))
@@ -199,15 +199,15 @@ run_all_benchmarks <- function(path,
                                print_failed_prj_paths = TRUE){
 
     if(missing(path)){
-        path <- options("r2ogs6.default_benchmark_path")
+        path <- unlist(options("r2ogs6.default_benchmark_path"))
     }
 
     if(missing(ogs_bin_path)){
-        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
     }
 
     if(missing(sim_path)){
-        sim_path <- options("r2ogs6.default_sim_path")
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
     }
 
     assertthat::assert_that(assertthat::is.string(path))
