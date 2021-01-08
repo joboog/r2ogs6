@@ -24,15 +24,15 @@ generate_all_benchmark_scripts <-
              read_in_gmls = TRUE){
 
     if(missing(path)){
-        path <- options("r2ogs6.default_benchmark_path")
+        path <- unlist(options("r2ogs6.default_benchmark_path"))
     }
 
     if(missing(sim_path)){
-        sim_path <- options("r2ogs6.default_sim_path")
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
     }
 
     if(missing(scripts_path)){
-        scripts_path <- options("r2ogs6.default_script_path")
+        scripts_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
     path <- validate_is_dir_path(path)
@@ -122,11 +122,11 @@ generate_benchmark_script <- function(prj_path,
                                       read_in_gml = TRUE) {
 
     if(missing(ogs_bin_path)){
-        ogs_bin_path <- options("r2ogs6.default_bin_path")
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
     }
 
     if(missing(script_path)){
-        script_path <- options("r2ogs6.default_script_path")
+        script_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
     assertthat::assert_that(assertthat::is.string(prj_path))
