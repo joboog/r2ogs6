@@ -67,13 +67,10 @@ export_prj <- function(ogs6_obj) {
 
     file <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, ".prj")
 
-    cat("\nWriting XML to ", file, "\n")
     xml2::write_xml(prj_xml,
                     file,
                     options = "format",
                     encoding="ISO-8859-1")
-
-    cat("\nDone writing XML.\n")
 
     return(invisible(TRUE))
 }
