@@ -29,11 +29,11 @@ OGS6 <- R6::R6Class("OGS6",
       self$sim_name <- sim_name
 
       if(missing(sim_path)){
-        sim_path <- options("r2ogs6.default_sim_path")
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
       }
 
       if(missing(ogs_bin_path)){
-        ogs_bin_path <- options("r2ogs6.default_ogs_bin_path")
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
       }
 
       if(!test_mode){
@@ -55,50 +55,56 @@ OGS6 <- R6::R6Class("OGS6",
 
     #'@description
     #'Adds a simulation component (WIP)
-    #'@param x OGS6_*: An object of a class listed in get_implemented_classes()
-    add_component = function(x){
+    #'@param x An object of any class listed in addable_components(). If `x` is
+    #' not of a proprietary `r2ogs6` class, `component_name` must be
+    #' supplied. E.g. If you're adding a `python_script` which is a string, you
+    #' would call `your_ogs6_obj$add("some_script.py", "python_script")`
+    add = function(x,
+                   component_name = ""){
 
-      class_prefix <- "r2ogs6_"
-
-      # Assert that x is OGS6 class object
-      assertthat::assert_that(any(grepl(class_prefix, class(x), fixed = TRUE)))
-
-      # Get exact class name of x
-      x_class_name <- grep(class_prefix, class(x), fixed = TRUE, value = TRUE)
-
-      assertthat::assert_that(length(x_class_name) == 1)
+      assertthat::assert_that(assertthat::is.string(component_name))
 
       # Assert that class name is in implemented classes for OGS6
-      impl_classes <- get_implemented_classes()
+      ogs6_components <- get_implemented_classes()
 
-      assertthat::assert_that(x_class_name %in% impl_classes)
+      x_class_name <- ""
+      x_of_r2ogs6_class <- FALSE
+
+      if(any(grepl("r2ogs6", class(x), fixed = TRUE)) ||
+         any(grepl("OGS6", class(x), fixed = TRUE))){
+
+        x_class_name <- grep("r2ogs6", class(x), value = TRUE)
+
+        if(length(x_class_name) == 0){
+          x_class_name <- grep("OGS6", class(x), value = TRUE)
+        }
+
+        assertthat::assert_that(x_class_name %in% ogs6_components)
+        x_of_r2ogs6_class <- TRUE
+      }
 
       # Get name of corresponding OGS6 parameter
-      variable_name <- ""
-
-      for(i in seq_len(length(impl_classes))){
-        if(impl_classes[[i]] == x_class_name){
-          variable_name <- names(impl_classes)[[i]]
-          break
-        }
+      if(x_of_r2ogs6_class){
+        component_name <-
+          names(ogs6_components)[ogs6_components == x_class_name]
+      }else{
+        assertthat::assert_that(component_name %in% names(ogs6_components))
       }
 
-      af_call <- ""
+      active_field_call <-
+        ifelse(is_wrapper(component_name),
+               paste0("self$", component_name,
+                      " <- c(self$", component_name, ", list(x))"),
+               paste0("self$", component_name, " <- x"))
 
-      if (is_wrapper(variable_name)) {
-        af_call <- paste0("self$", variable_name,
-                          " <- c(self$", variable_name, ", list(x))")
-      } else{
-        af_call <- paste0("self$", variable_name, " <- x")
-      }
-
-      eval(parse(text = af_call))
+      eval(parse(text = active_field_call))
 
       # If class has `name` variable, make it accessable by name
-      if("name" %in% names(as.list(formals(x_class_name)))){
+      if(is_wrapper(component_name) &&
+         "name" %in% names(as.list(formals(x_class_name)))){
 
-        name_call <- paste0("names(self$", variable_name, ")[[length(self$",
-                            variable_name, ")]] <- x$name")
+        name_call <- paste0("names(self$", component_name, ")[[length(self$",
+                            component_name, ")]] <- x$name")
 
         eval(parse(text = name_call))
       }
