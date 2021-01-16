@@ -8,20 +8,20 @@
 #'@param path string: Path to a benchmark directory to generate scripts from
 #'@param sim_path string: Path where all simulation files will be saved
 #'@param scripts_path string: Path where benchmark scripts will be saved
-#'@param starting_from_prj_path string: Optional:
-#'@param skip_prj_paths character: Optional: .prj paths to skip
-#'@param read_in_vtus flag: Optional: Should .vtu files just be copied or read
-#' in too?
 #'@param read_in_gmls flag: Optional: Should .gml files just be copied or read
 #' in too?
+#'@param read_in_vtus flag: Optional: Should .vtu files just be copied or read
+#' in too?
+#'@param starting_from_prj_path string: Optional:
+#'@param skip_prj_paths character: Optional: .prj paths to skip
 generate_all_benchmark_scripts <-
     function(path,
              sim_path,
              scripts_path,
-             starting_from_prj_path = "",
-             skip_prj_paths = character(),
+             read_in_gmls,
              read_in_vtus = FALSE,
-             read_in_gmls = TRUE){
+             starting_from_prj_path = "",
+             skip_prj_paths = character()){
 
     if(missing(path)){
         path <- unlist(options("r2ogs6.default_benchmark_path"))
@@ -34,6 +34,8 @@ generate_all_benchmark_scripts <-
     if(missing(scripts_path)){
         scripts_path <- unlist(options("r2ogs6.default_script_path"))
     }
+
+    missing_read_in_gmls <- missing(read_in_gmls)
 
     path <- validate_is_dir_path(path)
     scripts_path <- validate_is_dir_path(scripts_path)
@@ -52,6 +54,7 @@ generate_all_benchmark_scripts <-
     }
 
     invalid_xml_paths <- character()
+    invalid_prj_paths <- character()
 
     for(i in seq_len(length(prj_paths))){
 
@@ -59,8 +62,8 @@ generate_all_benchmark_scripts <-
             next
         }
 
-        skip_to_next <- FALSE
-        invalid_xml_path <- ""
+        skip_generate <- FALSE
+        generate_failed <- FALSE
 
         out<- tryCatch(
             {
@@ -68,17 +71,19 @@ generate_all_benchmark_scripts <-
                                encoding="ISO-8859-1")
             },
             error = function(cond){
-                skip_to_next <<- TRUE
-                invalid_xml_path <<- prj_paths[[i]]
+                message(paste("\nxml2::read_xml() failed for",
+                              prj_paths[[i]], ". Original error message:"))
+                message(cond)
+                skip_generate <<- TRUE
             }
         )
 
-        if(skip_to_next){
-            invalid_xml_paths <- c(invalid_xml_paths, invalid_xml_path)
+        if(skip_generate){
+            invalid_xml_paths <- c(invalid_xml_paths, prj_paths[[i]])
             next
         }
 
-        cat("\nGenerating script from path", prj_paths[[i]])
+        # cat("\nGenerating script from path", prj_paths[[i]])
 
         # Put simulations in their own subfolders under sim_path
         sim_subdir <-
@@ -86,17 +91,36 @@ generate_all_benchmark_scripts <-
                    basename(dirname(prj_paths[[i]])), "_",
                    tools::file_path_sans_ext(basename(prj_paths[[i]])))
 
-        generate_benchmark_script(prj_path = prj_paths[[i]],
-                                  sim_path = sim_subdir,
-                                  script_path = scripts_path,
-                                  read_in_vtu = read_in_vtus,
-                                  read_in_gml = read_in_gmls)
+        out<- tryCatch(
+            {
+                if(missing_read_in_gmls){
+                    generate_benchmark_script(prj_path = prj_paths[[i]],
+                                              sim_path = sim_subdir,
+                                              script_path = scripts_path,
+                                              read_in_vtu = read_in_vtus)
+                }else{
+                    generate_benchmark_script(prj_path = prj_paths[[i]],
+                                              sim_path = sim_subdir,
+                                              script_path = scripts_path,
+                                              read_in_gml = read_in_gmls,
+                                              read_in_vtu = read_in_vtus)
+                }
+
+            },
+            error = function(cond){
+                message(paste("\ngenerate_benchmark_script() failed for",
+                              prj_paths[[i]], ". Original error message:"))
+                message(cond)
+                generate_failed <<- TRUE
+            }
+        )
+
+        if(generate_failed){
+            invalid_prj_paths <- c(invalid_prj_paths, prj_paths[[i]])
+        }
     }
 
-    cat("\nFailed parsing the following files:")
-    print(invalid_xml_paths)
-
-    return(invisible())
+    return(invisible(list(invalid_xml_paths, invalid_prj_paths)))
 }
 
 
@@ -109,17 +133,17 @@ generate_all_benchmark_scripts <-
 #'@param sim_path string: Path where all simulation files will be saved
 #'@param ogs_bin_path string: OpenGeoSys bin folder path
 #'@param script_path string: Path where benchmark script will be saved
-#'@param read_in_vtu flag: Optional: Should .vtu file(s) just be copied or read
-#' in too?
 #'@param read_in_gml flag: Optional: Should .gml file just be copied or read
+#' in too?
+#'@param read_in_vtu flag: Optional: Should .vtu file(s) just be copied or read
 #' in too?
 #'@export
 generate_benchmark_script <- function(prj_path,
                                       sim_path,
                                       ogs_bin_path,
                                       script_path,
-                                      read_in_vtu = FALSE,
-                                      read_in_gml = TRUE) {
+                                      read_in_gml,
+                                      read_in_vtu = FALSE) {
 
     if(missing(ogs_bin_path)){
         ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
@@ -129,12 +153,12 @@ generate_benchmark_script <- function(prj_path,
         script_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
+
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
     assertthat::assert_that(assertthat::is.string(ogs_bin_path))
     assertthat::assert_that(assertthat::is.string(script_path))
     assertthat::assert_that(assertthat::is.flag(read_in_vtu))
-    assertthat::assert_that(assertthat::is.flag(read_in_gml))
 
     #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
@@ -146,9 +170,9 @@ generate_benchmark_script <- function(prj_path,
     read_in_prj(ogs6_obj,
                 prj_path,
                 read_in_vtu,
-                read_in_gml)
+                read_in_gml = FALSE)
 
-    impl_classes = get_implemented_classes()
+    prj_components = addable_prj_components()
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
@@ -160,13 +184,29 @@ generate_benchmark_script <- function(prj_path,
                          "ogs_bin_path = \"", ogs_bin_path, "\")\n\n\n")
 
     # If there is a .gml but it shouldn't be read in, add reference
-    if (!is.null(ogs6_obj$geometry) && !read_in_gml) {
-        script_str <- paste0(
-            script_str,
-            "ogs6_obj$add_gml(",
-            construct_add_call(ogs6_obj$geometry),
-            ")\n\n"
-        )
+    if (!is.null(ogs6_obj$geometry)) {
+
+        # If read_in_gml isn't supplied, check number of lines in .gml file
+        # since string concatenation is slow
+        if(missing(read_in_gml)){
+            read_in_gml <- (length(readLines(ogs6_obj$geometry)) <=
+                                unlist(options("r2ogs6.max_lines_gml")))
+        }
+
+        assertthat::assert_that(assertthat::is.flag(read_in_gml))
+
+        if(!read_in_gml){
+            script_str <- paste0(script_str,
+                                 "ogs6_obj$add_gml(",
+                                 construct_add_call(ogs6_obj$geometry),
+                                 ")\n\n"
+            )
+        }else{
+            ogs6_obj$add_gml(read_in_gml(ogs6_obj$geometry))
+            script_str <- paste0(script_str,
+                                 construct_add_call(ogs6_obj$gml),
+                                 "\n\n")
+        }
     }
 
     # Add .vtu references and optionally, OGS6_vtu objects
@@ -179,14 +219,9 @@ generate_benchmark_script <- function(prj_path,
     }
 
     # Add class objects (and such in wrapper lists)
-    for(i in seq_len(length(impl_classes))){
+    for(i in seq_len(length(prj_components))){
 
-        # We already handled the .vtus above
-        if(impl_classes[[i]] == "OGS6_vtu"){
-            next
-        }
-
-        get_component_call <- paste0("ogs6_obj$", names(impl_classes)[[i]])
+        get_component_call <- paste0("ogs6_obj$", names(prj_components)[[i]])
         ogs6_component <- eval(parse(text = get_component_call))
 
         # If benchmark doesn't have components of specified name, skip
@@ -201,9 +236,10 @@ generate_benchmark_script <- function(prj_path,
         }
 
         for(j in seq_along(ogs6_component)){
-            add_call_str <- paste0(construct_add_call(ogs6_component[[j]]),
-                                   "\n\n")
-            script_str <- paste0(script_str, add_call_str)
+            script_str <-
+                paste0(script_str,
+                       paste0(construct_add_call(ogs6_component[[j]]),
+                              "\n\n"))
         }
     }
 
