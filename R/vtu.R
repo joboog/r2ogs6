@@ -1,4 +1,184 @@
 
+#===== OGS6_pvd =====
+
+
+#'OGS6_pvd
+#'@description Constructor for the OGS6_pvd base class
+#'@export
+OGS6_pvd <- R6::R6Class(
+    "OGS6_pvd",
+    public = list(
+
+        #'@description
+        #'Creates new OGS6_pvd object
+        #'@param pvd_path string: Path to .pvd file
+        initialize = function(pvd_path) {
+
+            xml_doc <- validate_read_in_xml(pvd_path)
+            dataset_nodes <- xml2::xml_find_all(xml_doc,
+                                                "/VTKFile/Collection/DataSet")
+
+            private$.pvd_path <- pvd_path
+            private$.datasets <- lapply(dataset_nodes,
+                                        node_to_object)
+            private$.OGS6_vtus <- lapply(self$abs_vtu_paths,
+                                         read_in_vtu)
+
+        },
+
+        #'@description
+        #'Returns .vtu path for specified timestep
+        #'@param timestep string: Timestep
+        get_vtu_path_by_timestep = function(timestep){
+
+            assertthat::assert_that(assertthat::is.string(timestep))
+
+            for(i in seq_len(length(private$.datasets))){
+                if(private$.datasets[[i]][["timestep"]] == timestep){
+                    return(private$.datasets[[i]][["file"]])
+                }
+            }
+
+            warning(paste("No .vtu path found for timestep", timestep),
+                    call. = FALSE)
+        },
+
+        #'@description
+        #'Returns timestep for specified .vtu path
+        #'@param vtu_path string: .vtu path
+        get_timestep_by_vtu_path = function(vtu_path){
+
+            assertthat::assert_that(assertthat::is.string(vtu_path))
+
+            for(i in seq_len(length(private$.datasets))){
+                if(private$.datasets[[i]][["file"]] == vtu_path){
+                    return(private$.datasets[[i]][["timestep"]])
+                }
+            }
+
+            warning(paste("No timestep found for .vtu path", vtu_path),
+                    call. = FALSE)
+        },
+
+        #'@description
+        #'Creates a tibble object from PointData
+        #'@param Names character: `Name` attributes of `DataArray` elements
+        get_PointData_time_tibble = function(Names){
+
+            assertthat::assert_that(is.character(Names))
+
+            time_list <- list()
+
+            # For each .vtu file referenced in pvd_path...
+            for(i in seq_len(length(self$OGS6_vtus))){
+
+                new_row <- list()
+
+                # ... get row of PointData by Name
+                for(j in seq_len(length(Names))){
+                    point_data <-
+                        self$OGS6_vtus[[i]]$get_PointData_DataArray(Names[[j]])
+                    new_row <- c(new_row, list(list(point_data)))
+                    names(new_row)[[length(new_row)]] <- Names[[j]]
+                }
+
+                time_list <- c(time_list,
+                               list(tibble::as_tibble_row(new_row)))
+            }
+
+            # Combine into tibble
+            time_tibble <- dplyr::bind_rows(time_list)
+
+            return(time_tibble)
+        },
+
+        get_PointData_timeline = function(point_id,
+                                          Name,
+                                          starting_from_timestep,
+                                          ending_on_timestep){
+
+            # ...
+
+        },
+
+        #'@description
+        #'Gets PointData at specified timestep. Calls `get_PointData_timeline`
+        #' internally with `starting_from_timestep` and `ending_on_timestep`
+        #' both being `timestep`
+        #'@param point_id number: Point ID
+        #'@param Name string: `Name` attribute of `DataArray` element
+        #'@param timestep string: Timestep
+        get_PointData_at_timestep = function(point_id,
+                                             Name,
+                                             timestep){
+
+            self$get_PointData_timeline(point_id = point_id,
+                                        Name = Name,
+                                        starting_from_timestep = timestep,
+                                        ending_on_timestep = timestep)
+        }
+    ),
+
+    active = list(
+
+        #'@field pvd_path
+        #'Getter for private parameter '.pvd_path'
+        pvd_path = function() {
+            private$.pvd_path
+        },
+
+        #'@field datasets
+        #'Getter for private parameter '.datasets'
+        datasets = function() {
+            private$.datasets
+        },
+
+        #'@field vtu_paths
+        #'Getter for `datasets` `file`
+        #'@return character: .vtu paths as referenced in `pvd_path`, for
+        #' absolute paths use `abs_vtu_paths`
+        vtu_paths = function() {
+
+            vtu_paths <- lapply(private$.datasets, function(x){
+                x[["file"]]
+            })
+        },
+
+        #'@field abs_vtu_paths
+        #'Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets` `file`
+        #'@return character: Absolute .vtu paths
+        abs_vtu_paths = function() {
+
+            abs_vtu_paths <- lapply(self$vtu_paths, function(x){
+                abs_vtu_path <- paste0(dirname(self$pvd_path), "/", x)
+                return(invisible(abs_vtu_path))
+            })
+        },
+
+        #'@field timesteps
+        #'Gets timesteps from private parameter '.datasets'
+        timesteps = function() {
+
+            timesteps <- lapply(private$.datasets, function(x){
+                x[["timestep"]]
+            })
+        },
+
+        #'@field OGS6_vtus
+        #'Getter for private parameter '.OGS6_vtus'
+        OGS6_vtus = function() {
+            private$.OGS6_vtus
+        }
+    ),
+
+    private = list(
+        .pvd_path = NULL,
+        .datasets = NULL,
+        .OGS6_vtus = NULL
+    )
+)
+
+
 #===== OGS6_vtu =====
 
 
@@ -11,364 +191,68 @@ OGS6_vtu <- R6::R6Class(
 
         #'@description
         #'Creates new OGS6_vtu object
-        #'@param type string:
-        #'@param version string:
-        #'@param byte_order string:
-        #'@param UnstructuredGrid OGS6_UnstructuredGrid:
-        #'@param header_type string: Optional:
-        #'@param compressor string: Optional:
-        #'@param AppendedData string: Optional:
-        initialize = function(type,
-                              version,
-                              byte_order,
-                              UnstructuredGrid,
-                              header_type = NULL,
-                              compressor = NULL,
-                              AppendedData = NULL) {
+        #'@param vtkUnstructuredGrid
+        initialize = function(vtu_path,
+                              vtkUnstructuredGrid) {
+            self$vtkUnstructuredGrid <- vtkUnstructuredGrid
+        },
 
-            self$type <- type
-            self$version <- version
-            self$byte_order <- byte_order
-            self$UnstructuredGrid <- UnstructuredGrid
+        get_PointData_DataArray = function(Name){
 
-            if(!is.null(header_type)){
-                self$header_type <- header_type
+            if(missing(Name)){
+                return(self$dsa_wrapped_vtkUnstructuredGrid$PointData)
             }
 
-            if(!is.null(compressor)){
-                self$compressor <- compressor
-            }
-
-            if(!is.null(AppendedData)){
-                self$AppendedData <- AppendedData
-            }
+            assertthat::assert_that(assertthat::is.string(Name))
+            return(self$dsa_wrapped_vtkUnstructuredGrid$PointData[[Name]])
         }
+
     ),
 
     active = list(
 
-        #'@field type
-        #'Access to private parameter '.type'
-        type = function(value) {
+        #'@field vtkUnstructuredGrid
+        #'Access to private parameter '.vtkUnstructuredGrid'
+        vtkUnstructuredGrid = function(value) {
             if(missing(value)) {
-                private$.type
+                private$.vtkUnstructuredGrid
             }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.type <- value
+                # Check class
+                private$.vtkUnstructuredGrid <- value
+                private$.dsa_wrapped_vtkUnstructuredGrid <-
+                    vtk_dsa$WrapDataObject(value)
             }
         },
 
-        #'@field version
-        #'Access to private parameter '.version'
-        version = function(value) {
-            if(missing(value)) {
-                private$.version
-            }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.version <- value
-            }
-        },
-
-        #'@field byte_order
-        #'Access to private parameter '.byte_order'
-        byte_order = function(value) {
-            if(missing(value)) {
-                private$.byte_order
-            }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.byte_order <- value
-            }
-        },
-
-        #'@field UnstructuredGrid
-        #'Access to private parameter '.UnstructuredGrid'
-        UnstructuredGrid = function(value) {
-            if(missing(value)) {
-                private$.UnstructuredGrid
-            }else{
-                assertthat::assert_that("OGS6_UnstructuredGrid" %in%
-                                            class(value))
-                private$.UnstructuredGrid <- value
-            }
-        },
-
-        #'@field header_type
-        #'Access to private parameter '.header_type'
-        header_type = function(value) {
-            if(missing(value)) {
-                private$.header_type
-            }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.header_type <- value
-            }
-        },
-
-        #'@field compressor
-        #'Access to private parameter '.compressor'
-        compressor = function(value) {
-            if(missing(value)) {
-                private$.compressor
-            }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.compressor <- value
-            }
-        },
-
-        #'@field AppendedData
-        #'Access to private parameter '.AppendedData '
-        AppendedData  = function(value) {
-            if(missing(value)) {
-                private$.AppendedData
-            }else{
-                assertthat::assert_that(assertthat::is.string(value))
-                private$.AppendedData  <- value
-            }
-        },
-
-        #'@field is_subclass
-        #'Access to private parameter '.is_subclass'
-        is_subclass = function() {
-            private$.is_subclass
-        },
-
-        #'@field attr_names
-        #'Access to private parameter '.attr_names'
-        attr_names = function() {
-            private$.attr_names
-        },
-
-        #'@field flatten_on_exp
-        #'Access to private parameter '.flatten_on_exp'
-        flatten_on_exp = function() {
-            private$.flatten_on_exp
+        #'@field dsa_wrapped_vtkUnstructuredGrid
+        #'Getter for private parameter '.dsa_wrapped_vtkUnstructuredGrid'
+        dsa_wrapped_vtkUnstructuredGrid = function() {
+            private$.dsa_wrapped_vtkUnstructuredGrid
         }
     ),
 
     private = list(
-        .type = NULL,
-        .version = NULL,
-        .byte_order = NULL,
-        .UnstructuredGrid = NULL,
-        .header_type = NULL,
-        .compressor = NULL,
-        .AppendedData = NULL,
-        .is_subclass = FALSE,
-        .attr_names = c("type",
-                        "version",
-                        "byte_order",
-                        "header_type",
-                        "compressor"),
-        .flatten_on_exp = character()
+        .vtkUnstructuredGrid = NULL,
+        .dsa_wrapped_vtkUnstructuredGrid = NULL
     )
 )
 
 
-#===== OGS6_UnstructuredGrid =====
-
-
-#'OGS6_UnstructuredGrid
-#'@description Constructor for the OGS6_UnstructuredGrid base class
+#'read_in_vtu
+#'@description Reads in .vtu file via `vtkXMLUnstructuredGridReader` from the
+#' python `vtk` library
+#'@param vtu_path string: Path to .vtu file
+#'@return vtkUnstructuredGrid*: Unstructured Grid
 #'@export
-OGS6_UnstructuredGrid <- R6::R6Class(
-    "OGS6_UnstructuredGrid",
-    public = list(
+read_in_vtu <- function(vtu_path) {
 
-        #'@description
-        #'Creates new OGS6_UnstructuredGrid object
-        #'@param Piece OGS6_Piece:
-        #'@param FieldData character, length == 2: Optional:
-        initialize = function(Piece,
-                              FieldData = NULL) {
-            self$Piece <- Piece
+    vtk_xml_ugr <- vtk$vtkXMLUnstructuredGridReader()
+    vtk_xml_ugr$SetFileName(vtu_path)
+    vtk_xml_ugr$Update()
 
-            if(!is.null(FieldData)){
-                self$FieldData <- FieldData
-            }
-        }
-    ),
-
-    active = list(
-        #'@field Piece
-        #'Access to private parameter '.Piece'
-        Piece = function(value) {
-            if (missing(value)) {
-                private$.Piece
-            }else{
-                assertthat::assert_that("OGS6_Piece" %in% class(value))
-                private$.Piece <- value
-            }
-        },
-
-        #'@field FieldData
-        #'Access to private parameter '.FieldData'
-        FieldData = function(value) {
-            if (missing(value)) {
-                private$.FieldData
-            } else{
-                private$.FieldData <- value
-            }
-        },
-
-        #'@field is_subclass
-        #'Access to private parameter '.is_subclass'
-        is_subclass = function() {
-            private$.is_subclass
-        },
-
-        #'@field attr_names
-        #'Access to private parameter '.attr_names'
-        attr_names = function() {
-            private$.attr_names
-        },
-
-        #'@field flatten_on_exp
-        #'Access to private parameter '.flatten_on_exp'
-        flatten_on_exp = function() {
-            private$.flatten_on_exp
-        }
-    ),
-
-    private = list(
-        .Piece = NULL,
-        .FieldData = NULL,
-        .is_subclass = TRUE,
-        .attr_names = character(),
-        .flatten_on_exp = character()
-    )
-)
-
-
-#===== OGS6_Piece =====
-
-
-#'OGS6_Piece
-#'@description Constructor for the OGS6_Piece base class
-#'@export
-OGS6_Piece <- R6::R6Class(
-    "OGS6_Piece",
-    public = list(
-
-        #'@description
-        #'Creates new OGS6_Piece object
-        #'@param NumberOfPoints string | number:
-        #'@param NumberOfCells string | number:
-        #'@param PointData list, :
-        #'@param Points list, :
-        #'@param Cells list, :
-        #'@param CellData list, : Optional:
-        initialize = function(NumberOfPoints,
-                              NumberOfCells,
-                              PointData,
-                              Points,
-                              Cells,
-                              CellData = NULL) {
-
-            self$NumberOfPoints <- NumberOfPoints
-            self$NumberOfCells <- NumberOfCells
-            self$PointData <- PointData
-            self$Points <- Points
-            self$Cells <- Cells
-
-            if(!is.null(CellData)){
-                self$CellData <- CellData
-            }
-        }
-    ),
-
-    active = list(
-
-        #'@field NumberOfPoints
-        #'Access to private parameter '.NumberOfPoints'
-        NumberOfPoints = function(value) {
-            if (missing(value)) {
-                private$.NumberOfPoints
-            } else{
-                private$.NumberOfPoints <- value
-            }
-        },
-
-        #'@field NumberOfCells
-        #'Access to private parameter '.NumberOfCells'
-        NumberOfCells = function(value) {
-            if (missing(value)) {
-                private$.NumberOfCells
-            } else{
-                private$.NumberOfCells <- value
-            }
-        },
-
-        #'@field PointData
-        #'Access to private parameter '.PointData'
-        PointData = function(value) {
-            if (missing(value)) {
-                private$.PointData
-            } else{
-                private$.PointData <- value
-            }
-        },
-
-        #'@field Points
-        #'Access to private parameter '.Points'
-        Points = function(value) {
-            if (missing(value)) {
-                private$.Points
-            } else{
-                private$.Points <- value
-            }
-        },
-
-        #'@field Cells
-        #'Access to private parameter '.Cells'
-        Cells = function(value) {
-            if (missing(value)) {
-                private$.Cells
-            } else{
-                private$.Cells <- value
-            }
-        },
-
-        #'@field CellData
-        #'Access to private parameter '.CellData'
-        CellData = function(value) {
-            if (missing(value)) {
-                private$.CellData
-            } else{
-                private$.CellData <- value
-            }
-        },
-
-        #'@field is_subclass
-        #'Access to private parameter '.is_subclass'
-        is_subclass = function() {
-            private$.is_subclass
-        },
-
-        #'@field subclasses_names
-        #'Access to private parameter '.subclasses_names'
-        subclasses_names = function() {
-            private$.subclasses_names
-        },
-
-        #'@field attr_names
-        #'Access to private parameter '.attr_names'
-        attr_names = function() {
-            private$.attr_names
-        }
-    ),
-
-    private = list(
-        .NumberOfPoints = NULL,
-        .NumberOfCells = NULL,
-        .PointData = NULL,
-        .Points = NULL,
-        .Cells = NULL,
-        .CellData = NULL,
-        .is_subclass = TRUE,
-        .attr_names = c("NumberOfPoints",
-                        "NumberOfCells"),
-        .flatten_on_exp = character()
-    )
-)
+    return(invisible(OGS6_vtu$new(vtu_path,
+                                  vtk_xml_ugr$GetOutput())))
+}
 
 
 #===== generate_structured_mesh =====
@@ -378,39 +262,27 @@ OGS6_Piece <- R6::R6Class(
 #'@description Wrapper function to call generateStructuredMesh.exe
 #' (VTK mesh generator). For full documentation see
 #'https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
-#'@param ogs6_obj OGS6: Simulation object
-#'@param call_str string: The arguments the script will be called with
-#' (EXCEPT -o output_file_name, this will be generated automatically!)
-#'@param read_in_vtu flag: Should .vtu file just be copied or read in too?
+#'@param args_str string: The arguments the script will be called with
 #'@return string: .vtu file path
 #'@export
-generate_structured_mesh = function(ogs6_obj,
-                                    call_str,
-                                    read_in_vtu) {
+generate_structured_mesh = function(ogs_bin_path,
+                                    args_str) {
 
-    assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
-    assertthat::assert_that(assertthat::is.string(call_str))
-
-    mesh_number <- 1
-
-    is_first <- (length(ogs6_obj$meshes) == 0)
-
-    if(!is_first){
-        mesh_number <- length(ogs6_obj$meshes) + 1
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
     }
 
-    vtu_dir_path <- tempdir()
-    vtu_output_filename <- paste0(ogs6_obj$sim_name, "_", mesh_number, ".vtu")
-    vtu_path <- paste0(vtu_dir_path, vtu_output_filename)
+    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+    assertthat::assert_that(assertthat::is.string(args_str))
 
-    system(command = paste0(ogs6_obj$ogs_bin_path, "generateStructuredMesh.exe",
-                            " -o ", vtu_path, " ", call_str))
 
-    if(read_in_vtu){
-        read_in_vtu(ogs6_obj, vtu_path)
-    }else{
-        ogs6_obj$add_mesh(vtu_path)
-    }
+    # Get .vtu path from args_str
+    vtu_path <- stringr::str_extract(args_str, "-o [^ ]*")
+    vtu_path <- stringr::str_remove(vtu_path, "-o ")
+
+    system(command = paste0(ogs_bin_path,
+                            "generateStructuredMesh.exe ",
+                            args_str))
 
     return(invisible(vtu_path))
 }
