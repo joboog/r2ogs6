@@ -4,7 +4,7 @@
 \alias{r2ogs6_phase}
 \title{r2ogs6_phase}
 \usage{
-r2ogs6_phase(type, properties, components = NULL)
+r2ogs6_phase(type, properties = NULL, components = NULL)
 }
 \arguments{
 \item{type}{string: Phase type

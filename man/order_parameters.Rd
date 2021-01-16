@@ -11,6 +11,9 @@ order_parameters(parameters, class_name)
 
 \item{class_name}{string: The name of a class}
 }
+\value{
+list: Parameters ordered by argument order of class
+}
 \description{
 Orders a list of parameters corresponding to the argument order
 of a class

@@ -8,10 +8,10 @@ generate_all_benchmark_scripts(
   path,
   sim_path,
   scripts_path,
-  starting_from_prj_path = "",
-  skip_prj_paths = character(),
+  read_in_gmls,
   read_in_vtus = FALSE,
-  read_in_gmls = TRUE
+  starting_from_prj_path = "",
+  skip_prj_paths = character()
 )
 }
 \arguments{
@@ -21,15 +21,15 @@ generate_all_benchmark_scripts(
 
 \item{scripts_path}{string: Path where benchmark scripts will be saved}
 
-\item{starting_from_prj_path}{string: Optional:}
-
-\item{skip_prj_paths}{character: Optional: .prj paths to skip}
+\item{read_in_gmls}{flag: Optional: Should .gml files just be copied or read
+in too?}
 
 \item{read_in_vtus}{flag: Optional: Should .vtu files just be copied or read
 in too?}
 
-\item{read_in_gmls}{flag: Optional: Should .gml files just be copied or read
-in too?}
+\item{starting_from_prj_path}{string: Optional:}
+
+\item{skip_prj_paths}{character: Optional: .prj paths to skip}
 }
 \description{
 Wrapper function to generate benchmark scripts from all .prj

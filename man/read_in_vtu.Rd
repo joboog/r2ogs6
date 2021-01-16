@@ -13,5 +13,6 @@ read_in_vtu(vtu_path)
 OGS6_vtu: Mesh object
 }
 \description{
-Wrapper function to read in a whole .vtu file
+Wrapper function to read in a whole .vtu file as a OGS6_vtu
+class object
 }

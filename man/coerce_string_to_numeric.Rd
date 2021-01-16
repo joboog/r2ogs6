@@ -4,21 +4,15 @@
 \alias{coerce_string_to_numeric}
 \title{coerce_string_to_numeric}
 \usage{
-coerce_string_to_numeric(obj, split = FALSE)
+coerce_string_to_numeric(obj)
 }
 \arguments{
 \item{obj}{An object to check}
-
-\item{split}{flag: Should object be split at ' ' (whitespace) if it is a
-string?}
 }
 \value{
 The object as a numeric type (if 'obj' was a string, else the
 unchanged 'obj')
 }
 \description{
-If an object is of type string, coerces it to a numeric type:
-A double if 'split' is FALSE as per default, a numeric vector otherwise.
-If 'split' is set to true the string will be split at ' ' (whitespace)
-characters.
+If an object is of type string, coerces it to a numeric type
 }

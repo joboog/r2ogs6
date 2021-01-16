@@ -9,8 +9,8 @@ generate_benchmark_script(
   sim_path,
   ogs_bin_path,
   script_path,
-  read_in_vtu = FALSE,
-  read_in_gml = TRUE
+  read_in_gml,
+  read_in_vtu = FALSE
 )
 }
 \arguments{
@@ -22,10 +22,10 @@ generate_benchmark_script(
 
 \item{script_path}{string: Path where benchmark script will be saved}
 
-\item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
+\item{read_in_gml}{flag: Optional: Should .gml file just be copied or read
 in too?}
 
-\item{read_in_gml}{flag: Optional: Should .gml file just be copied or read
+\item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
 in too?}
 }
 \description{

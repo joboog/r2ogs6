@@ -7,7 +7,7 @@
 read_in_output(ogs6_obj)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{ogs6_obj}{OGS6: Simulation object}
 }
 \description{
 After a OGS6 simulation was run, reads in the generated .vtu

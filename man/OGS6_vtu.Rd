@@ -35,6 +35,7 @@ Constructor for the OGS6_vtu base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_vtu$new()}}
+\item \href{#method-get_data_arrays}{\code{OGS6_vtu$get_data_arrays()}}
 \item \href{#method-clone}{\code{OGS6_vtu$clone()}}
 }
 }
@@ -71,6 +72,26 @@ Creates new OGS6_vtu object
 \item{\code{compressor}}{string: Optional:}
 
 \item{\code{AppendedData}}{string: Optional:}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_data_arrays"></a>}}
+\if{latex}{\out{\hypertarget{method-get_data_arrays}{}}}
+\subsection{Method \code{get_data_arrays()}}{
+Gets specified DataArrays
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_arrays(Names = character(), categories = character())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Names}}{character: Optional: Select `DataArray` by `Name`}
+
+\item{\code{categories}}{character: Optional: One or more of
+`get_valid_vtu_categories()`}
 }
 \if{html}{\out{</div>}}
 }

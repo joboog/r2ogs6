@@ -59,7 +59,7 @@ Constructor for the OGS6 base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
-\item \href{#method-add_component}{\code{OGS6$add_component()}}
+\item \href{#method-add}{\code{OGS6$add()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
 \item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
@@ -109,18 +109,21 @@ validated. Unless you're a dev, please don't touch.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_component"></a>}}
-\if{latex}{\out{\hypertarget{method-add_component}{}}}
-\subsection{Method \code{add_component()}}{
+\if{html}{\out{<a id="method-add"></a>}}
+\if{latex}{\out{\hypertarget{method-add}{}}}
+\subsection{Method \code{add()}}{
 Adds a simulation component (WIP)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_component(x)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add(x, component_name = "")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{OGS6_*: An object of a class listed in get_implemented_classes()}
+\item{\code{x}}{An object of any class listed in addable_components(). If `x` is
+not of a proprietary `r2ogs6` class, `component_name` must be
+supplied. E.g. If you're adding a `python_script` which is a string, you
+would call `your_ogs6_obj$add("some_script.py", "python_script")`}
 }
 \if{html}{\out{</div>}}
 }
@@ -419,7 +422,7 @@ Prints logfile to console (if it exists)
 \subsection{Method \code{clear()}}{
 Clears components from the OGS6 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(get_implemented_classes()))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(addable_prj_components()))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -427,7 +430,7 @@ Clears components from the OGS6 object
 \describe{
 \item{\code{which}}{character: The names of the components (all by default).
 If you want to delete only some components, run
-names(get_implemented_classes()) for the available options.}
+names(addable_prj_components()) for the available options.}
 }
 \if{html}{\out{</div>}}
 }
