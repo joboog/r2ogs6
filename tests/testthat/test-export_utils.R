@@ -27,20 +27,24 @@ test_that("to_node works for vectors", {
 test_that("to_node works for attribute vectors", {
 
     my_attr_list <- list(a = c(id = 0, name = "Alice"),
-                         a = c(id = 3, name = "Bob"))
+                         b = c(id = 3))
 
-    attr_names = c("a")
+    attr_node <- to_node(my_attr_list,
+                         object_name = "my_attr_list",
+                         c("a", "b"))
 
-    attr_node <- to_node(my_attr_list, NULL, c("a"))
     attr_xml <- xml2::as_xml_document(attr_node)
 
     expect_equal(xml2::xml_attrs(xml2::xml_find_first(attr_xml,
                                                      "/my_attr_list/a")),
                  c(id = "0", name = "Alice"))
+    expect_equal(xml2::xml_attrs(xml2::xml_find_first(attr_xml,
+                                                      "/my_attr_list/b")),
+                 c(id = "3"))
 })
 
 
-test_that("to_node works reads parameter names implicitly if not given", {
+test_that("to_node reads parameter names implicitly if not given", {
 
     test_class <- function(x){
         structure(list(x = x,

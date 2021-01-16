@@ -14,7 +14,7 @@ test_that("export_prj works", {
                          test_mode = TRUE)
 
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     read_in_prj(ogs6_obj, prj_path)

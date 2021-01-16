@@ -1,9 +1,10 @@
 
 test_that("read_in_points correctly reads point tibble from file", {
 
-    xml_doc <- validate_read_in_xml(system.file("extdata/flow_free_expansion",
-                                                "cube_1x1x1.gml",
-                                                package = "r2ogs6"))
+    xml_doc <- validate_read_in_xml(
+        system.file("extdata/benchmarks/flow_free_expansion",
+                    "cube_1x1x1.gml",
+                    package = "r2ogs6"))
 
     point_tibble <- read_in_points(xml_doc)
     expect_equal(length(point_tibble), 4)
@@ -14,9 +15,10 @@ test_that("read_in_points correctly reads point tibble from file", {
 
 test_that("read_in_polylines correctly reads polyline list from file", {
 
-    xml_doc <- validate_read_in_xml(system.file("extdata/flow_free_expansion",
-                                                "cube_1x1x1.gml",
-                                                package = "r2ogs6"))
+    xml_doc <- validate_read_in_xml(
+        system.file("extdata/benchmarks/flow_free_expansion",
+                    "cube_1x1x1.gml",
+                    package = "r2ogs6"))
 
     polyline_list <- read_in_polylines(xml_doc)
 
@@ -30,9 +32,10 @@ test_that("read_in_polylines correctly reads polyline list from file", {
 
 test_that("read_in_surfaces correctly reads surface list from file", {
 
-    xml_doc <- validate_read_in_xml(system.file("extdata/flow_free_expansion",
-                                                "cube_1x1x1.gml",
-                                                package = "r2ogs6"))
+    xml_doc <- validate_read_in_xml(
+        system.file("extdata/benchmarks/flow_free_expansion",
+                    "cube_1x1x1.gml",
+                    package = "r2ogs6"))
 
     surface_list <- read_in_surfaces(xml_doc)
 

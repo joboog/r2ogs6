@@ -39,3 +39,36 @@
 # })
 
 
+test_that("export_all_sim_files works", {
+
+    extdata_path <- system.file("extdata/", package = "r2ogs6")
+    test_path <- paste0(extdata_path, "/export_all_sim_files_test")
+    dir.create(test_path)
+
+    prj_path <- (system.file("extdata/benchmarks/Elliptic/circle_radius_1",
+                             "circle_1e1_axi.prj", package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "circle_1e1_axi",
+                         sim_id = 1,
+                         sim_path = test_path,
+                         ogs_bin_path = "ogs_bin_path",
+                         test_mode = TRUE)
+
+    read_in_prj(ogs6_obj,
+                prj_path)
+
+    # Now export all files
+    export_all_sim_files(ogs6_obj)
+
+    expect_equal(file.exists(paste0(test_path, "/circle_1e1_axi.prj")),
+                 TRUE)
+
+    expect_equal(file.exists(paste0(test_path,
+                                    "/include/SteadyStateDiffusion.xml")),
+                 TRUE)
+
+    # Tidy up by deleting the folder we created
+    unlink(test_path, recursive = TRUE)
+})
+
+

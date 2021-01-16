@@ -7,9 +7,9 @@
 # })
 
 
-test_that("guess_structure works for simple r2ogs6 classes", {
+test_that("node_to_object works for simple r2ogs6 classes", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -24,6 +24,24 @@ test_that("guess_structure works for simple r2ogs6 classes", {
     expect_equal(ogs6_obj$parameters[[1]]$name, "E")
     expect_equal(ogs6_obj$parameters[[1]]$type, "Constant")
     expect_equal(ogs6_obj$parameters[[1]]$value, 10e9)
+})
+
+
+test_that("node_to_object works for nodes that have both attributes and text", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_free_expansion",
+                            "cube_1x1x1.vtu",
+                            package = "r2ogs6")
+
+    test_node <- xml2::read_xml("<test a = \"1\">some text</test>")
+
+    test_obj <- node_to_object(test_node,
+                               xpath_expr = "\test")
+
+
+    expect_equal(length(test_obj), 2)
+    expect_equal(test_obj[["a"]], "1")
+    expect_equal(test_obj[["xml_text"]], "some text")
 })
 
 
