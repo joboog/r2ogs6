@@ -39,7 +39,7 @@ read_in_prj(ogs6_obj, prj_path)
 
 ogs6_ens <- OGS6_Ensemble$new(
     ogs6_obj = ogs6_obj,
-    parameters = list(list(ogs6_obj$parameters[[2]]$value, c(.3)))
+    parameters = list(list(ogs6_obj$parameters[[2]]$value, c(0.2, 0.3, 0.4)))
 )
 
 

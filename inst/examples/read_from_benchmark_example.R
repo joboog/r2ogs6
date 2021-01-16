@@ -25,10 +25,13 @@ ogs6_obj <- OGS6$new(sim_name = "my_sim",
 #===== READ IN .prj FILE =====
 
 # (system dependent)
-prj_path = paste0("D:\\Programme\\OpenGeoSys\\",
+prj_path <- paste0("D:\\Programme\\OpenGeoSys\\",
                   "ogs-master-Tests-Data\\",
-                  "Tests\\Data\\HydroMechanics\\IdealGas\\",
+                  "HydroMechanics\\IdealGas\\",
                   "flow_no_strain\\flow_no_strain.prj")
+prj_path <- paste0("D:\\Programme\\OpenGeoSys\\",
+                   "ogs-master-Tests-Data\\",
+                   "Parabolic/TES/2D/tes-inert-axi.prj")
 
 read_in_prj(ogs6_obj, prj_path)
 
