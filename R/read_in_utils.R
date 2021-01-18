@@ -183,21 +183,20 @@ node_to_r2ogs6_class_object <- function(xml_node,
 #'@description Returns representation of an XML node. This is a recursive
 #' function.
 #'ASSUMPTIONS:
-#'1) Leaf nodes will have EITHER a value OR attributes (and will not be missing
-#' both, e.g. '<a/>').
-#'2) Leaf nodes will never be r2ogs6_* objects
-#'3) If there are multiple occurrences of r2ogs6_* class (and subclass)
+#'1) Leaf nodes will never be r2ogs6_* objects
+#'2) If there are multiple occurrences of r2ogs6_* class (and subclass)
 #' elements on the same level, they have a wrapper node as their parent
 #' (e.g. <processes>, <properties>) which  will contain ONLY elements of this
 #' type
-#'4) Wrapper nodes are represented as lists
-#'5) Parent nodes whose children have no children are represented as lists
+#'3) Wrapper nodes are represented as lists
+#'4) Parent nodes whose children have no children are represented as lists
 #'@param xml_node xml2::xml_node: XML node
-#'@param xpath_expr string: XPath expression (for subclass differentiation)
+#'@param xpath_expr string: Optional: XPath expression (for subclass
+#' differentiation)
 #'@param subclasses_names character: Optional: Names of `r2ogs6` subclasses
 #' (`r2ogs6` classes without a OGS6$add method)
 node_to_object <- function(xml_node,
-                           xpath_expr,
+                           xpath_expr = "",
                            subclasses_names = character()){
 
     assertthat::assert_that("xml_node" %in% class(xml_node))
@@ -207,11 +206,22 @@ node_to_object <- function(xml_node,
 
     #Node is leaf
     if(length(xml2::xml_children(xml_node)) == 0){
-        if(xml2::xml_text(xml_node) != ""){
-            return(invisible(xml2::xml_text(xml_node)))
-        }else{
-            return(invisible(xml2::xml_attrs(xml_node)))
+
+        xml_text_clean <-
+            stringr::str_remove_all(xml2::xml_text(xml_node),
+                                    "[\n|[:space:]]")
+
+        if(xml_text_clean != "" &&
+           length(xml2::xml_attrs(xml_node)) != 0){
+            return(invisible(c(xml2::xml_attrs(xml_node),
+                               xml_text = xml2::xml_text(xml_node))))
         }
+
+        if(xml_text_clean != ""){
+            return(invisible(xml2::xml_text(xml_node)))
+        }
+
+        return(invisible(xml2::xml_attrs(xml_node)))
     }
 
     #Node is represented by subclass

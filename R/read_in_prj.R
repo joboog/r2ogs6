@@ -5,19 +5,21 @@
 #'@description Wrapper function to read in a whole .prj file
 #'@param ogs6_obj OGS6: Simulation object
 #'@param prj_path string: Path to the project file that should be read in
+#'@param read_in_gml flag: Optional: Should .gml file just be copied or read in
+#' too? If this parameter is missing and the .gml file contains <= the
+#' number of lines in `options("r2ogs6.max_lines_gml")`, the .gml will be read
+#' in. Else, only the geometry reference will be saved.
 #'@param read_in_vtu flag: Should .vtu file just be copied or read in too?
-#'@param read_in_gml flag: Should .gml file just be copied or read in too?
 #'@export
 read_in_prj <- function(ogs6_obj,
                         prj_path,
-                        read_in_vtu = FALSE,
-                        read_in_gml = TRUE){
+                        read_in_gml,
+                        read_in_vtu = FALSE){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(prj_path)
 
     assertthat::assert_that(assertthat::is.flag(read_in_vtu))
-    assertthat::assert_that(assertthat::is.flag(read_in_gml))
 
     # Geometry reference
     gml_ref_node <- xml2::xml_find_first(xml_doc, "/OpenGeoSysProject/geometry")
@@ -29,8 +31,17 @@ read_in_prj <- function(ogs6_obj,
         gml_path <- paste0(dirname(prj_path), "/",
                            xml2::xml_text(gml_ref_node))
 
+        # If read_in_gml isn't supplied, check number of lines in .gml file
+        # since string concatenation is slow
+        if(missing(read_in_gml)){
+            read_in_gml <- (length(readLines(gml_path)) <=
+                                unlist(options("r2ogs6.max_lines_gml")))
+        }
+
+        assertthat::assert_that(assertthat::is.flag(read_in_gml))
+
         if(read_in_gml){
-            ogs6_obj$add_gml(read_in_gml(gml_path))
+            ogs6_obj$add_gml(OGS6_gml$new(gml_path))
         }else{
             ogs6_obj$add_gml(gml_path)
         }
@@ -43,6 +54,7 @@ read_in_prj <- function(ogs6_obj,
 
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
+
         vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
 
         # Read in .vtu file(s) or just save their path
@@ -50,16 +62,36 @@ read_in_prj <- function(ogs6_obj,
                          read_in_vtu = read_in_vtu)
     }
 
-    impl_classes <- get_implemented_classes()
+    prj_components <- addable_prj_components()
 
-    for(i in seq_len(length(impl_classes))){
+    # Include file reference
+    processes_include_node <-
+        xml2::xml_find_first(xml_doc,
+                             "/OpenGeoSysProject/processes/include")
 
-        class_tag_name <- get_class_tag_name(impl_classes[[i]])
+    if(!any(grepl("xml_missing", class(processes_include_node), fixed = TRUE))){
+        file_reference <- xml2::xml_attrs(processes_include_node)[["file"]]
+
+        if(grepl("^\\.\\.", file_reference)){
+            file_reference <- gsub("^\\.\\.", "", file_reference)
+            file_reference <- paste0(dirname(dirname(prj_path)), file_reference)
+        }else{
+            file_reference <- paste0(dirname(prj_path), "/", file_reference)
+        }
+
+        ogs6_obj$processes <- file_reference
+        prj_components <- prj_components[names(prj_components) != "processes"]
+    }
+
+
+    for(i in seq_len(length(prj_components))){
+
+        class_tag_name <- get_class_tag_name(prj_components[[i]])
 
         # Differentiate between wrapper lists and singular objects
-        if(class_tag_name != names(impl_classes)[[i]]){
+        if(class_tag_name != names(prj_components)[[i]]){
             read_in(ogs6_obj, prj_path, paste0("/OpenGeoSysProject/",
-                                               names(impl_classes)[[i]],
+                                               names(prj_components)[[i]],
                                                "/",
                                                class_tag_name))
         }else{

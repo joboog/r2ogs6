@@ -1,26 +1,6 @@
 #Functions to read in data from a .gml file to an OGS6 object
 
 
-#'read_in_gml
-#'@description Wrapper function to read in a whole .gml file
-#'@param gml_path The path to the geometry file that should be read in
-#'@export
-read_in_gml <- function(gml_path) {
-
-    xml_doc <- validate_read_in_xml(gml_path)
-
-    name <- xml2::xml_text(xml2::xml_find_first(xml_doc, "//name"))
-    points <- read_in_points(xml_doc)
-    polylines <- read_in_polylines(xml_doc)
-    surfaces <- read_in_surfaces(xml_doc)
-
-    return(invisible(r2ogs6_gml(name,
-                                points,
-                                polylines,
-                                surfaces)))
-}
-
-
 #'read_in_points
 #'@description Reads points from a .gml file
 #'@param xml_doc A parsed XML document (of class 'xml2::xml_document')
@@ -46,8 +26,7 @@ read_in_points <- function(xml_doc) {
                                         x = as.double(attrs[["x"]]),
                                         y = as.double(attrs[["y"]]),
                                         z = as.double(attrs[["z"]]),
-                                        name = point_name,
-                                        )
+                                        name = point_name)
     }
 
     return(invisible(points_tibble))
