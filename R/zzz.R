@@ -1,8 +1,7 @@
 
 # global Python references (will be initialized in .onLoad)
 vtk <- NULL
-zlib <- NULL
-
+vtk_dsa <- NULL
 
 .onLoad <- function(libname, pkgname){
 
@@ -28,7 +27,6 @@ zlib <- NULL
     vtk <<- reticulate::import("vtk", delay_load = TRUE)
     vtk_dsa <<- reticulate::import("vtk.numpy_interface.dataset_adapter",
                                    delay_load = TRUE)
-    zlib <<- reticulate::import("zlib", delay_load = TRUE)
 
     test_config <- TRUE
 
@@ -51,14 +49,15 @@ zlib <- NULL
         reticulate::use_virtualenv(unlist(options("r2ogs6.use_python")))
     }
 
-    cat("Loaded package r2ogs6. Your options are set as follows:\n\n",
-        paste(
-            names(options()[grepl("r2ogs6.", names(options()), fixed = TRUE)]),
-            options()[grepl("r2ogs6.", names(options()), fixed = TRUE)],
-            sep = " = ",
-            collapse = "\n"),
-        "\n\nTo change them, type options(\"<option_name>\" = <option_value>).",
-        sep = "")
-
     invisible()
+}
+
+
+.onAttach <- function(libname, pkgname){
+    packageStartupMessage(
+        paste("r2ogs6 works best with its options set :)\nFor",
+              "an overview, use the command",
+              "'options()[grepl(\"r2ogs6.\",",
+              "names(options()), fixed = TRUE)]'\nTo set an option, use the",
+              "command 'options(\"<option_name>\" = <option_value>)'\n"))
 }
