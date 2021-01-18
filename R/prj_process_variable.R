@@ -51,7 +51,7 @@ new_r2ogs6_process_variable <- function(name,
     assertthat::assert_that(assertthat::is.number(order))
     assertthat::assert_that(assertthat::is.string(initial_condition))
 
-    if(assertthat::is.string(boundary_conditions)){
+    if(is.character(boundary_conditions)){
         boundary_conditions <- NULL
     }
 

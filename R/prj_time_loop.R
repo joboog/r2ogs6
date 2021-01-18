@@ -152,7 +152,7 @@ r2ogs6_output <- function(type,
                              fixed_output_times = NULL) {
 
     #Coerce input
-    fixed_output_times <- coerce_string_to_numeric(fixed_output_times, TRUE)
+    fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
 
     if(is.list(meshes)){
         meshes <- unlist(meshes)
@@ -287,8 +287,8 @@ r2ogs6_convergence_criterion <- function(type,
     #Coerce input
     abstol <- coerce_string_to_numeric(abstol)
     reltol <- coerce_string_to_numeric(reltol)
-    abstols <- coerce_string_to_numeric(abstols, TRUE)
-    reltols <- coerce_string_to_numeric(reltols, TRUE)
+    abstols <- coerce_string_to_numeric(abstols)
+    reltols <- coerce_string_to_numeric(reltols)
 
     new_r2ogs6_convergence_criterion(type,
                                      norm_type,
@@ -381,8 +381,8 @@ r2ogs6_time_stepping <- function(type,
     rel_dt_max <- coerce_string_to_numeric(rel_dt_max)
     tol <- coerce_string_to_numeric(tol)
 
-    number_iterations <- coerce_string_to_numeric(number_iterations, TRUE)
-    multiplier <- coerce_string_to_numeric(multiplier, TRUE)
+    number_iterations <- coerce_string_to_numeric(number_iterations)
+    multiplier <- coerce_string_to_numeric(multiplier)
 
     new_r2ogs6_time_stepping(type,
                              t_initial,

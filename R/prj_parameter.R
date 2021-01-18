@@ -33,7 +33,7 @@ r2ogs6_parameter <- function(name,
 
     #Coerce input
     value <- coerce_string_to_numeric(value)
-    values <- coerce_string_to_numeric(values, TRUE)
+    values <- coerce_string_to_numeric(values)
 
     ellipsis_list <- list(...)
 
@@ -144,8 +144,7 @@ validate_index_values <- function(index_values){
         names(index_values)[[1]] <- "index"
 
         #Coerce value / values
-        index_values[[2]] <- coerce_string_to_numeric(index_values[[2]],
-                                                      TRUE)
+        index_values[[2]] <- coerce_string_to_numeric(index_values[[2]])
 
         if(length(index_values[[2]]) > 1){
             names(index_values)[[2]] <- "values"

@@ -12,8 +12,8 @@
 r2ogs6_curve <- function(name, coords, values){
 
     #Coerce input
-    coords <- coerce_string_to_numeric(coords, TRUE)
-    values <- coerce_string_to_numeric(values, TRUE)
+    coords <- coerce_string_to_numeric(coords)
+    values <- coerce_string_to_numeric(values)
 
     new_r2ogs6_curve(name, coords, values)
 }

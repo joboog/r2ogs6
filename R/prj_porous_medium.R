@@ -143,8 +143,8 @@ new_r2ogs6_capillary_pressure <- function(type,
     validate_is_null_or_param_list(curve, c("coords", "values"))
 
     if(!is.null(curve)){
-        curve[[1]] <- coerce_string_to_numeric(curve[[1]], TRUE)
-        curve[[2]] <- coerce_string_to_numeric(curve[[2]], TRUE)
+        curve[[1]] <- coerce_string_to_numeric(curve[[1]])
+        curve[[2]] <- coerce_string_to_numeric(curve[[2]])
 
         assertthat::assert_that(is.numeric(curve[[1]]))
         assertthat::assert_that(is.numeric(curve[[2]]))

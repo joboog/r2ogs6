@@ -146,7 +146,7 @@ r2ogs6_process <- function(name,
 
     #Coerce input
     integration_order <- coerce_string_to_numeric(integration_order)
-    specific_body_force <- coerce_string_to_numeric(specific_body_force, TRUE)
+    specific_body_force <- coerce_string_to_numeric(specific_body_force)
     dimension <- coerce_string_to_numeric(dimension)
     internal_length <- coerce_string_to_numeric(internal_length)
     fluid_specific_heat_source <-
@@ -941,8 +941,8 @@ r2ogs6_jacobian_assembler <- function(type,
                                       relative_epsilons = NULL) {
 
     # Add coercing utility here
-    component_magnitudes <- coerce_string_to_numeric(component_magnitudes, TRUE)
-    relative_epsilons <- coerce_string_to_numeric(relative_epsilons, TRUE)
+    component_magnitudes <- coerce_string_to_numeric(component_magnitudes)
+    relative_epsilons <- coerce_string_to_numeric(relative_epsilons)
 
     new_r2ogs6_jacobian_assembler(type,
                                   component_magnitudes,
@@ -1075,7 +1075,7 @@ validate_process_variables <- function(process_variables){
 
 validate_secondary_variables <- function(secondary_variables){
 
-    if(assertthat::is.string(secondary_variables) ||
+    if(is.character(secondary_variables) ||
        is.null(secondary_variables)){
         return(invisible(NULL))
     }

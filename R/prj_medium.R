@@ -55,31 +55,40 @@ new_r2ogs6_medium <- function(phases = NULL,
 
 
 #'r2ogs6_pr_property
-#'@description tag: property, a constitutive property
-#'@param name string: Property name
-#'@param type string: Property type
-#'@param value Optional: string | double: ...
-#'@param parameter_name Optional: string:
-#'@param exponent Optional: string | double:
-#'@param residual_liquid_saturation Optional: string | double:
-#'@param residual_gas_saturation Optional: string | double:
-#'@param p_b Optional: string | double: string | double:
-#'@param independent_variable Optional: string
-#'@param curve Optional: string:
+#'@description tag: property
+#'@param name string:
+#'@param type string:
+#'@param value Optional:
+#'@param parameter_name Optional:
+#'@param exponent Optional:
+#'@param residual_liquid_saturation Optional:
+#'@param residual_gas_saturation Optional:
+#'@param p_b Optional:
+#'@param independent_variable Optional:
+#'@param curve Optional:
 #'@param minimum_relative_permeability_liquid Optional:
-#'@param lambda Optional: string | double:
-#'@param cutoff_value Optional: string | double:
-#'@param initial_permeability Optional: string:
-#'@param reference_permeability Optional: string | double:
-#'@param fitting_factor Optional: string | double:
-#'@param cohesion Optional: string | double:
-#'@param friction_angle Optional: string | double:
-#'@param maximum_permeability Optional: string | double:
-#'@param tensile_strength_parameter Optional: string | double:
-#'@param entry_pressure Optional: string | double:
-#'@param min_relative_permeability_liquid Optional: string | double:
-#'@param min_relative_permeability_gas Optional: string | double:
-#'@export
+#'@param initial_permeability Optional:
+#'@param maximum_permeability Optional:
+#'@param lambda Optional:
+#'@param cutoff_value Optional:
+#'@param intrinsic_permeability Optional:
+#'@param initial_aperture Optional:
+#'@param mean_frac_distance Optional:
+#'@param threshold_strain Optional:
+#'@param fracture_normal Optional:
+#'@param reference_permeability Optional:
+#'@param fitting_factor Optional:
+#'@param cohesion Optional:
+#'@param friction_angle Optional:
+#'@param tensile_strength_parameter Optional:
+#'@param b1 Optional:
+#'@param b2 Optional:
+#'@param b3 Optional:
+#'@param minimum_permeability Optional:
+#'@param initial_porosity Optional:
+#'@param entry_pressure Optional:
+#'@param min_relative_permeability_liquid Optional:
+#'@param min_relative_permeability_gas Optional:
 r2ogs6_pr_property <- function(name,
                                type,
                                value = NULL,
@@ -91,21 +100,32 @@ r2ogs6_pr_property <- function(name,
                                independent_variable = NULL,
                                curve = NULL,
                                minimum_relative_permeability_liquid = NULL,
+                               initial_permeability = NULL,
+                               maximum_permeability = NULL,
                                lambda = NULL,
                                cutoff_value = NULL,
-                               initial_permeability = NULL,
+                               intrinsic_permeability = NULL,
+                               initial_aperture = NULL,
+                               mean_frac_distance = NULL,
+                               threshold_strain = NULL,
+                               fracture_normal = NULL,
                                reference_permeability = NULL,
                                fitting_factor = NULL,
                                cohesion = NULL,
                                friction_angle = NULL,
-                               maximum_permeability = NULL,
                                tensile_strength_parameter = NULL,
+                               b1 = NULL,
+                               b2 = NULL,
+                               b3 = NULL,
+                               minimum_permeability = NULL,
+                               initial_porosity = NULL,
                                entry_pressure = NULL,
                                min_relative_permeability_liquid = NULL,
                                min_relative_permeability_gas = NULL) {
 
+
     #Coerce input
-    value <- coerce_string_to_numeric(value, TRUE)
+    value <- coerce_string_to_numeric(value)
     exponent <- coerce_string_to_numeric(exponent)
     residual_liquid_saturation <-
         coerce_string_to_numeric(residual_liquid_saturation)
@@ -140,15 +160,25 @@ r2ogs6_pr_property <- function(name,
         independent_variable,
         curve,
         minimum_relative_permeability_liquid,
+        initial_permeability,
+        maximum_permeability,
         lambda,
         cutoff_value,
-        initial_permeability,
+        intrinsic_permeability,
+        initial_aperture,
+        mean_frac_distance,
+        threshold_strain,
+        fracture_normal,
         reference_permeability,
         fitting_factor,
         cohesion,
         friction_angle,
-        maximum_permeability,
         tensile_strength_parameter,
+        b1,
+        b2,
+        b3,
+        minimum_permeability,
+        initial_porosity,
         entry_pressure,
         min_relative_permeability_liquid,
         min_relative_permeability_gas
@@ -166,17 +196,26 @@ new_r2ogs6_pr_property <- function(name,
                                    p_b = NULL,
                                    independent_variable = NULL,
                                    curve = NULL,
-                                   minimum_relative_permeability_liquid =
-                                       NULL,
+                                   minimum_relative_permeability_liquid = NULL,
+                                   initial_permeability = NULL,
+                                   maximum_permeability = NULL,
                                    lambda = NULL,
                                    cutoff_value = NULL,
-                                   initial_permeability = NULL,
+                                   intrinsic_permeability = NULL,
+                                   initial_aperture = NULL,
+                                   mean_frac_distance = NULL,
+                                   threshold_strain = NULL,
+                                   fracture_normal = NULL,
                                    reference_permeability = NULL,
                                    fitting_factor = NULL,
                                    cohesion = NULL,
                                    friction_angle = NULL,
-                                   maximum_permeability = NULL,
                                    tensile_strength_parameter = NULL,
+                                   b1 = NULL,
+                                   b2 = NULL,
+                                   b3 = NULL,
+                                   minimum_permeability = NULL,
+                                   initial_porosity = NULL,
                                    entry_pressure = NULL,
                                    min_relative_permeability_liquid = NULL,
                                    min_relative_permeability_gas = NULL) {
@@ -209,37 +248,45 @@ new_r2ogs6_pr_property <- function(name,
                                curve,
                                initial_permeability)
 
-    structure(
-        list(
-            name = name,
-            type = type,
-            value = value,
-            parameter_name = parameter_name,
-            exponent = exponent,
-            residual_liquid_saturation = residual_liquid_saturation,
-            residual_gas_saturation = residual_gas_saturation,
-            p_b = p_b,
-            independent_variable = independent_variable,
-            curve = curve,
-            minimum_relative_permeability_liquid =
-                minimum_relative_permeability_liquid,
-            lambda = lambda,
-            cutoff_value = cutoff_value,
-            initial_permeability = initial_permeability,
-            reference_permeability = reference_permeability,
-            fitting_factor = fitting_factor,
-            cohesion = cohesion,
-            friction_angle = friction_angle,
-            maximum_permeability = maximum_permeability,
-            tensile_strength_parameter = tensile_strength_parameter,
-            entry_pressure = entry_pressure,
-            min_relative_permeability_liquid = min_relative_permeability_liquid,
-            min_relative_permeability_gas = min_relative_permeability_gas,
-            is_subclass = TRUE,
-            attr_names = character(),
-            flatten_on_exp = character()
-        ),
-        class = "r2ogs6_pr_property"
+    structure(list(name = name,
+                   type = type,
+                   value = value,
+                   parameter_name = parameter_name,
+                   exponent = exponent,
+                   residual_liquid_saturation = residual_liquid_saturation,
+                   residual_gas_saturation = residual_gas_saturation,
+                   p_b = p_b,
+                   independent_variable = independent_variable,
+                   curve = curve,
+                   minimum_relative_permeability_liquid =
+                       minimum_relative_permeability_liquid,
+                   initial_permeability = initial_permeability,
+                   maximum_permeability = maximum_permeability,
+                   lambda = lambda,
+                   cutoff_value = cutoff_value,
+                   intrinsic_permeability = intrinsic_permeability,
+                   initial_aperture = initial_aperture,
+                   mean_frac_distance = mean_frac_distance,
+                   threshold_strain = threshold_strain,
+                   fracture_normal = fracture_normal,
+                   reference_permeability = reference_permeability,
+                   fitting_factor = fitting_factor,
+                   cohesion = cohesion,
+                   friction_angle = friction_angle,
+                   tensile_strength_parameter = tensile_strength_parameter,
+                   b1 = b1,
+                   b2 = b2,
+                   b3 = b3,
+                   minimum_permeability = minimum_permeability,
+                   initial_porosity = initial_porosity,
+                   entry_pressure = entry_pressure,
+                   min_relative_permeability_liquid = min_relative_permeability_liquid,
+                   min_relative_permeability_gas = min_relative_permeability_gas,
+                   is_subclass = TRUE,
+                   attr_names = character(),
+                   flatten_on_exp = character()
+    ),
+    class = "r2ogs6_pr_property"
     )
 }
 
@@ -255,7 +302,7 @@ new_r2ogs6_pr_property <- function(name,
 #'@param components list, components
 #'@export
 r2ogs6_phase <- function(type,
-                         properties,
+                         properties = NULL,
                          components = NULL){
 
     #Make this more user friendly
@@ -268,13 +315,15 @@ r2ogs6_phase <- function(type,
 
 
 new_r2ogs6_phase <- function(type,
-                             properties,
+                             properties = NULL,
                              components = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(type %in% get_valid_phase_types())
 
-    validate_wrapper_list(properties, "r2ogs6_ph_property")
+    if(!is.null(properties)){
+        validate_wrapper_list(properties, "r2ogs6_ph_property")
+    }
 
     if(!is.null(components)){
         validate_wrapper_list(components, "r2ogs6_component")
@@ -345,17 +394,17 @@ r2ogs6_ph_property <- function(name,
 
 
     #Coerce input
-    value <- coerce_string_to_numeric(value, TRUE)
+    value <- coerce_string_to_numeric(value)
     reference_value <- coerce_string_to_numeric(reference_value)
     minimal_porosity <- coerce_string_to_numeric(minimal_porosity)
     maximal_porosity <- coerce_string_to_numeric(maximal_porosity)
-    exponents <- coerce_string_to_numeric(exponents, TRUE)
+    exponents <- coerce_string_to_numeric(exponents)
     offset <- coerce_string_to_numeric(offset)
-    swelling_pressures <- coerce_string_to_numeric(swelling_pressures, TRUE)
+    swelling_pressures <- coerce_string_to_numeric(swelling_pressures)
     lower_saturation_limit <- coerce_string_to_numeric(lower_saturation_limit)
     upper_saturation_limit <- coerce_string_to_numeric(upper_saturation_limit)
     intrinsic_permeabilities <-
-        coerce_string_to_numeric(intrinsic_permeabilities, TRUE)
+        coerce_string_to_numeric(intrinsic_permeabilities)
 
     ellipsis_list <- list(...)
     independent_variable <-
