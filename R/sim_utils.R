@@ -72,6 +72,12 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
 
     closeAllConnections()
 
+    # Read in generated .pvd file and add it to ogs6_obj
+    pvd_path <- paste0(ogs6_obj$sim_path,
+                       ogs6_obj$time_loop$output$prefix,
+                       ".pvd")
+    ogs6_obj$pvd <- OGS6_pvd$new(pvd_path = pvd_path)
+
     return(invisible(exit_code))
 }
 
@@ -92,6 +98,23 @@ export_all_sim_files <- function(ogs6_obj){
                    paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
     }else if(!is.null(ogs6_obj$geometry)){
         file.copy(ogs6_obj$geometry, ogs6_obj$sim_path)
+    }
+
+    # If processes tag only contains reference, copy referenced file
+    if(names(ogs6_obj$processes)[[1]] == "include"){
+
+        include_dir <- paste0(ogs6_obj$sim_path, "include/")
+
+        if(!dir.exists(include_dir)){
+            dir.create(include_dir)
+        }
+
+        file.copy(ogs6_obj$processes[[1]][["file"]], include_dir)
+
+        new_ref_path <- paste0(include_dir,
+                               basename(ogs6_obj$processes[[1]][["file"]]))
+
+        ogs6_obj$processes <- new_ref_path
     }
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
@@ -248,12 +271,13 @@ run_all_benchmarks <- function(path,
         )
     }
 
-
     # Read in valid .prj files and run simulations
     exit_codes <- numeric()
     failed_prj_paths <- character()
 
     for(i in seq_len(length(prj_paths))){
+
+        cat("\nAttempting to run Benchmark", prj_paths[[i]])
 
         exit_code <- run_benchmark(prj_path = prj_paths[[i]],
                                    ogs_bin_path = ogs_bin_path,
@@ -276,21 +300,3 @@ run_all_benchmarks <- function(path,
                           exit_codes = exit_codes,
                           failed_prj_paths = failed_prj_paths)))
 }
-
-
-#===== Chaining utility (WIP) =====
-
-
-#'read_in_output
-#'@description After a OGS6 simulation was run, reads in the generated .vtu
-#' files as new input for
-#' the .prj file
-#'@param ogs6_obj A OGS6 class object
-read_in_output <- function(ogs6_obj) {
-
-    #....WIP
-}
-
-
-
-
