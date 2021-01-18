@@ -8,7 +8,7 @@ test_that("export_gml works", {
     dir.create(test_path)
 
     # Define gml object
-    test_gml <- r2ogs6_gml(
+    test_gml <- OGS6_gml$new(
         name = "test_geometry",
         points = tibble::tibble(
             x = c(0, 0, 0, 0, 1, 1, 1, 1),

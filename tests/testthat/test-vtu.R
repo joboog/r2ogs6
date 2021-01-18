@@ -3,8 +3,7 @@
 skip_if_python_modules_missing <- function() {
 
     used_modules <- c("vtk",
-                      "vtk.numpy_interface.dataset_adapter",
-                      "zlib")
+                      "vtk.numpy_interface.dataset_adapter")
 
     lapply(used_modules, function(x){
         if(!reticulate::py_module_available(x)){
@@ -45,7 +44,7 @@ test_that("OGS6_pvd$get_timestep_by_vtu_path works", {
 
     timestep <- ogs6_pvd$get_timestep_by_vtu_path(vtu_path = vtu_path)
 
-    expect_equal(timestep, "99.9999999999986")
+    expect_equal(timestep, 99.9999999999986)
 })
 
 
@@ -63,25 +62,44 @@ test_that("OGS6_pvd$get_PointData_time_tibble works", {
                "velocity")
 
     time_tibble <- ogs6_pvd$get_PointData_time_tibble(Names = Names)
+    expect_equal(length(time_tibble), 341)
+})
 
-    expect_equal(length(time_tibble), 2)
+
+test_that("OGS6_pvd$get_PointData_at_timestep works", {
+
+    skip_if_python_modules_missing()
+
+    pvd_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain.pvd",
+                            package = "r2ogs6")
+
+    ogs6_pvd <- OGS6_pvd$new(pvd_path)
+
+    point_data <- ogs6_pvd$get_PointData_at_timestep(point_ids = 0,
+                                                     Names = "HydraulicFlow",
+                                                     timestep = 0)
+
+    expect_equal(length(point_data), 1)
+    expect_equal(names(point_data), "p0")
 })
 
 
 #===== OGS6_vtu =====
 
 
-test_that("read_in_vtu works", {
+test_that("OGS6_vtu initialization works", {
 
     vtu_path <- system.file("extdata/benchmarks/flow_free_expansion",
                             "cube_1x1x1.vtu",
                             package = "r2ogs6")
 
-    ogs6_vtu <- read_in_vtu(vtu_path = vtu_path)
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
 
     expect_equal("vtkmodules.vtkCommonDataModel.vtkUnstructuredGrid" %in%
-                     class(ogs6_vtu$vtkUnstructuredGrid), TRUE)
+                     class(vtu_obj$vtkUnstructuredGrid), TRUE)
 })
+
 
 #===== generate_structured_mesh =====
 
@@ -89,10 +107,10 @@ test_that("read_in_vtu works", {
 #Add test...
 
 
-#===== read_in_PointData_DataArray =====
+#===== get_PointData =====
 
 
-test_that("read_in_PointData_DataArray works", {
+test_that("get_PointData works", {
 
     skip_if_python_modules_missing()
 
@@ -100,31 +118,9 @@ test_that("read_in_PointData_DataArray works", {
                             "flow_free_expansion_ts_1000_t_10000.000000.vtu",
                             package = "r2ogs6")
 
-    vtu_obj <- read_in_vtu(vtu_path)
-    pd_data_array <- vtu_obj$get_PointData_DataArray(Name = "HydraulicFlow")
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    pd_data_array <- vtu_obj$get_PointData(Name = "HydraulicFlow")
 
     expect_equal(class(pd_data_array), "array")
-})
-
-
-#===== General .vtk library tests =====
-
-
-test_that("zlib decompressing works as expected", {
-
-    skip_if_python_modules_missing()
-
-    py_env <- reticulate::py_run_string(
-        paste(
-            "import zlib",
-            "test_data = bytearray('123', 'utf-8')",
-            "compr_data = zlib.compress(test_data)",
-            "decompr_data = zlib.decompress(compr_data)",
-            "check = test_data.decode('utf-8') == decompr_data.decode('utf-8')",
-            sep = "\n"
-        ),
-        convert = TRUE
-    )
-
-    expect_equal(py_env$check, TRUE)
 })

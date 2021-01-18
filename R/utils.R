@@ -205,18 +205,17 @@ get_nonstandard_tag_names <- function(){
 }
 
 
-#'get_implemented_classes
-#'@description Returns class names (and variable names) of `OGS6` variables.
-#' Change this if you implement new `OGS6` variables or delete old ones!
-#' If you implement a new variable, you add the following the `class_names`
-#' vector: `name_of_OGS6_variable = "name_of_your_class"`
-#'@return character: Named vector containing class names of `OGS6` variables
-#' and their corresponding variable name
-get_implemented_classes <- function(){
+#'addable_prj_components
+#'@description Returns all possible `OGS6` top level .prj components (names)
+#' along with their respective class names (values).
+#' Change this if you implement new `OGS6` .prj components or delete old ones!
+#' If you implement a new components, you add the following to the `class_names`
+#' vector: `name_of_prj_component = "name_of_your_class"`
+#'@return character: Named vector of `OGS6` top level .prj components (names)
+#' along with their respective class names (values)
+addable_prj_components <- function(){
 
-  class_names <- c(vtus = "OGS6_vtu",
-                   gml = "r2ogs6_gml",
-                   search_length_algorithm = "r2ogs6_search_length_algorithm",
+  class_names <- c(search_length_algorithm = "r2ogs6_search_length_algorithm",
                    processes = "r2ogs6_process",
                    media = "r2ogs6_medium",
                    time_loop = "r2ogs6_time_loop",
@@ -297,15 +296,15 @@ get_obj_status <- function(flag, obj){
 #'@param ogs6_parameter_name string: Name of a OGS6 parameter
 is_optional_sim_component <- function(ogs6_parameter_name){
 
-  optional_sim_components <- c("gml",
-                               "vtus",
-                               "local_coordinate_system",
-                               "curves",
-                               "search_length_algorithm",
-                               "test_definition",
-                               "insitu")
+  mandatory_components <- c("meshes",
+                            "processes",
+                            "time_loop",
+                            "nonlinear_solvers",
+                            "linear_solvers",
+                            "parameters",
+                            "process_variables")
 
-  return(invisible(ogs6_parameter_name %in% optional_sim_components))
+  return(invisible(!ogs6_parameter_name %in% mandatory_components))
 }
 
 
@@ -313,23 +312,15 @@ is_optional_sim_component <- function(ogs6_parameter_name){
 
 
 #'coerce_string_to_numeric
-#'@description If an object is of type string, coerces it to a numeric type:
-#' A double if 'split' is FALSE as per default, a numeric vector otherwise.
-#' If 'split' is set to true the string will be split at ' ' (whitespace)
-#' characters.
+#'@description If an object is of type string, coerces it to a numeric type
 #'@param obj An object to check
-#'@param split flag: Should object be split at ' ' (whitespace) if it is a
-#' string?
 #'@return The object as a numeric type (if 'obj' was a string, else the
 #' unchanged 'obj')
-coerce_string_to_numeric <- function(obj, split = FALSE){
+coerce_string_to_numeric <- function(obj){
 
   if(assertthat::is.string(obj)){
-    if(split){
-      obj <- as.double(unlist(strsplit(obj, " ")))
-    }else{
-      obj <- as.double(obj)
-    }
+    obj <- trimws(gsub("\r?\n|\r|\\s+", " ", obj))
+    obj <- as.double(unlist(strsplit(obj, " ")))
   }
 
   return(invisible(obj))
