@@ -1,104 +1,172 @@
 
-#===== r2ogs6_gml =====
+#===== OGS6_gml =====
 
 
-#'r2ogs6_gml
-#'@description S3 class describing the .gml file
-#'@param name The name of the geometry
-#'@param points A tibble of points
-#'@param polylines Optional: A list of polylines
-#'@param surfaces Optional: A list of surfaces
+#'OGS6_gml
+#'@description Constructor for the OGS6_gml base class
 #'@export
-r2ogs6_gml <- function(name,
-                       points,
-                       polylines = NULL,
-                       surfaces = NULL){
+OGS6_gml <- R6::R6Class(
+    "OGS6_gml",
+    public = list(
 
-    #Make this more user friendly
-    #...
+        #'@description
+        #'Creates new OGS6_gml object
+        #'@param gml_path string: Optional: Path to .gml file
+        #'@param name string: Geometry name
+        #'@param points tibble: Must have 3 vectors named 'x', 'y' and 'z', may
+        #' have optional 'name' vector
+        #'@param polylines list(list("foo", c(1, 2))):
+        #'@param surfaces list(list("foo", c(1, 2, 3), c(2, 3, 4))):
+        initialize = function(gml_path = NULL,
+                              name = NULL,
+                              points = NULL,
+                              polylines = NULL,
+                              surfaces = NULL) {
 
-    validate_r2ogs6_gml(new_r2ogs6_gml(name,
-                                       points,
-                                       polylines,
-                                       surfaces))
-}
+            if(is.null(gml_path)){
+                self$name <- name
+                self$points <- points
+                self$polylines <- polylines
+                self$surfaces <- surfaces
+            }else{
+                if(!is.null(name) ||
+                   !is.null(points) ||
+                   !is.null(polylines) ||
+                   !is.null(surfaces)){
+                    warning(paste("`gml_path` was specified for OGS6_gml",
+                                  "initialization, so all other parameters",
+                                  "will be ignored!"), call. = FALSE)
+                }
 
+                xml_doc <- validate_read_in_xml(gml_path)
 
-#'new_r2ogs6_gml
-#'@description Constructor for S3 class new_r2ogs6_gml
-#'@param name The name of the geometry
-#'@param points A tibble of points
-#'@param polylines Optional: A list of polylines
-#'@param surfaces Optional: A list of surfaces
-new_r2ogs6_gml <- function(name,
-                           points,
-                           polylines = NULL,
-                           surfaces = NULL) {
+                self$name <- xml2::xml_text(xml2::xml_find_first(xml_doc,
+                                                                 "//name"))
+                self$points <- read_in_points(xml_doc)
+                self$polylines <- read_in_polylines(xml_doc)
+                self$surfaces <- read_in_surfaces(xml_doc)
+            }
 
-    assertthat::assert_that(assertthat::is.string(name))
+            private$.gml_path <- gml_path
+            private$validate()
+        }
+    ),
 
-    points <- validate_points(points)
+    active = list(
 
-    if(!is.null(polylines)){
-        polylines <- validate_polylines(polylines)
-    }
+        #'@field gml_path
+        #'Getter for private parameter '.gml_path'
+        gml_path = function(value) {
+            private$gml_path
+        },
 
-    if(!is.null(surfaces)){
-        surfaces <- validate_surfaces(surfaces)
-    }
+        #'@field name
+        #'Access to private parameter '.name'
+        name = function(value) {
+            if(missing(value)) {
+                private$.name
+            }else{
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.name <- value
+            }
+        },
 
-    structure(
-        list(name = name,
-             points = points,
-             polylines = polylines,
-             surfaces = surfaces,
-             is_subclass = TRUE,
-             attr_names = c("point", "name", "id", "element"),
-             flatten_on_exp = character()
-             ),
+        #'@field points
+        #'Access to private parameter '.points'
+        points = function(value) {
+            if(missing(value)) {
+                private$.points
+            }else{
+                private$.points <- validate_points(value)
+            }
+        },
 
-        class = "r2ogs6_gml")
-}
+        #'@field polylines
+        #'Access to private parameter '.polylines'
+        polylines = function(value) {
+            if(missing(value)) {
+                private$.polylines
+            }else{
+                if(!is.null(value)){
+                    value <- validate_polylines(value)
+                }
+
+                private$.polylines <- value
+            }
+        },
+
+        #'@field surfaces
+        #'Access to private parameter '.surfaces'
+        surfaces = function(value) {
+            if(missing(value)) {
+                private$.surfaces
+            }else{
+                if(!is.null(value)){
+                    value <- validate_surfaces(value)
+                }
+                private$.surfaces <- value
+            }
+        },
+
+        #'@field is_subclass
+        #'Getter for private parameter '.is_subclass'
+        is_subclass = function(value) {
+            private$.is_subclass
+        },
+
+        #'@field attr_names
+        #'Getter for private parameter '.attr_names'
+        attr_names = function(value) {
+            private$.attr_names
+        },
+
+        #'@field flatten_on_exp
+        #'Getter for private parameter '.flatten_on_exp'
+        flatten_on_exp = function(value) {
+            private$.flatten_on_exp
+        }
+    ),
+
+    private = list(
+
+        validate = function(){
+            maximal_point_id <- length(self$points[[1]]) - 1
+
+            check_pnt <- function(pnt){
+                if(pnt > maximal_point_id ||
+                   pnt < 0){
+                    stop(paste("Point with ID", pnt, "does not exist"),
+                         call. = FALSE)
+                }
+            }
+
+            #Check if polylines reference existing points
+            lapply(self$polylines, function(x){
+                lapply(x[[2]], check_pnt)
+            })
+
+            #Check if surfaces reference existing points
+            lapply(self$surfaces, function(x){
+                lapply(x[[2]], check_pnt)
+                if(length(x) == 3){
+                    lapply(x[[3]], check_pnt)
+                }
+            })
+        },
+
+        .gml_path = NULL,
+        .name = NULL,
+        .points = NULL,
+        .polylines = NULL,
+        .surfaces = NULL,
+        .is_subclass = TRUE,
+        .attr_names = c("point", "name", "id", "element"),
+        .flatten_on_exp = character()
+    )
+)
 
 
 #===== Validation utility =====
-
-
-#'validate_r2ogs6_gml
-#'@description Validator for class r2ogs6_gml. Checks if the defined polylines
-#' and surfaces reference existing points.
-#'@param r2ogs6_gml r2ogs6_gml:
-validate_r2ogs6_gml <- function(r2ogs6_gml) {
-
-    maximal_point_id <- length(r2ogs6_gml$points[[1]]) - 1
-
-    #Check if polylines reference existing points
-    for(i in seq_len(length(r2ogs6_gml$polylines))){
-        for(j in seq_len(length(r2ogs6_gml$polylines[[i]][[2]]))){
-            if(r2ogs6_gml$polylines[[i]][[2]][[j]] > maximal_point_id ||
-               r2ogs6_gml$polylines[[i]][[2]][[j]] < 0){
-                stop("Polyline references point ID which does not exist",
-                     call. = FALSE)
-            }
-        }
-    }
-
-    #Check if surfaces reference existing points
-    for(i in seq_len(length(r2ogs6_gml$surfaces))){
-        for(j in seq_len(length(r2ogs6_gml$surfaces[[i]][[2]]))){
-            if(r2ogs6_gml$surfaces[[i]][[2]][[j]] > maximal_point_id ||
-               r2ogs6_gml$surfaces[[i]][[2]][[j]] < 0 ||
-               (length(r2ogs6_gml$surfaces[[i]]) == 3 &&
-                (r2ogs6_gml$surfaces[[i]][[3]][[j]] > maximal_point_id ||
-                 r2ogs6_gml$surfaces[[i]][[3]][[j]] < 0))){
-                stop("Surface references point ID which does not exist",
-                     call. = FALSE)
-            }
-        }
-    }
-
-    return(invisible(r2ogs6_gml))
-}
 
 
 #'validate_points
@@ -159,21 +227,17 @@ validate_polylines <- function(polylines) {
 
     assertthat::assert_that(is.list(polylines))
 
-    for(i in seq_len(length(polylines))){
-
-        assertthat::assert_that(is.list(polylines[[i]]))
-        assertthat::assert_that(length(polylines[[i]]) == 2)
-        assertthat::assert_that(assertthat::is.string(polylines[[i]][[1]]))
-        assertthat::assert_that(is.numeric(polylines[[i]][[2]]))
-        names(polylines[[i]])[[1]] <- c("name")
-        names(polylines[[i]][[2]]) <- rep("pnt",
-                                          length(names(polylines[[i]][[2]])))
-
-        #Check for duplicate points / polylines?
-    }
+    polylines <- lapply(polylines, function(x){
+        assertthat::assert_that(is.list(x))
+        assertthat::assert_that(length(x) == 2)
+        assertthat::assert_that(assertthat::is.string(x[[1]]))
+        assertthat::assert_that(is.numeric(x[[2]]))
+        names(x)[[1]] <- c("name")
+        names(x[[2]]) <- rep("pnt", length(names(x[[2]])))
+        return(x)
+    })
 
     names(polylines) <- rep("polyline", length(polylines))
-
     return(invisible(polylines))
 }
 
@@ -188,38 +252,29 @@ validate_surfaces <- function(surfaces) {
 
     assertthat::assert_that(is.list(surfaces))
 
-    for(i in seq_len(length(surfaces))){
+    validate_element <- function(element){
+        assertthat::assert_that(is.numeric(element))
+        assertthat::assert_that(length(element) == 3)
+        names(element) <- c("p1", "p2", "p3")
+        return(invisible(element))
+    }
 
-        assertthat::assert_that(is.list(surfaces[[i]]))
+    surfaces <- lapply(surfaces, function(x){
 
-        assertthat::assert_that(length(surfaces[[i]]) == 2 ||
-                                length(surfaces[[i]]) == 3)
+        assertthat::assert_that(is.list(x))
+        assertthat::assert_that(length(x) == 2 ||
+                                    length(x) == 3)
 
-        validate_surface <- function(surface){
+        names(x) <- c("name", rep("element", (length(x)-1)))
+        x[[2]] <- validate_element(x[[2]])
 
-            names(surface)[[1]] <- c("name")
-            assertthat::assert_that(is.numeric(surface[[2]]))
-            assertthat::assert_that(length(surface[[2]]) == 3)
-            names(surface)[[2]] <- c("element")
-            names(surface[[2]]) <- c("p1", "p2", "p3")
-
-            if(length(surface) == 3){
-                assertthat::assert_that(is.numeric(surface[[3]]))
-                assertthat::assert_that(length(surface[[3]]) == 3)
-                names(surface)[[3]] <- c("element")
-                names(surface[[3]]) <- c("p1", "p2", "p3")
-
-                validate_surface_elements(surface[[2]],
-                                          surface[[3]])
-            }
-
-            return(invisible(surface))
+        if(length(x) == 3){
+            x[[3]] <- validate_element(x[[3]])
+            # validate_pnt_values(x[[2]], x[[3]])
         }
 
-        surfaces[[i]] <- validate_surface(surfaces[[i]])
-
-        #Check for duplicate points / surfaces?
-    }
+        return(x)
+    })
 
     names(surfaces) <- rep("surface", length(surfaces))
 
@@ -227,31 +282,30 @@ validate_surfaces <- function(surfaces) {
 }
 
 
-#'validate_surface_elements
-#'@description Helper function, checks if two numerical vectors of length 3
-#' (two surface elements) each consist of 3 different elements and also have
-#' exactly 2 matching elements between them which means they describe a valid
-#' surface. You can think of the two vectors as two triangles, and the two
-#' triangles together form a square which is our surface.
-#'@param surface_element_1 numeric, length = 3
-#'@param surface_element_2 numeric, length = 3
-validate_surface_elements = function (surface_element_1, surface_element_2) {
+#'validate_pnt_values
+#'@description Checks if two numerical vectors of length 3
+#' (two surface elements) each consist of 3 different elements and have
+#' exactly 2 matching elements between them. Think of the two vectors as
+#' triangles, and the triangles together form a square which is our surface.
+#'@param element_1 numeric, length = 3
+#'@param element_2 numeric, length = 3
+validate_pnt_values = function (element_1, element_2) {
 
-    if(surface_element_1[[1]] == surface_element_1[[2]] ||
-       surface_element_1[[1]] == surface_element_1[[3]] ||
-       surface_element_1[[2]] == surface_element_1[[3]] ||
-       surface_element_2[[1]] == surface_element_2[[2]] ||
-       surface_element_2[[1]] == surface_element_2[[3]] ||
-       surface_element_2[[2]] == surface_element_2[[3]]) {
+    if(element_1[[1]] == element_1[[2]] ||
+       element_1[[1]] == element_1[[3]] ||
+       element_1[[2]] == element_1[[3]] ||
+       element_2[[1]] == element_2[[2]] ||
+       element_2[[1]] == element_2[[3]] ||
+       element_2[[2]] == element_2[[3]]) {
         stop("A surface element must consist of 3 different points",
              call. = FALSE)
     }
 
     equal_count <- 0
 
-    for(i in 1:length(surface_element_1)) {
-        for(j in 1:length(surface_element_2)) {
-            if(surface_element_1[[i]] == surface_element_2[[j]]) {
+    for(i in 1:length(element_1)) {
+        for(j in 1:length(element_2)) {
+            if(element_1[[i]] == element_2[[j]]) {
                 equal_count <- equal_count + 1
                 break
             }
