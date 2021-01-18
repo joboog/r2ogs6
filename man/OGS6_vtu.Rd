@@ -9,25 +9,11 @@ Constructor for the OGS6_vtu base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{type}}{Access to private parameter '.type'}
+\item{\code{vtu_path}}{Getter for private parameter '.vtu_path'}
 
-\item{\code{version}}{Access to private parameter '.version'}
+\item{\code{vtkUnstructuredGrid}}{Access to private parameter '.vtkUnstructuredGrid'}
 
-\item{\code{byte_order}}{Access to private parameter '.byte_order'}
-
-\item{\code{UnstructuredGrid}}{Access to private parameter '.UnstructuredGrid'}
-
-\item{\code{header_type}}{Access to private parameter '.header_type'}
-
-\item{\code{compressor}}{Access to private parameter '.compressor'}
-
-\item{\code{AppendedData}}{Access to private parameter '.AppendedData '}
-
-\item{\code{is_subclass}}{Access to private parameter '.is_subclass'}
-
-\item{\code{attr_names}}{Access to private parameter '.attr_names'}
-
-\item{\code{flatten_on_exp}}{Access to private parameter '.flatten_on_exp'}
+\item{\code{dsa_wrapped_vtkUnstructuredGrid}}{Getter for private parameter '.dsa_wrapped_vtkUnstructuredGrid'}
 }
 \if{html}{\out{</div>}}
 }
@@ -35,7 +21,9 @@ Constructor for the OGS6_vtu base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_vtu$new()}}
-\item \href{#method-get_data_arrays}{\code{OGS6_vtu$get_data_arrays()}}
+\item \href{#method-get_PointData_for_point}{\code{OGS6_vtu$get_PointData_for_point()}}
+\item \href{#method-get_PointData}{\code{OGS6_vtu$get_PointData()}}
+\item \href{#method-get_number_of_points}{\code{OGS6_vtu$get_number_of_points()}}
 \item \href{#method-clone}{\code{OGS6_vtu$clone()}}
 }
 }
@@ -45,55 +33,66 @@ Constructor for the OGS6_vtu base class
 \subsection{Method \code{new()}}{
 Creates new OGS6_vtu object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$new(
-  type,
-  version,
-  byte_order,
-  UnstructuredGrid,
-  header_type = NULL,
-  compressor = NULL,
-  AppendedData = NULL
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$new(vtu_path)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{string:}
-
-\item{\code{version}}{string:}
-
-\item{\code{byte_order}}{string:}
-
-\item{\code{UnstructuredGrid}}{OGS6_UnstructuredGrid:}
-
-\item{\code{header_type}}{string: Optional:}
-
-\item{\code{compressor}}{string: Optional:}
-
-\item{\code{AppendedData}}{string: Optional:}
+\item{\code{vtu_path}}{string: Path to .vtu file}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data_arrays"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data_arrays}{}}}
-\subsection{Method \code{get_data_arrays()}}{
-Gets specified DataArrays
+\if{html}{\out{<a id="method-get_PointData_for_point"></a>}}
+\if{latex}{\out{\hypertarget{method-get_PointData_for_point}{}}}
+\subsection{Method \code{get_PointData_for_point()}}{
+Gets PointData for point with ID `point_id`
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_arrays(Names = character(), categories = character())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_PointData_for_point(point_id, Names)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{Names}}{character: Optional: Select `DataArray` by `Name`}
+\item{\code{point_id}}{number: Point ID}
 
-\item{\code{categories}}{character: Optional: One or more of
-`get_valid_vtu_categories()`}
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `PointData`}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_PointData"></a>}}
+\if{latex}{\out{\hypertarget{method-get_PointData}{}}}
+\subsection{Method \code{get_PointData()}}{
+Gets PointData of `DataArray` element with `Name` attribute
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_PointData(Name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{Name}}{string: Optional: `Name` attribute of `DataArray`
+elements, defaults to all in `PointData`}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_number_of_points"></a>}}
+\if{latex}{\out{\hypertarget{method-get_number_of_points}{}}}
+\subsection{Method \code{get_number_of_points()}}{
+Gets number of points
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_number_of_points()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+number: The number of points
 }
 }
 \if{html}{\out{<hr>}}

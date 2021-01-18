@@ -4,15 +4,13 @@
 \alias{generate_structured_mesh}
 \title{generate_structured_mesh}
 \usage{
-generate_structured_mesh(ogs6_obj, call_str, read_in_vtu)
+generate_structured_mesh(args_str, ogs_bin_path)
 }
 \arguments{
-\item{ogs6_obj}{OGS6: Simulation object}
+\item{args_str}{string: The arguments the script will be called with}
 
-\item{call_str}{string: The arguments the script will be called with
-(EXCEPT -o output_file_name, this will be generated automatically!)}
-
-\item{read_in_vtu}{flag: Should .vtu file just be copied or read in too?}
+\item{ogs_bin_path}{string: Optional: Path to OpenGeoSys6 bin folder.
+Defaults to options("r2ogs6.default_ogs_bin_path").}
 }
 \value{
 string: .vtu file path

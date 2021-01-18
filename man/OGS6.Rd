@@ -52,6 +52,8 @@ Constructor for the OGS6 base class
 \item{\code{test_definition}}{Access to private parameter '.test_definition'}
 
 \item{\code{insitu}}{Access to private parameter '.insitu'}
+
+\item{\code{pvd}}{Access to private parameter '.pvd'}
 }
 \if{html}{\out{</div>}}
 }
@@ -124,6 +126,9 @@ Adds a simulation component (WIP)
 not of a proprietary `r2ogs6` class, `component_name` must be
 supplied. E.g. If you're adding a `python_script` which is a string, you
 would call `your_ogs6_obj$add("some_script.py", "python_script")`}
+
+\item{\code{component_name}}{string: Optional: The name of the component to be
+added}
 }
 \if{html}{\out{</div>}}
 }

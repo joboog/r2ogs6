@@ -43,6 +43,8 @@ Creates new OGS6_Ensemble object
 of a sublist references an OGS6 parameter, the second one is a list or
 vector of values. Note that the second elements of the sublists must
 have the same length.}
+
+\item{\code{ens_dir_name}}{string: Name of ensemble directory}
 }
 \if{html}{\out{</div>}}
 }
