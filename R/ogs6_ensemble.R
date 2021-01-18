@@ -15,6 +15,7 @@ OGS6_Ensemble <- R6::R6Class(
     #' of a sublist references an OGS6 parameter, the second one is a list or
     #' vector of values. Note that the second elements of the sublists must
     #' have the same length.
+    #'@param ens_dir_name string: Name of ensemble directory
     #'@importFrom foreach %dopar%
     public = list(
         initialize = function(ogs6_obj,
