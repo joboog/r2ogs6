@@ -59,13 +59,15 @@ OGS6 <- R6::R6Class("OGS6",
     #' not of a proprietary `r2ogs6` class, `component_name` must be
     #' supplied. E.g. If you're adding a `python_script` which is a string, you
     #' would call `your_ogs6_obj$add("some_script.py", "python_script")`
+    #'@param component_name string: Optional: The name of the component to be
+    #' added
     add = function(x,
                    component_name = ""){
 
       assertthat::assert_that(assertthat::is.string(component_name))
 
       # Assert that class name is in implemented classes for OGS6
-      ogs6_components <- get_implemented_classes()
+      ogs6_components <- addable_prj_components()
 
       x_class_name <- ""
       x_of_r2ogs6_class <- FALSE
@@ -118,17 +120,17 @@ OGS6 <- R6::R6Class("OGS6",
     add_gml = function(gml){
 
       if(assertthat::is.string(gml)){
-        check_file_extension(gml, "gml")
+        assertthat::assert_that(grepl("\\.gml$", gml))
         private$.geometry <- gml
       }else{
-        assertthat::assert_that(class(gml) == "r2ogs6_gml")
+        assertthat::assert_that(inherits(gml, "OGS6_gml"))
         private$.gml <- gml
 
         if(!is.null(private$.geometry)){
           warning(paste("OGS6 parameter 'geometry' now refers",
                         "to a different .gml object"), call. = FALSE)
         }
-        private$.geometry <- paste0(gml$name, ".gml")
+        private$.geometry <- paste0(self$sim_name, ".gml")
       }
     },
 
@@ -140,15 +142,13 @@ OGS6 <- R6::R6Class("OGS6",
     add_vtu = function(path,
                        read_in_vtu = FALSE){
       assertthat::assert_that(assertthat::is.string(path))
-      assertthat::assert_that(grepl("\\.vtu$", path) ||
-                                grepl("\\.vtk$", path) ||
-                                grepl("\\.msh$", path))
+      assertthat::assert_that(grepl("\\.vtu$", path))
       assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
       self$meshes <- c(self$meshes, mesh = path)
 
       if(read_in_vtu){
-        private$.vtus <- c(private$.vtus, list(read_in_vtu(path)))
+        private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
       }
     },
 
@@ -276,7 +276,7 @@ OGS6 <- R6::R6Class("OGS6",
       assertthat::assert_that(assertthat::is.flag(print_status))
 
       flag <- TRUE
-      impl_classes <- get_implemented_classes()
+      impl_classes <- addable_prj_components()
 
       status_strs <- character()
 
@@ -320,12 +320,12 @@ OGS6 <- R6::R6Class("OGS6",
     #'Clears components from the OGS6 object
     #'@param which character: The names of the components (all by default).
     #' If you want to delete only some components, run
-    #' names(get_implemented_classes()) for the available options.
-    clear = function(which = names(get_implemented_classes())){
+    #' names(addable_prj_components()) for the available options.
+    clear = function(which = names(addable_prj_components())){
 
       assertthat::assert_that(is.character(which))
 
-      valid_input = names(get_implemented_classes())
+      valid_input = names(addable_prj_components())
 
       null_it <- c("geometry", "time_loop")
 
@@ -439,7 +439,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.vtus
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["vtus"]])
+                                addable_prj_components()[["vtus"]])
           private$.vtus <- value
         }
       },
@@ -462,7 +462,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.search_length_algorithm
         }else{
           assertthat::assert_that(
-            get_implemented_classes()[["search_length_algorithm"]] %in%
+            addable_prj_components()[["search_length_algorithm"]] %in%
               class(value))
           private$.search_length_algorithm <- value
         }
@@ -474,8 +474,26 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.processes
         }else{
-          validate_wrapper_list(value,
-                                get_implemented_classes()[["processes"]])
+          # If there already is a process element
+          if(length(private$.processes) > 0){
+            if(addable_prj_components()[["processes"]] %in%
+               class(private$.processes[[1]])){
+                 validate_wrapper_list(value,
+                                       addable_prj_components()[["processes"]])
+            }else{
+              assertthat::assert_that(assertthat::is.string(value))
+              value <- list(include = c(file = value))
+            }
+
+          }else{
+            if(assertthat::is.string(value)){
+              value <- list(include = c(file = value))
+            }else{
+              validate_wrapper_list(value,
+                                    addable_prj_components()[["processes"]])
+            }
+          }
+
           private$.processes <- value
         }
       },
@@ -487,7 +505,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.time_loop
         }else{
           assertthat::assert_that(
-            get_implemented_classes()[["time_loop"]] %in%
+            addable_prj_components()[["time_loop"]] %in%
               class(value))
           private$.time_loop <- value
         }
@@ -500,7 +518,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.local_coordinate_system
         }else{
           assertthat::assert_that(
-            get_implemented_classes()[["local_coordinate_system"]] %in%
+            addable_prj_components()[["local_coordinate_system"]] %in%
               class(value))
           private$.local_coordinate_system <- value
         }
@@ -513,7 +531,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.media
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["media"]])
+                                addable_prj_components()[["media"]])
           private$.media <- value
         }
       },
@@ -525,7 +543,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.parameters
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["parameters"]])
+                                addable_prj_components()[["parameters"]])
           private$.parameters <- value
         }
       },
@@ -537,7 +555,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.curves
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["curves"]])
+                                addable_prj_components()[["curves"]])
           private$.curves <- value
         }
       },
@@ -550,7 +568,7 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           validate_wrapper_list(
             value,
-            get_implemented_classes()[["process_variables"]])
+            addable_prj_components()[["process_variables"]])
           private$.process_variables <- value
         }
       },
@@ -563,7 +581,7 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           validate_wrapper_list(
             value,
-            get_implemented_classes()[["nonlinear_solvers"]])
+            addable_prj_components()[["nonlinear_solvers"]])
           private$.nonlinear_solvers <- value
         }
       },
@@ -575,7 +593,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.linear_solvers
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["linear_solvers"]])
+                                addable_prj_components()[["linear_solvers"]])
           private$.linear_solvers <- value
         }
       },
@@ -587,7 +605,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.test_definition
         }else{
           validate_wrapper_list(value,
-                                get_implemented_classes()[["test_definition"]])
+                                addable_prj_components()[["test_definition"]])
           private$.test_definition <- value
         }
       },
@@ -599,15 +617,26 @@ OGS6 <- R6::R6Class("OGS6",
           private$.insitu
         }else{
           assertthat::assert_that(
-            get_implemented_classes()[["insitu"]] %in%
+            addable_prj_components()[["insitu"]] %in%
               class(value))
           private$.insitu <- value
+        }
+      },
+
+      #'@field pvd
+      #'Access to private parameter '.pvd'
+      pvd = function(value) {
+        if(missing(value)) {
+          private$.pvd
+        }else{
+          assertthat::assert_that(inherits(value, "OGS6_pvd"))
+          private$.pvd <- value
         }
       }
   ),
 
   private = list(
-    #general parameters
+    # general parameters
       .sim_name = NULL,
       .sim_id = NULL,
       .sim_path = NULL,
@@ -615,18 +644,18 @@ OGS6 <- R6::R6Class("OGS6",
 
       .logfile = NULL,
 
-      #.gml parameters
+      # .gml object
       .gml = NULL,
 
-      #.vtu parameters
+      # .vtu objects
       .vtus = NULL,
 
-      #.prj parameters
+      # .prj parameters
 
-      #.gml reference
+      # .gml reference
       .geometry = NULL,
 
-      #.vtu reference(s)
+      # .vtu reference(s)
       .meshes = list(),
 
       .python_script = NULL,
@@ -641,6 +670,9 @@ OGS6 <- R6::R6Class("OGS6",
       .nonlinear_solvers = list(),
       .linear_solvers = list(),
       .test_definition = list(),
-      .insitu = NULL
+      .insitu = NULL,
+
+      # .pvd object (output)
+      .pvd = NULL
   )
 )
