@@ -11,9 +11,11 @@ Constructor for the OGS6_vtu base class
 \describe{
 \item{\code{vtu_path}}{Getter for private parameter '.vtu_path'}
 
+\item{\code{point_data}}{Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'}
+
 \item{\code{vtkUnstructuredGrid}}{Access to private parameter '.vtkUnstructuredGrid'}
 
-\item{\code{dsa_wrapped_vtkUnstructuredGrid}}{Getter for private parameter '.dsa_wrapped_vtkUnstructuredGrid'}
+\item{\code{dsa_vtkUnstructuredGrid}}{Getter for private parameter '.dsa_vtkUnstructuredGrid'}
 }
 \if{html}{\out{</div>}}
 }
@@ -21,8 +23,7 @@ Constructor for the OGS6_vtu base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_vtu$new()}}
-\item \href{#method-get_PointData_for_point}{\code{OGS6_vtu$get_PointData_for_point()}}
-\item \href{#method-get_PointData}{\code{OGS6_vtu$get_PointData()}}
+\item \href{#method-get_data_for_point}{\code{OGS6_vtu$get_data_for_point()}}
 \item \href{#method-get_number_of_points}{\code{OGS6_vtu$get_number_of_points()}}
 \item \href{#method-clone}{\code{OGS6_vtu$clone()}}
 }
@@ -45,12 +46,12 @@ Creates new OGS6_vtu object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_PointData_for_point"></a>}}
-\if{latex}{\out{\hypertarget{method-get_PointData_for_point}{}}}
-\subsection{Method \code{get_PointData_for_point()}}{
+\if{html}{\out{<a id="method-get_data_for_point"></a>}}
+\if{latex}{\out{\hypertarget{method-get_data_for_point}{}}}
+\subsection{Method \code{get_data_for_point()}}{
 Gets PointData for point with ID `point_id`
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_PointData_for_point(point_id, Names)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_point(point_id, Names)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -59,24 +60,6 @@ Gets PointData for point with ID `point_id`
 \item{\code{point_id}}{number: Point ID}
 
 \item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
-elements, defaults to all in `PointData`}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_PointData"></a>}}
-\if{latex}{\out{\hypertarget{method-get_PointData}{}}}
-\subsection{Method \code{get_PointData()}}{
-Gets PointData of `DataArray` element with `Name` attribute
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_PointData(Name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Name}}{string: Optional: `Name` attribute of `DataArray`
 elements, defaults to all in `PointData`}
 }
 \if{html}{\out{</div>}}

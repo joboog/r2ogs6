@@ -111,14 +111,14 @@ OGS6_pvd <- R6::R6Class(
 
                 # ... get all rows of PointData or get rows by Name
                 if(missing(Names)){
-                    Names <- names(relevant_vtus[[i]]$get_PointData())
+                    Names <- names(relevant_vtus[[i]]$point_data)
                 }
 
                 assertthat::assert_that(is.character(Names))
 
                 for (j in seq_len(length(point_ids))) {
                     point_data <-
-                        relevant_vtus[[i]]$get_PointData_for_point(
+                        relevant_vtus[[i]]$get_data_for_point(
                             point_ids[[j]],
                             Names)
 
@@ -242,14 +242,15 @@ OGS6_vtu <- R6::R6Class(
         #'@param point_id number: Point ID
         #'@param Names character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `PointData`
-        get_PointData_for_point = function(point_id,
-                                           Names){
-
-            if(missing(Names)){
-                Names <- names(self$get_PointData())
-            }
+        get_data_for_point = function(point_id,
+                                      Names){
 
             assertthat::assert_that(assertthat::is.number(point_id))
+
+            if(missing(Names)){
+                Names <- names(self$point_data)
+            }
+
             assertthat::assert_that(is.character(Names))
 
             point_data <- list()
@@ -257,25 +258,11 @@ OGS6_vtu <- R6::R6Class(
             for(i in seq_len(length(Names))){
                 point_data <-
                     c(point_data,
-                      list(self$get_PointData(Names[[i]])[[(point_id + 1)]]))
+                      list(self$point_data[[Names[[i]]]][[(point_id + 1)]]))
                 names(point_data)[[length(point_data)]] <- Names[[i]]
             }
 
             return(point_data)
-        },
-
-        #'@description
-        #'Gets PointData of `DataArray` element with `Name` attribute
-        #'@param Name string: Optional: `Name` attribute of `DataArray`
-        #' elements, defaults to all in `PointData`
-        get_PointData = function(Name){
-
-            if(missing(Name)){
-                return(self$dsa_wrapped_vtkUnstructuredGrid$PointData)
-            }
-
-            assertthat::assert_that(assertthat::is.string(Name))
-            return(self$dsa_wrapped_vtkUnstructuredGrid$PointData[[Name]])
         },
 
         #'@description
@@ -294,6 +281,12 @@ OGS6_vtu <- R6::R6Class(
             private$.vtu_path
         },
 
+        #'@field point_data
+        #'Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'
+        point_data = function() {
+            self$dsa_vtkUnstructuredGrid$PointData
+        },
+
         #'@field vtkUnstructuredGrid
         #'Access to private parameter '.vtkUnstructuredGrid'
         vtkUnstructuredGrid = function(value) {
@@ -302,22 +295,22 @@ OGS6_vtu <- R6::R6Class(
             }else{
                 # Check class
                 private$.vtkUnstructuredGrid <- value
-                private$.dsa_wrapped_vtkUnstructuredGrid <-
+                private$.dsa_vtkUnstructuredGrid <-
                     vtk_dsa$WrapDataObject(value)
             }
         },
 
-        #'@field dsa_wrapped_vtkUnstructuredGrid
-        #'Getter for private parameter '.dsa_wrapped_vtkUnstructuredGrid'
-        dsa_wrapped_vtkUnstructuredGrid = function() {
-            private$.dsa_wrapped_vtkUnstructuredGrid
+        #'@field dsa_vtkUnstructuredGrid
+        #'Getter for private parameter '.dsa_vtkUnstructuredGrid'
+        dsa_vtkUnstructuredGrid = function() {
+            private$.dsa_vtkUnstructuredGrid
         }
     ),
 
     private = list(
         .vtu_path = NULL,
         .vtkUnstructuredGrid = NULL,
-        .dsa_wrapped_vtkUnstructuredGrid = NULL
+        .dsa_vtkUnstructuredGrid = NULL
     )
 )
 

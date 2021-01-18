@@ -107,10 +107,10 @@ test_that("OGS6_vtu initialization works", {
 #Add test...
 
 
-#===== get_PointData =====
+#===== OGS6_vtu$point_data has expected format =====
 
 
-test_that("get_PointData works", {
+test_that("point_data works", {
 
     skip_if_python_modules_missing()
 
@@ -119,8 +119,6 @@ test_that("get_PointData works", {
                             package = "r2ogs6")
 
     vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
-
-    pd_data_array <- vtu_obj$get_PointData(Name = "HydraulicFlow")
-
-    expect_equal(class(pd_data_array), "array")
+    point_data <- vtu_obj$point_data[["HydraulicFlow"]]
+    expect_equal(class(point_data), "array")
 })
