@@ -46,7 +46,8 @@ to_node <- function(object, object_name = "",
 
         if(object_name %in% attribute_names){
 
-            if(length(object) > 1){
+            if(length(object) > 1 ||
+               (length(object) == 1 && !is.null(names(object)))){
                 attr_node <- list(structure(list()))
                 names(attr_node)[[1]] <- object_name
 
@@ -150,8 +151,10 @@ to_node <- function(object, object_name = "",
 
         for(i in seq_len(length(object))){
 
+            element_name <- names(object)[[i]]
+
             element_node <- to_node(object[[i]],
-                                    names(object)[[i]],
+                                    element_name,
                                     attribute_names,
                                     unwrap_on_exp)
 

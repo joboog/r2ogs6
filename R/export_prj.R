@@ -19,36 +19,34 @@ export_prj <- function(ogs6_obj) {
         basenames <- lapply(ogs6_obj$meshes, function(x){basename(x)})
         meshes_node <- to_node(basenames, "meshes")
     }else{
-        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
-    }
-
-    special_cases <- c("vtus",
-                       "meshes",
-                       "gml")
-
-    #Handle special cases
-    xml2::xml_add_child(prj_xml,
-                        xml2::as_xml_document(meshes_node))
-
-    if(!is.null(ogs6_obj$geometry)){
         xml2::xml_add_child(
             prj_xml,
             xml2::as_xml_document(to_node(ogs6_obj$geometry)))
+        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
     }
 
+    xml2::xml_add_child(prj_xml,
+                        xml2::as_xml_document(meshes_node))
+
     #Get implemented classes
-    impl_classes <- get_implemented_classes()
+    prj_components <- addable_prj_components()
+
+    # Include file reference
+    if(names(ogs6_obj$processes)[[1]] == "include"){
+        processes_node <- to_node(ogs6_obj$processes,
+                                  attribute_names = "include")
+
+        xml2::xml_add_child(prj_xml,
+                            xml2::as_xml_document(processes_node))
+
+        prj_components <- prj_components[names(prj_components) != "processes"]
+    }
 
     #Add default cases
-    for(i in seq_len(length(impl_classes))){
-        param_name <- names(impl_classes)[[i]]
+    for(i in seq_len(length(prj_components))){
+        param_name <- names(prj_components)[[i]]
 
         # cat("\nHandling param", param_name, "\n")
-
-        #If parameter was a special case we already handled, skip
-        if(param_name %in% special_cases){
-            next
-        }
 
         get_param_call <- paste0("ogs6_obj$", param_name)
         param <- eval(parse(text = get_param_call))
