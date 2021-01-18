@@ -63,6 +63,7 @@ test_that("OGS6_pvd$get_PointData_time_tibble works", {
 
     time_tibble <- ogs6_pvd$get_PointData_time_tibble(Names = Names)
     expect_equal(length(time_tibble), 341)
+    expect_equal(length(time_tibble[[1]]), 2)
 })
 
 
@@ -76,12 +77,12 @@ test_that("OGS6_pvd$get_PointData_at_timestep works", {
 
     ogs6_pvd <- OGS6_pvd$new(pvd_path)
 
-    point_data <- ogs6_pvd$get_PointData_at_timestep(point_ids = 0,
+    point_data <- ogs6_pvd$get_PointData_at_timestep(point_ids = c(0, 1, 2),
                                                      Names = "HydraulicFlow",
                                                      timestep = 0)
 
-    expect_equal(length(point_data), 1)
-    expect_equal(names(point_data), "p0")
+    expect_equal(length(point_data),3)
+    expect_equal(names(point_data), c("p0", "p1", "p2"))
 })
 
 
@@ -98,6 +99,19 @@ test_that("OGS6_vtu initialization works", {
 
     expect_equal("vtkmodules.vtkCommonDataModel.vtkUnstructuredGrid" %in%
                      class(vtu_obj$vtkUnstructuredGrid), TRUE)
+})
+
+
+test_that("OGS6_vtu$get_data_for_points works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain_ts_1000_t_100.000000.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    point_data <- vtu_obj$get_data_for_points(c(0, 1, 2), "HydraulicFlow")
+    expect_equal(length(point_data), 3)
 })
 
 

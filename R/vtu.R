@@ -106,9 +106,6 @@ OGS6_pvd <- R6::R6Class(
             # For each .vtu file referenced in pvd_path...
             for(i in seq_len(length(relevant_vtus))){
 
-                new_row <- list()
-                timestep_name <- paste0("t", i)
-
                 # ... get all rows of PointData or get rows by Name
                 if(missing(Names)){
                     Names <- names(relevant_vtus[[i]]$point_data)
@@ -116,21 +113,23 @@ OGS6_pvd <- R6::R6Class(
 
                 assertthat::assert_that(is.character(Names))
 
-                for (j in seq_len(length(point_ids))) {
-                    point_data <-
-                        relevant_vtus[[i]]$get_data_for_point(
-                            point_ids[[j]],
-                            Names)
+                point_data <-
+                    relevant_vtus[[i]]$get_data_for_points(point_ids,
+                                                           Names)
 
-                    new_row <- c(new_row,
-                                 list(list(point_data)))
-                    names(new_row[[length(new_row)]]) <- timestep_name
-                    names(new_row)[[length(new_row)]] <- paste0("p", (j - 1))
+                point_data_row <- list()
+
+                for(j in seq_len(length(point_data))){
+                    wrapped_point_data <- list(point_data[[j]])
+                    names(wrapped_point_data) <- names(point_data)[[j]]
+                    point_data_row <- c(point_data_row,
+                                        list(wrapped_point_data))
+                    names(point_data_row)[[length(point_data_row)]] <-
+                        names(point_data)[[j]]
                 }
 
                 time_list <- c(time_list,
-                               list(tibble::as_tibble_row(new_row)))
-                names(time_list)[[length(time_list)]] <- timestep_name
+                               list(tibble::as_tibble_row(point_data_row)))
             }
 
             # Combine into tibble
@@ -238,14 +237,20 @@ OGS6_vtu <- R6::R6Class(
         },
 
         #'@description
-        #'Gets PointData for point with ID `point_id`
-        #'@param point_id number: Point ID
+        #'Gets PointData for points with IDs in `point_ids`. If called without
+        #' arguments, this is equivalent to `OGS6_vtu$point_data`.
+        #'@param point_ids numeric: Optional: Point IDs, defaults to all
         #'@param Names character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `PointData`
-        get_data_for_point = function(point_id,
-                                      Names){
+        get_data_for_points = function(point_ids,
+                                       Names){
 
-            assertthat::assert_that(assertthat::is.number(point_id))
+            if(missing(point_ids)){
+                max_point_id <- self$get_number_of_points() - 1
+                point_ids <- seq(0, max_point_id)
+            }
+
+            assertthat::assert_that(is.numeric(point_ids))
 
             if(missing(Names)){
                 Names <- names(self$point_data)
@@ -255,11 +260,22 @@ OGS6_vtu <- R6::R6Class(
 
             point_data <- list()
 
-            for(i in seq_len(length(Names))){
-                point_data <-
-                    c(point_data,
-                      list(self$point_data[[Names[[i]]]][[(point_id + 1)]]))
-                names(point_data)[[length(point_data)]] <- Names[[i]]
+            for(i in seq_len(length(point_ids))){
+
+                point_name <- paste0("p", point_ids[[i]])
+                single_point_data <- list()
+
+                for(j in seq_len(length(Names))){
+                    single_point_data <-
+                        c(single_point_data,
+                          list(self$point_data[[Names[[j]]]]
+                               [[(point_ids[[i]] + 1)]]))
+                    names(single_point_data)[[length(single_point_data)]] <-
+                        Names[[j]]
+                }
+
+                point_data <- c(point_data, list(single_point_data))
+                names(point_data)[[length(point_data)]] <- point_name
             }
 
             return(point_data)
