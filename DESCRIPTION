@@ -28,7 +28,6 @@ Imports:
     crayon,
     rlist,
     utils,
-    qpdf,
     rmarkdown,
     rvest,
     pbapply,
@@ -37,6 +36,11 @@ Imports:
     curl,
     xtable,
     dplyr,
-    rlang
+    rlang,
+    doParallel,
+    stats,
+    reticulate
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
+Depends: 
+    foreach

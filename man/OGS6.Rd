@@ -9,45 +9,51 @@ Constructor for the OGS6 base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{sim_output}}{Getter for OGS6 private parameter '.sim_output'}
-
-\item{\code{sim_name}}{Getter for OGS6 private parameter '.sim_name'}
+\item{\code{sim_name}}{Access to private parameter '.sim_name'}
 
 \item{\code{sim_id}}{Getter for OGS6 private parameter '.sim_id'}
 
-\item{\code{sim_path}}{Getter for OGS6 private parameter '.sim_path'}
+\item{\code{sim_path}}{Access to private parameter '.sim_path'}
+
+\item{\code{logfile}}{Access to private parameter '.logfile'}
 
 \item{\code{ogs_bin_path}}{Getter for OGS6 private parameter '.ogs_bin_path'}
 
 \item{\code{gml}}{Getter for OGS6 private parameter '.gml'}
 
-\item{\code{meshes}}{Getter for OGS6 private parameter '.meshes'}
+\item{\code{geometry}}{Access to private parameter '.geometry'}
 
-\item{\code{geometry}}{Getter for OGS6 private parameter '.geometry'}
+\item{\code{meshes}}{Access to private parameter '.meshes'}
 
-\item{\code{python_script}}{Getter for OGS6 private parameter '.python_script'}
+\item{\code{vtus}}{Access to private parameter '.vtus'}
 
-\item{\code{processes}}{Getter for OGS6 private parameter '.processes'}
+\item{\code{python_script}}{Access to private parameter '.python_script'}
 
-\item{\code{time_loop}}{Getter for OGS6 private parameter '.time_loop'}
+\item{\code{search_length_algorithm}}{Access to private parameter '.search_length_algorithm'}
 
-\item{\code{local_coordinate_system}}{Getter for OGS6 private parameter '.local_coordinate_system'}
+\item{\code{processes}}{Access to private parameter '.processes'}
 
-\item{\code{media}}{Getter for OGS6 private parameter '.media'}
+\item{\code{time_loop}}{Access to private parameter '.time_loop'}
 
-\item{\code{parameters}}{Getter for OGS6 private parameter '.parameters'}
+\item{\code{local_coordinate_system}}{Access to private parameter '.local_coordinate_system'}
 
-\item{\code{curves}}{Getter for OGS6 private parameter '.curves'}
+\item{\code{media}}{Access to private parameter '.media'}
 
-\item{\code{process_variables}}{Getter for OGS6 private parameter '.process_variables'}
+\item{\code{parameters}}{Access to private parameter '.parameters'}
 
-\item{\code{nonlinear_solvers}}{Getter for OGS6 private parameter '.nonlinear_solvers'}
+\item{\code{curves}}{Access to private parameter '.curves'}
 
-\item{\code{linear_solvers}}{Getter for OGS6 private parameter '.linear_solvers'}
+\item{\code{process_variables}}{Access to private parameter '.process_variables'}
 
-\item{\code{test_definition}}{Getter for OGS6 private parameter '.test_definition'}
+\item{\code{nonlinear_solvers}}{Access to private parameter '.nonlinear_solvers'}
 
-\item{\code{insitu}}{Getter for OGS6 private parameter '.insitu'}
+\item{\code{linear_solvers}}{Access to private parameter '.linear_solvers'}
+
+\item{\code{test_definition}}{Access to private parameter '.test_definition'}
+
+\item{\code{insitu}}{Access to private parameter '.insitu'}
+
+\item{\code{pvd}}{Access to private parameter '.pvd'}
 }
 \if{html}{\out{</div>}}
 }
@@ -55,10 +61,11 @@ Constructor for the OGS6 base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6$new()}}
-\item \href{#method-add_sim_output}{\code{OGS6$add_sim_output()}}
-\item \href{#method-add_mesh}{\code{OGS6$add_mesh()}}
+\item \href{#method-add}{\code{OGS6$add()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
+\item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
 \item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
+\item \href{#method-add_search_length_algorithm}{\code{OGS6$add_search_length_algorithm()}}
 \item \href{#method-add_process}{\code{OGS6$add_process()}}
 \item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
 \item \href{#method-add_local_coordinate_system}{\code{OGS6$add_local_coordinate_system()}}
@@ -71,6 +78,7 @@ Constructor for the OGS6 base class
 \item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
 \item \href{#method-add_insitu}{\code{OGS6$add_insitu()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-print_log}{\code{OGS6$print_log()}}
 \item \href{#method-clear}{\code{OGS6$clear()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
 }
@@ -96,44 +104,31 @@ saved}
 
 \item{\code{ogs_bin_path}}{string: Path to OpenGeoSys6 /bin directory}
 
-\item{\code{test_mode}}{In test mode, sim_path and ogs_bin_path will not be
-validated. If you're not a developer, please leave this as it is :)}
+\item{\code{test_mode}}{In test mode, ogs_bin_path will not be
+validated. Unless you're a dev, please don't touch.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_sim_output"></a>}}
-\if{latex}{\out{\hypertarget{method-add_sim_output}{}}}
-\subsection{Method \code{add_sim_output()}}{
-... (WIP)
+\if{html}{\out{<a id="method-add"></a>}}
+\if{latex}{\out{\hypertarget{method-add}{}}}
+\subsection{Method \code{add()}}{
+Adds a simulation component (WIP)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_sim_output(name, value)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add(x, component_name = "")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{...}
+\item{\code{x}}{An object of any class listed in addable_components(). If `x` is
+not of a proprietary `r2ogs6` class, `component_name` must be
+supplied. E.g. If you're adding a `python_script` which is a string, you
+would call `your_ogs6_obj$add("some_script.py", "python_script")`}
 
-\item{\code{value}}{...}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_mesh"></a>}}
-\if{latex}{\out{\hypertarget{method-add_mesh}{}}}
-\subsection{Method \code{add_mesh()}}{
-Adds a r2ogs6_mesh object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_mesh(mesh)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{mesh}}{r2ogs6_mesh}
+\item{\code{component_name}}{string: Optional: The name of the component to be
+added}
 }
 \if{html}{\out{</div>}}
 }
@@ -142,7 +137,7 @@ Adds a r2ogs6_mesh object
 \if{html}{\out{<a id="method-add_gml"></a>}}
 \if{latex}{\out{\hypertarget{method-add_gml}{}}}
 \subsection{Method \code{add_gml()}}{
-Adds a r2ogs6_gml object
+Adds a reference to a .gml file and optionally, a OGS6_gml object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_gml(gml)}\if{html}{\out{</div>}}
 }
@@ -150,7 +145,28 @@ Adds a r2ogs6_gml object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{gml}}{r2ogs6_gml}
+\item{\code{gml}}{string | r2ogs6_gml: Either a path to a file with extension
+.gml or a r2ogs6_gml object.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_vtu"></a>}}
+\if{latex}{\out{\hypertarget{method-add_vtu}{}}}
+\subsection{Method \code{add_vtu()}}{
+Adds a reference to a .vtu file and optionally, a OGS6_vtu object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{string:}
+
+\item{\code{read_in_vtu}}{flag: Optional: Should .vtu file just be copied or
+read in too?}
 }
 \if{html}{\out{</div>}}
 }
@@ -168,6 +184,23 @@ Adds a python script
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{python_script}}{string: File name of python script}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_search_length_algorithm"></a>}}
+\if{latex}{\out{\hypertarget{method-add_search_length_algorithm}{}}}
+\subsection{Method \code{add_search_length_algorithm()}}{
+Adds a r2ogs6_search_length_algorithm object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_search_length_algorithm(search_length_algorithm)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{search_length_algorithm}}{r2ogs6_search_length_algorithm}
 }
 \if{html}{\out{</div>}}
 }
@@ -366,7 +399,25 @@ Adds a r2ogs6_insitu object
 Checks if the OGS6 object has all necessary parameters for
 starting a simulation
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status(print_status = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{print_status}}{flag: Should the status be printed to the console?
+print_log}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print_log"></a>}}
+\if{latex}{\out{\hypertarget{method-print_log}{}}}
+\subsection{Method \code{print_log()}}{
+Prints logfile to console (if it exists)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$print_log()}\if{html}{\out{</div>}}
 }
 
 }
@@ -376,7 +427,7 @@ starting a simulation
 \subsection{Method \code{clear()}}{
 Clears components from the OGS6 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(get_implemented_classes()))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(addable_prj_components()))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -384,7 +435,7 @@ Clears components from the OGS6 object
 \describe{
 \item{\code{which}}{character: The names of the components (all by default).
 If you want to delete only some components, run
-names(get_implemented_classes()) for the available options.}
+names(addable_prj_components()) for the available options.}
 }
 \if{html}{\out{</div>}}
 }

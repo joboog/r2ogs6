@@ -4,12 +4,29 @@
 \alias{generate_benchmark_script}
 \title{generate_benchmark_script}
 \usage{
-generate_benchmark_script(prj_path, dest_dir = "extdata/benchmark_scripts/")
+generate_benchmark_script(
+  prj_path,
+  sim_path,
+  ogs_bin_path,
+  script_path,
+  read_in_gml,
+  read_in_vtu = FALSE
+)
 }
 \arguments{
-\item{prj_path}{The path to the project file the script will be based on}
+\item{prj_path}{string: .prj file the script will be based on}
 
-\item{dest_dir}{Optional: The directory to write the script to}
+\item{sim_path}{string: Path where all simulation files will be saved}
+
+\item{ogs_bin_path}{string: OpenGeoSys bin folder path}
+
+\item{script_path}{string: Path where benchmark script will be saved}
+
+\item{read_in_gml}{flag: Optional: Should .gml file just be copied or read
+in too?}
+
+\item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
+in too?}
 }
 \description{
 Generates a benchmark script from an existing .prj file.

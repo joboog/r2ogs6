@@ -98,6 +98,12 @@ new_r2ogs6_tl_process <- function(ref,
 
     assertthat::assert_that(class(time_stepping) == "r2ogs6_time_stepping")
 
+    if(!is.null(compensate_non_equilibrium_initial_residuum)){
+        compensate_non_equilibrium_initial_residuum <-
+            stringr::str_remove_all(compensate_non_equilibrium_initial_residuum,
+                                    "[:space:]*")
+    }
+
     validate_is_null_or_str_flag(compensate_non_equilibrium_initial_residuum)
 
     structure(
@@ -146,7 +152,11 @@ r2ogs6_output <- function(type,
                              fixed_output_times = NULL) {
 
     #Coerce input
-    fixed_output_times <- coerce_string_to_numeric(fixed_output_times, TRUE)
+    fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
+
+    if(is.list(meshes)){
+        meshes <- unlist(meshes)
+    }
 
     new_r2ogs6_output(type,
                          prefix,
@@ -185,8 +195,7 @@ new_r2ogs6_output <- function(type,
         timesteps <- validate_timesteps(timesteps, TRUE)
     }
 
-    validate_is_null_or_str_flag(compress_output,
-                                 output_iteration_results)
+    validate_is_null_or_str_flag(compress_output)
 
     if(!is.null(meshes)){
         assertthat::assert_that(is.character(meshes))
@@ -276,8 +285,10 @@ r2ogs6_convergence_criterion <- function(type,
                                          reltols = NULL) {
 
     #Coerce input
-    abstols <- coerce_string_to_numeric(abstols, TRUE)
-    reltols <- coerce_string_to_numeric(reltols, TRUE)
+    abstol <- coerce_string_to_numeric(abstol)
+    reltol <- coerce_string_to_numeric(reltol)
+    abstols <- coerce_string_to_numeric(abstols)
+    reltols <- coerce_string_to_numeric(reltols)
 
     new_r2ogs6_convergence_criterion(type,
                                      norm_type,
@@ -370,8 +381,8 @@ r2ogs6_time_stepping <- function(type,
     rel_dt_max <- coerce_string_to_numeric(rel_dt_max)
     tol <- coerce_string_to_numeric(tol)
 
-    number_iterations <- coerce_string_to_numeric(number_iterations, TRUE)
-    multiplier <- coerce_string_to_numeric(multiplier, TRUE)
+    number_iterations <- coerce_string_to_numeric(number_iterations)
+    multiplier <- coerce_string_to_numeric(multiplier)
 
     new_r2ogs6_time_stepping(type,
                              t_initial,

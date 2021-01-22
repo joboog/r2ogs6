@@ -9,7 +9,6 @@ r2ogs6_ph_property(
   type,
   value = NULL,
   reference_value = NULL,
-  independent_variable = NULL,
   initial_porosity = NULL,
   minimal_porosity = NULL,
   maximal_porosity = NULL,
@@ -20,7 +19,8 @@ r2ogs6_ph_property(
   swelling_pressures = NULL,
   lower_saturation_limit = NULL,
   upper_saturation_limit = NULL,
-  intrinsic_permeabilities = NULL
+  intrinsic_permeabilities = NULL,
+  ...
 )
 }
 \arguments{
@@ -31,8 +31,6 @@ r2ogs6_ph_property(
 \item{value}{Optional: string | double: ...}
 
 \item{reference_value}{Optional: string | double:}
-
-\item{independent_variable}{Optional: list:}
 
 \item{initial_porosity}{Optional: string:}
 
@@ -55,6 +53,8 @@ r2ogs6_ph_property(
 \item{upper_saturation_limit}{Optional: string | double:}
 
 \item{intrinsic_permeabilities}{Optional: string | numeric:}
+
+\item{...}{independent_variable}
 }
 \description{
 tag: property

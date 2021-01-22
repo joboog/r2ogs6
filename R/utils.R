@@ -16,14 +16,14 @@ select_fitting_subclass <- function(xpath_expr, subclasses_names){
   assertthat::assert_that(is.character(subclasses_names))
 
   split_path <- unlist(strsplit(xpath_expr, "/", fixed = TRUE))
+  grandparent_path <- paste(utils::tail(split_path, 3), collapse = "/")
 
-  if(identical(sort(unique(names(subclasses_names))),
-               sort(names(subclasses_names)))){
-    tag_name <- split_path[[length(split_path)]]
+  tag_name <- split_path[[length(split_path)]]
+
+  # If name of subclass tag is unique
+  if(length(subclasses_names[names(subclasses_names) == tag_name]) == 1){
     return(invisible(subclasses_names[[tag_name]]))
   }
-
-  grandparent_path <- paste(utils::tail(split_path, 3), collapse = "/")
 
   subclass_name <- ""
 
@@ -64,49 +64,78 @@ get_subclass_names <- function(class_name) {
 
   subclasses_names <- character()
 
-  switch(class_name,
+  switch(
+    class_name,
 
-         r2ogs6_process = {
-           subclasses_names <- c("r2ogs6_fracture_model",
-                                 "r2ogs6_fracture_properties",
-                                 "r2ogs6_jacobian_assembler",
-                                 "r2ogs6_phasefield_parameters",
-                                 "r2ogs6_borehole_heat_exchanger",
-                                 "r2ogs6_flow_and_temperature_control",
-                                 "r2ogs6_pipes",
-                                 "r2ogs6_material_property",
-                                 "r2ogs6_fluid",
-                                 "r2ogs6_porous_medium",
-                                 "r2ogs6_capillary_pressure")
-         },
-         r2ogs6_chemical_system = {
-           subclasses_names <- c("r2ogs6_solution",
-                                 "r2ogs6_phase_component",
-                                 "r2ogs6_kinetic_reactant",
-                                 "r2ogs6_rate")
-         },
-         r2ogs6_linear_solver = {
-           subclasses_names <- c("r2ogs6_eigen")
-         },
-         r2ogs6_medium = {
-           subclasses_names <- c("r2ogs6_phase",
-                                 "r2ogs6_pr_property",
-                                 "r2ogs6_ph_property",
-                                 "r2ogs6_com_property")
-         },
-         r2ogs6_process_variable = {
-           subclasses_names <- c("r2ogs6_boundary_condition",
-                                 "r2ogs6_source_term",
-                                 "r2ogs6_deactivated_subdomain")
-         },
-         r2ogs6_time_loop = {
-           subclasses_names <- c("r2ogs6_tl_process",
-                                 "r2ogs6_output",
-                                 "r2ogs6_global_processes_coupling",
-                                 "r2ogs6_convergence_criterion",
-                                 "r2ogs6_time_stepping")
-         }
+    OGS6_vtu = {
+      subclasses_names <- c("OGS6_UnstructuredGrid",
+                            "OGS6_AppendedData",
+                            "OGS6_Piece")
+    },
+
+    r2ogs6_process = {
+      subclasses_names <- c(
+        "r2ogs6_constitutive_relation",
+        "r2ogs6_fracture_model",
+        "r2ogs6_fracture_properties",
+        "r2ogs6_jacobian_assembler",
+        "r2ogs6_phasefield_parameters",
+        "r2ogs6_borehole_heat_exchanger",
+        "r2ogs6_flow_and_temperature_control",
+        "r2ogs6_pipes",
+        "r2ogs6_material_property",
+        "r2ogs6_fluid",
+        "r2ogs6_porous_medium",
+        "r2ogs6_relative_permeability",
+        "r2ogs6_capillary_pressure"
+      )
+    },
+
+    r2ogs6_chemical_system = {
+      subclasses_names <- c(
+        "r2ogs6_solution",
+        "r2ogs6_phase_component",
+        "r2ogs6_kinetic_reactant",
+        "r2ogs6_rate"
+      )
+    },
+
+    r2ogs6_linear_solver = {
+      subclasses_names <- c("r2ogs6_eigen")
+    },
+
+    r2ogs6_medium = {
+      subclasses_names <- c(
+        "r2ogs6_phase",
+        "r2ogs6_pr_property",
+        "r2ogs6_ph_property",
+        "r2ogs6_component",
+        "r2ogs6_com_property"
+      )
+    },
+
+    r2ogs6_process_variable = {
+      subclasses_names <- c(
+        "r2ogs6_boundary_condition",
+        "r2ogs6_source_term",
+        "r2ogs6_deactivated_subdomain"
+      )
+    },
+
+    r2ogs6_time_loop = {
+      subclasses_names <- c(
+        "r2ogs6_tl_process",
+        "r2ogs6_output",
+        "r2ogs6_global_process_coupling",
+        "r2ogs6_convergence_criterion",
+        "r2ogs6_time_stepping"
+      )
+    }
   )
+
+  for(i in seq_len(length(subclasses_names))){
+    names(subclasses_names)[[i]] <- get_class_tag_name(subclasses_names[[i]])
+  }
 
   return(invisible(subclasses_names))
 }
@@ -136,6 +165,29 @@ get_class_tag_name <- function(class_name) {
 }
 
 
+#'get_tag_class_name
+#'@description Utility function, returns the class name of an XML tag
+#'@param tag_name string: An XML tag
+#'@return string: The class name corresponding to tag_name
+get_tag_class_name <- function(tag_name) {
+
+  assertthat::assert_that(assertthat::is.string(tag_name))
+
+  class_name <- ""
+  ntn <- get_nonstandard_tag_names()
+
+  if(tag_name %in% ntn &&
+     assertthat::is.string(names(ntn)[ntn == tag_name]) &&
+     grepl("OGS6", names(ntn)[ntn == tag_name])){
+    class_name <- names(ntn)[ntn == tag_name]
+  }else{
+    class_name <- paste0("r2ogs6_", tag_name)
+  }
+
+  return(invisible(class_name))
+}
+
+
 #'get_nonstandard_tag_names
 #'@description Utility function, returns nonstandard tag names
 #'@return character: The tag names of classes that are not named after the
@@ -143,7 +195,8 @@ get_class_tag_name <- function(class_name) {
 #' If you as a dev create new classes like that, just add them to the list :)
 get_nonstandard_tag_names <- function(){
 
-  tag_names <- c(r2ogs6_tl_process = "process",
+  tag_names <- c(OGS6_vtu = "VTKFile",
+                 r2ogs6_tl_process = "process",
                  r2ogs6_pr_property = "property",
                  r2ogs6_ph_property = "property",
                  r2ogs6_com_property = "property")
@@ -152,16 +205,17 @@ get_nonstandard_tag_names <- function(){
 }
 
 
-#'get_implemented_classes
-#'@description Utility function, returns the names of all classes implemented
-#' so far. Change this if you implement new classes or delete old ones!
-#' If you implement a new class, you add the following to the character vector:
-#' <name_of_corresponding_OGS6_parameter> = <name_of_your_class>
-get_implemented_classes <- function(){
+#'addable_prj_components
+#'@description Returns all possible `OGS6` top level .prj components (names)
+#' along with their respective class names (values).
+#' Change this if you implement new `OGS6` .prj components or delete old ones!
+#' If you implement a new components, you add the following to the `class_names`
+#' vector: `name_of_prj_component = "name_of_your_class"`
+#'@return character: Named vector of `OGS6` top level .prj components (names)
+#' along with their respective class names (values)
+addable_prj_components <- function(){
 
-  class_names <- c(meshes = "r2ogs6_mesh",
-                   gml = "r2ogs6_gml",
-                   search_length_algorithm = "r2ogs6_search_length_algorithm",
+  class_names <- c(search_length_algorithm = "r2ogs6_search_length_algorithm",
                    processes = "r2ogs6_process",
                    media = "r2ogs6_medium",
                    time_loop = "r2ogs6_time_loop",
@@ -178,63 +232,79 @@ get_implemented_classes <- function(){
 }
 
 
-#===== INFO UTILITY =====
+#'is_wrapper
+#'@description Helper function, checks if an OGS6 parameter is a wrapper
+#'@param ogs6_param_name string: Name of an OGS6 parameter
+is_wrapper <- function(ogs6_param_name){
 
+  singletons <- c("gml",
+                  "search_length_algorithm",
+                  "time_loop",
+                  "local_coordinate_system",
+                  "insitu")
 
-#'get_list_status
-#'@description Helper function for get_status() to check if a list has at least
-#' one element.
-#'@param flag Boolean flag to keep track of missing components
-#'@param obj_list The specified list
-#'@param element_type Optional: What kind of elements are in the list?
-#'@param is_opt flag: Does the list need at least one element?
-get_list_status <- function(flag,
-                            obj_list,
-                            element_type = "list element",
-                            is_opt = FALSE){
-
-  sim_ready <- flag
-
-  if(length(obj_list) == 0){
-    if(!is_opt){
-      cat(crayon::red("\u2717"))
-      sim_ready <- FALSE
-    }else{
-      cat(crayon::yellow("()"))
-    }
-  }else{
-    cat(crayon::green("\u2713"))
-  }
-
-  cat(" At least one", element_type, "was defined", "\n")
-
-  return(invisible(sim_ready))
+  return(!(ogs6_param_name %in% singletons))
 }
 
 
-#'obj_is_defined
-#'@description Helper function for get_status() to check if an object was
-#' defined
-#'@param flag Boolean flag to keep track of missing components
-#'@param obj The specified object
-#'@param obj_type Optional: What kind of object is this?
-#'@param is_opt flag: Is the element optional i.e. can it be NULL?
-obj_is_defined <- function(flag,
-                           obj,
-                           obj_type = "",
-                           is_opt = FALSE){
-  is_defined <- flag
+#===== INFO UTILITY =====
 
-  if(is.null(obj)){
-    cat(crayon::red("\u2717"))
-    is_defined <- FALSE
+
+#'get_obj_status
+#'@description Helper function for get_status() to check the status of an OGS6
+#' parameter
+#'@param flag flag: To keep track of missing components
+#'@param obj OGS6 parameter: Either a wrapper list or an r2ogs6 class object
+get_obj_status <- function(flag, obj){
+
+  assertthat::assert_that(assertthat::is.flag(flag))
+
+  ogs6_parameter_name <- unlist(strsplit(deparse(substitute(obj)),
+                                         ".",
+                                         fixed = TRUE))[[2]]
+
+  is_optional <- is_optional_sim_component(ogs6_parameter_name)
+
+  status_str <- ""
+
+  if(is.null(obj) || length(obj) == 0){
+    if(!is_optional){
+      status_str <- crayon::red("\u2717 ")
+      flag <- FALSE
+    }else{
+      status_str <- crayon::yellow("\u2717 ")
+    }
   }else{
-    cat(crayon::green("\u2713"))
+    status_str <- crayon::green("\u2713 ")
   }
 
-  cat(" ", obj_type, "object is not NULL", "\n")
+  # Check if parameter is r2ogs6 class object or wrapper list
+  if(any(grepl("r2ogs6_", class(obj), fixed = TRUE))){
+    status_str <- paste0(status_str,
+                         "OGS6$", ogs6_parameter_name, " is defined\n")
+  }else{
+    status_str <- paste0(status_str, "OGS6$", ogs6_parameter_name,
+                         " has at least one element\n")
+  }
 
-  return(invisible(is_defined))
+  return(invisible(list(flag, status_str)))
+}
+
+
+#'is_optional_sim_component
+#'@description Checks if a simulation component is optional
+#'@param ogs6_parameter_name string: Name of a OGS6 parameter
+is_optional_sim_component <- function(ogs6_parameter_name){
+
+  mandatory_components <- c("meshes",
+                            "processes",
+                            "time_loop",
+                            "nonlinear_solvers",
+                            "linear_solvers",
+                            "parameters",
+                            "process_variables")
+
+  return(invisible(!ogs6_parameter_name %in% mandatory_components))
 }
 
 
@@ -242,23 +312,15 @@ obj_is_defined <- function(flag,
 
 
 #'coerce_string_to_numeric
-#'@description If an object is of type string, coerces it to a numeric type:
-#' A double if 'split' is FALSE as per default, a numeric vector otherwise.
-#' If 'split' is set to true the string will be split at ' ' (whitespace)
-#' characters.
+#'@description If an object is of type string, coerces it to a numeric type
 #'@param obj An object to check
-#'@param split flag: Should object be split at ' ' (whitespace) if it is a
-#' string?
 #'@return The object as a numeric type (if 'obj' was a string, else the
 #' unchanged 'obj')
-coerce_string_to_numeric <- function(obj, split = FALSE){
+coerce_string_to_numeric <- function(obj){
 
   if(assertthat::is.string(obj)){
-    if(split){
-      obj <- as.double(unlist(strsplit(obj, " ")))
-    }else{
-      obj <- as.double(obj)
-    }
+    obj <- trimws(gsub("\r?\n|\r|\\s+", " ", obj))
+    obj <- as.double(unlist(strsplit(obj, " ")))
   }
 
   return(invisible(obj))
@@ -277,14 +339,37 @@ validate_is_dir_path <- function(path){
 
   assertthat::assert_that(assertthat::is.string(path))
 
+  path <- gsub("\\", "/", path, fixed = TRUE)
+
   nchar <- nchar(path)
 
-  if(substring(path, nchar, nchar) != "/" &&
-     substring(path, nchar, nchar) != "\\"){
+  if(substring(path, nchar, nchar) != "/"){
     path <- paste0(path, "/")
   }
 
   return(invisible(path))
+}
+
+#'clean_up_imported_list
+#'@description Cleans an imported list because sometimes strings containing
+#' only newline characters and spaces get imported in
+#'@param imported_list list: A list
+clean_up_imported_list <- function(imported_list){
+
+  assertthat::assert_that(is.list(imported_list))
+
+  cleaned_list <- list()
+
+  for(i in seq_len(length(imported_list))){
+    if(assertthat::is.string(imported_list[[i]]) &&
+       stringr::str_remove_all(imported_list[[i]], "[\n|[:space:]]") == ""){
+      next
+    }
+    cleaned_list <- c(cleaned_list, list(imported_list[[i]]))
+    names(cleaned_list)[[length(cleaned_list)]] <- names(imported_list)[[i]]
+  }
+
+  return(invisible(cleaned_list))
 }
 
 
@@ -366,8 +451,8 @@ validate_param_list <- function(param_list, default_names) {
       "Renaming elements of ",
       deparse(quote(param_list)),
       " to fit their default names: '",
-      paste(default_names, collapse = "', '")
-    ))
+      paste(default_names, collapse = "', '"),
+      "'"))
   }
 
   return(invisible(param_list))
@@ -385,7 +470,7 @@ validate_wrapper_list <- function(wrapper_list, expected_element_class) {
   assertthat::assert_that(is.list(wrapper_list))
 
   lapply(wrapper_list, function(x){
-    if(class(x) != expected_element_class){
+    if(!any(grepl(expected_element_class, class(x), fixed = TRUE))){
       stop(paste("List has at least one element whose class is not",
                  expected_element_class),
            call. = FALSE)}
@@ -498,6 +583,40 @@ validate_is_null_or_param_list <- function(obj, default_names){
 
 
 #===== OTHERS =====
+
+
+#'get_path_sublist
+#'@description Helper function to speed up tests
+#'@param prj_paths character: .prj paths
+#'@param starting_from_prj_path string: .prj path to start from
+#'@return character: The sublist starting from `starting_from_prj_path`
+get_path_sublist <- function(prj_paths, starting_from_prj_path){
+
+  assertthat::assert_that(is.character(prj_paths))
+  assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
+
+  found_starting_path <- FALSE
+
+  for (i in seq_len(length(prj_paths))) {
+    if (prj_paths[[i]] == starting_from_prj_path) {
+      prj_paths <- prj_paths[i:length(prj_paths)]
+      found_starting_path <- TRUE
+      break
+    }
+  }
+
+  if (!found_starting_path) {
+    warning(
+      paste(
+        "Couldn't find .prj path to start from.",
+        "Running all benchmarks in 'path'"
+      ),
+      call. = FALSE
+    )
+  }
+
+  return(invisible(prj_paths))
+}
 
 
 #Test if S3 object in R6 class inherits reference semantics

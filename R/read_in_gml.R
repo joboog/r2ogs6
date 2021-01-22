@@ -1,25 +1,6 @@
 #Functions to read in data from a .gml file to an OGS6 object
 
 
-#'read_in_gml
-#'@description Wrapper function to read in a whole .gml file
-#'@param ogs6_obj A OGS6 class object
-#'@param gml_path The path to the geometry file that should be read in
-#'@export
-read_in_gml <- function(ogs6_obj, gml_path) {
-
-    assertthat::assert_that("OGS6" %in% class(ogs6_obj))
-    xml_doc <- validate_read_in_xml(gml_path)
-
-    name <- xml2::xml_text(xml2::xml_find_first(xml_doc, "//name"))
-    points <- read_in_points(xml_doc)
-    polylines <- read_in_polylines(xml_doc)
-    surfaces <- read_in_surfaces(xml_doc)
-
-    ogs6_obj$add_gml(r2ogs6_gml(name, points, polylines, surfaces))
-}
-
-
 #'read_in_points
 #'@description Reads points from a .gml file
 #'@param xml_doc A parsed XML document (of class 'xml2::xml_document')
@@ -38,15 +19,14 @@ read_in_points <- function(xml_doc) {
         point_name <- ""
 
         if(length(attrs) == 5){
-            point_name <- attrs[[5]]
+            point_name <- attrs[["name"]]
         }
 
         points_tibble <- tibble::add_row(points_tibble,
-                                        x = as.double(attrs[[2]]),
-                                        y = as.double(attrs[[3]]),
-                                        z = as.double(attrs[[4]]),
-                                        name = point_name,
-                                        )
+                                        x = as.double(attrs[["x"]]),
+                                        y = as.double(attrs[["y"]]),
+                                        z = as.double(attrs[["z"]]),
+                                        name = point_name)
     }
 
     return(invisible(points_tibble))
@@ -73,6 +53,7 @@ read_in_polylines <- function(xml_doc) {
 
         for(j in seq_along(pnt_nodeset)){
             pnt_vector <- c(pnt_vector, xml2::xml_double(pnt_nodeset[[j]]))
+            names(pnt_vector) <- rep("pnt", length(pnt_vector))
         }
 
         polyline <- list(name = attrs[[2]], pnt_vector)
@@ -96,14 +77,20 @@ read_in_surfaces <- function(xml_doc) {
         return(invisible(NULL))
     }
 
-    for(i in seq_along(surfaces_nodeset)){
+    for(i in seq_len(length(surfaces_nodeset))){
         attrs <- xml2::xml_attrs(surfaces_nodeset[[i]])
         element_nodeset <- xml2::xml_children(surfaces_nodeset[[i]])
 
         element_1 <- as.double(xml2::xml_attrs(element_nodeset[[1]]))
-        element_2 <- as.double(xml2::xml_attrs(element_nodeset[[2]]))
 
-        surface <- list(name = attrs[[2]], element_1, element_2)
+        surface <- list(name = attrs[[2]],
+                        element = element_1)
+
+        if(length(element_nodeset) == 2){
+            element_2 <- as.double(xml2::xml_attrs(element_nodeset[[2]]))
+            surface <- c(surface, list(element = element_2))
+        }
+
         surfaces_list <- c(surfaces_list, list(surface))
     }
 

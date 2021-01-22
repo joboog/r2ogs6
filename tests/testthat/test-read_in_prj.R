@@ -2,7 +2,7 @@
 
 test_that("read_in works for process objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -29,7 +29,7 @@ test_that("read_in works for process objects", {
 
 test_that("read_in works for medium objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -48,7 +48,7 @@ test_that("read_in works for medium objects", {
 
 test_that("read_in works for time_loop objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -70,7 +70,7 @@ test_that("read_in works for time_loop objects", {
 
 test_that("read_in works for parameter objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -91,7 +91,7 @@ test_that("read_in works for parameter objects", {
 
 test_that("read_in works for process_variable objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -109,7 +109,7 @@ test_that("read_in works for process_variable objects", {
 
 test_that("read_in works for nonlinear_solver objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -133,7 +133,7 @@ test_that("read_in works for nonlinear_solver objects", {
 
 test_that("read_in works for linear_solver objects", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -151,4 +151,65 @@ test_that("read_in works for linear_solver objects", {
     expect_equal(ogs6_obj$linear_solvers[[1]]$lis,
                  "-i bicgstab -p ilu -tol 1e-16 -maxiter 10000")
     expect_equal(ogs6_obj$linear_solvers[[1]]$eigen$error_tolerance, 1e-16)
+})
+
+
+test_that("read_in works with newline value separation", {
+
+    prj_path <- (system.file("extdata/benchmarks/LiakopoulosHM",
+                             "liakopoulos.prj", package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_id = 1,
+                         sim_path = "sim_path",
+                         ogs_bin_path = "ogs_bin_path",
+                         test_mode = TRUE)
+
+    read_in(ogs6_obj,
+            prj_path,
+            "/OpenGeoSysProject/curves/curve")
+
+    expect_equal(length(ogs6_obj$curves), 1)
+    expect_equal(length(ogs6_obj$curves[[1]]$coords), 61)
+    expect_equal(ogs6_obj$curves[[1]]$coords[[1]], 0.2)
+    expect_equal(length(ogs6_obj$curves[[1]]$values), 61)
+    expect_equal(ogs6_obj$curves[[1]]$values[[1]], 0.0)
+})
+
+
+test_that("read_in works for processes/include tags", {
+
+    prj_path <- (system.file("extdata/benchmarks/Elliptic/circle_radius_1",
+                             "circle_1e1_axi.prj", package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_id = 1,
+                         sim_path = "sim_path",
+                         ogs_bin_path = "ogs_bin_path",
+                         test_mode = TRUE)
+
+    read_in_prj(ogs6_obj,
+                prj_path)
+
+    expect_equal(length(ogs6_obj$processes), 1)
+    expect_equal(names(ogs6_obj$processes)[[1]], "include")
+
+})
+
+
+test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
+
+    prj_path <- (system.file("extdata/benchmarks/EmbeddedFracturePermeability/",
+                             "cube.prj", package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_id = 1,
+                         sim_path = "sim_path",
+                         ogs_bin_path = "ogs_bin_path",
+                         test_mode = TRUE)
+
+    read_in_prj(ogs6_obj,
+                prj_path)
+
+    expect_equal(ogs6_obj$processes[[1]]$name, "HM")
 })

@@ -7,9 +7,9 @@
 # })
 
 
-test_that("guess_structure works for simple r2ogs6 classes", {
+test_that("node_to_object works for simple r2ogs6 classes", {
 
-    prj_path <- (system.file("extdata/flow_free_expansion",
+    prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
@@ -27,13 +27,53 @@ test_that("guess_structure works for simple r2ogs6 classes", {
 })
 
 
-test_that("guess_structure works for simple lists", {
+test_that("node_to_object works for nodes that have both attributes and text", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_free_expansion",
+                            "cube_1x1x1.vtu",
+                            package = "r2ogs6")
+
+    test_node <- xml2::read_xml("<test a = \"1\">some text</test>")
+
+    test_obj <- node_to_object(test_node,
+                               xpath_expr = "\test")
+
+
+    expect_equal(length(test_obj), 2)
+    expect_equal(test_obj[["a"]], "1")
+    expect_equal(test_obj[["xml_text"]], "some text")
+})
+
+
+test_that("node_to_object works for simple lists", {
 
     my_xml <- xml2::read_xml("<a><b>1</b><b>2</b></a>")
     my_node <- xml2::xml_find_first(my_xml, "/a")
 
-    my_list <- guess_structure(my_xml, "/a")
+    my_list <- node_to_object(my_xml, "/a")
 
     expect_equal(my_list, list(b = "1", b = "2"))
 })
+
+
+test_that("order_parameters works for classes with Ellipsis argument", {
+
+    ogs_parameter <- r2ogs6_parameter(name = "test",
+                                      type = "test",
+                                      index_values = list("1", "1 2"))
+
+    parameters <- list(type = "test",
+                       index_values = list("1", "1 2"),
+                       name = "test")
+
+    class_name <- "r2ogs6_parameter"
+
+    ordered_parameters <- order_parameters(parameters,
+                                           class_name)
+
+    expect_equal(ordered_parameters, list(name = "test",
+                                          type = "test",
+                                          index_values = list("1", "1 2")))
+})
+
 

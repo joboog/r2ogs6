@@ -27,20 +27,24 @@ test_that("to_node works for vectors", {
 test_that("to_node works for attribute vectors", {
 
     my_attr_list <- list(a = c(id = 0, name = "Alice"),
-                         a = c(id = 3, name = "Bob"))
+                         b = c(id = 3))
 
-    attr_names = c("a")
+    attr_node <- to_node(my_attr_list,
+                         object_name = "my_attr_list",
+                         c("a", "b"))
 
-    attr_node <- to_node(my_attr_list, NULL, c("a"))
     attr_xml <- xml2::as_xml_document(attr_node)
 
     expect_equal(xml2::xml_attrs(xml2::xml_find_first(attr_xml,
                                                      "/my_attr_list/a")),
                  c(id = "0", name = "Alice"))
+    expect_equal(xml2::xml_attrs(xml2::xml_find_first(attr_xml,
+                                                      "/my_attr_list/b")),
+                 c(id = "3"))
 })
 
 
-test_that("to_node works reads parameter names implicitly if not given", {
+test_that("to_node reads parameter names implicitly if not given", {
 
     test_class <- function(x){
         structure(list(x = x,
@@ -167,6 +171,25 @@ test_that("to_node works for classes that have attributes", {
 })
 
 
+test_that("to_node works for classes that have non-exported wrappers", {
+
+    #Test for a single class element
+    parameter <- r2ogs6_parameter(name = "pressure0",
+                                  type = "Constant",
+                                  values = 1e5,
+                                  index_values = list("1", "1 2"),
+                                  index_values = list("2", "2 3"))
+
+    parameter_node <- to_node(parameter)
+    parameter_xml <- xml2::as_xml_document(parameter_node)
+
+    index_value_nodes <- xml2::xml_find_all(parameter_xml,
+                                            "/parameter/index_values")
+
+    expect_equal(length(index_value_nodes), 2)
+})
+
+
 test_that("to_node works for r2ogs6_process class", {
 
     process <- r2ogs6_process(
@@ -174,7 +197,7 @@ test_that("to_node works for r2ogs6_process class", {
         type = "HYDRO_MECHANICS",
         integration_order = 3,
         dimension = 2,
-        constitutive_relation = c(
+        constitutive_relation = r2ogs6_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",
             poissons_ratio = "nu"

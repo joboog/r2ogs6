@@ -11,6 +11,10 @@ r2ogs6_insitu <- function(scripts) {
     #Make this more user friendly
     #...
 
+    if(is.list(scripts)){
+        scripts <- unlist(scripts)
+    }
+
     new_r2ogs6_insitu(scripts)
 }
 

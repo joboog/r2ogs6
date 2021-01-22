@@ -7,7 +7,7 @@
 construct_add_call(object, nested_call = FALSE)
 }
 \arguments{
-\item{object}{An object (numeric, character, list, NULL, or r2ogs6 class
+\item{object}{An object (numeric, character, list, NULL, OGS6 or r2ogs6 class
 object)}
 
 \item{nested_call}{Optional: For recursion purposes, you should leave this as

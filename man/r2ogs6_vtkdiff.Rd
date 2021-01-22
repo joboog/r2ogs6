@@ -4,16 +4,24 @@
 \alias{r2ogs6_vtkdiff}
 \title{r2ogs6_vtkdiff}
 \usage{
-r2ogs6_vtkdiff(regex, field, absolute_tolerance, relative_tolerance)
+r2ogs6_vtkdiff(
+  field,
+  absolute_tolerance,
+  relative_tolerance,
+  file = NULL,
+  regex = NULL
+)
 }
 \arguments{
-\item{regex}{string: A regular expression}
-
 \item{field}{string: ...}
 
 \item{absolute_tolerance}{string | double: Absolute tolerance}
 
 \item{relative_tolerance}{string | double: Relative tolerance}
+
+\item{file}{string: Optional: File}
+
+\item{regex}{string: Optional: A regular expression}
 }
 \description{
 tag: vtkdiff

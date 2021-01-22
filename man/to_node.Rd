@@ -8,21 +8,25 @@ to_node(
   object,
   object_name = "",
   attribute_names = character(),
-  flatten_on_exp = character()
+  flatten_on_exp = character(),
+  unwrap_on_exp = character()
 )
 }
 \arguments{
 \item{object}{An object (so far works for r2ogs6 class objects, strings,
 numbers, lists and vectors)}
 
-\item{object_name}{Optional: The object name. If not supplied, this function
-will try to guess the tag name by deparsing the 'object' parameter}
+\item{object_name}{string: Optional: The object name. If not supplied, this
+function tries to guess the tag name by deparsing the 'object' parameter}
 
 \item{attribute_names}{Optional: A character vector containing names of
 attributes or attribute nodes}
 
-\item{flatten_on_exp}{Optional: This is for vectors which will be flattened
-to a string in XML}
+\item{flatten_on_exp}{character: Optional: This is for vectors which will be
+flattened to a string in XML}
+
+\item{unwrap_on_exp}{character: Optional: This is for lists which will not
+be exported to XML}
 }
 \description{
 Recursive function to restructure objects so

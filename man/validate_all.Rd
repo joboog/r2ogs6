@@ -7,7 +7,7 @@
 validate_all(ogs6_obj)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{ogs6_obj}{OGS6: Simulation object}
 }
 \description{
 Validates all necessary parameters

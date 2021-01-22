@@ -4,18 +4,19 @@
 \alias{generate_structured_mesh}
 \title{generate_structured_mesh}
 \usage{
-generate_structured_mesh(ogs6_obj, call_str)
+generate_structured_mesh(args_str, ogs_bin_path)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object (containing the path to the ogs6 bin/ folder)}
+\item{args_str}{string: The arguments the script will be called with}
 
-\item{call_str}{The arguments the script will be called with (EXCEPT -o output_file_name, this will
-be generated automatically!)}
+\item{ogs_bin_path}{string: Optional: Path to OpenGeoSys6 bin folder.
+Defaults to options("r2ogs6.default_ogs_bin_path").}
 }
 \value{
-The newly generated .vtu file path
+string: .vtu file path
 }
 \description{
-Wrapper function to call generateStructuredMesh.exe (VTK mesh generator).
-For full documentation see https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
+Wrapper function to call generateStructuredMesh.exe
+(VTK mesh generator). For full documentation see
+https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
 }

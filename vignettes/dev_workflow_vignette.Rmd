@@ -1,0 +1,163 @@
+---
+title: "r2ogs6 Developer Guide"
+author: "Anna Heinrich"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{r2ogs6 Developer Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(r2ogs6)
+```
+
+```{r, include=FALSE}
+devtools::load_all(".")
+```
+
+## Hi there!
+
+Welcome to my dev guide on `r2ogs6`. This is a collection of tips, useful info (and admittedly a few warnings) which will hopefully make your life a bit easier when developing this package. 
+
+## The basics
+
+Before we dive into any implementation details, we will take a look at how exactly this package is structured first. `r2ogs6` was developed using the workflow described [here](https://r-pkgs.org/index.html). I strongly recommend keeping it that way as it will save you time and headaches.
+
+... 
+
+In the main folder `R/` you will find a lot of scripts, most of which can be grouped into the following categories:
+
+* `export_*.R` export functions
+
+* `generate_*.R` code generation
+
+* `read_in_*.R` import functions
+
+* `ogs6_*.R` simulation class definitions
+
+* `prj_*.R` class definitions for XML tags found in a `.prj` file
+
+* `*_utils.R` utility functions used in multiple scripts
+
+
+
+
+## The classes
+
+`r2ogs6` is largely built on top of S3 classes at the moment. For reasons I will elaborate on later, it is very viable to switch to R6 classes. But let's look at what we have first.
+
+....
+
+
+## Generating new classes
+
+If you've familiarized yourself with OpenGeoSys 6, you know that there are a lot, and by a lot I mean a LOT of parameters and special cases regarding the `.prj` XML tags. For a nice new class based on such a tag, you will have to consider all of them. 
+
+To save me (and you) a bit of typing, I've written a few useful functions for this. 
+
+### analyse_xml()
+
+The first and arguably most important one is `analyse_xml()`. It matches files in a folder, reads them in as XML and searches for XML elements of a given name. It then analyses those elements and returns useful information about them, namely the names of their attributes and child elements. It prints a summary of its findings and also returns a list which we will look at in a moment.
+
+I used this function for two things: Analysing ... . Secondly, as soon as I had decided which tags should be represented by a class, I used the function output for class generation.
+
+
+### generate_*()
+
+So say we have some `.prj` files stored in a folder. I will show the workflow on a small dataset (that is, on a folder with only two `.prj` files) here, the path I usually passed to `analyse_xml()` was the directory containing all of the benchmark files for OpenGeoSys 6 which can be downloaded from [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/).
+
+```{r}
+test_folder <- system.file("extdata/vignettes_data/analyse_xml_demo", 
+                           package = "r2ogs6")
+```
+
+Now say we have decided we are going to make a class based on the element with tag name `nonlinear_solver`. For readability reasons, I will store the results of `analyse_xml()` in a variable and pass it to our generator function. If you want, you can skip this step and call `analyse_xml()` in the generator function directly. 
+
+```{r}
+analysis_results <- analyse_xml(path = test_folder,
+                                pattern = "\\.prj$",
+                                tag_name = "nonlinear_solver",
+                                xpath_prefix = "//",
+                                print_findings = TRUE)
+```
+
+First, I define my path and specify that only files with the ending `.prj` will be parsed. I'm looking for elements named `nonlinear_solver`, and I'm looking for them in the whole document. This often isn't the best option since sometimes nodes may have the same name but contain different things depending on their exact position in the document, which is also the case here. To narrow it down further, use the `xpath_prefix` argument.
+
+```{r}
+analysis_results <- analyse_xml(path = test_folder,
+                                pattern = "\\.prj$",
+                                tag_name = "nonlinear_solver",
+                                xpath_prefix = "/OpenGeoSysProject/nonlinear_solvers/",
+                                print_findings = TRUE)
+```
+
+Now we can be sure our future class will be generated from the correct parameters.
+`analyse_xml()` returns a named list invisibly, let's have a short look at it.
+
+```{r}
+analysis_results
+```
+
+You can see the list contains the `tag_name` parameter passed to `analyse_xml()`, along with two named logical vectors called `children` and `attributes` respectively. They can be read like this: If an attribute or a child of the `tag_name` element always occurred, it is a required parameter for the new class. Else, it is an optional parameter. The logical vectors are sorted by occurrency, so the rarest children and attributes will go to the very end of their logical vector. Now, let's generate some code!
+
+For S3 classes, we generate a constructor like this:
+
+```{r}
+generate_constructor(params = analysis_results,
+                     print_result = TRUE)
+```
+
+For S3 classes, we generate a helper like this:
+```{r}
+generate_helper(params = analysis_results,
+                print_result = TRUE)
+```
+
+For R6 classes, we generate a constructor like this:
+
+```{r}
+generate_R6(params = analysis_results,
+            print_result = TRUE)
+```
+
+Ta-daa, you now have some nice stubs. Copy them into a script, add some documentation and validation to it and you're almost done.
+
+
+## Integrating new classes
+
+Now that we've created our class, we need to tell the package it exists. This is so when we're reading in an existing project file, it knows to automatically turn the content of our `nonlinear_solver` tag into an object of our new class. To achieve this, we need to modify `utils.R` depending on what kind of class we added:
+
+* `get_implemented_classes()` Modify this function if the class you've added represents a first or second level node, meaning it's directly under root or has a "wrapper" parent. `r2ogs6_parameter` for example represents the node `parameter` under `parameters`, so it's a second level node. Since `parameters` only contains `parameter` children, it's represented as a list internally and does not have its own class. `r2ogs6_time_loop` represents the node `time_loop` which is a first level node.
+
+* `get_subclass_names()` Modify this function if the class you've added contains subclasses, meaning the node it represents has children that are also represented by a class. `r2ogs6_time_loop` for example has the subclass `r2ogs6_output`.
+
+* `get_nonstandard_tag_names()` Modify this function if the class you've added has a nonstandard tag name, meaning the XML tag name of the node the class represents can NOT be produced by cutting off `r2ogs6_` from the class name. `r2ogs6_tl_process` has the tag name `process` but could not be named `r2ogs6_process` because this already is the name of the class representing a `process` node under `processes`.
+
+* `select_fitting_subclass()` Modify this function if the class you've added has subclasses which are different from each other but represent nodes with the same tag name. So far, this has only been needed for `property` nodes under `time_loop` which depending on their exact position have three different classes representing them.
+
+A lot of things in the `r2ogs6` package work in a way that is a bit "meta". Often times, functions are called via `eval(parse(text = call_string))` where `call_string` has for example been concatenated out of info about the parameter names of a certain class. This saves a lot of code regarding import, export and script generation but requires that the respective info is available, which is what the aforementioned functions in `utils.R` are for.
+
+So we've analysed some files, generated some code, created a new class and "registered" it with the package... what now? That's it actually, that's the workflow. Well, at least it's supposed to be.
+
+
+## Recursive function guide
+
+If that wasn't it, I'm afraid you might have to take a look at the functions handling import, export and benchmark script generation. These are a bit tricky because they use recursions where the returned values are strings which so far has proven to be efficient structure-wise but not exactly fun to think about.
+
+WIP
+
+## ...
+
+I hope you've taken away some helpful information from this short guide. If you make changes to improve the workflow, please update this vignette for the next dev!
+
+
+
+

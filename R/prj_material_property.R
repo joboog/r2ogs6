@@ -21,7 +21,8 @@ new_r2ogs6_material_property <- function(fluid,
                                          porous_medium) {
 
     assertthat::assert_that(class(fluid) == "r2ogs6_fluid")
-    assertthat::assert_that(class(porous_medium) == "r2ogs6_porous_medium")
+
+    validate_wrapper_list(porous_medium, "r2ogs6_porous_medium")
 
     structure(list(fluid = fluid,
                    porous_medium = porous_medium,
@@ -99,26 +100,39 @@ new_r2ogs6_fluid <- function(liquid_density,
 
     gas_viscosity <- validate_param_list(gas_viscosity, type_value_names)
 
-    specific_heat_capacity_solid <-
-        validate_param_list(specific_heat_capacity_solid, type_value_names)
+    if(!is.null(specific_heat_capacity_solid)){
+        specific_heat_capacity_solid <-
+            validate_param_list(specific_heat_capacity_solid, type_value_names)
+    }
 
-    specific_heat_capacity_water <-
-        validate_param_list(specific_heat_capacity_water, type_value_names)
+    if(!is.null(specific_heat_capacity_water)){
+        specific_heat_capacity_water <-
+            validate_param_list(specific_heat_capacity_water, type_value_names)
+    }
 
-    specific_heat_capacity_air <-
-        validate_param_list(specific_heat_capacity_air, type_value_names)
+    if(!is.null(specific_heat_capacity_air)){
+        specific_heat_capacity_air <-
+            validate_param_list(specific_heat_capacity_air, type_value_names)
+    }
 
-    specific_heat_capacity_water_vapor <-
-        validate_param_list(specific_heat_capacity_water_vapor,
-                            type_value_names)
 
-    thermal_conductivity_dry_solid <-
-        validate_param_list(thermal_conductivity_dry_solid,
-                            type_value_names)
+    if(!is.null(specific_heat_capacity_water_vapor)){
+        specific_heat_capacity_water_vapor <-
+            validate_param_list(specific_heat_capacity_water_vapor,
+                                type_value_names)
+    }
 
-    thermal_conductivity_wet_solid <-
-        validate_param_list(thermal_conductivity_wet_solid,
-                            type_value_names)
+    if(!is.null(thermal_conductivity_dry_solid)){
+        thermal_conductivity_dry_solid <-
+            validate_param_list(thermal_conductivity_dry_solid,
+                                type_value_names)
+    }
+
+    if(!is.null(thermal_conductivity_wet_solid)){
+        thermal_conductivity_wet_solid <-
+            validate_param_list(thermal_conductivity_wet_solid,
+                                type_value_names)
+    }
 
     structure(list(liquid_density = liquid_density,
                    gas_density = gas_density,

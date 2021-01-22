@@ -4,12 +4,15 @@
 \alias{order_parameters}
 \title{order_parameters}
 \usage{
-order_parameters(parameter_list, class_name)
+order_parameters(parameters, class_name)
 }
 \arguments{
-\item{parameter_list}{A list of parameters}
+\item{parameters}{list: Parameters}
 
-\item{class_name}{The name of a class}
+\item{class_name}{string: The name of a class}
+}
+\value{
+list: Parameters ordered by argument order of class
 }
 \description{
 Orders a list of parameters corresponding to the argument order

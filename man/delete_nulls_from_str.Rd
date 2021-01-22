@@ -7,7 +7,7 @@
 delete_nulls_from_str(string)
 }
 \arguments{
-\item{string}{A string}
+\item{string}{string}
 }
 \description{
 Utility function to delete "param_name = NULL" from a string,

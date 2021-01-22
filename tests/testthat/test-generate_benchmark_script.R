@@ -19,11 +19,6 @@ test_that("construct_add_call works", {
   list_call <- construct_add_call(my_list)
   expect_equal(list_call, "list(a = c(2, 3, 4),\nb = c(\"a\", \"b\", \"c\"))")
 
-  ogs_mesh <- r2ogs6_mesh("my_mesh")
-  ogs_mesh_call <- construct_add_call(ogs_mesh)
-  expect_equal(ogs_mesh_call,
-               "ogs6_obj$add_mesh(r2ogs6_mesh(mesh_ref = \"my_mesh\"))\n")
-
   ogs_param <- r2ogs6_parameter("a",
                                 "t",
                                 NULL,
@@ -35,7 +30,31 @@ test_that("construct_add_call works", {
                                       "r2ogs6_parameter(name = \"a\",\n",
                                       "type = \"t\",\n",
                                       "values = c(0, 1)))\n"))
+
+  ogs_meshes <- list("mesh_1",
+                     "mesh_2")
+
+  ogs_mesh_call <- construct_add_call(ogs_meshes)
+
+  expect_equal(ogs_mesh_call, paste0("list(\"mesh_1\",\n\"mesh_2\")"))
 })
+
+
+test_that("construct_add_call handles Ellipsis correctly", {
+
+  ogs_parameter <- r2ogs6_parameter(name = "test",
+                                    type = "test",
+                                    index_values = list("1", "1 2"))
+
+  ogs_param_call <- construct_add_call(ogs_parameter)
+
+  expect_equal(ogs_param_call,
+               paste0("ogs6_obj$add_parameter(r2ogs6_parameter(name = ",
+                      "\"test\",\ntype = \"test\",\nindex_values = ",
+                      "list(index_values = list(index = 1,\n",
+                      "values = c(1, 2)))))\n"))
+})
+
 
 
 test_that("delete_nulls_from_str works", {
@@ -52,5 +71,15 @@ test_that("delete_nulls_from_str works", {
 
   test_str_2 <- delete_nulls_from_str(test_str_2)
   expect_equal(test_str_2, "r2ogs6_object(two = 3)")
+
+})
+
+
+test_that("delete_keywords_from_str works", {
+
+  test_str <- "r2ogs6_object(a = \"foo\", repeat = \"bar\")"
+
+  test_str <- delete_keywords_from_str(test_str)
+  expect_equal(test_str, "r2ogs6_object(a = \"foo\", \"bar\")")
 
 })

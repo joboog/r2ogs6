@@ -4,11 +4,13 @@
 \alias{export_gml}
 \title{export_gml}
 \usage{
-export_gml(ogs6_obj)
+export_gml(gml, path)
 }
 \arguments{
-\item{ogs6_obj}{A OGS6 class object}
+\item{gml}{OGS6_gml:}
+
+\item{path}{string:}
 }
 \description{
-Wrapper function to create a .gml XML document based on the user input data
+Creates a .gml XML document based on  user input data
 }

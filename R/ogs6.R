@@ -15,8 +15,8 @@ OGS6 <- R6::R6Class("OGS6",
     #'@param sim_path string: Path where all files for the simulation will be
     #' saved
     #'@param ogs_bin_path string: Path to OpenGeoSys6 /bin directory
-    #'@param test_mode In test mode, sim_path and ogs_bin_path will not be
-    #' validated. If you're not a developer, please leave this as it is :)
+    #'@param test_mode In test mode, ogs_bin_path will not be
+    #' validated. Unless you're a dev, please don't touch.
     initialize = function(sim_name,
                           sim_id,
                           sim_path,
@@ -24,26 +24,19 @@ OGS6 <- R6::R6Class("OGS6",
                           test_mode = FALSE) {
 
       # Basic validation
-      assertthat::assert_that(assertthat::is.string(sim_name))
       assertthat::assert_that(assertthat::is.number(sim_id))
-      assertthat::assert_that(assertthat::is.string(sim_path))
-      assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+
+      self$sim_name <- sim_name
+
+      if(missing(sim_path)){
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
+      }
+
+      if(missing(ogs_bin_path)){
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
+      }
 
       if(!test_mode){
-        sim_path <- validate_is_dir_path(sim_path)
-        ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
-
-        if(!dir.exists(sim_path)){
-          dir.create(sim_path)
-        }else{
-          if(length(dir(sim_path, all.files = TRUE)) != 0){
-            warning(paste0("The defined sim_path directory '",
-                           sim_path,
-                           "' is not empty. Files may be overwritten."),
-                    call. = FALSE)
-          }
-        }
-
         if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
           stop(paste("Could not find executable file",
                      "generateStructuredMesh.exe at location",
@@ -51,12 +44,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       }
 
-        private$.sim_output <- list()
-
-        private$.sim_name <- sim_name
         private$.sim_id <- sim_id
-        private$.sim_path <- sim_path
-        private$.ogs_bin_path <- ogs_bin_path
+        self$sim_path <- sim_path
+        private$.ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
     },
 
 
@@ -64,150 +54,213 @@ OGS6 <- R6::R6Class("OGS6",
 
 
     #'@description
-    #'... (WIP)
-    #'@param name ...
-    #'@param value ...
-    add_sim_output = function(name, value) {
-        private$.sim_output[[name]] <- value
-    },
+    #'Adds a simulation component (WIP)
+    #'@param x An object of any class listed in addable_components(). If `x` is
+    #' not of a proprietary `r2ogs6` class, `component_name` must be
+    #' supplied. E.g. If you're adding a `python_script` which is a string, you
+    #' would call `your_ogs6_obj$add("some_script.py", "python_script")`
+    #'@param component_name string: Optional: The name of the component to be
+    #' added
+    add = function(x,
+                   component_name = ""){
 
-    #'@description
-    #'Adds a r2ogs6_mesh object
-    #'@param mesh r2ogs6_mesh
-    add_mesh = function(mesh){
-      assertthat::assert_that(class(mesh) == "r2ogs6_mesh")
-      private$.meshes <- c(private$.meshes, list(mesh))
-    },
+      assertthat::assert_that(assertthat::is.string(component_name))
 
-    #'@description
-    #'Adds a r2ogs6_gml object
-    #'@param gml r2ogs6_gml
-    add_gml = function(gml){
-      assertthat::assert_that(class(gml) == "r2ogs6_gml")
-      if(!is.null(private$.gml)){
-        warning("Overwriting gml and geometry variable of OGS6 object",
-                call. = FALSE)
+      # Assert that class name is in implemented classes for OGS6
+      ogs6_components <- addable_prj_components()
 
+      x_class_name <- ""
+      x_of_r2ogs6_class <- FALSE
+
+      if(any(grepl("r2ogs6", class(x), fixed = TRUE)) ||
+         any(grepl("OGS6", class(x), fixed = TRUE))){
+
+        x_class_name <- grep("r2ogs6", class(x), value = TRUE)
+
+        if(length(x_class_name) == 0){
+          x_class_name <- grep("OGS6", class(x), value = TRUE)
+        }
+
+        assertthat::assert_that(x_class_name %in% ogs6_components)
+        x_of_r2ogs6_class <- TRUE
       }
-      private$.gml <- gml
-      private$.geometry <- paste0(gml$name, ".gml")
+
+      # Get name of corresponding OGS6 parameter
+      if(x_of_r2ogs6_class){
+        component_name <-
+          names(ogs6_components)[ogs6_components == x_class_name]
+      }else{
+        assertthat::assert_that(component_name %in% names(ogs6_components))
+      }
+
+      active_field_call <-
+        ifelse(is_wrapper(component_name),
+               paste0("self$", component_name,
+                      " <- c(self$", component_name, ", list(x))"),
+               paste0("self$", component_name, " <- x"))
+
+      eval(parse(text = active_field_call))
+
+      # If class has `name` variable, make it accessable by name
+      if(is_wrapper(component_name) &&
+         "name" %in% names(as.list(formals(x_class_name)))){
+
+        name_call <- paste0("names(self$", component_name, ")[[length(self$",
+                            component_name, ")]] <- x$name")
+
+        eval(parse(text = name_call))
+      }
+    },
+
+    #'@description
+    #'Adds a reference to a .gml file and optionally, a OGS6_gml object
+    #'@param gml string | r2ogs6_gml: Either a path to a file with extension
+    #' .gml or a r2ogs6_gml object.
+    #@examples
+    add_gml = function(gml){
+
+      if(assertthat::is.string(gml)){
+        assertthat::assert_that(grepl("\\.gml$", gml))
+        private$.geometry <- gml
+      }else{
+        assertthat::assert_that(inherits(gml, "OGS6_gml"))
+        private$.gml <- gml
+
+        if(!is.null(private$.geometry)){
+          warning(paste("OGS6 parameter 'geometry' now refers",
+                        "to a different .gml object"), call. = FALSE)
+        }
+        private$.geometry <- paste0(self$sim_name, ".gml")
+      }
+    },
+
+    #'@description
+    #'Adds a reference to a .vtu file and optionally, a OGS6_vtu object
+    #'@param path string:
+    #'@param read_in_vtu flag: Optional: Should .vtu file just be copied or
+    #' read in too?
+    add_vtu = function(path,
+                       read_in_vtu = FALSE){
+      assertthat::assert_that(assertthat::is.string(path))
+      assertthat::assert_that(grepl("\\.vtu$", path))
+      assertthat::assert_that(assertthat::is.flag(read_in_vtu))
+
+      self$meshes <- c(self$meshes, mesh = path)
+
+      if(read_in_vtu){
+        private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
+      }
     },
 
     #'@description
     #'Adds a python script
     #'@param python_script string: File name of python script
     add_python_script = function(python_script){
-      assertthat::assert_that(assertthat::is.string(python_script))
-      if(!is.null(private$.python_script)){
-        warning("Overwriting python_script variable of OGS6 object",
-                call. = FALSE)
+      self$python_script <- python_script
+    },
 
-      }
-      private$.python_script <- python_script
+    #'@description
+    #'Adds a r2ogs6_search_length_algorithm object
+    #'@param search_length_algorithm r2ogs6_search_length_algorithm
+    add_search_length_algorithm = function(search_length_algorithm){
+      self$search_length_algorithm <- search_length_algorithm
     },
 
     #'@description
     #'Adds a r2ogs6_process object
     #'@param process r2ogs6_process
     add_process = function(process){
-      assertthat::assert_that(class(process) == "r2ogs6_process")
-      private$.processes <- c(private$.processes, list(process))
+      self$processes <- c(self$processes,
+                          list(process))
+
+      names(self$processes)[[length(self$processes)]] <- process$name
     },
 
     #'@description
     #'Adds a r2ogs6_time_loop object
     #'@param time_loop r2ogs6_time_loop
     add_time_loop = function(time_loop){
-      assertthat::assert_that(class(time_loop) == "r2ogs6_time_loop")
-      if(!is.null(private$.time_loop)){
-        warning("Overwriting time_loop variable of OGS6 object", call. = FALSE)
-      }
-      private$.time_loop <- time_loop
+      self$time_loop <- time_loop
     },
 
     #'@description
     #'Adds a r2ogs6_local_coordinate_system object
     #'@param local_coordinate_system r2ogs6_local_coordinate_system
     add_local_coordinate_system = function(local_coordinate_system){
-      assertthat::assert_that(class(local_coordinate_system) ==
-                                "r2ogs6_local_coordinate_system")
-      if(!is.null(private$.local_coordinate_system)){
-        warning("Overwriting local_coordinate_system variable of OGS6 object",
-                call. = FALSE)
-      }
-      private$.local_coordinate_system <- local_coordinate_system
+      self$local_coordinate_system <- local_coordinate_system
     },
 
     #'@description
     #'Adds a r2ogs6_medium object
     #'@param medium r2ogs6_medium
     add_medium = function(medium){
-      assertthat::assert_that(class(medium) == "r2ogs6_medium")
-      private$.media <- c(private$.media, list(medium))
+      self$media <- c(self$media,
+                      list(medium))
     },
 
     #'@description
     #'Adds a r2ogs6_parameter object
     #'@param parameter r2ogs6_parameter
     add_parameter = function(parameter){
-      assertthat::assert_that(class(parameter) == "r2ogs6_parameter")
-      private$.parameters <- c(private$.parameters, list(parameter))
+      self$parameters <- c(self$parameters,
+                       list(parameter))
+
+      names(self$parameters)[[length(self$parameters)]] <- parameter$name
     },
 
     #'@description
     #'Adds a r2ogs6_curve object
     #'@param curve r2ogs6_curve
     add_curve = function(curve){
-      assertthat::assert_that(class(curve) == "r2ogs6_curve")
-      private$.curves <- c(private$.curves, list(curve))
+      self$curves <- c(self$curves,
+                       list(curve))
     },
 
     #'@description
     #'Adds a r2ogs6_process_variable object
     #'@param process_variable r2ogs6_process_variable
     add_process_variable = function(process_variable){
-      assertthat::assert_that(class(process_variable) ==
-                                "r2ogs6_process_variable")
-      private$.process_variables <- c(private$.process_variables,
-                                      list(process_variable))
+      self$process_variables <- c(self$process_variables,
+                                  list(process_variable))
+
+      names(self$process_variables)[[length(self$process_variables)]] <-
+        process_variable$name
     },
 
     #'@description
     #'Adds a r2ogs6_nonlinear_solver object
     #'@param nonlinear_solver r2ogs6_nonlinear_solver
     add_nonlinear_solver = function(nonlinear_solver){
-      assertthat::assert_that(class(nonlinear_solver) ==
-                                "r2ogs6_nonlinear_solver")
-      private$.nonlinear_solvers <- c(private$.nonlinear_solvers,
-                                      list(nonlinear_solver))
+      self$nonlinear_solvers <- c(self$nonlinear_solvers,
+                                  list(nonlinear_solver))
+
+      names(self$nonlinear_solvers)[[length(self$nonlinear_solvers)]] <-
+        nonlinear_solver$name
     },
 
     #'@description
     #'Adds a r2ogs6_linear_solver object
     #'@param linear_solver r2ogs6_linear_solver
     add_linear_solver = function(linear_solver){
-      assertthat::assert_that(class(linear_solver) == "r2ogs6_linear_solver")
-      private$.linear_solvers <- c(private$.linear_solvers, list(linear_solver))
+      self$linear_solvers <- c(self$linear_solvers,
+                               list(linear_solver))
+
+      names(self$linear_solvers)[[length(self$linear_solvers)]] <-
+        linear_solver$name
     },
 
     #'@description
     #'Adds a r2ogs6_vtkdiff object
     #'@param vtkdiff r2ogs6_vtkdiff
     add_vtkdiff = function(vtkdiff){
-      assertthat::assert_that(class(vtkdiff) == "r2ogs6_vtkdiff")
-      private$.test_definition <- c(private$.test_definition, list(vtkdiff))
+      self$test_definition <- c(self$test_definition, list(vtkdiff))
     },
 
     #'@description
     #'Adds a r2ogs6_insitu object
     #'@param insitu r2ogs6_insitu
     add_insitu = function(insitu){
-      assertthat::assert_that(class(insitu) == "r2ogs6_insitu")
-
-      if(!is.null(private$.insitu)){
-        warning("Overwriting insitu variable of OGS6 object", call. = FALSE)
-      }
-      private$.insitu <- insitu
+      self$insitu <- insitu
     },
 
 
@@ -217,56 +270,62 @@ OGS6 <- R6::R6Class("OGS6",
     #'@description
     #'Checks if the OGS6 object has all necessary parameters for
     #' starting a simulation
-    get_status = function(){
+    #'@param print_status flag: Should the status be printed to the console?
+    get_status = function(print_status = TRUE){
+
+      assertthat::assert_that(assertthat::is.flag(print_status))
 
       flag <- TRUE
+      impl_classes <- addable_prj_components()
 
-      #.gml
-      #flag <- obj_is_defined(flag, private$.gml, "gml")
+      status_strs <- character()
 
-      #.vtu
-      flag <- get_list_status(flag, private$.meshes, "mesh")
+      for(i in seq_len(length(impl_classes))){
+        status_call <- paste0("get_obj_status(flag, private$.",
+                              names(impl_classes)[[i]], ")")
 
-      #.prj
-      flag <- get_list_status(flag, private$.processes, "process")
-      flag <- obj_is_defined(flag, private$.time_loop, "time_loop")
-      flag <- obj_is_defined(flag, private$.local_coordinate_system,
-                             "local_coordinate_system", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.media, "medium", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.parameters, "parameter")
-      flag <- get_list_status(flag, private$.curves, "curve", is_opt = TRUE)
-      flag <- get_list_status(flag, private$.process_variables,
-                              "process_variable")
-      flag <- get_list_status(flag, private$.nonlinear_solvers,
-                              "nonlinear_solver")
-      flag <- get_list_status(flag, private$.linear_solvers,
-                              "linear_solver")
-      flag <- get_list_status(flag, private$.test_definition,
-                              "vtkdiff", is_opt = TRUE)
-      flag <- obj_is_defined(flag, private$.insitu,
-                             "insitu", is_opt = TRUE)
+        status <- eval(parse(text = status_call))
+        flag <- status[[1]]
+        status_strs <- c(status_strs, status[[2]])
+      }
 
-      if(flag){
-        cat(paste0("Your simulation object has all necessary components.\n",
-        "You can try to start the simulation by calling run_simulation() ",
-        "on your OGS6 object.\n",
-        "Note that this will call more validation functions, ",
-        "so you may not be done just yet.\n"))
+      status_str <- paste0(paste(status_strs, collapse = ""), "\n")
+
+      if(print_status){
+
+        cat(status_str)
+
+        if(flag){
+          cat(paste0("Your OGS6 object has all necessary components.\n",
+                     "You can try calling run_simulation().",
+                     "Note that this calls more validation functions, ",
+                     "so you may not be done just yet.\n"))
+        }
       }
 
       return(invisible(flag))
+    },
+
+    #'print_log
+    #'@description Prints logfile to console (if it exists)
+    print_log = function(){
+      if(!is.null(self$logfile)){
+        writeLines(readLines(self$logfile))
+      }else{
+        cat("There is no logfile associated with this OGS6 object.\n")
+      }
     },
 
     #'@description
     #'Clears components from the OGS6 object
     #'@param which character: The names of the components (all by default).
     #' If you want to delete only some components, run
-    #' names(get_implemented_classes()) for the available options.
-    clear = function(which = names(get_implemented_classes())){
+    #' names(addable_prj_components()) for the available options.
+    clear = function(which = names(addable_prj_components())){
 
       assertthat::assert_that(is.character(which))
 
-      valid_input = names(get_implemented_classes())
+      valid_input = names(addable_prj_components())
 
       null_it <- c("geometry", "time_loop")
 
@@ -298,16 +357,15 @@ OGS6 <- R6::R6Class("OGS6",
 
   active = list(
 
-      #'@field sim_output
-      #'Getter for OGS6 private parameter '.sim_output'
-      sim_output = function(value) {
-        private$.sim_output
-      },
-
       #'@field sim_name
-      #'Getter for OGS6 private parameter '.sim_name'
-      sim_name = function() {
-        private$.sim_name
+      #'Access to private parameter '.sim_name'
+      sim_name = function(value) {
+        if(missing(value)) {
+          private$.sim_name
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.sim_name <- value
+        }
       },
 
       #'@field sim_id
@@ -317,9 +375,24 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field sim_path
-      #'Getter for OGS6 private parameter '.sim_path'
-      sim_path = function() {
-        private$.sim_path
+      #'Access to private parameter '.sim_path'
+      sim_path = function(value) {
+        if(missing(value)) {
+          private$.sim_path
+        }else{
+          private$.sim_path <- validate_is_dir_path(value)
+        }
+      },
+
+      #'@field logfile
+      #'Access to private parameter '.logfile'
+      logfile = function(value) {
+        if(missing(value)) {
+          private$.logfile
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.logfile <- value
+        }
       },
 
       #'@field ogs_bin_path
@@ -334,106 +407,259 @@ OGS6 <- R6::R6Class("OGS6",
         private$.gml
       },
 
-      #'@field meshes
-      #'Getter for OGS6 private parameter '.meshes'
-      meshes = function() {
-        private$.meshes
+      #'@field geometry
+      #'Access to private parameter '.geometry'
+      geometry = function(value) {
+        if(missing(value)) {
+          private$.geometry
+        }else{
+          assertthat::assert_that(is.string(value))
+          private$.geometry <- value
+        }
       },
 
-      #'@field geometry
-      #'Getter for OGS6 private parameter '.geometry'
-      geometry = function() {
-        private$.geometry
+      #'@field meshes
+      #'Access to private parameter '.meshes'
+      meshes = function(value) {
+        if(missing(value)) {
+          private$.meshes
+        }else{
+          assertthat::assert_that(is.list(value))
+          lapply(value, function(x){
+            assertthat::assert_that(assertthat::is.string(x))
+          })
+          private$.meshes <- value
+        }
+      },
+
+      #'@field vtus
+      #'Access to private parameter '.vtus'
+      vtus = function(value) {
+        if(missing(value)) {
+          private$.vtus
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["vtus"]])
+          private$.vtus <- value
+        }
       },
 
       #'@field python_script
-      #'Getter for OGS6 private parameter '.python_script'
-      python_script = function() {
-        private$.python_script
+      #'Access to private parameter '.python_script'
+      python_script = function(value) {
+        if(missing(value)) {
+          private$.python_script
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.python_script <- value
+        }
+      },
+
+      #'@field search_length_algorithm
+      #'Access to private parameter '.search_length_algorithm'
+      search_length_algorithm = function(value) {
+        if(missing(value)) {
+          private$.search_length_algorithm
+        }else{
+          assertthat::assert_that(
+            addable_prj_components()[["search_length_algorithm"]] %in%
+              class(value))
+          private$.search_length_algorithm <- value
+        }
       },
 
       #'@field processes
-      #'Getter for OGS6 private parameter '.processes'
-      processes = function() {
-        private$.processes
+      #'Access to private parameter '.processes'
+      processes = function(value) {
+        if(missing(value)) {
+          private$.processes
+        }else{
+          # If there already is a process element
+          if(length(private$.processes) > 0){
+            if(addable_prj_components()[["processes"]] %in%
+               class(private$.processes[[1]])){
+                 validate_wrapper_list(value,
+                                       addable_prj_components()[["processes"]])
+            }else{
+              assertthat::assert_that(assertthat::is.string(value))
+              value <- list(include = c(file = value))
+            }
+
+          }else{
+            if(assertthat::is.string(value)){
+              value <- list(include = c(file = value))
+            }else{
+              validate_wrapper_list(value,
+                                    addable_prj_components()[["processes"]])
+            }
+          }
+
+          private$.processes <- value
+        }
       },
 
       #'@field time_loop
-      #'Getter for OGS6 private parameter '.time_loop'
-      time_loop = function() {
-        private$.time_loop
+      #'Access to private parameter '.time_loop'
+      time_loop = function(value) {
+        if(missing(value)) {
+          private$.time_loop
+        }else{
+          assertthat::assert_that(
+            addable_prj_components()[["time_loop"]] %in%
+              class(value))
+          private$.time_loop <- value
+        }
       },
 
       #'@field local_coordinate_system
-      #'Getter for OGS6 private parameter '.local_coordinate_system'
-      local_coordinate_system = function() {
-        private$.local_coordinate_system
+      #'Access to private parameter '.local_coordinate_system'
+      local_coordinate_system = function(value) {
+        if(missing(value)) {
+          private$.local_coordinate_system
+        }else{
+          assertthat::assert_that(
+            addable_prj_components()[["local_coordinate_system"]] %in%
+              class(value))
+          private$.local_coordinate_system <- value
+        }
       },
 
       #'@field media
-      #'Getter for OGS6 private parameter '.media'
-      media = function() {
-        private$.media
+      #'Access to private parameter '.media'
+      media = function(value) {
+        if(missing(value)) {
+          private$.media
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["media"]])
+          private$.media <- value
+        }
       },
 
       #'@field parameters
-      #'Getter for OGS6 private parameter '.parameters'
-      parameters = function() {
-        private$.parameters
+      #'Access to private parameter '.parameters'
+      parameters = function(value) {
+        if(missing(value)) {
+          private$.parameters
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["parameters"]])
+          private$.parameters <- value
+        }
       },
 
       #'@field curves
-      #'Getter for OGS6 private parameter '.curves'
-      curves = function() {
-        private$.curves
+      #'Access to private parameter '.curves'
+      curves = function(value) {
+        if(missing(value)) {
+          private$.curves
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["curves"]])
+          private$.curves <- value
+        }
       },
 
       #'@field process_variables
-      #'Getter for OGS6 private parameter '.process_variables'
-      process_variables = function() {
-        private$.process_variables
+      #'Access to private parameter '.process_variables'
+      process_variables = function(value) {
+        if(missing(value)) {
+          private$.process_variables
+        }else{
+          validate_wrapper_list(
+            value,
+            addable_prj_components()[["process_variables"]])
+          private$.process_variables <- value
+        }
       },
 
       #'@field nonlinear_solvers
-      #'Getter for OGS6 private parameter '.nonlinear_solvers'
-      nonlinear_solvers = function() {
-        private$.nonlinear_solvers
+      #'Access to private parameter '.nonlinear_solvers'
+      nonlinear_solvers = function(value) {
+        if(missing(value)) {
+          private$.nonlinear_solvers
+        }else{
+          validate_wrapper_list(
+            value,
+            addable_prj_components()[["nonlinear_solvers"]])
+          private$.nonlinear_solvers <- value
+        }
       },
 
       #'@field linear_solvers
-      #'Getter for OGS6 private parameter '.linear_solvers'
-      linear_solvers = function() {
-        private$.linear_solvers
+      #'Access to private parameter '.linear_solvers'
+      linear_solvers = function(value) {
+        if(missing(value)) {
+          private$.linear_solvers
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["linear_solvers"]])
+          private$.linear_solvers <- value
+        }
       },
 
       #'@field test_definition
-      #'Getter for OGS6 private parameter '.test_definition'
-      test_definition = function() {
-        private$.test_definition
+      #'Access to private parameter '.test_definition'
+      test_definition = function(value) {
+        if(missing(value)) {
+          private$.test_definition
+        }else{
+          validate_wrapper_list(value,
+                                addable_prj_components()[["test_definition"]])
+          private$.test_definition <- value
+        }
       },
 
       #'@field insitu
-      #'Getter for OGS6 private parameter '.insitu'
-      insitu = function() {
-        private$.insitu
+      #'Access to private parameter '.insitu'
+      insitu = function(value) {
+        if(missing(value)) {
+          private$.insitu
+        }else{
+          assertthat::assert_that(
+            addable_prj_components()[["insitu"]] %in%
+              class(value))
+          private$.insitu <- value
+        }
+      },
+
+      #'@field pvd
+      #'Access to private parameter '.pvd'
+      pvd = function(value) {
+        if(missing(value)) {
+          private$.pvd
+        }else{
+          assertthat::assert_that(inherits(value, "OGS6_pvd"))
+          private$.pvd <- value
+        }
       }
   ),
 
   private = list(
-    #general parameters
-      .sim_output = NULL,
+    # general parameters
       .sim_name = NULL,
       .sim_id = NULL,
       .sim_path = NULL,
       .ogs_bin_path = NULL,
 
-      #.gml parameters
+      .logfile = NULL,
+
+      # .gml object
       .gml = NULL,
 
-      #.prj parameters
-      .meshes = list(),
+      # .vtu objects
+      .vtus = NULL,
+
+      # .prj parameters
+
+      # .gml reference
       .geometry = NULL,
+
+      # .vtu reference(s)
+      .meshes = list(),
+
       .python_script = NULL,
+      .search_length_algorithm = NULL,
       .processes = list(),
       .time_loop = NULL,
       .local_coordinate_system = NULL,
@@ -444,6 +670,9 @@ OGS6 <- R6::R6Class("OGS6",
       .nonlinear_solvers = list(),
       .linear_solvers = list(),
       .test_definition = list(),
-      .insitu = NULL
+      .insitu = NULL,
+
+      # .pvd object (output)
+      .pvd = NULL
   )
 )

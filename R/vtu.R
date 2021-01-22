@@ -1,69 +1,366 @@
-# Functions for adding .vtu data to a OGS6 simulation object
+
+#===== OGS6_pvd =====
 
 
-#'r2ogs6_mesh
-#'@description Wrapper class, so far only has a reference to a .vtu file
-#'@param mesh_ref A reference to a .vtu file
+#'OGS6_pvd
+#'@description Constructor for the OGS6_pvd base class
 #'@export
-r2ogs6_mesh <- function(mesh_ref){
-    new_r2ogs6_mesh(mesh_ref)
-}
+OGS6_pvd <- R6::R6Class(
+    "OGS6_pvd",
+    public = list(
 
-new_r2ogs6_mesh <- function(mesh_ref){
+        #'@description
+        #'Creates new OGS6_pvd object
+        #'@param pvd_path string: Path to .pvd file
+        initialize = function(pvd_path) {
 
-    assertthat::assert_that(assertthat::is.string(mesh_ref))
+            xml_doc <- validate_read_in_xml(pvd_path)
+            dataset_nodes <- xml2::xml_find_all(xml_doc,
+                                                "/VTKFile/Collection/DataSet")
 
-    structure(
-        list(
-            mesh_ref = mesh_ref,
-            tag_name = "mesh",
-            is_subclass = FALSE,
-            attr_names = character(),
-            flatten_on_exp = character()
-            ),
-        class = "r2ogs6_mesh"
+            private$.pvd_path <- pvd_path
+            private$.datasets <- lapply(dataset_nodes,
+                                        node_to_object)
+            private$.OGS6_vtus <- lapply(self$abs_vtu_paths,
+                                         OGS6_vtu$new)
+
+        },
+
+        #'@description
+        #'Returns .vtu path for specified timestep
+        #'@param timestep string: Timestep
+        get_vtu_path_by_timestep = function(timestep){
+
+            assertthat::assert_that(assertthat::is.number(timestep))
+
+            for(i in seq_len(length(self$timesteps))){
+                if(self$timesteps[[i]] == timestep){
+                    return(self$vtu_paths[[i]])
+                }
+            }
+
+            warning(paste("No .vtu path found for timestep", timestep),
+                    call. = FALSE)
+        },
+
+        #'@description
+        #'Returns timestep for specified .vtu path
+        #'@param vtu_path string: .vtu path
+        get_timestep_by_vtu_path = function(vtu_path){
+
+            assertthat::assert_that(assertthat::is.string(vtu_path))
+
+            for(i in seq_len(length(self$vtu_paths))){
+                if(self$vtu_paths[[i]] == vtu_path){
+                    return(self$timesteps[[i]])
+                }
+            }
+
+            warning(paste("No timestep found for .vtu path", vtu_path),
+                    call. = FALSE)
+        },
+
+        #'@description
+        #'Creates a tibble object from PointData
+        #'@param point_ids numeric: Optional: IDs of the points of interest.
+        #' Will default to all point IDs if not defined.
+        #'@param Names character: `Name` attributes of `DataArray` elements
+        #'@param start_at_timestep number: Timestep to start at
+        #'@param end_at_timestep number: Timestep to end at
+        get_PointData_time_tibble = function(point_ids,
+                                             Names,
+                                             start_at_timestep,
+                                             end_at_timestep){
+
+            if(missing(point_ids)){
+                max_point_id <- self$OGS6_vtus[[1]]$get_number_of_points() - 1
+                point_ids <- seq(0, max_point_id)
+            }
+
+            assertthat::assert_that(is.numeric(point_ids))
+
+            if(missing(start_at_timestep)){
+                start_at_timestep <- self$timesteps[[1]]
+            }
+
+            if(missing(end_at_timestep)){
+                end_at_timestep <- self$timesteps[[length(self$timesteps)]]
+            }
+
+            assertthat::assert_that(assertthat::is.number(start_at_timestep))
+            assertthat::assert_that(assertthat::is.number(end_at_timestep))
+
+            relevant_vtus <- list()
+
+            for(i in seq_len(length(self$OGS6_vtus))){
+                timestep <- self$get_timestep_by_vtu_path(self$vtu_paths[[i]])
+
+                if(timestep >= start_at_timestep &&
+                   timestep <= end_at_timestep){
+                    relevant_vtus <- c(relevant_vtus, list(self$OGS6_vtus[[i]]))
+                }
+            }
+
+            time_list <- list()
+
+            # For each .vtu file referenced in pvd_path...
+            for(i in seq_len(length(relevant_vtus))){
+
+                # ... get all rows of PointData or get rows by Name
+                if(missing(Names)){
+                    Names <- names(relevant_vtus[[i]]$point_data)
+                }
+
+                assertthat::assert_that(is.character(Names))
+
+                point_data <-
+                    relevant_vtus[[i]]$get_data_for_points(point_ids,
+                                                           Names)
+
+                point_data_row <- list()
+
+                for(j in seq_len(length(point_data))){
+                    wrapped_point_data <- list(point_data[[j]])
+                    names(wrapped_point_data) <- names(point_data)[[j]]
+                    point_data_row <- c(point_data_row,
+                                        list(wrapped_point_data))
+                    names(point_data_row)[[length(point_data_row)]] <-
+                        names(point_data)[[j]]
+                }
+
+                time_list <- c(time_list,
+                               list(tibble::as_tibble_row(point_data_row)))
+            }
+
+            # Combine into tibble
+            time_tibble <- dplyr::bind_rows(time_list)
+
+            return(time_tibble)
+        },
+
+        #'@description
+        #'Gets PointData at specified timestep. Calls
+        #' `get_PointData_time_tibble` internally with `start_at_timestep` and
+        #' `end_at_timestep` both being `timestep`
+        #'@param point_ids number: Point IDs
+        #'@param Names character: `Name` attributes of `DataArray` elements
+        #'@param timestep string: Timestep
+        get_PointData_at_timestep = function(point_ids,
+                                             Names,
+                                             timestep){
+
+            self$get_PointData_time_tibble(point_ids = point_ids,
+                                           Names = Names,
+                                           start_at_timestep = timestep,
+                                           end_at_timestep = timestep)
+        }
+    ),
+
+    active = list(
+
+        #'@field pvd_path
+        #'Getter for private parameter '.pvd_path'
+        pvd_path = function() {
+            private$.pvd_path
+        },
+
+        #'@field datasets
+        #'Getter for private parameter '.datasets'
+        datasets = function() {
+            private$.datasets
+        },
+
+        #'@field vtu_paths
+        #'Getter for `datasets` `file`
+        vtu_paths = function() {
+
+            vtu_paths <- lapply(private$.datasets, function(x){
+                x[["file"]]
+            })
+        },
+
+        #'@field abs_vtu_paths
+        #'Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets` `file`
+        abs_vtu_paths = function() {
+
+            abs_vtu_paths <- lapply(self$vtu_paths, function(x){
+                abs_vtu_path <- paste0(dirname(self$pvd_path), "/", x)
+                return(invisible(abs_vtu_path))
+            })
+        },
+
+        #'@field timesteps
+        #'Gets timesteps from private parameter '.datasets'
+        timesteps = function() {
+
+            timesteps <- lapply(private$.datasets, function(x){
+                as.double(x[["timestep"]])
+            })
+        },
+
+        #'@field OGS6_vtus
+        #'Getter for private parameter '.OGS6_vtus'
+        OGS6_vtus = function() {
+            private$.OGS6_vtus
+        }
+    ),
+
+    private = list(
+        .pvd_path = NULL,
+        .datasets = NULL,
+        .OGS6_vtus = NULL
     )
-}
+)
 
-#'as_node.r2ogs6_curve
-#'@description Implementation of generic function as_node for S3 class r2ogs6_mesh
-#'@param x A r2ogs6_mesh class object
-as_node.r2ogs6_mesh <- function(x){
-    node <- list(mesh = structure(list(x$mesh_ref)))
-    return(node)
-}
+
+#===== OGS6_vtu =====
+
+
+#'OGS6_vtu
+#'@description Constructor for the OGS6_vtu base class
+#'@export
+OGS6_vtu <- R6::R6Class(
+    "OGS6_vtu",
+    public = list(
+
+        #'@description
+        #'Creates new OGS6_vtu object
+        #'@param vtu_path string: Path to .vtu file
+        initialize = function(vtu_path) {
+
+            vtk_xml_ugr <- vtk$vtkXMLUnstructuredGridReader()
+            vtk_xml_ugr$SetFileName(vtu_path)
+            vtk_xml_ugr$Update()
+
+            private$.vtu_path <- vtu_path
+            self$vtkUnstructuredGrid <- vtk_xml_ugr$GetOutput()
+        },
+
+        #'@description
+        #'Gets PointData for points with IDs in `point_ids`. If called without
+        #' arguments, this is equivalent to `OGS6_vtu$point_data`.
+        #'@param point_ids numeric: Optional: Point IDs, defaults to all
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements, defaults to all in `PointData`
+        get_data_for_points = function(point_ids,
+                                       Names){
+
+            if(missing(point_ids)){
+                max_point_id <- self$get_number_of_points() - 1
+                point_ids <- seq(0, max_point_id)
+            }
+
+            assertthat::assert_that(is.numeric(point_ids))
+
+            if(missing(Names)){
+                Names <- names(self$point_data)
+            }
+
+            assertthat::assert_that(is.character(Names))
+
+            point_data <- list()
+
+            for(i in seq_len(length(point_ids))){
+
+                point_name <- paste0("p", point_ids[[i]])
+                single_point_data <- list()
+
+                for(j in seq_len(length(Names))){
+                    single_point_data <-
+                        c(single_point_data,
+                          list(self$point_data[[Names[[j]]]]
+                               [[(point_ids[[i]] + 1)]]))
+                    names(single_point_data)[[length(single_point_data)]] <-
+                        Names[[j]]
+                }
+
+                point_data <- c(point_data, list(single_point_data))
+                names(point_data)[[length(point_data)]] <- point_name
+            }
+
+            return(point_data)
+        },
+
+        #'@description
+        #'Gets number of points
+        #'@return number: The number of points
+        get_number_of_points = function(){
+            return(self$vtkUnstructuredGrid$GetNumberOfPoints())
+        }
+    ),
+
+    active = list(
+
+        #'@field vtu_path
+        #'Getter for private parameter '.vtu_path'
+        vtu_path = function() {
+            private$.vtu_path
+        },
+
+        #'@field point_data
+        #'Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'
+        point_data = function() {
+            self$dsa_vtkUnstructuredGrid$PointData
+        },
+
+        #'@field vtkUnstructuredGrid
+        #'Access to private parameter '.vtkUnstructuredGrid'
+        vtkUnstructuredGrid = function(value) {
+            if(missing(value)) {
+                private$.vtkUnstructuredGrid
+            }else{
+                # Check class
+                private$.vtkUnstructuredGrid <- value
+                private$.dsa_vtkUnstructuredGrid <-
+                    vtk_dsa$WrapDataObject(value)
+            }
+        },
+
+        #'@field dsa_vtkUnstructuredGrid
+        #'Getter for private parameter '.dsa_vtkUnstructuredGrid'
+        dsa_vtkUnstructuredGrid = function() {
+            private$.dsa_vtkUnstructuredGrid
+        }
+    ),
+
+    private = list(
+        .vtu_path = NULL,
+        .vtkUnstructuredGrid = NULL,
+        .dsa_vtkUnstructuredGrid = NULL
+    )
+)
+
+
+#===== generate_structured_mesh =====
 
 
 #'generate_structured_mesh
-#'@description Wrapper function to call generateStructuredMesh.exe (VTK mesh generator).
-#'For full documentation see https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
-#'@param ogs6_obj A OGS6 class object (containing the path to the ogs6 bin/ folder)
-#'@param call_str The arguments the script will be called with (EXCEPT -o output_file_name, this will
-#' be generated automatically!)
-#'@return The newly generated .vtu file path
+#'@description Wrapper function to call generateStructuredMesh.exe
+#' (VTK mesh generator). For full documentation see
+#'https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
+#'@param args_str string: The arguments the script will be called with
+#'@param ogs_bin_path string: Optional: Path to OpenGeoSys6 bin folder.
+#' Defaults to options("r2ogs6.default_ogs_bin_path").
+#'@return string: .vtu file path
 #'@export
-generate_structured_mesh = function(ogs6_obj, call_str) {
+generate_structured_mesh = function(args_str,
+                                    ogs_bin_path) {
 
-    assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
-    assertthat::assert_that(assertthat::is.string(call_str))
-
-    mesh_number <- 1
-
-    is_first <- (length(ogs6_obj$meshes) == 0)
-
-    if(!is_first){
-        mesh_number <- length(ogs6_obj$meshes) + 1
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
     }
 
-    mesh_output_file_name <- paste0(ogs6_obj$sim_name, "_", mesh_number, ".vtu")
-    mesh_output_file <- paste0(ogs6_obj$sim_path, mesh_output_file_name)
+    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+    assertthat::assert_that(assertthat::is.string(args_str))
 
-    #sysname <- Sys.info()[['sysname']]
 
-    system(command = paste0(ogs6_obj$ogs_bin_path, "generateStructuredMesh.exe",
-                            " -o ", mesh_output_file, " ", call_str))
+    # Get .vtu path from args_str
+    vtu_path <- stringr::str_extract(args_str, "-o [^ ]*")
+    vtu_path <- stringr::str_remove(vtu_path, "-o ")
 
-    ogs6_obj$add_mesh(r2ogs6_mesh(mesh_output_file_name))
+    system(command = paste0(ogs_bin_path,
+                            "generateStructuredMesh.exe ",
+                            args_str))
 
-    return(invisible(mesh_output_file_name))
+    return(invisible(vtu_path))
 }

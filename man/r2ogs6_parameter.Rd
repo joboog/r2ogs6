@@ -12,12 +12,11 @@ r2ogs6_parameter(
   curve = NULL,
   parameter = NULL,
   group_id_property = NULL,
-  index_values = NULL,
   field_name = NULL,
   mesh = NULL,
-  expression = NULL,
   time_series = NULL,
-  use_local_coordinate_system = NULL
+  use_local_coordinate_system = NULL,
+  ...
 )
 }
 \arguments{
@@ -35,17 +34,16 @@ r2ogs6_parameter(
 
 \item{group_id_property}{Optional: string:}
 
-\item{index_values}{Optional: list:}
-
 \item{field_name}{Optional: string:}
 
 \item{mesh}{Optional: string:}
 
-\item{expression}{Optional: string:}
-
 \item{time_series}{Optional: list:}
 
 \item{use_local_coordinate_system}{Optional: string, "true" | "false":}
+
+\item{...}{Optional: for index_values and expression tags (since there can be
+multiple)}
 }
 \description{
 tag: parameter
