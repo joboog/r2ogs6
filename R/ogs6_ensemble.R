@@ -28,7 +28,7 @@ OGS6_Ensemble <- R6::R6Class(
             assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
 
             private$.ens_path <- paste0(ogs6_obj$sim_path,
-                                        validate_is_dir_path(ens_dir_name))
+                                        as_dir_path(ens_dir_name))
 
             ogs6_obj$sim_path <- paste0(private$.ens_path, ogs6_obj$sim_name)
 

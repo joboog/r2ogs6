@@ -23,13 +23,13 @@ new_r2ogs6_search_length_algorithm <- function(type,
 
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(value)
+    are_null_or_numbers(value)
 
     structure(
         list(
             type = type,
             value = value,
-            is_subclass = FALSE,
+            xpath = "search_length_algorithm",
             attr_names = character(),
             flatten_on_exp = character()
         ),

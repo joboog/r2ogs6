@@ -9,51 +9,59 @@ Constructor for the OGS6 base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{sim_name}}{Access to private parameter '.sim_name'}
+\item{\code{sim_name}}{Simulation name. `value` must be string}
 
-\item{\code{sim_id}}{Getter for OGS6 private parameter '.sim_id'}
+\item{\code{sim_id}}{Simulation ID. read-only}
 
-\item{\code{sim_path}}{Access to private parameter '.sim_path'}
+\item{\code{sim_path}}{Simulation path. `value` must be string}
 
-\item{\code{logfile}}{Access to private parameter '.logfile'}
+\item{\code{logfile}}{Logfile path. `value` must be string}
 
-\item{\code{ogs_bin_path}}{Getter for OGS6 private parameter '.ogs_bin_path'}
+\item{\code{gml}}{.gml. read-only}
 
-\item{\code{gml}}{Getter for OGS6 private parameter '.gml'}
+\item{\code{geometry}}{.prj `geometry` tag. `value` must be string}
 
-\item{\code{geometry}}{Access to private parameter '.geometry'}
+\item{\code{meshes}}{.prj `meshes` tag. `value` must be list of strings}
 
-\item{\code{meshes}}{Access to private parameter '.meshes'}
+\item{\code{vtus}}{.vtus. `value` must be list of `OGS_vtu` objects}
 
-\item{\code{vtus}}{Access to private parameter '.vtus'}
+\item{\code{python_script}}{.prj `python_script` tag. `value` must be string}
 
-\item{\code{python_script}}{Access to private parameter '.python_script'}
+\item{\code{search_length_algorithm}}{.prj `search_length_algorithm` tag. `value` must be
+`r2ogs6_search_length_algorithm` object}
 
-\item{\code{search_length_algorithm}}{Access to private parameter '.search_length_algorithm'}
+\item{\code{processes}}{.prj `processes` tag. `value` must be list of `r2ogs6_process` objects}
 
-\item{\code{processes}}{Access to private parameter '.processes'}
+\item{\code{time_loop}}{.prj `time_loop` tag. `value` must be `r2ogs6_time_loop` object}
 
-\item{\code{time_loop}}{Access to private parameter '.time_loop'}
+\item{\code{local_coordinate_system}}{.prj `local_coordinate_system` tag. `value` must be
+`r2ogs6_local_coordinate_system` object}
 
-\item{\code{local_coordinate_system}}{Access to private parameter '.local_coordinate_system'}
+\item{\code{media}}{.prj `media` tag. `value` must be list of `r2ogs6_medium` objects}
 
-\item{\code{media}}{Access to private parameter '.media'}
+\item{\code{parameters}}{.prj `parameters` tag. `value` must be list of `r2ogs6_parameter`
+objects}
 
-\item{\code{parameters}}{Access to private parameter '.parameters'}
+\item{\code{chemical_system}}{.prj `chemical_system` tag. `value` must be `r2ogs6_chemical_system`
+object}
 
-\item{\code{curves}}{Access to private parameter '.curves'}
+\item{\code{curves}}{.prj `curves` tag. `value` must be list of `r2ogs6_curve` objects}
 
-\item{\code{process_variables}}{Access to private parameter '.process_variables'}
+\item{\code{process_variables}}{.prj `process_variables` tag. `value` must be list of
+`r2ogs6_process_variable` objects}
 
-\item{\code{nonlinear_solvers}}{Access to private parameter '.nonlinear_solvers'}
+\item{\code{nonlinear_solvers}}{.prj `nonlinear_solvers` tag. `value` must be list of
+`r2ogs6_nonlinear_solver` objects}
 
-\item{\code{linear_solvers}}{Access to private parameter '.linear_solvers'}
+\item{\code{linear_solvers}}{.prj `linear_solvers` tag. `value` must be list of
+`r2ogs6_linear_solver` objects}
 
-\item{\code{test_definition}}{Access to private parameter '.test_definition'}
+\item{\code{test_definition}}{.prj `test_definition` tag. `value` must be list of `r2ogs6_vtkdiff`
+objects}
 
-\item{\code{insitu}}{Access to private parameter '.insitu'}
+\item{\code{insitu}}{.prj `insitu` tag. `value` must be `r2ogs6_insitu` object}
 
-\item{\code{pvd}}{Access to private parameter '.pvd'}
+\item{\code{pvd}}{.pvd. `value` must be `OGS6_pvd` object}
 }
 \if{html}{\out{</div>}}
 }
@@ -64,19 +72,6 @@ Constructor for the OGS6 base class
 \item \href{#method-add}{\code{OGS6$add()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
-\item \href{#method-add_python_script}{\code{OGS6$add_python_script()}}
-\item \href{#method-add_search_length_algorithm}{\code{OGS6$add_search_length_algorithm()}}
-\item \href{#method-add_process}{\code{OGS6$add_process()}}
-\item \href{#method-add_time_loop}{\code{OGS6$add_time_loop()}}
-\item \href{#method-add_local_coordinate_system}{\code{OGS6$add_local_coordinate_system()}}
-\item \href{#method-add_medium}{\code{OGS6$add_medium()}}
-\item \href{#method-add_parameter}{\code{OGS6$add_parameter()}}
-\item \href{#method-add_curve}{\code{OGS6$add_curve()}}
-\item \href{#method-add_process_variable}{\code{OGS6$add_process_variable()}}
-\item \href{#method-add_nonlinear_solver}{\code{OGS6$add_nonlinear_solver()}}
-\item \href{#method-add_linear_solver}{\code{OGS6$add_linear_solver()}}
-\item \href{#method-add_vtkdiff}{\code{OGS6$add_vtkdiff()}}
-\item \href{#method-add_insitu}{\code{OGS6$add_insitu()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
 \item \href{#method-print_log}{\code{OGS6$print_log()}}
 \item \href{#method-clear}{\code{OGS6$clear()}}
@@ -89,7 +84,7 @@ Constructor for the OGS6 base class
 \subsection{Method \code{new()}}{
 Creates new OGS6 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path, ogs_bin_path, test_mode = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -101,11 +96,6 @@ Creates new OGS6 object
 
 \item{\code{sim_path}}{string: Path where all files for the simulation will be
 saved}
-
-\item{\code{ogs_bin_path}}{string: Path to OpenGeoSys6 /bin directory}
-
-\item{\code{test_mode}}{In test mode, ogs_bin_path will not be
-validated. Unless you're a dev, please don't touch.}
 }
 \if{html}{\out{</div>}}
 }
@@ -114,21 +104,15 @@ validated. Unless you're a dev, please don't touch.}
 \if{html}{\out{<a id="method-add"></a>}}
 \if{latex}{\out{\hypertarget{method-add}{}}}
 \subsection{Method \code{add()}}{
-Adds a simulation component (WIP)
+Adds a .prj simulation component
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add(x, component_name = "")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{An object of any class listed in addable_components(). If `x` is
-not of a proprietary `r2ogs6` class, `component_name` must be
-supplied. E.g. If you're adding a `python_script` which is a string, you
-would call `your_ogs6_obj$add("some_script.py", "python_script")`}
-
-\item{\code{component_name}}{string: Optional: The name of the component to be
-added}
+\item{\code{x}}{An object of any .prj `r2ogs6` class}
 }
 \if{html}{\out{</div>}}
 }
@@ -172,227 +156,6 @@ read in too?}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_python_script"></a>}}
-\if{latex}{\out{\hypertarget{method-add_python_script}{}}}
-\subsection{Method \code{add_python_script()}}{
-Adds a python script
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_python_script(python_script)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{python_script}}{string: File name of python script}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_search_length_algorithm"></a>}}
-\if{latex}{\out{\hypertarget{method-add_search_length_algorithm}{}}}
-\subsection{Method \code{add_search_length_algorithm()}}{
-Adds a r2ogs6_search_length_algorithm object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_search_length_algorithm(search_length_algorithm)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{search_length_algorithm}}{r2ogs6_search_length_algorithm}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_process"></a>}}
-\if{latex}{\out{\hypertarget{method-add_process}{}}}
-\subsection{Method \code{add_process()}}{
-Adds a r2ogs6_process object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_process(process)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{process}}{r2ogs6_process}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_time_loop"></a>}}
-\if{latex}{\out{\hypertarget{method-add_time_loop}{}}}
-\subsection{Method \code{add_time_loop()}}{
-Adds a r2ogs6_time_loop object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_time_loop(time_loop)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{time_loop}}{r2ogs6_time_loop}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_local_coordinate_system"></a>}}
-\if{latex}{\out{\hypertarget{method-add_local_coordinate_system}{}}}
-\subsection{Method \code{add_local_coordinate_system()}}{
-Adds a r2ogs6_local_coordinate_system object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_local_coordinate_system(local_coordinate_system)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{local_coordinate_system}}{r2ogs6_local_coordinate_system}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_medium"></a>}}
-\if{latex}{\out{\hypertarget{method-add_medium}{}}}
-\subsection{Method \code{add_medium()}}{
-Adds a r2ogs6_medium object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_medium(medium)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{medium}}{r2ogs6_medium}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_parameter"></a>}}
-\if{latex}{\out{\hypertarget{method-add_parameter}{}}}
-\subsection{Method \code{add_parameter()}}{
-Adds a r2ogs6_parameter object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_parameter(parameter)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{parameter}}{r2ogs6_parameter}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_curve"></a>}}
-\if{latex}{\out{\hypertarget{method-add_curve}{}}}
-\subsection{Method \code{add_curve()}}{
-Adds a r2ogs6_curve object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_curve(curve)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{curve}}{r2ogs6_curve}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_process_variable"></a>}}
-\if{latex}{\out{\hypertarget{method-add_process_variable}{}}}
-\subsection{Method \code{add_process_variable()}}{
-Adds a r2ogs6_process_variable object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_process_variable(process_variable)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{process_variable}}{r2ogs6_process_variable}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_nonlinear_solver"></a>}}
-\if{latex}{\out{\hypertarget{method-add_nonlinear_solver}{}}}
-\subsection{Method \code{add_nonlinear_solver()}}{
-Adds a r2ogs6_nonlinear_solver object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_nonlinear_solver(nonlinear_solver)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{nonlinear_solver}}{r2ogs6_nonlinear_solver}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_linear_solver"></a>}}
-\if{latex}{\out{\hypertarget{method-add_linear_solver}{}}}
-\subsection{Method \code{add_linear_solver()}}{
-Adds a r2ogs6_linear_solver object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_linear_solver(linear_solver)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{linear_solver}}{r2ogs6_linear_solver}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_vtkdiff"></a>}}
-\if{latex}{\out{\hypertarget{method-add_vtkdiff}{}}}
-\subsection{Method \code{add_vtkdiff()}}{
-Adds a r2ogs6_vtkdiff object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtkdiff(vtkdiff)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{vtkdiff}}{r2ogs6_vtkdiff}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_insitu"></a>}}
-\if{latex}{\out{\hypertarget{method-add_insitu}{}}}
-\subsection{Method \code{add_insitu()}}{
-Adds a r2ogs6_insitu object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_insitu(insitu)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{insitu}}{r2ogs6_insitu}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-get_status}{}}}
 \subsection{Method \code{get_status()}}{
@@ -427,7 +190,7 @@ Prints logfile to console (if it exists)
 \subsection{Method \code{clear()}}{
 Clears components from the OGS6 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which = names(addable_prj_components()))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -435,7 +198,7 @@ Clears components from the OGS6 object
 \describe{
 \item{\code{which}}{character: The names of the components (all by default).
 If you want to delete only some components, run
-names(addable_prj_components()) for the available options.}
+names(prj_top_level_classes()) for the available options.}
 }
 \if{html}{\out{</div>}}
 }

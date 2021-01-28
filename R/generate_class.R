@@ -21,7 +21,9 @@ generate_constructor <- function(params,
     assertthat::assert_that(length(params) == 4)
     assertthat::assert_that(assertthat::is.string(prefix))
 
-    tag_name <- params[[1]]
+    xpath <- stringr::str_remove(params[[1]], "\\/[A-Za-z_]*\\/")
+    tag_name <- get_tag_from_xpath(xpath)
+
     attr_flags <- params[[3]]
     param_flags <- params[[4]]
 
@@ -45,7 +47,7 @@ generate_constructor <- function(params,
     con_str <- paste0(con_str,
                       "structure(list(",
                       assign_str, ",\n",
-                      "is_subclass = TRUE,\n",
+                      "xpath = \"", xpath, "\",\n",
                       "attr_names = c(", attr_names , "),\n",
                       "flatten_on_exp = character()\n",
                       "),\n",
@@ -80,7 +82,9 @@ generate_helper <- function(params,
     assertthat::assert_that(length(params) == 4)
     assertthat::assert_that(assertthat::is.string(prefix))
 
-    tag_name <- params[[1]]
+    xpath <- stringr::str_remove(params[[1]], "\\/[A-Za-z_]*\\/")
+    tag_name <- get_tag_from_xpath(xpath)
+
     param_flags <- params[[4]]
 
     class_name <- paste0("r2ogs6_", prefix, tag_name)
@@ -252,7 +256,9 @@ generate_R6 <- function(params,
     assertthat::assert_that(is.list(params))
     assertthat::assert_that(length(params) == 4)
 
-    tag_name <- params[[1]]
+    xpath <- stringr::str_remove(params[[1]], "\\/[A-Za-z_]*\\/")
+    tag_name <- get_tag_from_xpath(xpath)
+
     attr_flags <- params[[3]]
     param_flags <- params[[4]]
 

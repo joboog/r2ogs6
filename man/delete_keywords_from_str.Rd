@@ -11,7 +11,7 @@ delete_keywords_from_str(string)
 }
 \description{
 Utility function to delete keywords from a string,
-this important because there is a <repeat> tag in <time_loop> and
+this is important because there is a <repeat> tag in <time_loop> and
 "repeat" is a reserved word in R (extend this function if you find more
 reserved words)
 }

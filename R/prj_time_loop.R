@@ -25,10 +25,10 @@ new_r2ogs6_time_loop <- function(processes,
                                  output,
                                  global_process_coupling = NULL) {
 
-    validate_wrapper_list(processes, "r2ogs6_tl_process")
+    is_wrapper_list(processes, "r2ogs6_tl_process")
     assertthat::assert_that(class(output) == "r2ogs6_output")
 
-    validate_is_null_or_class_obj(global_process_coupling,
+    is_null_or_has_class(global_process_coupling,
                                   "r2ogs6_global_process_coupling")
 
     structure(
@@ -36,7 +36,7 @@ new_r2ogs6_time_loop <- function(processes,
             processes = processes,
             output = output,
             global_process_coupling = global_process_coupling,
-            is_subclass = FALSE,
+            xpath = "time_loop",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -104,7 +104,7 @@ new_r2ogs6_tl_process <- function(ref,
                                     "[:space:]*")
     }
 
-    validate_is_null_or_str_flag(compensate_non_equilibrium_initial_residuum)
+    are_null_or_string_flags(compensate_non_equilibrium_initial_residuum)
 
     structure(
         list(ref = ref,
@@ -114,7 +114,7 @@ new_r2ogs6_tl_process <- function(ref,
              time_stepping = time_stepping,
              compensate_non_equilibrium_initial_residuum =
                  compensate_non_equilibrium_initial_residuum,
-             is_subclass = TRUE,
+             xpath = "time_loop/processes/process",
              attr_names = c("ref"),
              flatten_on_exp = character()
         ),
@@ -187,7 +187,7 @@ new_r2ogs6_output <- function(type,
     assertthat::assert_that(is.vector(variables))
     names(variables) <- rep("variable", length(variables))
 
-    validate_is_null_or_string(suffix,
+    are_null_or_strings(suffix,
                                data_mode)
 
 
@@ -195,14 +195,14 @@ new_r2ogs6_output <- function(type,
         timesteps <- validate_timesteps(timesteps, TRUE)
     }
 
-    validate_is_null_or_str_flag(compress_output)
+    are_null_or_string_flags(compress_output)
 
     if(!is.null(meshes)){
         assertthat::assert_that(is.character(meshes))
         names(meshes) <- rep("mesh", length(meshes))
     }
 
-    validate_is_null_or_numeric(fixed_output_times)
+    are_null_or_numeric(fixed_output_times)
 
     structure(
         list(type = type,
@@ -215,7 +215,7 @@ new_r2ogs6_output <- function(type,
              output_iteration_results = output_iteration_results,
              meshes = meshes,
              fixed_output_times = fixed_output_times,
-             is_subclass = TRUE,
+             xpath = "time_loop/output",
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
         ),
@@ -249,14 +249,14 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
 
     assertthat::assert_that(is.double(max_iter))
 
-    validate_wrapper_list(convergence_criteria,
+    is_wrapper_list(convergence_criteria,
                           "r2ogs6_convergence_criterion")
 
     structure(
         list(
             max_iter = max_iter,
             convergence_criteria = convergence_criteria,
-            is_subclass = TRUE,
+            xpath = "time_loop/global_process_coupling",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -309,9 +309,9 @@ new_r2ogs6_convergence_criterion <- function(type,
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(norm_type))
 
-    validate_is_null_or_number(abstol,
+    are_null_or_numbers(abstol,
                                reltol)
-    validate_is_null_or_numeric(abstols,
+    are_null_or_numeric(abstols,
                                 reltols)
 
     structure(
@@ -322,7 +322,9 @@ new_r2ogs6_convergence_criterion <- function(type,
             reltol = reltol,
             abstols = abstols,
             reltols = reltols,
-            is_subclass = TRUE,
+            xpath = c("time_loop/processes/process/convergence_criterion",
+                      paste0("time_loop/global_process_coupling/",
+                             "convergence_criteria/convergence_criterion")),
             attr_names = character(),
             flatten_on_exp = c("abstols", "reltols")
         ),
@@ -418,9 +420,9 @@ new_r2ogs6_time_stepping <- function(type,
                                      rel_dt_max = NULL,
                                      tol = NULL) {
 
-    validate_is_string(type)
+    are_strings(type)
 
-    validate_is_null_or_number(t_initial,
+    are_null_or_numbers(t_initial,
                                t_end,
                                initial_dt,
                                minimum_dt,
@@ -432,7 +434,7 @@ new_r2ogs6_time_stepping <- function(type,
                                rel_dt_max,
                                tol)
 
-    validate_is_null_or_numeric(number_iterations,
+    are_null_or_numeric(number_iterations,
                                 multiplier)
 
     if(!is.null(timesteps)){
@@ -455,7 +457,7 @@ new_r2ogs6_time_stepping <- function(type,
                    rel_dt_min = rel_dt_min,
                    rel_dt_max = rel_dt_max,
                    tol = tol,
-                   is_subclass = TRUE,
+                   xpath = "time_loop/processes/process/time_stepping",
                    attr_names = character(),
                    flatten_on_exp = c("number_iterations",
                                       "multiplier")

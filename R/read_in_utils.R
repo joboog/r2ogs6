@@ -25,48 +25,6 @@ validate_read_in_xml <- function(path){
 }
 
 
-is_actually_subclass <- function(tag_name, xpath_expr) {
-
-    is_subclass <- TRUE
-
-    ambiguous_tags <- c("material_property",
-                        "fluid",
-                        "porous_medium",
-                        "relative_permeability",
-                        "capillary_pressure")
-
-    if(tag_name %in% ambiguous_tags){
-
-        non_subclass_paths <-
-            c("constitutive_relation/material_properties/material_property",
-              "processes/process/fluid",
-              "processes/process/porous_medium",
-              "material_property/porous_medium",
-              paste0("material_property/porous_medium/porous_medium/",
-                     "relative_permeability"),
-              "process/process_variables/capillary_pressure")
-
-        for(i in seq_len(length(non_subclass_paths))){
-            split_ncp <-
-                unlist(strsplit(non_subclass_paths[[i]], "/", fixed = TRUE))
-
-            regex_friendly_ncp <- paste(split_ncp, collapse = "  ")
-
-            split_xpth <-
-                unlist(strsplit(xpath_expr, "/", fixed = TRUE))
-            regex_friendly_xpth <- paste(split_xpth, collapse = "  ")
-
-            if(grepl(paste0(regex_friendly_ncp, "$"), regex_friendly_xpth)){
-                is_subclass <- FALSE
-                break
-            }
-        }
-    }
-
-    return(invisible(is_subclass))
-}
-
-
 #===== GENERAL READ IN UTILITY =====
 
 
@@ -74,40 +32,38 @@ is_actually_subclass <- function(tag_name, xpath_expr) {
 #'@description Reads in elements from a file
 #'@param ogs6_obj A OGS6 class object
 #'@param path string: Path to file XML elements should be read from
-#'@param xpath_expr string: An XPath expression (should be absolute!)
+#'@param xpath string: An XPath expression (should be absolute!)
 read_in <- function(ogs6_obj,
                     path,
-                    xpath_expr){
+                    xpath){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
     xml_doc <- validate_read_in_xml(path)
 
-    assertthat::assert_that(assertthat::is.string(xpath_expr))
+    assertthat::assert_that(assertthat::is.string(xpath))
 
-    split_path <- unlist(strsplit(xpath_expr, "/", fixed = TRUE))
+    split_path <- unlist(strsplit(xpath, "/", fixed = TRUE))
     child_name <- split_path[[length(split_path)]]
-    subclasses_names <- get_subclass_names(paste0("r2ogs6_", child_name))
 
-    nodes <- xml2::xml_find_all(xml_doc, xpath_expr)
+    nodes <- xml2::xml_find_all(xml_doc, xpath)
 
     if(length(nodes) == 0){
         return(invisible(NULL))
     }
 
-    r2ogs6_obj <- NULL
+    # Remove root expression for better readability
+    xpath <- stringr::str_remove(xpath, "\\/[A-Za-z_]*\\/")
 
-    #Code to be parsed when r2ogs6_obj has been defined
-    add_call <- paste0("ogs6_obj$add_", child_name, "(r2ogs6_obj)")
+    r2ogs6_obj <- NULL
 
     #Parse all children
     for (i in seq_len(length(nodes))) {
 
         r2ogs6_obj <- node_to_r2ogs6_class_object(nodes[[i]],
-                                                  xpath_expr,
-                                                  subclasses_names)
+                                                  xpath)
 
         #Add r2ogs6_obj with code snippet
-        eval(parse(text = add_call))
+        eval(parse(text = "ogs6_obj$add(r2ogs6_obj)"))
     }
 
     return(invisible(r2ogs6_obj))
@@ -117,12 +73,9 @@ read_in <- function(ogs6_obj,
 #'node_to_r2ogs6_class_object
 #'@description Takes an XML node and turns it into a class object
 #'@param xml_node xml2::xml_node: XML node
-#'@param xpath_expr string: XPath expression (for subclass differentiation)
-#'@param subclasses_names character: Optional: Names of r2ogs6 subclasses
-#' (r2ogs6 classes without a method for input_add)
+#'@param xpath string: XPath expression (for subclass differentiation)
 node_to_r2ogs6_class_object <- function(xml_node,
-                                        xpath_expr,
-                                        subclasses_names = character()){
+                                        xpath){
 
     assertthat::assert_that(class(xml_node) == "xml_node")
 
@@ -131,14 +84,13 @@ node_to_r2ogs6_class_object <- function(xml_node,
 
     for(i in seq_len(length(parameter_nodes))){
 
-        new_xpath_expr <- paste0(xpath_expr,
+        new_xpath <- paste0(xpath,
                              "/",
                              xml2::xml_name(parameter_nodes[[i]]))
 
         #Guess R representation of node, add it to parameter list
         parameters <- c(parameters, list(node_to_object(parameter_nodes[[i]],
-                                                        new_xpath_expr,
-                                                        subclasses_names)))
+                                                        new_xpath)))
 
         #Name parameter after the xml_node child name
         names(parameters)[[length(parameters)]] <-
@@ -147,10 +99,7 @@ node_to_r2ogs6_class_object <- function(xml_node,
 
     tag_name <- xml2::xml_name(xml_node)
 
-    #If node represented by subclass, get class name
-    class_name <- ifelse(tag_name %in% names(subclasses_names),
-                         select_fitting_subclass(xpath_expr, subclasses_names),
-                         get_tag_class_name(tag_name))
+    class_name <- get_class_from_xpath(xpath)
 
     ordered_parameters <- order_parameters(parameters, class_name)
 
@@ -191,16 +140,12 @@ node_to_r2ogs6_class_object <- function(xml_node,
 #'3) Wrapper nodes are represented as lists
 #'4) Parent nodes whose children have no children are represented as lists
 #'@param xml_node xml2::xml_node: XML node
-#'@param xpath_expr string: Optional: XPath expression (for subclass
-#' differentiation)
-#'@param subclasses_names character: Optional: Names of `r2ogs6` subclasses
-#' (`r2ogs6` classes without a OGS6$add method)
+#'@param xpath string: XPath expression (for subclass differentiation)
 node_to_object <- function(xml_node,
-                           xpath_expr = "",
-                           subclasses_names = character()){
+                           xpath = ""){
 
     assertthat::assert_that("xml_node" %in% class(xml_node))
-    assertthat::assert_that(assertthat::is.string(xpath_expr))
+    assertthat::assert_that(assertthat::is.string(xpath))
 
     node_name <- xml2::xml_name(xml_node)
 
@@ -225,11 +170,9 @@ node_to_object <- function(xml_node,
     }
 
     #Node is represented by subclass
-    if(node_name %in% names(subclasses_names) &&
-       is_actually_subclass(node_name, xpath_expr)){
+    if(!is.null(get_class_from_xpath(xpath))){
         return(invisible(node_to_r2ogs6_class_object(xml_node,
-                                                     xpath_expr,
-                                                     subclasses_names)))
+                                                     xpath)))
     }
 
     #Node has children but is not represented by subclass
@@ -241,24 +184,20 @@ node_to_object <- function(xml_node,
 
         list_content <- NULL
 
-        new_xpath_expr <- paste0(xpath_expr,
-                                 "/",
-                                 child_name)
+        new_xpath <- paste0(xpath,
+                            "/",
+                            child_name)
 
-        if (child_name %in% names(subclasses_names) &&
-            is_actually_subclass(child_name, new_xpath_expr)) {
+        if (!is.null(get_class_from_xpath(new_xpath))) {
             list_content <- node_to_r2ogs6_class_object(child_node,
-                                                        new_xpath_expr,
-                                                        subclasses_names)
+                                                        new_xpath)
         } else{
             list_content <- node_to_object(child_node,
-                                           new_xpath_expr,
-                                           subclasses_names)
+                                           new_xpath)
         }
 
         wrapper_list <- c(wrapper_list, list(list_content))
-        names(wrapper_list)[[length(wrapper_list)]] <-
-            child_name
+        names(wrapper_list)[[length(wrapper_list)]] <- child_name
     }
 
     return(invisible(wrapper_list))
@@ -336,4 +275,3 @@ order_parameters <- function(parameters, class_name){
 
     return(invisible(ordered_parameters))
 }
-

@@ -334,46 +334,46 @@ new_r2ogs6_process <- function(name,
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.number(integration_order))
 
-    validate_is_null_or_class_obj(material_property,
+    is_null_or_has_class(material_property,
                                   "r2ogs6_material_property")
 
     process_variables <- validate_process_variables(process_variables)
     secondary_variables <- validate_secondary_variables(secondary_variables)
 
-    validate_is_null_or_numeric(specific_body_force)
+    are_null_or_numeric(specific_body_force)
 
     if(!is.null(constitutive_relation)){
-        validate_wrapper_list(constitutive_relation,
+        is_wrapper_list(constitutive_relation,
                               "r2ogs6_constitutive_relation")
     }
 
     if(!is.null(darcy_gravity)){
-        darcy_gravity <- validate_param_list(darcy_gravity,
+        darcy_gravity <- coerce_names(darcy_gravity,
                                              c("axis_id", "g"))
     }
 
-    validate_is_null_or_class_obj(fracture_model, "r2ogs6_fracture_model")
+    is_null_or_has_class(fracture_model, "r2ogs6_fracture_model")
 
-    validate_is_null_or_class_obj(phasefield_parameters,
+    is_null_or_has_class(phasefield_parameters,
                                   "r2ogs6_phasefield_parameters")
 
     if(!is.null(calculatesurfaceflux)){
-        calculatesurfaceflux <- validate_param_list(calculatesurfaceflux,
+        calculatesurfaceflux <- coerce_names(calculatesurfaceflux,
                                                     c("mesh", "property_name"))
     }
 
     if(!is.null(borehole_heat_exchangers)){
-        validate_wrapper_list(borehole_heat_exchangers,
+        is_wrapper_list(borehole_heat_exchangers,
                               "r2ogs6_borehole_heat_exchanger")
     }
 
     if(!is.null(reactive_system)){
-        reactive_system <- validate_param_list(reactive_system, c("type"))
+        reactive_system <- coerce_names(reactive_system, c("type"))
     }
 
     if(!is.null(thermal_parameters)){
         thermal_parameters <-
-            validate_param_list(thermal_parameters,
+            coerce_names(thermal_parameters,
                                 c("linear_thermal_expansion_coefficient",
                                   "specific_heat_capacity",
                                   "thermal_conductivity",
@@ -381,13 +381,13 @@ new_r2ogs6_process <- function(name,
     }
 
     if(!is.null(porous_medium)){
-        validate_wrapper_list(porous_medium,
+        is_wrapper_list(porous_medium,
                               "r2ogs6_porous_medium")
     }
 
     fluid <- validate_fluid(fluid)
 
-    validate_is_null_or_string(coupling_scheme,
+    are_null_or_strings(coupling_scheme,
                                solid_density,
                                reference_solid_density,
                                linear_thermal_expansion_coefficient,
@@ -419,7 +419,7 @@ new_r2ogs6_process <- function(name,
                                reference_temperature)
 
 
-    validate_is_null_or_number(dimension,
+    are_null_or_numbers(dimension,
                                internal_length,
                                fluid_specific_heat_source,
                                fluid_specific_isobaric_heat_capacity,
@@ -443,7 +443,7 @@ new_r2ogs6_process <- function(name,
         mass_lumping <- stringr::str_remove_all(mass_lumping, "[:space:]*")
     }
 
-    validate_is_null_or_str_flag(mass_lumping,
+    are_null_or_string_flags(mass_lumping,
                                  non_advective_form)
 
     structure(
@@ -523,8 +523,7 @@ new_r2ogs6_process <- function(name,
             density_solid = density_solid,
             latent_heat_evaporation = latent_heat_evaporation,
             pf_irrv = pf_irrv,
-            tag_name = "process",
-            is_subclass = FALSE,
+            xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
             unwrap_on_exp = c("fracture_properties", "constitutive_relation")
@@ -746,7 +745,7 @@ new_r2ogs6_constitutive_relation <- function(type,
                    dependency_parameter_mk = dependency_parameter_mk,
                    dependency_parameter_mvk = dependency_parameter_mvk,
                    dependency_parameter_mvm = dependency_parameter_mvm,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/constitutive_relation",
                    attr_names = c("id", "material_property"),
                    flatten_on_exp = character()
     ),
@@ -814,21 +813,21 @@ new_r2ogs6_fracture_model <- function(type,
                                       cohesion = NULL,
                                       nonlinear_solver = NULL) {
 
-    validate_is_string(type,
+    are_strings(type,
                        normal_stiffness,
                        shear_stiffness)
 
-    validate_is_number(penalty_aperture_cutoff,
+    are_numbers(penalty_aperture_cutoff,
                        tension_cutoff)
 
-    validate_is_null_or_string(fracture_toughness,
+    are_null_or_strings(fracture_toughness,
                                peak_normal_traction,
                                friction_angle,
                                dilatancy_angle,
                                cohesion)
 
     if(!is.null(nonlinear_solver)){
-        nonlinear_solver <- validate_param_list(nonlinear_solver,
+        nonlinear_solver <- coerce_names(nonlinear_solver,
                                                 c("maximum_iterations",
                                                   "error_tolerance"))
     }
@@ -844,7 +843,7 @@ new_r2ogs6_fracture_model <- function(type,
                    dilatancy_angle = dilatancy_angle,
                    cohesion = cohesion,
                    nonlinear_solver = nonlinear_solver,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/fracture_model",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -887,11 +886,11 @@ new_r2ogs6_fracture_properties <- function(material_id,
                                            biot_coefficient = NULL,
                                            permeability_model = NULL) {
 
-    validate_is_string(initial_aperture)
+    are_strings(initial_aperture)
 
-    validate_is_number(material_id)
+    are_numbers(material_id)
 
-    validate_is_null_or_string(specific_storage,
+    are_null_or_strings(specific_storage,
                                biot_coefficient)
 
 
@@ -905,10 +904,10 @@ new_r2ogs6_fracture_properties <- function(material_id,
 
         if(length(permeability_model) == 1){
             permeability_model <-
-                validate_param_list(permeability_model, c("type"))
+                coerce_names(permeability_model, c("type"))
         }else{
             permeability_model <-
-                validate_param_list(permeability_model, c("type",
+                coerce_names(permeability_model, c("type",
                                                           "value"))
         }
     }
@@ -918,7 +917,7 @@ new_r2ogs6_fracture_properties <- function(material_id,
                    specific_storage = specific_storage,
                    biot_coefficient = biot_coefficient,
                    permeability_model = permeability_model,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/fracture_properties",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -954,15 +953,15 @@ new_r2ogs6_jacobian_assembler <- function(type,
                                           component_magnitudes = NULL,
                                           relative_epsilons = NULL) {
 
-    validate_is_string(type)
+    are_strings(type)
 
-    validate_is_null_or_numeric(component_magnitudes,
+    are_null_or_numeric(component_magnitudes,
                                 relative_epsilons)
 
     structure(list(type = type,
                    component_magnitudes = component_magnitudes,
                    relative_epsilons = relative_epsilons,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/jacobian_assembler",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -1004,19 +1003,19 @@ new_r2ogs6_phasefield_parameters <- function(residual_stiffness,
                                              kinetic_coefficient,
                                              history_field = NULL) {
 
-    validate_is_string(residual_stiffness,
+    are_strings(residual_stiffness,
                        crack_resistance,
                        crack_length_scale,
                        kinetic_coefficient)
 
-    validate_is_null_or_string(history_field)
+    are_null_or_strings(history_field)
 
     structure(list(residual_stiffness = residual_stiffness,
                    crack_resistance = crack_resistance,
                    crack_length_scale = crack_length_scale,
                    kinetic_coefficient = kinetic_coefficient,
                    history_field = history_field,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/phasefield_parameters",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -1081,7 +1080,7 @@ validate_secondary_variables <- function(secondary_variables){
     }
 
     secondary_variables <-
-        clean_up_imported_list(secondary_variables)
+        clean_imported_list(secondary_variables)
 
 
     for (i in seq_len(length(secondary_variables))) {
@@ -1090,12 +1089,12 @@ validate_secondary_variables <- function(secondary_variables){
 
         if (length(secondary_variables[[i]]) == 2) {
             secondary_variables[[i]] <-
-                validate_param_list(secondary_variables[[i]],
+                coerce_names(secondary_variables[[i]],
                                     c("internal_name",
                                       "output_name"))
         }else{
             secondary_variables[[i]] <-
-                validate_param_list(secondary_variables[[i]],
+                coerce_names(secondary_variables[[i]],
                                     c("type",
                                       "internal_name",
                                       "output_name"))
@@ -1113,10 +1112,10 @@ validate_fluid <- function(fluid){
 
     if(!is.null(fluid)){
 
-        fluid <- validate_param_list(fluid, c("density", "viscosity"))
+        fluid <- coerce_names(fluid, c("density", "viscosity"))
 
-        fluid[[1]] <- validate_param_list(fluid[[1]], c("type", "value"))
-        fluid[[2]] <- validate_param_list(fluid[[2]], c("type", "value"))
+        fluid[[1]] <- coerce_names(fluid[[1]], c("type", "value"))
+        fluid[[2]] <- coerce_names(fluid[[2]], c("type", "value"))
     }
 
     return(invisible(fluid))

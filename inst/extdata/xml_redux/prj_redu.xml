@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenGeoSysProject read_content_as="list" required="TRUE">
+  <processes read_content_as="list" required="TRUE">
+    <process read_content_as="list" required="FALSE">
+      <name required="TRUE" read_content_as="string"/>
+      <type required="TRUE" read_content_as="string"/>
+      <integration_order required="TRUE" read_content_as="string"/>
+      <process_variables read_content_as="list" required="TRUE">
+        <process_variable required="FALSE" read_content_as="string"/>
+        <pressure required="FALSE" read_content_as="string"/>
+        <displacement required="FALSE" read_content_as="string"/>
+        <temperature required="FALSE" read_content_as="string"/>
+        <concentration required="FALSE" read_content_as="string"/>
+        <phasefield required="FALSE" read_content_as="string"/>
+        <fluid_pressure required="FALSE" read_content_as="string"/>
+        <vapour_mass_fraction required="FALSE" read_content_as="string"/>
+        <gas_pressure required="FALSE" read_content_as="string"/>
+        <capillary_pressure required="FALSE" read_content_as="string"/>
+        <liquid_pressure required="FALSE" read_content_as="string"/>
+        <overall_mass_density required="FALSE" read_content_as="string"/>
+      </process_variables>
+      <secondary_variables read_content_as="list" required="FALSE">
+        <secondary_variable required="FALSE" attr_names="internal_name output_name type" read_content_as="string"/>
+      </secondary_variables>
+      <specific_body_force required="FALSE" read_content_as="string"/>
+      <constitutive_relation read_content_as="list" required="FALSE" attr_names="id">
+        <type required="TRUE" read_content_as="string"/>
+        <youngs_modulus required="FALSE" read_content_as="string"/>
+        <poissons_ratio required="FALSE" read_content_as="string"/>
+        <nonlinear_solver read_content_as="list" required="FALSE">
+          <maximum_iterations required="TRUE" read_content_as="string"/>
+          <error_tolerance required="TRUE" read_content_as="string"/>
+        </nonlinear_solver>
+        <behaviour required="FALSE" read_content_as="string"/>
+        <material_properties read_content_as="list" required="FALSE">
+          <material_property required="TRUE" attr_names="name parameter" read_content_as="string"/>
+        </material_properties>
+        <shear_modulus required="FALSE" read_content_as="string"/>
+        <bulk_modulus required="FALSE" read_content_as="string"/>
+        <kappa required="FALSE" read_content_as="string"/>
+        <beta required="FALSE" read_content_as="string"/>
+        <gamma required="FALSE" read_content_as="string"/>
+        <hardening_modulus required="FALSE" read_content_as="string"/>
+        <alpha required="FALSE" read_content_as="string"/>
+        <delta required="FALSE" read_content_as="string"/>
+        <eps required="FALSE" read_content_as="string"/>
+        <m required="FALSE" read_content_as="string"/>
+        <alphap required="FALSE" read_content_as="string"/>
+        <deltap required="FALSE" read_content_as="string"/>
+        <epsp required="FALSE" read_content_as="string"/>
+        <mp required="FALSE" read_content_as="string"/>
+        <betap required="FALSE" read_content_as="string"/>
+        <gammap required="FALSE" read_content_as="string"/>
+        <tangent_type required="FALSE" read_content_as="string"/>
+        <damage_properties read_content_as="list" required="FALSE">
+          <alpha_d required="TRUE" read_content_as="string"/>
+          <beta_d required="TRUE" read_content_as="string"/>
+          <h_d required="TRUE" read_content_as="string"/>
+        </damage_properties>
+        <youngs_moduli required="FALSE" read_content_as="string"/>
+        <shear_moduli required="FALSE" read_content_as="string"/>
+        <poissons_ratios required="FALSE" read_content_as="string"/>
+        <a required="FALSE" read_content_as="string"/>
+        <n required="FALSE" read_content_as="string"/>
+        <sigma0 required="FALSE" read_content_as="string"/>
+        <q required="FALSE" read_content_as="string"/>
+        <kelvin_shear_modulus required="FALSE" read_content_as="string"/>
+        <kelvin_viscosity required="FALSE" read_content_as="string"/>
+        <maxwell_shear_modulus required="FALSE" read_content_as="string"/>
+        <maxwell_bulk_modulus required="FALSE" read_content_as="string"/>
+        <maxwell_viscosity required="FALSE" read_content_as="string"/>
+        <dependency_parameter_mk required="FALSE" read_content_as="string"/>
+        <dependency_parameter_mvk required="FALSE" read_content_as="string"/>
+        <dependency_parameter_mvm required="FALSE" read_content_as="string"/>
+      </constitutive_relation>
+      <solid_density required="FALSE" read_content_as="string"/>
+      <dimension required="FALSE" read_content_as="string"/>
+      <coupling_scheme required="FALSE" read_content_as="string"/>
+      <reference_solid_density required="FALSE" read_content_as="string"/>
+      <linear_thermal_expansion_coefficient required="FALSE" read_content_as="string"/>
+      <specific_heat_capacity required="FALSE" read_content_as="string"/>
+      <thermal_conductivity required="FALSE" read_content_as="string"/>
+      <reference_temperature required="FALSE" read_content_as="string"/>
+      <darcy_gravity read_content_as="list" required="FALSE">
+        <axis_id required="TRUE" read_content_as="string"/>
+        <g required="TRUE" read_content_as="string"/>
+      </darcy_gravity>
+      <fracture_model read_content_as="list" required="FALSE">
+        <type required="TRUE" read_content_as="string"/>
+        <normal_stiffness required="TRUE" read_content_as="string"/>
+        <shear_stiffness required="TRUE" read_content_as="string"/>
+        <penalty_aperture_cutoff required="TRUE" read_content_as="string"/>
+        <tension_cutoff required="TRUE" read_content_as="string"/>
+        <fracture_toughness required="FALSE" read_content_as="string"/>
+        <peak_normal_traction required="FALSE" read_content_as="string"/>
+        <friction_angle required="FALSE" read_content_as="string"/>
+        <dilatancy_angle required="FALSE" read_content_as="string"/>
+        <cohesion required="FALSE" read_content_as="string"/>
+        <nonlinear_solver read_content_as="list" required="FALSE">
+          <maximum_iterations required="TRUE" read_content_as="string"/>
+          <error_tolerance required="TRUE" read_content_as="string"/>
+        </nonlinear_solver>
+      </fracture_model>
+      <fracture_properties read_content_as="list" required="FALSE">
+        <material_id required="TRUE" read_content_as="string"/>
+        <initial_aperture required="TRUE" read_content_as="string"/>
+        <specific_storage required="FALSE" read_content_as="string"/>
+        <biot_coefficient required="FALSE" read_content_as="string"/>
+        <permeability_model read_content_as="list" required="FALSE">
+          <type required="TRUE" read_content_as="string"/>
+          <value required="FALSE" read_content_as="string"/>
+        </permeability_model>
+      </fracture_properties>
+      <jacobian_assembler read_content_as="list" required="FALSE">
+        <type required="TRUE" read_content_as="string"/>
+        <component_magnitudes required="FALSE" read_content_as="string"/>
+        <relative_epsilons required="FALSE" read_content_as="string"/>
+      </jacobian_assembler>
+      <internal_length required="FALSE" read_content_as="string"/>
+      <mass_lumping required="FALSE" read_content_as="string"/>
+      <porosity required="FALSE" read_content_as="string"/>
+      <calculatesurfaceflux read_content_as="list" required="FALSE">
+        <mesh required="TRUE" read_content_as="string"/>
+        <property_name required="TRUE" read_content_as="string"/>
+      </calculatesurfaceflux>
+      <intrinsic_permeability required="FALSE" read_content_as="string"/>
+      <specific_storage required="FALSE" read_content_as="string"/>
+      <fluid_viscosity required="FALSE" read_content_as="string"/>
+      <biot_coefficient required="FALSE" read_content_as="string"/>
+      <fluid_density required="FALSE" read_content_as="string"/>
+      <initial_effective_stress required="FALSE" read_content_as="string"/>
+      <initial_fracture_effective_stress required="FALSE" read_content_as="string"/>
+      <phasefield_parameters read_content_as="list" required="FALSE">
+        <residual_stiffness required="TRUE" read_content_as="string"/>
+        <crack_resistance required="TRUE" read_content_as="string"/>
+        <crack_length_scale required="TRUE" read_content_as="string"/>
+        <kinetic_coefficient required="TRUE" read_content_as="string"/>
+        <history_field required="FALSE" read_content_as="string"/>
+      </phasefield_parameters>
+      <deactivate_matrix_in_flow required="FALSE" read_content_as="string"/>
+      <borehole_heat_exchangers read_content_as="list" required="FALSE">
+        <borehole_heat_exchanger read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <flow_and_temperature_control read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <flow_rate required="FALSE" read_content_as="string"/>
+            <temperature_curve required="FALSE" read_content_as="string"/>
+            <power required="FALSE" read_content_as="string"/>
+            <power_curve required="FALSE" read_content_as="string"/>
+            <flow_rate_curve required="FALSE" read_content_as="string"/>
+          </flow_and_temperature_control>
+          <borehole read_content_as="list" required="TRUE">
+            <length required="TRUE" read_content_as="string"/>
+            <diameter required="TRUE" read_content_as="string"/>
+          </borehole>
+          <grout read_content_as="list" required="TRUE">
+            <density required="TRUE" read_content_as="string"/>
+            <porosity required="TRUE" read_content_as="string"/>
+            <specific_heat_capacity required="TRUE" read_content_as="string"/>
+            <thermal_conductivity required="TRUE" read_content_as="string"/>
+          </grout>
+          <pipes read_content_as="list" required="TRUE">
+            <longitudinal_dispersion_length required="TRUE" read_content_as="string"/>
+            <inlet read_content_as="list" required="FALSE">
+              <diameter required="TRUE" read_content_as="string"/>
+              <wall_thickness required="TRUE" read_content_as="string"/>
+              <wall_thermal_conductivity required="TRUE" read_content_as="string"/>
+            </inlet>
+            <outlet read_content_as="list" required="FALSE">
+              <diameter required="TRUE" read_content_as="string"/>
+              <wall_thickness required="TRUE" read_content_as="string"/>
+              <wall_thermal_conductivity required="TRUE" read_content_as="string"/>
+            </outlet>
+            <distance_between_pipes required="FALSE" read_content_as="string"/>
+            <outer read_content_as="list" required="FALSE">
+              <diameter required="TRUE" read_content_as="string"/>
+              <wall_thickness required="TRUE" read_content_as="string"/>
+              <wall_thermal_conductivity required="TRUE" read_content_as="string"/>
+            </outer>
+            <inner read_content_as="list" required="FALSE">
+              <diameter required="TRUE" read_content_as="string"/>
+              <wall_thickness required="TRUE" read_content_as="string"/>
+              <wall_thermal_conductivity required="TRUE" read_content_as="string"/>
+            </inner>
+          </pipes>
+          <refrigerant read_content_as="list" required="TRUE">
+            <density required="TRUE" read_content_as="string"/>
+            <viscosity required="TRUE" read_content_as="string"/>
+            <specific_heat_capacity required="TRUE" read_content_as="string"/>
+            <thermal_conductivity required="TRUE" read_content_as="string"/>
+            <reference_temperature required="TRUE" read_content_as="string"/>
+          </refrigerant>
+          <use_bhe_pipe_network required="FALSE" read_content_as="string"/>
+        </borehole_heat_exchanger>
+      </borehole_heat_exchangers>
+      <temperature required="FALSE" read_content_as="string"/>
+      <reactive_system read_content_as="list" required="FALSE">
+        <type required="TRUE" read_content_as="string"/>
+      </reactive_system>
+      <fluid_specific_heat_source required="FALSE" read_content_as="string"/>
+      <fluid_specific_isobaric_heat_capacity required="FALSE" read_content_as="string"/>
+      <solid_hydraulic_permeability required="FALSE" read_content_as="string"/>
+      <solid_specific_heat_source required="FALSE" read_content_as="string"/>
+      <solid_heat_conductivity required="FALSE" read_content_as="string"/>
+      <solid_specific_isobaric_heat_capacity required="FALSE" read_content_as="string"/>
+      <tortuosity required="FALSE" read_content_as="string"/>
+      <diffusion_coefficient required="FALSE" read_content_as="string"/>
+      <solid_density_dry required="FALSE" read_content_as="string"/>
+      <solid_density_initial required="FALSE" read_content_as="string"/>
+      <characteristic_pressure required="FALSE" read_content_as="string"/>
+      <characteristic_temperature required="FALSE" read_content_as="string"/>
+      <characteristic_vapour_mass_fraction required="FALSE" read_content_as="string"/>
+      <output_element_matrices required="FALSE" read_content_as="string"/>
+      <material_property read_content_as="list" required="FALSE">
+        <fluid read_content_as="list" required="TRUE">
+          <liquid_density read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </liquid_density>
+          <gas_density read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <molar_mass required="TRUE" read_content_as="string"/>
+          </gas_density>
+          <liquid_viscosity read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </liquid_viscosity>
+          <gas_viscosity read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </gas_viscosity>
+          <specific_heat_capacity_solid read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </specific_heat_capacity_solid>
+          <specific_heat_capacity_water read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </specific_heat_capacity_water>
+          <specific_heat_capacity_air read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </specific_heat_capacity_air>
+          <specific_heat_capacity_water_vapor read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </specific_heat_capacity_water_vapor>
+          <thermal_conductivity_dry_solid read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </thermal_conductivity_dry_solid>
+          <thermal_conductivity_wet_solid read_content_as="list" required="FALSE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </thermal_conductivity_wet_solid>
+        </fluid>
+        <porous_medium read_content_as="list" required="TRUE">
+          <porous_medium read_content_as="list" required="TRUE" attr_names="id">
+            <permeability read_content_as="list" required="TRUE">
+              <permeability_tensor_entries required="TRUE" read_content_as="string"/>
+              <type required="TRUE" read_content_as="string"/>
+            </permeability>
+            <porosity read_content_as="list" required="TRUE">
+              <type required="TRUE" read_content_as="string"/>
+              <porosity_parameter required="TRUE" read_content_as="string"/>
+            </porosity>
+            <storage read_content_as="list" required="TRUE">
+              <type required="TRUE" read_content_as="string"/>
+              <value required="TRUE" read_content_as="string"/>
+            </storage>
+            <capillary_pressure read_content_as="list" required="TRUE">
+              <type required="TRUE" read_content_as="string"/>
+              <pd required="FALSE" read_content_as="string"/>
+              <sr required="FALSE" read_content_as="string"/>
+              <smax required="FALSE" read_content_as="string"/>
+              <m required="FALSE" read_content_as="string"/>
+              <pc_max required="FALSE" read_content_as="string"/>
+              <has_regularized required="FALSE" read_content_as="string"/>
+              <curve read_content_as="list" required="FALSE">
+                <coords required="TRUE" read_content_as="string"/>
+                <values required="TRUE" read_content_as="string"/>
+              </curve>
+            </capillary_pressure>
+            <relative_permeability read_content_as="list" required="TRUE">
+              <relative_permeability read_content_as="list" required="TRUE" attr_names="id">
+                <type required="TRUE" read_content_as="string"/>
+                <sr required="TRUE" read_content_as="string"/>
+                <smax required="TRUE" read_content_as="string"/>
+                <m required="TRUE" read_content_as="string"/>
+                <krel_min required="TRUE" read_content_as="string"/>
+              </relative_permeability>
+            </relative_permeability>
+          </porous_medium>
+        </porous_medium>
+      </material_property>
+      <diffusion_coeff_component_b required="FALSE" read_content_as="string"/>
+      <diffusion_coeff_component_a required="FALSE" read_content_as="string"/>
+      <hydro_crack_scheme required="FALSE" read_content_as="string"/>
+      <at_num required="FALSE" read_content_as="string"/>
+      <initial_stress required="FALSE" read_content_as="string"/>
+      <split_method required="FALSE" read_content_as="string"/>
+      <reg_param required="FALSE" read_content_as="string"/>
+      <thermal_parameters read_content_as="list" required="FALSE">
+        <linear_thermal_expansion_coefficient required="TRUE" read_content_as="string"/>
+        <specific_heat_capacity required="TRUE" read_content_as="string"/>
+        <thermal_conductivity required="TRUE" read_content_as="string"/>
+        <residual_thermal_conductivity required="TRUE" read_content_as="string"/>
+      </thermal_parameters>
+      <non_advective_form required="FALSE" read_content_as="string"/>
+      <fluid read_content_as="list" required="FALSE">
+        <density read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <value required="TRUE" read_content_as="string"/>
+        </density>
+        <viscosity read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <value required="TRUE" read_content_as="string"/>
+        </viscosity>
+      </fluid>
+      <porous_medium read_content_as="list" required="FALSE">
+        <porous_medium read_content_as="list" required="TRUE" attr_names="id">
+          <permeability read_content_as="list" required="TRUE">
+            <permeability_tensor_entries required="TRUE" read_content_as="string"/>
+            <type required="TRUE" read_content_as="string"/>
+          </permeability>
+          <porosity read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <porosity_parameter required="TRUE" read_content_as="string"/>
+          </porosity>
+          <storage read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <value required="TRUE" read_content_as="string"/>
+          </storage>
+          <capillary_pressure read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <m required="TRUE" read_content_as="string"/>
+            <pc_max required="TRUE" read_content_as="string"/>
+            <pd required="TRUE" read_content_as="string"/>
+            <smax required="TRUE" read_content_as="string"/>
+            <sr required="TRUE" read_content_as="string"/>
+          </capillary_pressure>
+          <relative_permeability read_content_as="list" required="TRUE">
+            <type required="TRUE" read_content_as="string"/>
+            <krel_min required="TRUE" read_content_as="string"/>
+            <m required="TRUE" read_content_as="string"/>
+            <smax required="TRUE" read_content_as="string"/>
+            <sr required="TRUE" read_content_as="string"/>
+          </relative_permeability>
+        </porous_medium>
+      </porous_medium>
+      <decay_rate required="FALSE" read_content_as="string"/>
+      <fluid_reference_density required="FALSE" read_content_as="string"/>
+      <retardation_factor required="FALSE" read_content_as="string"/>
+      <solute_dispersivity_longitudinal required="FALSE" read_content_as="string"/>
+      <solute_dispersivity_transverse required="FALSE" read_content_as="string"/>
+      <molecular_diffusion_coefficient required="FALSE" read_content_as="string"/>
+      <density_solid required="FALSE" read_content_as="string"/>
+      <latent_heat_evaporation required="FALSE" read_content_as="string"/>
+      <pf_irrv required="FALSE" read_content_as="string"/>
+    </process>
+    <include required="FALSE" attr_names="file" read_content_as="string"/>
+  </processes>
+  <time_loop read_content_as="list" required="TRUE">
+    <processes read_content_as="list" required="TRUE">
+      <process read_content_as="list" required="TRUE" attr_names="ref">
+        <nonlinear_solver required="TRUE" read_content_as="string"/>
+        <convergence_criterion read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <norm_type required="TRUE" read_content_as="string"/>
+          <abstol required="FALSE" read_content_as="string"/>
+          <reltol required="FALSE" read_content_as="string"/>
+          <reltols required="FALSE" read_content_as="string"/>
+          <abstols required="FALSE" read_content_as="string"/>
+        </convergence_criterion>
+        <time_discretization read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+        </time_discretization>
+        <time_stepping read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <t_initial required="FALSE" read_content_as="string"/>
+          <t_end required="FALSE" read_content_as="string"/>
+          <timesteps read_content_as="list" required="FALSE">
+            <pair read_content_as="list" required="TRUE">
+              <delta_t required="TRUE" read_content_as="string"/>
+              <repeat required="TRUE" read_content_as="string"/>
+            </pair>
+          </timesteps>
+          <initial_dt required="FALSE" read_content_as="string"/>
+          <minimum_dt required="FALSE" read_content_as="string"/>
+          <maximum_dt required="FALSE" read_content_as="string"/>
+          <number_iterations required="FALSE" read_content_as="string"/>
+          <multiplier required="FALSE" read_content_as="string"/>
+          <dt_guess required="FALSE" read_content_as="string"/>
+          <dt_min required="FALSE" read_content_as="string"/>
+          <dt_max required="FALSE" read_content_as="string"/>
+          <rel_dt_min required="FALSE" read_content_as="string"/>
+          <rel_dt_max required="FALSE" read_content_as="string"/>
+          <tol required="FALSE" read_content_as="string"/>
+        </time_stepping>
+        <compensate_non_equilibrium_initial_residuum required="FALSE" read_content_as="string"/>
+      </process>
+    </processes>
+    <output read_content_as="list" required="TRUE">
+      <type required="TRUE" read_content_as="string"/>
+      <prefix required="TRUE" read_content_as="string"/>
+      <variables read_content_as="list" required="TRUE">
+        <variable required="TRUE" read_content_as="string"/>
+      </variables>
+      <suffix required="FALSE" read_content_as="string"/>
+      <timesteps read_content_as="list" required="FALSE">
+        <pair read_content_as="list" required="TRUE">
+          <repeat required="TRUE" read_content_as="string"/>
+          <each_steps required="TRUE" read_content_as="string"/>
+        </pair>
+      </timesteps>
+      <compress_output required="FALSE" read_content_as="string"/>
+      <data_mode required="FALSE" read_content_as="string"/>
+      <output_iteration_results required="FALSE" read_content_as="string"/>
+      <meshes read_content_as="list" required="FALSE">
+        <mesh required="TRUE" read_content_as="string"/>
+      </meshes>
+      <fixed_output_times required="FALSE" read_content_as="string"/>
+    </output>
+    <global_process_coupling read_content_as="list" required="FALSE">
+      <max_iter required="TRUE" read_content_as="string"/>
+      <convergence_criteria read_content_as="list" required="TRUE">
+        <convergence_criterion read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <norm_type required="TRUE" read_content_as="string"/>
+          <reltol required="TRUE" read_content_as="string"/>
+          <abstol required="FALSE" read_content_as="string"/>
+        </convergence_criterion>
+      </convergence_criteria>
+    </global_process_coupling>
+  </time_loop>
+  <nonlinear_solvers read_content_as="list" required="TRUE">
+    <nonlinear_solver read_content_as="list" required="TRUE">
+      <name required="TRUE" read_content_as="string"/>
+      <type required="TRUE" read_content_as="string"/>
+      <max_iter required="TRUE" read_content_as="string"/>
+      <linear_solver required="TRUE" read_content_as="string"/>
+      <damping required="FALSE" read_content_as="string"/>
+    </nonlinear_solver>
+  </nonlinear_solvers>
+  <linear_solvers read_content_as="list" required="TRUE">
+    <linear_solver read_content_as="list" required="TRUE">
+      <name required="TRUE" read_content_as="string"/>
+      <eigen read_content_as="list" required="FALSE">
+        <solver_type required="TRUE" read_content_as="string"/>
+        <precon_type required="FALSE" read_content_as="string"/>
+        <max_iteration_step required="FALSE" read_content_as="string"/>
+        <error_tolerance required="FALSE" read_content_as="string"/>
+        <scaling required="FALSE" read_content_as="string"/>
+        <restart required="FALSE" read_content_as="string"/>
+      </eigen>
+      <lis required="FALSE" read_content_as="string"/>
+      <petsc read_content_as="list" required="FALSE">
+        <parameters required="TRUE" read_content_as="string"/>
+        <prefix required="FALSE" read_content_as="string"/>
+      </petsc>
+    </linear_solver>
+  </linear_solvers>
+  <parameters read_content_as="list" required="TRUE">
+    <parameter read_content_as="list" required="TRUE">
+      <name required="TRUE" read_content_as="string"/>
+      <type required="TRUE" read_content_as="string"/>
+      <value required="FALSE" read_content_as="string"/>
+      <values required="FALSE" read_content_as="string"/>
+      <curve required="FALSE" read_content_as="string"/>
+      <parameter required="FALSE" read_content_as="string"/>
+      <group_id_property required="FALSE" read_content_as="string"/>
+      <index_values read_content_as="list" required="FALSE">
+        <index required="TRUE" read_content_as="string"/>
+        <value required="FALSE" read_content_as="string"/>
+        <values required="FALSE" read_content_as="string"/>
+      </index_values>
+      <field_name required="FALSE" read_content_as="string"/>
+      <mesh required="FALSE" read_content_as="string"/>
+      <expression required="FALSE" read_content_as="string"/>
+      <time_series read_content_as="list" required="FALSE">
+        <pair read_content_as="list" required="TRUE">
+          <time required="TRUE" read_content_as="string"/>
+          <parameter_name required="TRUE" read_content_as="string"/>
+        </pair>
+      </time_series>
+      <use_local_coordinate_system required="FALSE" read_content_as="string"/>
+    </parameter>
+  </parameters>
+  <process_variables read_content_as="list" required="TRUE">
+    <process_variable read_content_as="list" required="TRUE">
+      <name required="TRUE" read_content_as="string"/>
+      <components required="TRUE" read_content_as="string"/>
+      <order required="TRUE" read_content_as="string"/>
+      <initial_condition required="TRUE" read_content_as="string"/>
+      <boundary_conditions read_content_as="list" required="FALSE">
+        <boundary_condition read_content_as="list" required="FALSE">
+          <type required="TRUE" read_content_as="string"/>
+          <parameter required="FALSE" read_content_as="string"/>
+          <geometrical_set required="FALSE" read_content_as="string"/>
+          <geometry required="FALSE" read_content_as="string"/>
+          <component required="FALSE" read_content_as="string"/>
+          <mesh required="FALSE" read_content_as="string"/>
+          <alpha required="FALSE" read_content_as="string"/>
+          <u_0 required="FALSE" read_content_as="string"/>
+          <constraint_type required="FALSE" read_content_as="string"/>
+          <constraining_process_variable required="FALSE" read_content_as="string"/>
+          <constraint_threshold required="FALSE" read_content_as="string"/>
+          <constraint_direction required="FALSE" read_content_as="string"/>
+          <bc_object required="FALSE" read_content_as="string"/>
+          <flush_stdout required="FALSE" read_content_as="string"/>
+          <threshold_parameter required="FALSE" read_content_as="string"/>
+          <comparison_operator required="FALSE" read_content_as="string"/>
+          <area_parameter required="FALSE" read_content_as="string"/>
+          <property_name required="FALSE" read_content_as="string"/>
+          <initial_value_parameter required="FALSE" read_content_as="string"/>
+          <constant_name required="FALSE" read_content_as="string"/>
+          <coefficient_current_variable_name required="FALSE" read_content_as="string"/>
+          <coefficient_other_variable_name required="FALSE" read_content_as="string"/>
+          <coefficient_mixed_variables_name required="FALSE" read_content_as="string"/>
+          <time_interval read_content_as="list" required="FALSE">
+            <start required="TRUE" read_content_as="string"/>
+            <end required="TRUE" read_content_as="string"/>
+          </time_interval>
+        </boundary_condition>
+      </boundary_conditions>
+      <source_terms read_content_as="list" required="FALSE">
+        <source_term read_content_as="list" required="TRUE">
+          <type required="TRUE" read_content_as="string"/>
+          <parameter required="FALSE" read_content_as="string"/>
+          <geometrical_set required="FALSE" read_content_as="string"/>
+          <geometry required="FALSE" read_content_as="string"/>
+          <mesh required="FALSE" read_content_as="string"/>
+          <source_term_object required="FALSE" read_content_as="string"/>
+        </source_term>
+      </source_terms>
+      <mesh required="FALSE" read_content_as="string"/>
+      <deactivated_subdomains read_content_as="list" required="FALSE">
+        <deactivated_subdomain read_content_as="list" required="TRUE">
+          <time_interval read_content_as="list" required="TRUE">
+            <start required="TRUE" read_content_as="string"/>
+            <end required="TRUE" read_content_as="string"/>
+          </time_interval>
+          <material_ids required="TRUE" read_content_as="string"/>
+        </deactivated_subdomain>
+      </deactivated_subdomains>
+    </process_variable>
+  </process_variables>
+  <mesh required="FALSE" attr_names="axially_symmetric" read_content_as="string"/>
+  <geometry required="FALSE" read_content_as="string"/>
+  <media read_content_as="list" required="FALSE">
+    <medium read_content_as="list" required="TRUE" attr_names="id">
+      <phases read_content_as="list" required="FALSE">
+        <phase read_content_as="list" required="FALSE">
+          <type required="TRUE" read_content_as="string"/>
+          <properties read_content_as="list" required="FALSE">
+            <property read_content_as="list" required="TRUE">
+              <name required="TRUE" read_content_as="string"/>
+              <type required="TRUE" read_content_as="string"/>
+              <value required="FALSE" read_content_as="string"/>
+              <reference_value required="FALSE" read_content_as="string"/>
+              <independent_variable read_content_as="list" required="FALSE">
+                <variable_name required="TRUE" read_content_as="string"/>
+                <reference_condition required="TRUE" read_content_as="string"/>
+                <slope required="TRUE" read_content_as="string"/>
+              </independent_variable>
+              <initial_porosity required="FALSE" read_content_as="string"/>
+              <minimal_porosity required="FALSE" read_content_as="string"/>
+              <maximal_porosity required="FALSE" read_content_as="string"/>
+              <parameter_name required="FALSE" read_content_as="string"/>
+              <exponents required="FALSE" read_content_as="string"/>
+              <offset required="FALSE" read_content_as="string"/>
+              <exponent read_content_as="list" required="FALSE">
+                <variable_name required="TRUE" read_content_as="string"/>
+                <reference_condition required="TRUE" read_content_as="string"/>
+                <factor required="TRUE" read_content_as="string"/>
+              </exponent>
+              <swelling_pressures required="FALSE" read_content_as="string"/>
+              <lower_saturation_limit required="FALSE" read_content_as="string"/>
+              <upper_saturation_limit required="FALSE" read_content_as="string"/>
+              <intrinsic_permeabilities required="FALSE" read_content_as="string"/>
+            </property>
+          </properties>
+          <components read_content_as="list" required="FALSE">
+            <component read_content_as="list" required="TRUE">
+              <name required="TRUE" read_content_as="string"/>
+              <properties read_content_as="list" required="TRUE">
+                <property read_content_as="list" required="TRUE">
+                  <name required="TRUE" read_content_as="string"/>
+                  <type required="TRUE" read_content_as="string"/>
+                  <value required="FALSE" read_content_as="string"/>
+                  <parameter_name required="FALSE" read_content_as="string"/>
+                </property>
+              </properties>
+            </component>
+          </components>
+        </phase>
+      </phases>
+      <properties read_content_as="list" required="FALSE">
+        <property read_content_as="list" required="TRUE">
+          <name required="TRUE" read_content_as="string"/>
+          <type required="TRUE" read_content_as="string"/>
+          <value required="FALSE" read_content_as="string"/>
+          <parameter_name required="FALSE" read_content_as="string"/>
+          <exponent required="FALSE" read_content_as="string"/>
+          <residual_liquid_saturation required="FALSE" read_content_as="string"/>
+          <residual_gas_saturation required="FALSE" read_content_as="string"/>
+          <p_b required="FALSE" read_content_as="string"/>
+          <independent_variable required="FALSE" read_content_as="string"/>
+          <curve required="FALSE" read_content_as="string"/>
+          <minimum_relative_permeability_liquid required="FALSE" read_content_as="string"/>
+          <initial_permeability required="FALSE" read_content_as="string"/>
+          <maximum_permeability required="FALSE" read_content_as="string"/>
+          <lambda required="FALSE" read_content_as="string"/>
+          <cutoff_value required="FALSE" read_content_as="string"/>
+          <intrinsic_permeability required="FALSE" read_content_as="string"/>
+          <initial_aperture required="FALSE" read_content_as="string"/>
+          <mean_frac_distance required="FALSE" read_content_as="string"/>
+          <threshold_strain required="FALSE" read_content_as="string"/>
+          <fracture_normal required="FALSE" read_content_as="string"/>
+          <reference_permeability required="FALSE" read_content_as="string"/>
+          <fitting_factor required="FALSE" read_content_as="string"/>
+          <cohesion required="FALSE" read_content_as="string"/>
+          <friction_angle required="FALSE" read_content_as="string"/>
+          <tensile_strength_parameter required="FALSE" read_content_as="string"/>
+          <b1 required="FALSE" read_content_as="string"/>
+          <b2 required="FALSE" read_content_as="string"/>
+          <b3 required="FALSE" read_content_as="string"/>
+          <minimum_permeability required="FALSE" read_content_as="string"/>
+          <initial_porosity required="FALSE" read_content_as="string"/>
+          <entry_pressure required="FALSE" read_content_as="string"/>
+          <min_relative_permeability_liquid required="FALSE" read_content_as="string"/>
+          <min_relative_permeability_gas required="FALSE" read_content_as="string"/>
+        </property>
+      </properties>
+    </medium>
+  </media>
+  <test_definition read_content_as="list" required="FALSE">
+    <vtkdiff read_content_as="list" required="TRUE">
+      <field required="TRUE" read_content_as="string"/>
+      <absolute_tolerance required="TRUE" read_content_as="string"/>
+      <relative_tolerance required="TRUE" read_content_as="string"/>
+      <file required="FALSE" read_content_as="string"/>
+      <regex required="FALSE" read_content_as="string"/>
+    </vtkdiff>
+  </test_definition>
+  <curves read_content_as="list" required="FALSE">
+    <curve read_content_as="list" required="TRUE">
+      <name required="TRUE" read_content_as="string"/>
+      <coords required="TRUE" read_content_as="string"/>
+      <values required="TRUE" read_content_as="string"/>
+    </curve>
+  </curves>
+  <meshes read_content_as="list" required="FALSE">
+    <mesh required="TRUE" attr_names="axially_symmetric" read_content_as="string"/>
+  </meshes>
+  <local_coordinate_system read_content_as="list" required="FALSE">
+    <basis_vector_0 required="TRUE" read_content_as="string"/>
+    <basis_vector_1 required="TRUE" read_content_as="string"/>
+    <basis_vector_2 required="FALSE" read_content_as="string"/>
+  </local_coordinate_system>
+  <search_length_algorithm read_content_as="list" required="FALSE">
+    <type required="TRUE" read_content_as="string"/>
+    <value required="FALSE" read_content_as="string"/>
+  </search_length_algorithm>
+  <chemical_system read_content_as="list" required="FALSE" attr_names="chemical_solver">
+    <database required="TRUE" read_content_as="string"/>
+    <solution read_content_as="list" required="TRUE">
+      <temperature required="TRUE" read_content_as="string"/>
+      <pressure required="TRUE" read_content_as="string"/>
+      <pe required="TRUE" read_content_as="string"/>
+      <components read_content_as="list" required="TRUE">
+        <component required="TRUE" attr_names="chemical_formula" read_content_as="string"/>
+      </components>
+      <charge_balance required="FALSE" read_content_as="string"/>
+    </solution>
+    <mesh required="FALSE" read_content_as="string"/>
+    <knobs read_content_as="list" required="FALSE">
+      <max_iter required="TRUE" read_content_as="string"/>
+      <relative_convergence_tolerance required="TRUE" read_content_as="string"/>
+      <tolerance required="TRUE" read_content_as="string"/>
+      <step_size required="TRUE" read_content_as="string"/>
+      <scaling required="TRUE" read_content_as="string"/>
+    </knobs>
+    <kinetic_reactants read_content_as="list" required="FALSE">
+      <kinetic_reactant read_content_as="list" required="TRUE">
+        <name required="TRUE" read_content_as="string"/>
+        <chemical_formula required="FALSE" read_content_as="string"/>
+        <fix_amount required="FALSE" read_content_as="string"/>
+        <initial_amount required="FALSE" read_content_as="string"/>
+      </kinetic_reactant>
+    </kinetic_reactants>
+    <rates read_content_as="list" required="FALSE">
+      <rate read_content_as="list" required="TRUE">
+        <kinetic_reactant required="TRUE" read_content_as="string"/>
+        <expression read_content_as="list" required="TRUE">
+          <statement required="TRUE" read_content_as="string"/>
+        </expression>
+      </rate>
+    </rates>
+    <equilibrium_reactants read_content_as="list" required="FALSE">
+      <phase_component read_content_as="list" required="TRUE">
+        <name required="TRUE" read_content_as="string"/>
+        <saturation_index required="TRUE" read_content_as="string"/>
+        <initial_amount required="FALSE" read_content_as="string"/>
+      </phase_component>
+    </equilibrium_reactants>
+    <surface read_content_as="list" required="FALSE">
+      <site read_content_as="list" required="TRUE">
+        <name required="TRUE" read_content_as="string"/>
+        <site_density required="TRUE" read_content_as="string"/>
+        <specific_surface_area required="TRUE" read_content_as="string"/>
+        <mass required="TRUE" read_content_as="string"/>
+      </site>
+    </surface>
+    <user_punch read_content_as="list" required="FALSE">
+      <headline required="TRUE" read_content_as="string"/>
+      <statement required="TRUE" read_content_as="string"/>
+    </user_punch>
+  </chemical_system>
+  <python_script required="FALSE" read_content_as="string"/>
+  <insitu read_content_as="list" required="FALSE">
+    <scripts read_content_as="list" required="TRUE">
+      <script read_content_as="list" required="TRUE">
+        <name required="TRUE" read_content_as="string"/>
+      </script>
+    </scripts>
+  </insitu>
+</OpenGeoSysProject>

@@ -30,8 +30,8 @@ new_r2ogs6_linear_solver <- function(name,
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    validate_is_null_or_class_obj(eigen, "r2ogs6_eigen")
-    validate_is_null_or_string(lis)
+    is_null_or_has_class(eigen, "r2ogs6_eigen")
+    are_null_or_strings(lis)
 
     if(!is.null(petsc)){
         assertthat::assert_that(is.list(petsc))
@@ -48,7 +48,7 @@ new_r2ogs6_linear_solver <- function(name,
                    eigen = eigen,
                    lis = lis,
                    petsc = petsc,
-                   is_subclass = FALSE,
+                   xpath = "linear_solvers/linear_solver",
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
@@ -99,9 +99,9 @@ new_r2ogs6_eigen <- function(solver_type,
 
     assertthat::assert_that(assertthat::is.string(solver_type))
 
-    validate_is_null_or_string(precon_type,
+    are_null_or_strings(precon_type,
                                scaling)
-    validate_is_null_or_number(max_iteration_step,
+    are_null_or_numbers(max_iteration_step,
                                error_tolerance,
                                restart)
 
@@ -111,7 +111,7 @@ new_r2ogs6_eigen <- function(solver_type,
                    error_tolerance = error_tolerance,
                    scaling = scaling,
                    restart = restart,
-                   is_subclass = TRUE,
+                   xpath = "linear_solvers/linear_solver/eigen",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),

@@ -8,7 +8,7 @@ scrape_benchmarks <- function(
     url = "https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/",
     path = "extdata/benchmarks/") {
 
-    path <- validate_is_dir_path(path)
+    path <- as_dir_path(path)
 
     data_page <- xml2::read_html(url)
 
@@ -35,7 +35,7 @@ download_benchmark <- function(prj_url, path) {
 
     assertthat::assert_that(assertthat::is.string(prj_url))
 
-    path <- validate_is_dir_path(path)
+    path <- as_dir_path(path)
 
     prj_dest_file <- paste0(path, basename(prj_url))
     file.create(prj_dest_file)

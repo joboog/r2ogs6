@@ -29,7 +29,7 @@ export_prj <- function(ogs6_obj) {
                         xml2::as_xml_document(meshes_node))
 
     #Get implemented classes
-    prj_components <- addable_prj_components()
+    prj_components <- prj_top_level_classes()
 
     # Include file reference
     if(names(ogs6_obj$processes)[[1]] == "include"){

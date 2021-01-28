@@ -91,7 +91,7 @@ to_node <- function(object, object_name = "",
         }
 
         object_node <- list(structure(list()))
-        names(object_node)[[1]] <- get_class_tag_name(class_name)
+        names(object_node)[[1]] <- get_tag_from_class(class_name)
 
         # For normal class variables we just get the parameter value
         for(i in seq_len(length(param_names))){

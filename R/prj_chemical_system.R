@@ -46,19 +46,19 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
                                        kinetic_reactants = NULL,
                                        rates = NULL) {
 
-    validate_is_string(chemical_solver,
+    are_strings(chemical_solver,
                        database)
 
     assertthat::assert_that(class(solution) == "r2ogs6_solution")
 
-    validate_is_null_or_string(mesh)
+    are_null_or_strings(mesh)
 
     if(!is.null(equilibrium_reactants)){
-        validate_wrapper_list(equilibrium_reactants,
+        is_wrapper_list(equilibrium_reactants,
                               "r2ogs6_phase_component")
     }
 
-    knobs <- validate_is_null_or_param_list(
+    knobs <- is_null_or_coerce_names(
         knobs,
         c("max_iter",
           "relative_convergence_tolerance",
@@ -68,12 +68,12 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
     )
 
     if(!is.null(kinetic_reactants)){
-        validate_wrapper_list(kinetic_reactants,
+        is_wrapper_list(kinetic_reactants,
                               "r2ogs6_kinetic_reactant")
     }
 
     if(!is.null(rates)){
-        validate_wrapper_list(rates,
+        is_wrapper_list(rates,
                               "r2ogs6_rate")
     }
 
@@ -87,11 +87,7 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
             knobs = knobs,
             kinetic_reactants = kinetic_reactants,
             rates = rates,
-            is_subclass = FALSE,
-            subclasses_names = c("r2ogs6_solution",
-                                 "r2ogs6_phase_component",
-                                 "r2ogs6_kinetic_reactant",
-                                 "r2ogs6_rate"),
+            xpath = "chemical_system",
             attr_names = c("chemical_solver"),
             flatten_on_exp = character()
         ),
@@ -137,14 +133,14 @@ new_r2ogs6_solution <- function(temperature,
                                 components,
                                 charge_balance = NULL) {
 
-    validate_is_number(temperature,
+    are_numbers(temperature,
                        pressure,
                        pe)
 
     assertthat::assert_that(is.character(components))
     names(components) <- rep("component", length(components))
 
-    validate_is_null_or_string(charge_balance)
+    are_null_or_strings(charge_balance)
 
     structure(
         list(
@@ -153,7 +149,7 @@ new_r2ogs6_solution <- function(temperature,
             pe = pe,
             components = components,
             charge_balance = charge_balance,
-            is_subclass = TRUE,
+            xpath = "chemical_system/solution",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -191,7 +187,7 @@ new_r2ogs6_phase_component <- function(name,
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    validate_is_number(initial_amount,
+    are_numbers(initial_amount,
                        saturation_index)
 
     structure(
@@ -199,7 +195,7 @@ new_r2ogs6_phase_component <- function(name,
             name = name,
             initial_amount = initial_amount,
             saturation_index = saturation_index,
-            is_subclass = TRUE,
+            xpath = "chemical_system/equilibrium_reactants/phase_component",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -241,7 +237,7 @@ new_r2ogs6_kinetic_reactant <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(is.double(initial_amount))
 
-    validate_is_null_or_string(chemical_formula,
+    are_null_or_strings(chemical_formula,
                                fix_amount)
 
     structure(
@@ -250,7 +246,7 @@ new_r2ogs6_kinetic_reactant <- function(name,
             initial_amount = initial_amount,
             chemical_formula = chemical_formula,
             fix_amount = fix_amount,
-            is_subclass = TRUE,
+            xpath = "chemical_system/kinetic_reactants/kinetic_reactant",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -287,11 +283,10 @@ new_r2ogs6_rate <- function(kinetic_reactant,
         list(
             kinetic_reactant = kinetic_reactant,
             expression = expression,
-            is_subclass = TRUE,
+            xpath = "chemical_system/rates/rate",
             attr_names = character(),
             flatten_on_exp = character()
         ),
         class = "r2ogs6_rate"
     )
 }
-

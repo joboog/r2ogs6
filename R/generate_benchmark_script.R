@@ -37,8 +37,8 @@ generate_all_benchmark_scripts <-
 
     missing_read_in_gmls <- missing(read_in_gmls)
 
-    path <- validate_is_dir_path(path)
-    scripts_path <- validate_is_dir_path(scripts_path)
+    path <- as_dir_path(path)
+    scripts_path <- as_dir_path(scripts_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
     assertthat::assert_that(assertthat::is.flag(read_in_vtus))
@@ -50,7 +50,15 @@ generate_all_benchmark_scripts <-
 
     # If we know the benchmarks up to a specific file are working, skip them
     if(starting_from_prj_path != ""){
-        prj_paths <- get_path_sublist(prj_paths, starting_from_prj_path)
+
+        if(is.na(match(starting_from_prj_path, prj_paths))){
+            warning(paste("Couldn't find path to start from.",
+                          "Returning all paths."),
+                    call. = FALSE)
+        }else{
+            start_index <- match(starting_from_prj_path, prj_paths)
+            prj_paths <- prj_paths[start_index:length(prj_paths)]
+        }
     }
 
     invalid_xml_paths <- character()
@@ -153,7 +161,6 @@ generate_benchmark_script <- function(prj_path,
         script_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
-
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
     assertthat::assert_that(assertthat::is.string(ogs_bin_path))
@@ -163,16 +170,14 @@ generate_benchmark_script <- function(prj_path,
     #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
                          sim_id = 1,
-                         sim_path = "",
-                         ogs_bin_path = "",
-                         test_mode = TRUE)
+                         sim_path = "")
 
     read_in_prj(ogs6_obj,
                 prj_path,
                 read_in_vtu,
                 read_in_gml = FALSE)
 
-    prj_components = addable_prj_components()
+    prj_components = prj_top_level_classes()
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
@@ -180,8 +185,7 @@ generate_benchmark_script <- function(prj_path,
                          "ogs6_obj <- OGS6$new(sim_name = \"",
                          sim_name, "\",\n",
                          "sim_id = 1,\n",
-                         "sim_path = \"", sim_path, "\",\n",
-                         "ogs_bin_path = \"", ogs_bin_path, "\")\n\n\n")
+                         "sim_path = \"", sim_path, "\")\n\n\n")
 
     # If there is a .gml but it shouldn't be read in, add reference
     if (!is.null(ogs6_obj$geometry)) {
@@ -202,7 +206,7 @@ generate_benchmark_script <- function(prj_path,
                                  ")\n\n"
             )
         }else{
-            ogs6_obj$add_gml(read_in_gml(ogs6_obj$geometry))
+            ogs6_obj$add_gml(OGS6_gml$new(ogs6_obj$geometry))
             script_str <- paste0(script_str,
                                  construct_add_call(ogs6_obj$gml),
                                  "\n\n")
@@ -243,7 +247,9 @@ generate_benchmark_script <- function(prj_path,
         }
     }
 
-    script_str <- paste0(script_str, "run_simulation(ogs6_obj)\n")
+    script_str <- paste0(script_str,
+                         "run_simulation(ogs6_obj,\n",
+                         "ogs_bin_path = \"", ogs_bin_path, "\")\n")
 
     #If no destination file was defined, print output to console
     if(script_path != ""){
@@ -349,18 +355,10 @@ construct_add_call <- function(object, nested_call = FALSE) {
         ret_str <- paste0(class_name, init_prefix,
                           "(", content_str, ")")
 
-        #If call isn't nested, it has a OGS6$add_* function
+        #If call isn't nested, it can be added
         if(!nested_call){
-
-            # if(tag_name == "vtu"){
-            #     filename_str <- paste0(",\npaste0(ogs6_obj$sim_path,\n",
-            #                            "basename(ogs6_obj$geometry))")
-            # }
-
-            ret_str <- paste0("ogs6_obj$add_", tag_name,
-                              "(", ret_str, ")\n")
+            ret_str <- paste0("ogs6_obj$add(", ret_str, ")\n")
         }
-
 
         ret_str <- delete_nulls_from_str(ret_str)
         ret_str <- delete_keywords_from_str(ret_str)
@@ -376,11 +374,8 @@ construct_add_call <- function(object, nested_call = FALSE) {
         return(invisible(ret_str))
     }
 
-    #Positioning is important here - r2ogs6 objects are built on top of lists!
-    #If is.list is checked before class, results will not be as intended!
-
     #For lists we need to use recursion
-    if(is.list(object)){
+    if(class(object) == "list"){
 
         element_strs <- lapply(object, function(x){construct_add_call(x, TRUE)})
 
@@ -436,7 +431,7 @@ delete_empty_from_str <- function(string){
 
 #'delete_keywords_from_str
 #'@description Utility function to delete keywords from a string,
-#' this important because there is a <repeat> tag in <time_loop> and
+#' this is important because there is a <repeat> tag in <time_loop> and
 #' "repeat" is a reserved word in R (extend this function if you find more
 #' reserved words)
 #'@param string string

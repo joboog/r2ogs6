@@ -28,21 +28,21 @@ new_r2ogs6_medium <- function(phases = NULL,
                               id = NULL) {
 
     if(length(phases) != 0){
-        validate_wrapper_list(phases, "r2ogs6_phase")
+        is_wrapper_list(phases, "r2ogs6_phase")
     }
 
     if(!is.null(properties)){
-        validate_wrapper_list(properties, "r2ogs6_pr_property")
+        is_wrapper_list(properties, "r2ogs6_pr_property")
     }
 
-    validate_is_null_or_string(id)
+    are_null_or_strings(id)
 
     structure(
         list(
             phases = phases,
             properties = properties,
             id = id,
-            is_subclass = FALSE,
+            xpath = "media/medium",
             attr_names = c("id"),
             flatten_on_exp = character()
         ),
@@ -224,9 +224,9 @@ new_r2ogs6_pr_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_numeric(value)
+    are_null_or_numeric(value)
 
-    validate_is_null_or_number(exponent,
+    are_null_or_numbers(exponent,
                                residual_liquid_saturation,
                                residual_gas_saturation,
                                p_b,
@@ -243,7 +243,7 @@ new_r2ogs6_pr_property <- function(name,
                                min_relative_permeability_liquid,
                                min_relative_permeability_gas)
 
-    validate_is_null_or_string(parameter_name,
+    are_null_or_strings(parameter_name,
                                independent_variable,
                                curve,
                                initial_permeability)
@@ -282,7 +282,7 @@ new_r2ogs6_pr_property <- function(name,
                    entry_pressure = entry_pressure,
                    min_relative_permeability_liquid = min_relative_permeability_liquid,
                    min_relative_permeability_gas = min_relative_permeability_gas,
-                   is_subclass = TRUE,
+                   xpath = "media/medium/properties/property",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -322,11 +322,11 @@ new_r2ogs6_phase <- function(type,
     assertthat::assert_that(type %in% get_valid_phase_types())
 
     if(!is.null(properties)){
-        validate_wrapper_list(properties, "r2ogs6_ph_property")
+        is_wrapper_list(properties, "r2ogs6_ph_property")
     }
 
     if(!is.null(components)){
-        validate_wrapper_list(components, "r2ogs6_component")
+        is_wrapper_list(components, "r2ogs6_component")
     }
 
     structure(
@@ -334,7 +334,7 @@ new_r2ogs6_phase <- function(type,
             type = type,
             properties = properties,
             components = components,
-            is_subclass = TRUE,
+            xpath = "media/medium/phases/phase",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -451,26 +451,26 @@ new_r2ogs6_ph_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_numeric(value)
+    are_null_or_numeric(value)
 
-    validate_is_null_or_number(reference_value,
+    are_null_or_numbers(reference_value,
                                minimal_porosity,
                                maximal_porosity,
                                offset,
                                lower_saturation_limit,
                                upper_saturation_limit)
 
-    validate_is_null_or_numeric(exponents,
+    are_null_or_numeric(exponents,
                                 swelling_pressures,
                                 intrinsic_permeabilities)
 
-    validate_is_null_or_string(initial_porosity,
+    are_null_or_strings(initial_porosity,
                                parameter_name)
 
     if (!is.null(independent_variable)) {
         for(i in seq_len(length(independent_variable))){
             independent_variable[[i]] <-
-                validate_param_list(independent_variable[[i]],
+                coerce_names(independent_variable[[i]],
                                     c("variable_name",
                                       "reference_condition",
                                       "slope"))
@@ -478,7 +478,7 @@ new_r2ogs6_ph_property <- function(name,
     }
 
     if (!is.null(exponent)) {
-        exponent <- validate_param_list(exponent,
+        exponent <- coerce_names(exponent,
                                         c("variable_name",
                                           "reference_condition",
                                           "factor"))
@@ -502,7 +502,7 @@ new_r2ogs6_ph_property <- function(name,
             lower_saturation_limit = lower_saturation_limit,
             upper_saturation_limit = upper_saturation_limit,
             intrinsic_permeabilities = intrinsic_permeabilities,
-            is_subclass = TRUE,
+            xpath = "media/medium/phases/phase/properties/property",
             attr_names = character(),
             flatten_on_exp = c("exponents",
                                "swelling_pressures",
@@ -538,13 +538,13 @@ new_r2ogs6_component <- function(name,
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    validate_wrapper_list(properties, "r2ogs6_com_property")
+    is_wrapper_list(properties, "r2ogs6_com_property")
 
     structure(
         list(
             name = name,
             properties = properties,
-            is_subclass = TRUE,
+            xpath = "media/medium/phases/phase/components/component",
             attr_names = character(),
             flatten_on_exp = character()
         ),
@@ -588,8 +588,8 @@ new_r2ogs6_com_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(value)
-    validate_is_null_or_string(parameter_name)
+    are_null_or_numbers(value)
+    are_null_or_strings(parameter_name)
 
     structure(
         list(
@@ -597,7 +597,8 @@ new_r2ogs6_com_property <- function(name,
             type = type,
             value = value,
             parameter_name = parameter_name,
-            is_subclass = TRUE,
+            xpath = paste0("media/medium/phases/phase/components/component",
+                           "properties/property"),
             attr_names = character(),
             flatten_on_exp = character()
         ),

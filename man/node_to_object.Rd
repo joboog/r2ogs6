@@ -4,16 +4,12 @@
 \alias{node_to_object}
 \title{node_to_object}
 \usage{
-node_to_object(xml_node, xpath_expr = "", subclasses_names = character())
+node_to_object(xml_node, xpath = "")
 }
 \arguments{
 \item{xml_node}{xml2::xml_node: XML node}
 
-\item{xpath_expr}{string: Optional: XPath expression (for subclass
-differentiation)}
-
-\item{subclasses_names}{character: Optional: Names of `r2ogs6` subclasses
-(`r2ogs6` classes without a OGS6$add method)}
+\item{xpath}{string: XPath expression (for subclass differentiation)}
 }
 \description{
 Returns representation of an XML node. This is a recursive

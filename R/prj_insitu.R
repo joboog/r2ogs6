@@ -27,8 +27,7 @@ new_r2ogs6_insitu <- function(scripts) {
     structure(
         list(
             scripts = scripts,
-            tag_name = "insitu",
-            is_subclass = FALSE,
+            xpath = "insitu",
             attr_names = character(),
             flatten_on_exp = character()
         ),

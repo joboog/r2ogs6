@@ -56,19 +56,19 @@ new_r2ogs6_process_variable <- function(name,
     }
 
     if(!is.null(boundary_conditions)){
-        validate_wrapper_list(boundary_conditions,
+        is_wrapper_list(boundary_conditions,
                               "r2ogs6_boundary_condition")
     }
 
     if(!is.null(source_terms)){
-        validate_wrapper_list(source_terms,
+        is_wrapper_list(source_terms,
                               "r2ogs6_source_term")
     }
 
-    validate_is_null_or_string(mesh)
+    are_null_or_strings(mesh)
 
     if(!is.null(deactivated_subdomains)){
-        validate_wrapper_list(deactivated_subdomains,
+        is_wrapper_list(deactivated_subdomains,
                               "r2ogs6_deactivated_subdomain")
     }
 
@@ -80,7 +80,7 @@ new_r2ogs6_process_variable <- function(name,
                    source_terms = source_terms,
                    mesh = mesh,
                    deactivated_subdomains = deactivated_subdomains,
-                   is_subclass = FALSE,
+                   xpath = "process_variables/process_variable",
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
@@ -205,10 +205,10 @@ new_r2ogs6_boundary_condition <- function(type,
 
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(component,
+    are_null_or_numbers(component,
                                constraint_threshold)
 
-    validate_is_null_or_string(parameter,
+    are_null_or_strings(parameter,
                                geometrical_set,
                                geometry,
                                mesh,
@@ -228,10 +228,10 @@ new_r2ogs6_boundary_condition <- function(type,
                                threshold_parameter,
                                comparison_operator)
 
-    validate_is_null_or_str_flag(flush_stdout)
+    are_null_or_string_flags(flush_stdout)
 
     if(!is.null(time_interval)){
-        time_interval <- validate_param_list(time_interval, c("start", "end"))
+        time_interval <- coerce_names(time_interval, c("start", "end"))
     }
 
     structure(list(type = type,
@@ -262,7 +262,8 @@ new_r2ogs6_boundary_condition <- function(type,
                    threshold_parameter = threshold_parameter,
                    comparison_operator = comparison_operator,
                    time_interval = time_interval,
-                   is_subclass = TRUE,
+                   xpath = paste0("process_variables/process_variable/",
+                                  "boundary_conditions/boundary_condition"),
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
@@ -310,7 +311,7 @@ new_r2ogs6_source_term <- function(type,
 
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_string(parameter,
+    are_null_or_strings(parameter,
                                geometrical_set,
                                geometry,
                                mesh,
@@ -322,7 +323,8 @@ new_r2ogs6_source_term <- function(type,
                    geometry = geometry,
                    mesh = mesh,
                    source_term_object = source_term_object,
-                   is_subclass = TRUE,
+                   xpath = paste0("process_variables/process_variable/",
+                                  "source_terms/source_term"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -353,13 +355,15 @@ r2ogs6_deactivated_subdomain <- function(time_interval,
 new_r2ogs6_deactivated_subdomain <- function(time_interval,
                                              material_ids){
 
-    time_interval <- validate_param_list(time_interval, c("start", "end"))
+    time_interval <- coerce_names(time_interval, c("start", "end"))
 
     assertthat::assert_that(assertthat::is.number(material_ids))
 
     structure(list(time_interval = time_interval,
                    material_ids = material_ids,
-                   is_subclass = TRUE,
+                   xpath =
+                       paste0("process_variables/process_variable",
+                              "deactivated_subdomains/deactivated_subdomain"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),

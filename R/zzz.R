@@ -1,7 +1,8 @@
 
-# global Python references (will be initialized in .onLoad)
+# Set global variables
+
+# Python vtk library reference
 vtk <- NULL
-vtk_dsa <- NULL
 
 .onLoad <- function(libname, pkgname){
 
@@ -25,8 +26,6 @@ vtk_dsa <- NULL
 
     # use superassignments to update global Python references
     vtk <<- reticulate::import("vtk", delay_load = TRUE)
-    vtk_dsa <<- reticulate::import("vtk.numpy_interface.dataset_adapter",
-                                   delay_load = TRUE)
 
     test_config <- TRUE
 
@@ -54,6 +53,7 @@ vtk_dsa <- NULL
 
 
 .onAttach <- function(libname, pkgname){
+
     packageStartupMessage(
         paste("r2ogs6 works best with its options set :)\nFor",
               "an overview, use the command",

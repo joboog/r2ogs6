@@ -22,14 +22,14 @@ new_r2ogs6_local_coordinate_system <- function(basis_vector_0,
     assertthat::assert_that(assertthat::is.string(basis_vector_0))
     assertthat::assert_that(assertthat::is.string(basis_vector_1))
 
-    validate_is_null_or_string(basis_vector_2)
+    are_null_or_strings(basis_vector_2)
 
     structure(
         list(
             basis_vector_0 = basis_vector_0,
             basis_vector_1 = basis_vector_1,
             basis_vector_2 = basis_vector_2,
-            is_subclass = FALSE,
+            xpath = "local_coordinate_system",
             attr_names = character(),
             flatten_on_exp = character()
         ),

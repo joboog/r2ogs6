@@ -4,19 +4,12 @@
 \alias{node_to_r2ogs6_class_object}
 \title{node_to_r2ogs6_class_object}
 \usage{
-node_to_r2ogs6_class_object(
-  xml_node,
-  xpath_expr,
-  subclasses_names = character()
-)
+node_to_r2ogs6_class_object(xml_node, xpath)
 }
 \arguments{
 \item{xml_node}{xml2::xml_node: XML node}
 
-\item{xpath_expr}{string: XPath expression (for subclass differentiation)}
-
-\item{subclasses_names}{character: Optional: Names of r2ogs6 subclasses
-(r2ogs6 classes without a method for input_add)}
+\item{xpath}{string: XPath expression (for subclass differentiation)}
 }
 \description{
 Takes an XML node and turns it into a class object

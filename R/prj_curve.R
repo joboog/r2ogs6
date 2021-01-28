@@ -28,7 +28,7 @@ new_r2ogs6_curve <- function(name, coords, values){
     structure(list(name = name,
                    coords = coords,
                    values = values,
-                   is_subclass = FALSE,
+                   xpath = "curves/curve",
                    attr_names = character(),
                    flatten_on_exp = c("coords", "values")
                    ),

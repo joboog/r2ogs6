@@ -4,14 +4,14 @@
 \alias{read_in}
 \title{read_in}
 \usage{
-read_in(ogs6_obj, path, xpath_expr)
+read_in(ogs6_obj, path, xpath)
 }
 \arguments{
 \item{ogs6_obj}{A OGS6 class object}
 
 \item{path}{string: Path to file XML elements should be read from}
 
-\item{xpath_expr}{string: An XPath expression (should be absolute!)}
+\item{xpath}{string: An XPath expression (should be absolute!)}
 }
 \description{
 Reads in elements from a file

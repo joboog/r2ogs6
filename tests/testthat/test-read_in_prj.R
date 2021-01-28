@@ -7,9 +7,7 @@ test_that("read_in works for process objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -34,9 +32,7 @@ test_that("read_in works for medium objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -53,9 +49,7 @@ test_that("read_in works for time_loop objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -75,9 +69,7 @@ test_that("read_in works for parameter objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -96,9 +88,7 @@ test_that("read_in works for process_variable objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -114,9 +104,7 @@ test_that("read_in works for nonlinear_solver objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -138,9 +126,7 @@ test_that("read_in works for linear_solver objects", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -161,9 +147,7 @@ test_that("read_in works with newline value separation", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj,
             prj_path,
@@ -177,16 +161,14 @@ test_that("read_in works with newline value separation", {
 })
 
 
-test_that("read_in works for processes/include tags", {
+test_that("read_in_prj works for processes/include tags", {
 
     prj_path <- (system.file("extdata/benchmarks/Elliptic/circle_radius_1",
                              "circle_1e1_axi.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
                 prj_path)
@@ -204,9 +186,7 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
                 prj_path)

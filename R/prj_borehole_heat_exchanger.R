@@ -40,23 +40,23 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
                                                refrigerant,
                                                use_bhe_pipe_network = NULL) {
 
-    validate_is_string(type)
+    are_strings(type)
     assertthat::assert_that(class(flow_and_temperature_control) ==
                                 "r2ogs6_flow_and_temperature_control")
-    borehole <- validate_param_list(borehole, c("length", "diameter"))
-    grout <- validate_param_list(grout, c("density",
+    borehole <- coerce_names(borehole, c("length", "diameter"))
+    grout <- coerce_names(grout, c("density",
                                           "porosity",
                                           "specific_heat_capacity",
                                           "thermal_conductivity"))
 
     assertthat::assert_that(class(pipes) == "r2ogs6_pipes")
 
-    refrigerant <- validate_param_list(refrigerant, c("density",
+    refrigerant <- coerce_names(refrigerant, c("density",
                                                       "viscosity",
                                                       "specific_heat_capacity",
                                                       "thermal_conductivity",
                                                       "reference_temperature"))
-    validate_is_null_or_str_flag(use_bhe_pipe_network)
+    are_null_or_string_flags(use_bhe_pipe_network)
 
     structure(list(type = type,
                    flow_and_temperature_control = flow_and_temperature_control,
@@ -65,7 +65,8 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
                    pipes = pipes,
                    refrigerant = refrigerant,
                    use_bhe_pipe_network = use_bhe_pipe_network,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/borehole_heat_exchangers/",
+                   "borehole_heat_exchanger"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -113,13 +114,13 @@ new_r2ogs6_flow_and_temperature_control <- function(type,
                                                     power_curve = NULL,
                                                     flow_rate_curve = NULL) {
 
-    validate_is_string(type)
+    are_strings(type)
 
-    validate_is_null_or_string(temperature_curve,
+    are_null_or_strings(temperature_curve,
                                power_curve,
                                flow_rate_curve)
 
-    validate_is_null_or_number(flow_rate,
+    are_null_or_numbers(flow_rate,
                                power)
 
     structure(list(type = type,
@@ -128,7 +129,9 @@ new_r2ogs6_flow_and_temperature_control <- function(type,
                    power = power,
                    power_curve = power_curve,
                    flow_rate_curve = flow_rate_curve,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/borehole_heat_exchangers/",
+                                  "borehole_heat_exchanger/",
+                                  "flow_and_temperature_control"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -179,19 +182,19 @@ new_r2ogs6_pipes <- function(longitudinal_dispersion_length,
                              outer = NULL,
                              inner = NULL) {
 
-    validate_is_number(longitudinal_dispersion_length)
+    are_numbers(longitudinal_dispersion_length)
 
     inlet_outlet_names <- c("diameter",
                             "wall_thickness",
                             "wall_thermal_conductivity")
 
-    inlet <- validate_is_null_or_param_list(inlet, inlet_outlet_names)
-    outlet <- validate_is_null_or_param_list(outlet, inlet_outlet_names)
+    inlet <- is_null_or_coerce_names(inlet, inlet_outlet_names)
+    outlet <- is_null_or_coerce_names(outlet, inlet_outlet_names)
 
-    validate_is_null_or_number(distance_between_pipes)
+    are_null_or_numbers(distance_between_pipes)
 
-    outer <- validate_is_null_or_param_list(outer, inlet_outlet_names)
-    inner <- validate_is_null_or_param_list(inner, inlet_outlet_names)
+    outer <- is_null_or_coerce_names(outer, inlet_outlet_names)
+    inner <- is_null_or_coerce_names(inner, inlet_outlet_names)
 
     structure(list(longitudinal_dispersion_length =
                        longitudinal_dispersion_length,
@@ -200,7 +203,8 @@ new_r2ogs6_pipes <- function(longitudinal_dispersion_length,
                    distance_between_pipes = distance_between_pipes,
                    outer = outer,
                    inner = inner,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/borehole_heat_exchangers/",
+                                  "borehole_heat_exchanger/pipes"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),

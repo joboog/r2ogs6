@@ -12,9 +12,9 @@ read_in_prj(ogs6_obj, prj_path, read_in_gml, read_in_vtu = FALSE)
 \item{prj_path}{string: Path to the project file that should be read in}
 
 \item{read_in_gml}{flag: Optional: Should .gml file just be copied or read in
-too? If this parameter is missing and the .gml file contains <= the
-number of lines in `options("r2ogs6.max_lines_gml")`, the .gml will be read
-in. Else, only the geometry reference will be saved.}
+too? If this parameter is missing and the .gml file contains <=
+`options("r2ogs6.max_lines_gml")`, the .gml will be read in. Else, only the
+geometry reference will be saved.}
 
 \item{read_in_vtu}{flag: Should .vtu file just be copied or read in too?}
 }

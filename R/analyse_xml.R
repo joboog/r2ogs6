@@ -13,20 +13,17 @@
 #' summary of its findings at the end.
 #'@param path string: A path
 #'@param pattern string: A regex pattern
-#'@param tag_name string: The name of the XML element to look for
-#'@param xpath_prefix string: Optional: The XPath prefix to use
-#' (defaults to "//")
+#'@param xpath string: An XPath expression. WARNING: Only works for expressions
+#' that return nodesets, use it to look up tag names.
 #'@param print_findings Optional: Should the results be printed to the console?
 analyse_xml <- function(path,
                         pattern,
-                        tag_name,
-                        xpath_prefix = "//",
+                        xpath,
                         print_findings = TRUE) {
 
-    path <- validate_is_dir_path(path)
+    path <- as_dir_path(path)
     assertthat::assert_that(assertthat::is.string(pattern))
-    assertthat::assert_that(assertthat::is.string(tag_name))
-    assertthat::assert_that(assertthat::is.string(xpath_prefix))
+    assertthat::assert_that(assertthat::is.string(xpath))
 
     xml_files <- list.files(path = path, pattern = pattern, recursive = TRUE)
 
@@ -79,9 +76,7 @@ analyse_xml <- function(path,
         valid_files_count <- valid_files_count + 1
         valid_files_names <- c(valid_files_names, basename(xml_files[[i]]))
 
-        xpath_exp <- paste0(xpath_prefix, tag_name)
-
-        doc_matches <- xml2::xml_find_all(xml_doc, xpath_exp)
+        doc_matches <- xml2::xml_find_all(xml_doc, xpath)
         total_matches <- total_matches + length(doc_matches)
 
         if(length(doc_matches) > 0){
@@ -185,7 +180,7 @@ analyse_xml <- function(path,
             invalid_files_count,
             invalid_files_names,
             valid_files_count,
-            tag_name,
+            xpath,
             element_found_files_names,
             total_matches,
             attr_ex_counts,
@@ -199,7 +194,7 @@ analyse_xml <- function(path,
     #Return attributes and children (if found)
     return(invisible(
         list(
-            tag_name = tag_name,
+            xpath = xpath,
             children = child_flags,
             attributes = attr_flags,
             both_sorted = both_flags
@@ -208,13 +203,13 @@ analyse_xml <- function(path,
 }
 
 
-#=== PRINT FUNCTIONALITY FOR analyse_xml ===
+#===== print_analysis_findings =====
 
 
 print_analysis_findings <- function(invalid_files_count,
                                     invalid_files_names,
                                     valid_files_count,
-                                    tag_name,
+                                    xpath,
                                     element_found_files_names,
                                     total_matches,
                                     attr_ex_counts,
@@ -232,6 +227,8 @@ print_analysis_findings <- function(invalid_files_count,
 
     cat("\nI parsed ", valid_files_count,
         " valid XML files matching your pattern.\n", sep = "")
+
+    tag_name <- get_tag_from_xpath(xpath)
 
     if(length(element_found_files_names) > 0){
         cat("\nI found at least one element named ",
@@ -259,7 +256,7 @@ print_analysis_findings <- function(invalid_files_count,
 }
 
 
-#=== HELPERS FOR analyse_xml ===
+#===== get_required =====
 
 
 #'get_required

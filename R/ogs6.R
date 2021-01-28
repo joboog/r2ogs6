@@ -14,87 +14,44 @@ OGS6 <- R6::R6Class("OGS6",
     #'@param sim_id double: Simulation ID
     #'@param sim_path string: Path where all files for the simulation will be
     #' saved
-    #'@param ogs_bin_path string: Path to OpenGeoSys6 /bin directory
-    #'@param test_mode In test mode, ogs_bin_path will not be
-    #' validated. Unless you're a dev, please don't touch.
     initialize = function(sim_name,
                           sim_id,
-                          sim_path,
-                          ogs_bin_path,
-                          test_mode = FALSE) {
+                          sim_path) {
 
       # Basic validation
-      assertthat::assert_that(assertthat::is.number(sim_id))
-
       self$sim_name <- sim_name
+
+      assertthat::assert_that(assertthat::is.number(sim_id))
+      private$.sim_id <- sim_id
 
       if(missing(sim_path)){
         sim_path <- unlist(options("r2ogs6.default_sim_path"))
       }
+      self$sim_path <- sim_path
 
-      if(missing(ogs_bin_path)){
-        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
-      }
-
-      if(!test_mode){
-        if(!file.exists(paste0(ogs_bin_path, "generateStructuredMesh.exe"))) {
-          stop(paste("Could not find executable file",
-                     "generateStructuredMesh.exe at location",
-                     ogs_bin_path), call. = FALSE)
-        }
-      }
-
-        private$.sim_id <- sim_id
-        self$sim_path <- sim_path
-        private$.ogs_bin_path <- validate_is_dir_path(ogs_bin_path)
     },
 
 
-    #===== ADDING COMPONENTS =====
+    #===== Adding components =====
 
 
     #'@description
-    #'Adds a simulation component (WIP)
-    #'@param x An object of any class listed in addable_components(). If `x` is
-    #' not of a proprietary `r2ogs6` class, `component_name` must be
-    #' supplied. E.g. If you're adding a `python_script` which is a string, you
-    #' would call `your_ogs6_obj$add("some_script.py", "python_script")`
-    #'@param component_name string: Optional: The name of the component to be
-    #' added
-    add = function(x,
-                   component_name = ""){
+    #'Adds a .prj simulation component
+    #'@param x An object of any .prj `r2ogs6` class
+    add = function(x){
 
-      assertthat::assert_that(assertthat::is.string(component_name))
+      # Assert that class name is in implemented .prj classes for OGS6
+      ogs6_prj_classes <- prj_top_level_classes()
+      assertthat::assert_that(class(x) %in% ogs6_prj_classes)
 
-      # Assert that class name is in implemented classes for OGS6
-      ogs6_components <- addable_prj_components()
+      # Get name of corresponding OGS6 component
+      component_name <- names(ogs6_prj_classes)[ogs6_prj_classes == class(x)]
 
-      x_class_name <- ""
-      x_of_r2ogs6_class <- FALSE
-
-      if(any(grepl("r2ogs6", class(x), fixed = TRUE)) ||
-         any(grepl("OGS6", class(x), fixed = TRUE))){
-
-        x_class_name <- grep("r2ogs6", class(x), value = TRUE)
-
-        if(length(x_class_name) == 0){
-          x_class_name <- grep("OGS6", class(x), value = TRUE)
-        }
-
-        assertthat::assert_that(x_class_name %in% ogs6_components)
-        x_of_r2ogs6_class <- TRUE
-      }
-
-      # Get name of corresponding OGS6 parameter
-      if(x_of_r2ogs6_class){
-        component_name <-
-          names(ogs6_components)[ogs6_components == x_class_name]
-      }else{
-        assertthat::assert_that(component_name %in% names(ogs6_components))
-      }
+      component_class <-
+        eval(parse(text = paste0("class(self$", component_name, ")")))
 
       active_field_call <-
-        ifelse(is_wrapper(component_name),
+        ifelse(component_class == "list",
                paste0("self$", component_name,
                       " <- c(self$", component_name, ", list(x))"),
                paste0("self$", component_name, " <- x"))
@@ -102,8 +59,8 @@ OGS6 <- R6::R6Class("OGS6",
       eval(parse(text = active_field_call))
 
       # If class has `name` variable, make it accessable by name
-      if(is_wrapper(component_name) &&
-         "name" %in% names(as.list(formals(x_class_name)))){
+      if(component_class == "list" &&
+         "name" %in% names(as.list(formals(class(x))))){
 
         name_call <- paste0("names(self$", component_name, ")[[length(self$",
                             component_name, ")]] <- x$name")
@@ -152,119 +109,8 @@ OGS6 <- R6::R6Class("OGS6",
       }
     },
 
-    #'@description
-    #'Adds a python script
-    #'@param python_script string: File name of python script
-    add_python_script = function(python_script){
-      self$python_script <- python_script
-    },
 
-    #'@description
-    #'Adds a r2ogs6_search_length_algorithm object
-    #'@param search_length_algorithm r2ogs6_search_length_algorithm
-    add_search_length_algorithm = function(search_length_algorithm){
-      self$search_length_algorithm <- search_length_algorithm
-    },
-
-    #'@description
-    #'Adds a r2ogs6_process object
-    #'@param process r2ogs6_process
-    add_process = function(process){
-      self$processes <- c(self$processes,
-                          list(process))
-
-      names(self$processes)[[length(self$processes)]] <- process$name
-    },
-
-    #'@description
-    #'Adds a r2ogs6_time_loop object
-    #'@param time_loop r2ogs6_time_loop
-    add_time_loop = function(time_loop){
-      self$time_loop <- time_loop
-    },
-
-    #'@description
-    #'Adds a r2ogs6_local_coordinate_system object
-    #'@param local_coordinate_system r2ogs6_local_coordinate_system
-    add_local_coordinate_system = function(local_coordinate_system){
-      self$local_coordinate_system <- local_coordinate_system
-    },
-
-    #'@description
-    #'Adds a r2ogs6_medium object
-    #'@param medium r2ogs6_medium
-    add_medium = function(medium){
-      self$media <- c(self$media,
-                      list(medium))
-    },
-
-    #'@description
-    #'Adds a r2ogs6_parameter object
-    #'@param parameter r2ogs6_parameter
-    add_parameter = function(parameter){
-      self$parameters <- c(self$parameters,
-                       list(parameter))
-
-      names(self$parameters)[[length(self$parameters)]] <- parameter$name
-    },
-
-    #'@description
-    #'Adds a r2ogs6_curve object
-    #'@param curve r2ogs6_curve
-    add_curve = function(curve){
-      self$curves <- c(self$curves,
-                       list(curve))
-    },
-
-    #'@description
-    #'Adds a r2ogs6_process_variable object
-    #'@param process_variable r2ogs6_process_variable
-    add_process_variable = function(process_variable){
-      self$process_variables <- c(self$process_variables,
-                                  list(process_variable))
-
-      names(self$process_variables)[[length(self$process_variables)]] <-
-        process_variable$name
-    },
-
-    #'@description
-    #'Adds a r2ogs6_nonlinear_solver object
-    #'@param nonlinear_solver r2ogs6_nonlinear_solver
-    add_nonlinear_solver = function(nonlinear_solver){
-      self$nonlinear_solvers <- c(self$nonlinear_solvers,
-                                  list(nonlinear_solver))
-
-      names(self$nonlinear_solvers)[[length(self$nonlinear_solvers)]] <-
-        nonlinear_solver$name
-    },
-
-    #'@description
-    #'Adds a r2ogs6_linear_solver object
-    #'@param linear_solver r2ogs6_linear_solver
-    add_linear_solver = function(linear_solver){
-      self$linear_solvers <- c(self$linear_solvers,
-                               list(linear_solver))
-
-      names(self$linear_solvers)[[length(self$linear_solvers)]] <-
-        linear_solver$name
-    },
-
-    #'@description
-    #'Adds a r2ogs6_vtkdiff object
-    #'@param vtkdiff r2ogs6_vtkdiff
-    add_vtkdiff = function(vtkdiff){
-      self$test_definition <- c(self$test_definition, list(vtkdiff))
-    },
-
-    #'@description
-    #'Adds a r2ogs6_insitu object
-    #'@param insitu r2ogs6_insitu
-    add_insitu = function(insitu){
-      self$insitu <- insitu
-    },
-
-
-    #===== UTILITY FUNCTIONS =====
+    #===== Utility =====
 
 
     #'@description
@@ -274,26 +120,44 @@ OGS6 <- R6::R6Class("OGS6",
     get_status = function(print_status = TRUE){
 
       assertthat::assert_that(assertthat::is.flag(print_status))
-
       flag <- TRUE
-      impl_classes <- addable_prj_components()
 
       status_strs <- character()
+      tag_names <- lapply(prj_top_level_tags(), `[[`, 1)
+      required <- lapply(prj_top_level_tags(), `[[`, 2)
 
-      for(i in seq_len(length(impl_classes))){
-        status_call <- paste0("get_obj_status(flag, private$.",
-                              names(impl_classes)[[i]], ")")
+      for(i in seq_len(length(tag_names))){
 
-        status <- eval(parse(text = status_call))
-        flag <- status[[1]]
-        status_strs <- c(status_strs, status[[2]])
+        is_required <- required[[i]]
+
+        prj_obj_call <- paste0("private$.", tag_names[[i]])
+        prj_obj <- eval(parse(text = prj_obj_call))
+
+        if(length(prj_obj) == 0){
+          if(is_required){
+            status_str <- crayon::red("\u2717 ")
+            flag <- FALSE
+          }else{
+            status_str <- crayon::yellow("\u2717 ")
+          }
+        }else{
+          status_str <- crayon::green("\u2713 ")
+        }
+
+        status_str <- paste0(status_str,
+                             "'",
+                             tag_names[[i]],
+                             ifelse(!class(prj_obj) == "list",
+                                    "' is defined",
+                                    "' has at least one element"))
+
+        status_strs <- c(status_strs, status_str)
       }
 
-      status_str <- paste0(paste(status_strs, collapse = ""), "\n")
+      status <- paste(status_strs, collapse = "\n")
 
       if(print_status){
-
-        cat(status_str)
+        cat(status)
 
         if(flag){
           cat(paste0("Your OGS6 object has all necessary components.\n",
@@ -320,12 +184,14 @@ OGS6 <- R6::R6Class("OGS6",
     #'Clears components from the OGS6 object
     #'@param which character: The names of the components (all by default).
     #' If you want to delete only some components, run
-    #' names(addable_prj_components()) for the available options.
-    clear = function(which = names(addable_prj_components())){
+    #' names(prj_top_level_classes()) for the available options.
+    clear = function(which){
 
-      assertthat::assert_that(is.character(which))
+      if(missing(which)){
+        which <- names(prj_top_level_classes())
+      }
 
-      valid_input = names(addable_prj_components())
+      valid_input = names(prj_top_level_classes())
 
       null_it <- c("geometry", "time_loop")
 
@@ -352,13 +218,13 @@ OGS6 <- R6::R6Class("OGS6",
   ),
 
 
-  #===== ACTIVE FIELDS =====
+  #===== Active fields =====
 
 
   active = list(
 
       #'@field sim_name
-      #'Access to private parameter '.sim_name'
+      #'Simulation name. `value` must be string
       sim_name = function(value) {
         if(missing(value)) {
           private$.sim_name
@@ -369,23 +235,23 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field sim_id
-      #'Getter for OGS6 private parameter '.sim_id'
+      #'Simulation ID. read-only
       sim_id = function() {
         private$.sim_id
       },
 
       #'@field sim_path
-      #'Access to private parameter '.sim_path'
+      #'Simulation path. `value` must be string
       sim_path = function(value) {
         if(missing(value)) {
           private$.sim_path
         }else{
-          private$.sim_path <- validate_is_dir_path(value)
+          private$.sim_path <- as_dir_path(value)
         }
       },
 
       #'@field logfile
-      #'Access to private parameter '.logfile'
+      #'Logfile path. `value` must be string
       logfile = function(value) {
         if(missing(value)) {
           private$.logfile
@@ -395,20 +261,14 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field ogs_bin_path
-      #'Getter for OGS6 private parameter '.ogs_bin_path'
-      ogs_bin_path = function() {
-        private$.ogs_bin_path
-      },
-
       #'@field gml
-      #'Getter for OGS6 private parameter '.gml'
+      #'.gml. read-only
       gml = function() {
         private$.gml
       },
 
       #'@field geometry
-      #'Access to private parameter '.geometry'
+      #'.prj `geometry` tag. `value` must be string
       geometry = function(value) {
         if(missing(value)) {
           private$.geometry
@@ -419,7 +279,7 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field meshes
-      #'Access to private parameter '.meshes'
+      #'.prj `meshes` tag. `value` must be list of strings
       meshes = function(value) {
         if(missing(value)) {
           private$.meshes
@@ -433,19 +293,19 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field vtus
-      #'Access to private parameter '.vtus'
+      #'.vtus. `value` must be list of `OGS_vtu` objects
       vtus = function(value) {
         if(missing(value)) {
           private$.vtus
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["vtus"]])
+          is_wrapper_list(value,
+                          prj_top_level_classes()[["vtus"]])
           private$.vtus <- value
         }
       },
 
       #'@field python_script
-      #'Access to private parameter '.python_script'
+      #'.prj `python_script` tag. `value` must be string
       python_script = function(value) {
         if(missing(value)) {
           private$.python_script
@@ -456,30 +316,31 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field search_length_algorithm
-      #'Access to private parameter '.search_length_algorithm'
+      #'.prj `search_length_algorithm` tag. `value` must be
+      #' `r2ogs6_search_length_algorithm` object
       search_length_algorithm = function(value) {
         if(missing(value)) {
           private$.search_length_algorithm
         }else{
           assertthat::assert_that(
-            addable_prj_components()[["search_length_algorithm"]] %in%
+            prj_top_level_classes()[["search_length_algorithm"]] %in%
               class(value))
           private$.search_length_algorithm <- value
         }
       },
 
       #'@field processes
-      #'Access to private parameter '.processes'
+      #'.prj `processes` tag. `value` must be list of `r2ogs6_process` objects
       processes = function(value) {
         if(missing(value)) {
           private$.processes
         }else{
           # If there already is a process element
           if(length(private$.processes) > 0){
-            if(addable_prj_components()[["processes"]] %in%
+            if(prj_top_level_classes()[["processes"]] %in%
                class(private$.processes[[1]])){
-                 validate_wrapper_list(value,
-                                       addable_prj_components()[["processes"]])
+                 is_wrapper_list(value,
+                                       prj_top_level_classes()[["processes"]])
             }else{
               assertthat::assert_that(assertthat::is.string(value))
               value <- list(include = c(file = value))
@@ -489,8 +350,8 @@ OGS6 <- R6::R6Class("OGS6",
             if(assertthat::is.string(value)){
               value <- list(include = c(file = value))
             }else{
-              validate_wrapper_list(value,
-                                    addable_prj_components()[["processes"]])
+              is_wrapper_list(value,
+                                    prj_top_level_classes()[["processes"]])
             }
           }
 
@@ -499,132 +360,152 @@ OGS6 <- R6::R6Class("OGS6",
       },
 
       #'@field time_loop
-      #'Access to private parameter '.time_loop'
+      #'.prj `time_loop` tag. `value` must be `r2ogs6_time_loop` object
       time_loop = function(value) {
         if(missing(value)) {
           private$.time_loop
         }else{
           assertthat::assert_that(
-            addable_prj_components()[["time_loop"]] %in%
+            prj_top_level_classes()[["time_loop"]] %in%
               class(value))
           private$.time_loop <- value
         }
       },
 
       #'@field local_coordinate_system
-      #'Access to private parameter '.local_coordinate_system'
+      #'.prj `local_coordinate_system` tag. `value` must be
+      #' `r2ogs6_local_coordinate_system` object
       local_coordinate_system = function(value) {
         if(missing(value)) {
           private$.local_coordinate_system
         }else{
           assertthat::assert_that(
-            addable_prj_components()[["local_coordinate_system"]] %in%
+            prj_top_level_classes()[["local_coordinate_system"]] %in%
               class(value))
           private$.local_coordinate_system <- value
         }
       },
 
       #'@field media
-      #'Access to private parameter '.media'
+      #'.prj `media` tag. `value` must be list of `r2ogs6_medium` objects
       media = function(value) {
         if(missing(value)) {
           private$.media
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["media"]])
+          is_wrapper_list(value,
+                          prj_top_level_classes()[["media"]])
           private$.media <- value
         }
       },
 
       #'@field parameters
-      #'Access to private parameter '.parameters'
+      #'.prj `parameters` tag. `value` must be list of `r2ogs6_parameter`
+      #' objects
       parameters = function(value) {
         if(missing(value)) {
           private$.parameters
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["parameters"]])
+          is_wrapper_list(value,
+                                prj_top_level_classes()[["parameters"]])
           private$.parameters <- value
         }
       },
 
+      #'@field chemical_system
+      #'.prj `chemical_system` tag. `value` must be `r2ogs6_chemical_system`
+      #' object
+      chemical_system = function(value) {
+        if(missing(value)) {
+          private$.chemical_system
+        }else{
+          assertthat::assert_that(
+            prj_top_level_classes()[["chemical_system"]] %in%
+              class(value))
+          private$.chemical_system <- value
+        }
+      },
+
       #'@field curves
-      #'Access to private parameter '.curves'
+      #'.prj `curves` tag. `value` must be list of `r2ogs6_curve` objects
       curves = function(value) {
         if(missing(value)) {
           private$.curves
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["curves"]])
+          is_wrapper_list(value,
+                                prj_top_level_classes()[["curves"]])
           private$.curves <- value
         }
       },
 
       #'@field process_variables
-      #'Access to private parameter '.process_variables'
+      #'.prj `process_variables` tag. `value` must be list of
+      #' `r2ogs6_process_variable` objects
       process_variables = function(value) {
         if(missing(value)) {
           private$.process_variables
         }else{
-          validate_wrapper_list(
+          is_wrapper_list(
             value,
-            addable_prj_components()[["process_variables"]])
+            prj_top_level_classes()[["process_variables"]])
           private$.process_variables <- value
         }
       },
 
       #'@field nonlinear_solvers
-      #'Access to private parameter '.nonlinear_solvers'
+      #'.prj `nonlinear_solvers` tag. `value` must be list of
+      #' `r2ogs6_nonlinear_solver` objects
       nonlinear_solvers = function(value) {
         if(missing(value)) {
           private$.nonlinear_solvers
         }else{
-          validate_wrapper_list(
+          is_wrapper_list(
             value,
-            addable_prj_components()[["nonlinear_solvers"]])
+            prj_top_level_classes()[["nonlinear_solvers"]])
           private$.nonlinear_solvers <- value
         }
       },
 
       #'@field linear_solvers
-      #'Access to private parameter '.linear_solvers'
+      #'.prj `linear_solvers` tag. `value` must be list of
+      #' `r2ogs6_linear_solver` objects
       linear_solvers = function(value) {
         if(missing(value)) {
           private$.linear_solvers
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["linear_solvers"]])
+          is_wrapper_list(value,
+                          prj_top_level_classes()[["linear_solvers"]])
           private$.linear_solvers <- value
         }
       },
 
       #'@field test_definition
-      #'Access to private parameter '.test_definition'
+      #'.prj `test_definition` tag. `value` must be list of `r2ogs6_vtkdiff`
+      #' objects
       test_definition = function(value) {
         if(missing(value)) {
           private$.test_definition
         }else{
-          validate_wrapper_list(value,
-                                addable_prj_components()[["test_definition"]])
+          is_wrapper_list(value,
+                          prj_top_level_classes()[["test_definition"]])
           private$.test_definition <- value
         }
       },
 
       #'@field insitu
-      #'Access to private parameter '.insitu'
+      #'.prj `insitu` tag. `value` must be `r2ogs6_insitu` object
       insitu = function(value) {
         if(missing(value)) {
           private$.insitu
         }else{
           assertthat::assert_that(
-            addable_prj_components()[["insitu"]] %in%
+            prj_top_level_classes()[["insitu"]] %in%
               class(value))
           private$.insitu <- value
         }
       },
 
       #'@field pvd
-      #'Access to private parameter '.pvd'
+      #'.pvd. `value` must be `OGS6_pvd` object
       pvd = function(value) {
         if(missing(value)) {
           private$.pvd
@@ -635,12 +516,13 @@ OGS6 <- R6::R6Class("OGS6",
       }
   ),
 
+  #===== Private parameters =====
+
   private = list(
     # general parameters
       .sim_name = NULL,
       .sim_id = NULL,
       .sim_path = NULL,
-      .ogs_bin_path = NULL,
 
       .logfile = NULL,
 
@@ -665,6 +547,7 @@ OGS6 <- R6::R6Class("OGS6",
       .local_coordinate_system = NULL,
       .media = list(),
       .parameters = list(),
+      .chemical_system = NULL,
       .curves = list(),
       .process_variables = list(),
       .nonlinear_solvers = list(),

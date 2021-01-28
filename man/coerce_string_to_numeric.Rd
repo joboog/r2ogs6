@@ -7,11 +7,10 @@
 coerce_string_to_numeric(obj)
 }
 \arguments{
-\item{obj}{An object to check}
+\item{obj}{object: Any object}
 }
 \value{
-The object as a numeric type (if 'obj' was a string, else the
-unchanged 'obj')
+numeric if 'obj' was a string, else unchanged 'obj'
 }
 \description{
 If an object is of type string, coerces it to a numeric type

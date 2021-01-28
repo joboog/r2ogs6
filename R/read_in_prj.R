@@ -6,9 +6,9 @@
 #'@param ogs6_obj OGS6: Simulation object
 #'@param prj_path string: Path to the project file that should be read in
 #'@param read_in_gml flag: Optional: Should .gml file just be copied or read in
-#' too? If this parameter is missing and the .gml file contains <= the
-#' number of lines in `options("r2ogs6.max_lines_gml")`, the .gml will be read
-#' in. Else, only the geometry reference will be saved.
+#' too? If this parameter is missing and the .gml file contains <=
+#' `options("r2ogs6.max_lines_gml")`, the .gml will be read in. Else, only the
+#' geometry reference will be saved.
 #'@param read_in_vtu flag: Should .vtu file just be copied or read in too?
 #'@export
 read_in_prj <- function(ogs6_obj,
@@ -54,7 +54,6 @@ read_in_prj <- function(ogs6_obj,
 
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
-
         vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
 
         # Read in .vtu file(s) or just save their path
@@ -62,7 +61,7 @@ read_in_prj <- function(ogs6_obj,
                          read_in_vtu = read_in_vtu)
     }
 
-    prj_components <- addable_prj_components()
+    prj_components <- prj_top_level_classes()
 
     # Include file reference
     processes_include_node <-
@@ -83,10 +82,22 @@ read_in_prj <- function(ogs6_obj,
         prj_components <- prj_components[names(prj_components) != "processes"]
     }
 
+    # Check for python script
+    python_script_node <-
+        xml2::xml_find_first(xml_doc,
+                             "/OpenGeoSysProject/python_script")
+
+    if(!any(grepl("xml_missing", class(python_script_node), fixed = TRUE))){
+        ogs6_obj$python_script <- xml2::xml_text(python_script_node)
+    }
+
+    prj_components <-
+        prj_components[names(prj_components) != "python_script"]
+
 
     for(i in seq_len(length(prj_components))){
 
-        class_tag_name <- get_class_tag_name(prj_components[[i]])
+        class_tag_name <- get_tag_from_class(prj_components[[i]])
 
         # Differentiate between wrapper lists and singular objects
         if(class_tag_name != names(prj_components)[[i]]){
