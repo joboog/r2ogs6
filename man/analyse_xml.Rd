@@ -4,23 +4,15 @@
 \alias{analyse_xml}
 \title{analyse_xml}
 \usage{
-analyse_xml(
-  path,
-  pattern,
-  tag_name,
-  xpath_prefix = "//",
-  print_findings = TRUE
-)
+analyse_xml(path, pattern, xpath, print_findings = TRUE)
 }
 \arguments{
 \item{path}{string: A path}
 
 \item{pattern}{string: A regex pattern}
 
-\item{tag_name}{string: The name of the XML element to look for}
-
-\item{xpath_prefix}{string: Optional: The XPath prefix to use
-(defaults to "//")}
+\item{xpath}{string: An XPath expression. WARNING: Only works for expressions
+that return nodesets, use it to look up tag names.}
 
 \item{print_findings}{Optional: Should the results be printed to the console?}
 }

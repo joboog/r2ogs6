@@ -1,12 +1,5 @@
 
 
-# test_that("order_parameters works", {
-#
-#     #...
-#
-# })
-
-
 test_that("node_to_object works for simple r2ogs6 classes", {
 
     prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
@@ -14,9 +7,7 @@ test_that("node_to_object works for simple r2ogs6 classes", {
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_id = 1,
-                         sim_path = "sim_path",
-                         ogs_bin_path = "ogs_bin_path",
-                         test_mode = TRUE)
+                         sim_path = "sim_path")
 
     read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
 
@@ -36,7 +27,7 @@ test_that("node_to_object works for nodes that have both attributes and text", {
     test_node <- xml2::read_xml("<test a = \"1\">some text</test>")
 
     test_obj <- node_to_object(test_node,
-                               xpath_expr = "\test")
+                               xpath = "/test")
 
 
     expect_equal(length(test_obj), 2)

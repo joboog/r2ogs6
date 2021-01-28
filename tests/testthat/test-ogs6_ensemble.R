@@ -6,17 +6,13 @@ test_that("OGS6_Ensemble initialization works", {
     ogs6_obj <- OGS6$new(
         sim_name = "sim",
         sim_id = 1,
-        sim_path = "sim_path",
-        ogs_bin_path = "ogs_bin_path",
-        test_mode = TRUE
-    )
+        sim_path = "sim_path")
 
-    ogs6_obj$add_parameter(r2ogs6_parameter(
+    ogs6_obj$add(r2ogs6_parameter(
         name = "pressure0",
         type = "Constant",
         value = 1
     ))
-
 
     ogs6_ens <- OGS6_Ensemble$new(
         ogs6_obj = ogs6_obj,

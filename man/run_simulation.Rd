@@ -4,12 +4,15 @@
 \alias{run_simulation}
 \title{run_simulation}
 \usage{
-run_simulation(ogs6_obj, write_logfile = TRUE)
+run_simulation(ogs6_obj, write_logfile = TRUE, ogs_bin_path)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
 
 \item{write_logfile}{flag: Should output be written to a logfile?}
+
+\item{ogs_bin_path}{string: Optional: OpenGeoSys 6 bin folder path. Defaults
+to `options("r2ogs6.default_ogs_bin_path")`}
 }
 \description{
 Calls OGS6 object validator functions, exports all necessary

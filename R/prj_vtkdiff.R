@@ -37,10 +37,10 @@ new_r2ogs6_vtkdiff <- function(field,
 
     assertthat::assert_that(assertthat::is.string(field))
 
-    validate_is_number(absolute_tolerance,
+    are_numbers(absolute_tolerance,
                        relative_tolerance)
 
-    validate_is_null_or_string(file,
+    are_null_or_strings(file,
                                regex)
 
     structure(
@@ -49,7 +49,7 @@ new_r2ogs6_vtkdiff <- function(field,
              relative_tolerance = relative_tolerance,
              file = file,
              regex = regex,
-             is_subclass = FALSE,
+             xpath = "test_definition/vtkdiff",
              attr_names = character(),
              flatten_on_exp = character()
         ),

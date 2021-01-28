@@ -14,7 +14,7 @@ library(r2ogs6)
 
 # Then we can create a simulation object.
 
-ogs6_obj <- OGS6$new(sim_name = "my_sim",
+ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
                      sim_id = 1,
                      sim_path = "D:/OGS_Sim/")
 
@@ -31,4 +31,4 @@ read_in_prj(ogs6_obj, prj_path)
 #===== Run simulation =====
 
 
-e <- run_simulation(ogs6_obj)
+e <- run_simulation(ogs6_obj, write_logfile = FALSE)

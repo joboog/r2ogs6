@@ -39,14 +39,14 @@ new_r2ogs6_nonlinear_solver <- function(name,
     assertthat::assert_that(assertthat::is.number(max_iter))
     assertthat::assert_that(assertthat::is.string(linear_solver))
 
-    validate_is_null_or_number(damping)
+    are_null_or_numbers(damping)
 
     structure(list(name = name,
                    type = type,
                    max_iter = max_iter,
                    linear_solver = linear_solver,
                    damping = damping,
-                   is_subclass = FALSE,
+                   xpath = "nonlinear_solvers/nonlinear_solver",
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),

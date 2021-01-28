@@ -22,11 +22,11 @@ new_r2ogs6_material_property <- function(fluid,
 
     assertthat::assert_that(class(fluid) == "r2ogs6_fluid")
 
-    validate_wrapper_list(porous_medium, "r2ogs6_porous_medium")
+    is_wrapper_list(porous_medium, "r2ogs6_porous_medium")
 
     structure(list(fluid = fluid,
                    porous_medium = porous_medium,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/material_property",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -91,46 +91,46 @@ new_r2ogs6_fluid <- function(liquid_density,
 
     type_value_names <- c("type", "value")
 
-    liquid_density <- validate_param_list(liquid_density, type_value_names)
+    liquid_density <- coerce_names(liquid_density, type_value_names)
 
-    gas_density <- validate_param_list(gas_density, c("type",
+    gas_density <- coerce_names(gas_density, c("type",
                                                       "molar_mass"))
 
-    liquid_viscosity <- validate_param_list(liquid_viscosity, type_value_names)
+    liquid_viscosity <- coerce_names(liquid_viscosity, type_value_names)
 
-    gas_viscosity <- validate_param_list(gas_viscosity, type_value_names)
+    gas_viscosity <- coerce_names(gas_viscosity, type_value_names)
 
     if(!is.null(specific_heat_capacity_solid)){
         specific_heat_capacity_solid <-
-            validate_param_list(specific_heat_capacity_solid, type_value_names)
+            coerce_names(specific_heat_capacity_solid, type_value_names)
     }
 
     if(!is.null(specific_heat_capacity_water)){
         specific_heat_capacity_water <-
-            validate_param_list(specific_heat_capacity_water, type_value_names)
+            coerce_names(specific_heat_capacity_water, type_value_names)
     }
 
     if(!is.null(specific_heat_capacity_air)){
         specific_heat_capacity_air <-
-            validate_param_list(specific_heat_capacity_air, type_value_names)
+            coerce_names(specific_heat_capacity_air, type_value_names)
     }
 
 
     if(!is.null(specific_heat_capacity_water_vapor)){
         specific_heat_capacity_water_vapor <-
-            validate_param_list(specific_heat_capacity_water_vapor,
+            coerce_names(specific_heat_capacity_water_vapor,
                                 type_value_names)
     }
 
     if(!is.null(thermal_conductivity_dry_solid)){
         thermal_conductivity_dry_solid <-
-            validate_param_list(thermal_conductivity_dry_solid,
+            coerce_names(thermal_conductivity_dry_solid,
                                 type_value_names)
     }
 
     if(!is.null(thermal_conductivity_wet_solid)){
         thermal_conductivity_wet_solid <-
-            validate_param_list(thermal_conductivity_wet_solid,
+            coerce_names(thermal_conductivity_wet_solid,
                                 type_value_names)
     }
 
@@ -147,7 +147,7 @@ new_r2ogs6_fluid <- function(liquid_density,
                        thermal_conductivity_dry_solid,
                    thermal_conductivity_wet_solid =
                        thermal_conductivity_wet_solid,
-                   is_subclass = TRUE,
+                   xpath = "processes/process/material_property/fluid",
                    attr_names = character(),
                    flatten_on_exp = character()
     ),

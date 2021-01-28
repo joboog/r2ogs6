@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+devtools::load_all(".")
 ```
 
 ```{r setup}
@@ -20,15 +22,26 @@ library(r2ogs6)
 ```
 
 ## Prerequisites
-Apart from having the library itself loaded, you need to have OpenGeoSys 6 installed to be able to use `r2ogs6`. 
+Apart from having the library itself loaded, there are two more prerequisites that need to be met for you to be able to use `r2ogs6` to its full extent.
+
+The most important one is having OpenGeoSys 6 installed on your system. You can download the current version of OpenGeoSys 6 from [here](https://www.opengeosys.org/releases/). 
+
+Secondly, to read in the `.vtu` and `.pvd` files produced by OpenGeoSys 6, you need a Python installation including the library `vtk`. If you have an Anaconda installation on your system, setting up a Python environment with `vtk` will work. If you don't have any Python installation on your system, you can download the latest release of Python from [here](https://www.python.org/downloads/). Instructions on how to install `vtk` can be found [here](https://pypi.org/project/vtk/).
+ 
+After loading `r2ogs6`, we can set the package options so it knows where to look for OpenGeoSys 6 and Python.
+
+```r
+# Set path for OpenGeoSys 6
+options("r2ogs6.default_ogs_bin_path" = "your_ogs_bin_path")
+
+# Set path for Python
+options("r2ogs6.use_python" = "your_python_path")
+```
+
 
 ## Creating your simulation object
 ...
-To represent a simulation object, `r2ogs6` uses an R6 class called 'OGS6'. (...). 
-
-Don't let ... intimidate you, though. Working with your simulation object is easier than it sounds, so let's get to it. 
-
-Before we can work with an object, we need to create it. To create it, we need to call the class constructor and provide it with some parameters:
+To represent a simulation object, `r2ogs6` uses an `R6` class called `OGS6`. If you're new to `R6` objects, don't worry. Creating a simulation object is easy. We call the class constructor and provide it with some parameters:
 
 * `sim_name` The name of your simulation
 
@@ -36,18 +49,12 @@ Before we can work with an object, we need to create it. To create it, we need t
 
 * `sim_path` All relevant files for your simulation will be in here
 
-* `ogs_bin_path` This is the path to the `bin` folder of your OpenGeoSys 6 distribution
-
-* `test_mode` (This defaults to `FALSE` and should be left alone. I'm setting it to `TRUE` for this vignette because it turns off path validation and we haven't supplied a valid `ogs_bin_path`)
-
-Usually, you will only ever define `sim_name`, `sim_path` and `ogs_bin_path`.
+Usually, you will only ever define `sim_name`, `sim_path`.
 
 ```{r}
 ogs6_obj <- OGS6$new(sim_name = "my_simulation",
                      sim_id = 1,
-                     sim_path = "C:\\my_sim_folder\\",
-                     ogs_bin_path ="C:\\Programs\\OpenGeoSys\\...\\bin\\",
-                     test_mode = TRUE)
+                     sim_path = "my_sim_path")
 ```
 
 And that's it, we now have a simulation object. 
@@ -92,12 +99,12 @@ As a rule of thumb, classes are named with the prefix `r2ogs6_` followed by thei
 
 Let's try adding something now.
 
-### Adding input data via add_*
+### Adding input data via OGS6$add()
 
-To add data to our simulation object, we use one of ... . 
+To add data to our simulation object, we use `OGS6$add()`. 
 
 ```{r}
-    ogs6_obj$add_parameter(r2ogs6_parameter(
+    ogs6_obj$add(r2ogs6_parameter(
         name = "pressure0",
         type = "Constant",
         value = 1

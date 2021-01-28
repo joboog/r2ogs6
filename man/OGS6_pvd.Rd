@@ -27,10 +27,10 @@ Constructor for the OGS6_pvd base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_pvd$new()}}
-\item \href{#method-get_vtu_path_by_timestep}{\code{OGS6_pvd$get_vtu_path_by_timestep()}}
-\item \href{#method-get_timestep_by_vtu_path}{\code{OGS6_pvd$get_timestep_by_vtu_path()}}
-\item \href{#method-get_PointData_time_tibble}{\code{OGS6_pvd$get_PointData_time_tibble()}}
-\item \href{#method-get_PointData_at_timestep}{\code{OGS6_pvd$get_PointData_at_timestep()}}
+\item \href{#method-vtu_by_timestep}{\code{OGS6_pvd$vtu_by_timestep()}}
+\item \href{#method-timestep_by_vtu}{\code{OGS6_pvd$timestep_by_vtu()}}
+\item \href{#method-get_point_data_tbl}{\code{OGS6_pvd$get_point_data_tbl()}}
+\item \href{#method-get_cell_data_tbl}{\code{OGS6_pvd$get_cell_data_tbl()}}
 \item \href{#method-clone}{\code{OGS6_pvd$clone()}}
 }
 }
@@ -52,12 +52,12 @@ Creates new OGS6_pvd object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_vtu_path_by_timestep"></a>}}
-\if{latex}{\out{\hypertarget{method-get_vtu_path_by_timestep}{}}}
-\subsection{Method \code{get_vtu_path_by_timestep()}}{
+\if{html}{\out{<a id="method-vtu_by_timestep"></a>}}
+\if{latex}{\out{\hypertarget{method-vtu_by_timestep}{}}}
+\subsection{Method \code{vtu_by_timestep()}}{
 Returns .vtu path for specified timestep
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_vtu_path_by_timestep(timestep)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$vtu_by_timestep(timestep)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -69,12 +69,12 @@ Returns .vtu path for specified timestep
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_timestep_by_vtu_path"></a>}}
-\if{latex}{\out{\hypertarget{method-get_timestep_by_vtu_path}{}}}
-\subsection{Method \code{get_timestep_by_vtu_path()}}{
+\if{html}{\out{<a id="method-timestep_by_vtu"></a>}}
+\if{latex}{\out{\hypertarget{method-timestep_by_vtu}{}}}
+\subsection{Method \code{timestep_by_vtu()}}{
 Returns timestep for specified .vtu path
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_timestep_by_vtu_path(vtu_path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$timestep_by_vtu(vtu_path)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -86,12 +86,12 @@ Returns timestep for specified .vtu path
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_PointData_time_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-get_PointData_time_tibble}{}}}
-\subsection{Method \code{get_PointData_time_tibble()}}{
-Creates a tibble object from PointData
+\if{html}{\out{<a id="method-get_point_data_tbl"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data_tbl}{}}}
+\subsection{Method \code{get_point_data_tbl()}}{
+Returns a tibble with all of the PointData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_PointData_time_tibble(
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_point_data_tbl(
   point_ids,
   Names,
   start_at_timestep,
@@ -102,37 +102,42 @@ Creates a tibble object from PointData
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{point_ids}}{numeric: Optional: IDs of the points of interest.
-Will default to all point IDs if not defined.}
+\item{\code{point_ids}}{numeric: Optional: Point IDs. Defaults to all.}
 
-\item{\code{Names}}{character: `Name` attributes of `DataArray` elements}
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements. Defaults to all.}
 
-\item{\code{start_at_timestep}}{number: Timestep to start at}
+\item{\code{start_at_timestep}}{number: Optional: Timestep to start at.
+Defaults to first timestep.}
 
-\item{\code{end_at_timestep}}{number: Timestep to end at}
+\item{\code{end_at_timestep}}{number: Optional: Timestep to end at. Defaults
+to last timestep.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_PointData_at_timestep"></a>}}
-\if{latex}{\out{\hypertarget{method-get_PointData_at_timestep}{}}}
-\subsection{Method \code{get_PointData_at_timestep()}}{
-Gets PointData at specified timestep. Calls
-`get_PointData_time_tibble` internally with `start_at_timestep` and
-`end_at_timestep` both being `timestep`
+\if{html}{\out{<a id="method-get_cell_data_tbl"></a>}}
+\if{latex}{\out{\hypertarget{method-get_cell_data_tbl}{}}}
+\subsection{Method \code{get_cell_data_tbl()}}{
+Returns a tibble with all of the CellData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_PointData_at_timestep(point_ids, Names, timestep)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_cell_data_tbl(cell_ids, Names, start_at_timestep, end_at_timestep)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{point_ids}}{number: Point IDs}
+\item{\code{cell_ids}}{numeric: Optional: Cell IDs. Defaults to all.}
 
-\item{\code{Names}}{character: `Name` attributes of `DataArray` elements}
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements. Defaults to all.}
 
-\item{\code{timestep}}{string: Timestep}
+\item{\code{start_at_timestep}}{number: Optional: Timestep to start at.
+Defaults to first timestep.}
+
+\item{\code{end_at_timestep}}{number: Optional: Timestep to end at. Defaults
+to last timestep.}
 }
 \if{html}{\out{</div>}}
 }

@@ -73,10 +73,10 @@ new_r2ogs6_parameter <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    validate_is_null_or_number(value)
-    validate_is_null_or_numeric(values)
+    are_null_or_numbers(value)
+    are_null_or_numeric(values)
 
-    validate_is_null_or_string(curve,
+    are_null_or_strings(curve,
                                parameter,
                                group_id_property,
                                field_name,
@@ -86,7 +86,7 @@ new_r2ogs6_parameter <- function(name,
         assertthat::assert_that(assertthat::is.string(x))
     })
 
-    validate_is_null_or_str_flag(use_local_coordinate_system)
+    are_null_or_string_flags(use_local_coordinate_system)
 
 
     for(i in seq_len(length(index_values))){
@@ -98,7 +98,7 @@ new_r2ogs6_parameter <- function(name,
         names(time_series) <- rep("pair", length(time_series))
 
         for(i in seq_len(length(time_series))){
-            time_series[[i]] <- validate_param_list(time_series[[i]],
+            time_series[[i]] <- coerce_names(time_series[[i]],
                                                     c("time",
                                                       "parameter_name"))
         }
@@ -117,7 +117,7 @@ new_r2ogs6_parameter <- function(name,
                    expression = expression,
                    time_series = time_series,
                    use_local_coordinate_system = use_local_coordinate_system,
-                   is_subclass = TRUE,
+                   xpath = "parameters/parameter",
                    attr_names = character(),
                    flatten_on_exp = c("values"),
                    unwrap_on_exp = c("index_values", "expression")

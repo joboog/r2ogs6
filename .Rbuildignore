@@ -2,4 +2,9 @@
 ^\.Rproj\.user$
 ^packrat/
 ^\.Rprofile$
+^inst/examples/Theis_problem
+^inst/examples/Theis_well_pumping
 ^LICENSE.md
+^doc$
+^Meta$
+^data-raw$

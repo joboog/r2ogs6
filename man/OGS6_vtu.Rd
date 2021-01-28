@@ -11,7 +11,21 @@ Constructor for the OGS6_vtu base class
 \describe{
 \item{\code{vtu_path}}{Getter for private parameter '.vtu_path'}
 
+\item{\code{number_of_points}}{Getter for NumberOfPoints parameter of '.vtkUnstructuredGrid'}
+
+\item{\code{number_of_cells}}{Getter for NumberOfCells parameter of '.vtkUnstructuredGrid'}
+
+\item{\code{points}}{Getter for Points parameter of '.dsa_vtkUnstructuredGrid'}
+
+\item{\code{cells}}{Getter for Cells parameter of '.dsa_vtkUnstructuredGrid'}
+
+\item{\code{field_data}}{Getter for FieldData parameter of '.dsa_vtkUnstructuredGrid'}
+
 \item{\code{point_data}}{Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'}
+
+\item{\code{cell_data}}{Getter for CellData parameter of '.dsa_vtkUnstructuredGrid'}
+
+\item{\code{vtkPointLocator}}{Getter for private parameter '.vtkPointLocator'}
 
 \item{\code{vtkUnstructuredGrid}}{Access to private parameter '.vtkUnstructuredGrid'}
 
@@ -23,8 +37,11 @@ Constructor for the OGS6_vtu base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_vtu$new()}}
-\item \href{#method-get_data_for_point}{\code{OGS6_vtu$get_data_for_point()}}
-\item \href{#method-get_number_of_points}{\code{OGS6_vtu$get_number_of_points()}}
+\item \href{#method-get_data_for_field}{\code{OGS6_vtu$get_data_for_field()}}
+\item \href{#method-get_data_for_points}{\code{OGS6_vtu$get_data_for_points()}}
+\item \href{#method-get_data_for_cells}{\code{OGS6_vtu$get_data_for_cells()}}
+\item \href{#method-get_point_coords}{\code{OGS6_vtu$get_point_coords()}}
+\item \href{#method-get_point_data_at}{\code{OGS6_vtu$get_point_data_at()}}
 \item \href{#method-clone}{\code{OGS6_vtu$clone()}}
 }
 }
@@ -46,36 +63,113 @@ Creates new OGS6_vtu object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data_for_point"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data_for_point}{}}}
-\subsection{Method \code{get_data_for_point()}}{
-Gets PointData for point with ID `point_id`
+\if{html}{\out{<a id="method-get_data_for_field"></a>}}
+\if{latex}{\out{\hypertarget{method-get_data_for_field}{}}}
+\subsection{Method \code{get_data_for_field()}}{
+Gets FieldData.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_point(point_id, Names)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_field(Names)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{point_id}}{number: Point ID}
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `FieldData`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+list: List of format list(value_a = 1, value_b = 2), where the
+names reference the `Name` attributes of the `DataArray` elements
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_data_for_points"></a>}}
+\if{latex}{\out{\hypertarget{method-get_data_for_points}{}}}
+\subsection{Method \code{get_data_for_points()}}{
+Gets PointData for points with IDs in `point_ids`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_points(point_ids, Names)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{point_ids}}{numeric: Optional: Point IDs, defaults to all}
 
 \item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
 elements, defaults to all in `PointData`}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+tibble: Tibble where each row represents a point.
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_number_of_points"></a>}}
-\if{latex}{\out{\hypertarget{method-get_number_of_points}{}}}
-\subsection{Method \code{get_number_of_points()}}{
-Gets number of points
+\if{html}{\out{<a id="method-get_data_for_cells"></a>}}
+\if{latex}{\out{\hypertarget{method-get_data_for_cells}{}}}
+\subsection{Method \code{get_data_for_cells()}}{
+Gets CellData for cells with IDs in `cell_ids`.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_number_of_points()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_cells(cell_ids, Names)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cell_ids}}{numeric: Optional: Cell IDs, defaults to all}
+
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `CellData`}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
-number: The number of points
+tibble: Tibble where each row represents a cell.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_point_coords"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_coords}{}}}
+\subsection{Method \code{get_point_coords()}}{
+Gets coordinates of specific points by their IDs.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_point_coords(point_ids)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{point_ids}}{numeric: Point IDs}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+If `point_ids` is a number, a coordinate array. If `point_ids`
+is a numeric vector with length > 1, a list of coordinate arrays.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_point_data_at"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data_at}{}}}
+\subsection{Method \code{get_point_data_at()}}{
+Gets PointData at specified coordinates.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_point_data_at(coordinates, Names)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{coordinates}}{list(numeric): List of coordinates (a coordinate
+is a numeric vector of length 3)}
+
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `PointData`}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

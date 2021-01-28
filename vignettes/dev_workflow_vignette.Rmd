@@ -13,14 +13,12 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+devtools::load_all(".")
 ```
 
 ```{r setup}
 library(r2ogs6)
-```
-
-```{r, include=FALSE}
-devtools::load_all(".")
 ```
 
 ## Hi there!
@@ -84,18 +82,16 @@ Now say we have decided we are going to make a class based on the element with t
 ```{r}
 analysis_results <- analyse_xml(path = test_folder,
                                 pattern = "\\.prj$",
-                                tag_name = "nonlinear_solver",
-                                xpath_prefix = "//",
+                                xpath = "//nonlinear_solver",
                                 print_findings = TRUE)
 ```
 
-First, I define my path and specify that only files with the ending `.prj` will be parsed. I'm looking for elements named `nonlinear_solver`, and I'm looking for them in the whole document. This often isn't the best option since sometimes nodes may have the same name but contain different things depending on their exact position in the document, which is also the case here. To narrow it down further, use the `xpath_prefix` argument.
+First, I define my path and specify that only files with the ending `.prj` will be parsed. I'm looking for elements named `nonlinear_solver`, and I'm looking for them in the whole document. This often isn't the best option since sometimes nodes may have the same name but contain different things depending on their exact position in the document, which is also the case here. To narrow it down further, change `xpath` accordingly.
 
 ```{r}
 analysis_results <- analyse_xml(path = test_folder,
                                 pattern = "\\.prj$",
-                                tag_name = "nonlinear_solver",
-                                xpath_prefix = "/OpenGeoSysProject/nonlinear_solvers/",
+                                xpath = "/OpenGeoSysProject/nonlinear_solvers/nonlinear_solver",
                                 print_findings = TRUE)
 ```
 
@@ -106,7 +102,7 @@ Now we can be sure our future class will be generated from the correct parameter
 analysis_results
 ```
 
-You can see the list contains the `tag_name` parameter passed to `analyse_xml()`, along with two named logical vectors called `children` and `attributes` respectively. They can be read like this: If an attribute or a child of the `tag_name` element always occurred, it is a required parameter for the new class. Else, it is an optional parameter. The logical vectors are sorted by occurrency, so the rarest children and attributes will go to the very end of their logical vector. Now, let's generate some code!
+You can see the list contains the `xpath` parameter passed to `analyse_xml()`, along with three named logical vectors called `children`, `attributes` and `both_sorted` respectively. They can be read like this: If an attribute or a child of the element specified by `xpath` always occurred, it is a required parameter for the new class. Else, it is an optional parameter. The logical vectors are sorted by occurrency, so the rarest children and attributes will go to the very end of their logical vector. Now, let's generate some code!
 
 For S3 classes, we generate a constructor like this:
 
@@ -128,33 +124,39 @@ generate_R6(params = analysis_results,
             print_result = TRUE)
 ```
 
-Ta-daa, you now have some nice stubs. Copy them into a script, add some documentation and validation to it and you're almost done.
+Ta-daa, you now have some nice stubs. Copy them into a script in the `R` folder of this package, add some documentation and validation to it and you're almost done.
 
 
 ## Integrating new classes
 
-Now that we've created our class, we need to tell the package it exists. This is so when we're reading in an existing project file, it knows to automatically turn the content of our `nonlinear_solver` tag into an object of our new class. To achieve this, we need to modify `utils.R` depending on what kind of class we added:
+Now that we have a class, we need to tell the package it exists. This is so when we're reading in or exporting a `.prj` file, it knows to automatically turn the content of our `nonlinear_solver` tag into an object of our new class and the other way around. To achieve this, execute the code in `data_raw/xpaths_for_classes.R`. What this will do is update the `xpaths_for_classes` parameter, adding an entry for your class. Afterwards, run `xpaths_for_classes[["your_class_name"]]`. It should return the `xpath` parameter of your class like so:
 
-* `get_implemented_classes()` Modify this function if the class you've added represents a first or second level node, meaning it's directly under root or has a "wrapper" parent. `r2ogs6_parameter` for example represents the node `parameter` under `parameters`, so it's a second level node. Since `parameters` only contains `parameter` children, it's represented as a list internally and does not have its own class. `r2ogs6_time_loop` represents the node `time_loop` which is a first level node.
+```{r}
+xpaths_for_classes[["r2ogs6_process"]]
 
-* `get_subclass_names()` Modify this function if the class you've added contains subclasses, meaning the node it represents has children that are also represented by a class. `r2ogs6_time_loop` for example has the subclass `r2ogs6_output`.
+# A class can have multiple xpaths if the represented node occurs at different positions.
+xpaths_for_classes[["r2ogs6_convergence_criterion"]]
+```
 
-* `get_nonstandard_tag_names()` Modify this function if the class you've added has a nonstandard tag name, meaning the XML tag name of the node the class represents can NOT be produced by cutting off `r2ogs6_` from the class name. `r2ogs6_tl_process` has the tag name `process` but could not be named `r2ogs6_process` because this already is the name of the class representing a `process` node under `processes`.
+If the class you've created is a `.prj` top level class or a child of a top level wrapper node like `processes`, add a corresponding `OGS6` private parameter and an active field. For example, the `processes` node is represented as a list, so I added the private parameter `.processes = list()` and the active field `processes`.
 
-* `select_fitting_subclass()` Modify this function if the class you've added has subclasses which are different from each other but represent nodes with the same tag name. So far, this has only been needed for `property` nodes under `time_loop` which depending on their exact position have three different classes representing them.
 
-A lot of things in the `r2ogs6` package work in a way that is a bit "meta". Often times, functions are called via `eval(parse(text = call_string))` where `call_string` has for example been concatenated out of info about the parameter names of a certain class. This saves a lot of code regarding import, export and script generation but requires that the respective info is available, which is what the aforementioned functions in `utils.R` are for.
+A lot of things in the `r2ogs6` package work in a way that is a bit "meta". Often times, functions are called via `eval(parse(text = call_string))` where `call_string` has for example been concatenated out of info about the parameter names of a certain class. This saves a lot of code regarding import, export and script generation but requires that you've made the respective info available as shown here.
 
-So we've analysed some files, generated some code, created a new class and "registered" it with the package... what now? That's it actually, that's the workflow. Well, at least it's supposed to be.
+So we've analysed some files, generated some code, created a new class and registered it with the package... what now? That's it actually, that's the workflow. Well, at least it's supposed to be.
 
 
 ## Recursive function guide
 
-If that wasn't it, I'm afraid you might have to take a look at the functions handling import, export and benchmark script generation. These are a bit tricky because they use recursions where the returned values are strings which so far has proven to be efficient structure-wise but not exactly fun to think about.
+If that wasn't it, I'm afraid you might have to take a look at the functions handling import, export and benchmark script generation. These are a bit tricky because they use recursion which so far has proven to be efficient structure-wise but not exactly fun to think about.
 
-WIP
+### read_in
 
-## ...
+### to_node
+
+### generate_benchmark_script
+
+## Conclusion
 
 I hope you've taken away some helpful information from this short guide. If you make changes to improve the workflow, please update this vignette for the next dev!
 

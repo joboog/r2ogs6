@@ -37,17 +37,17 @@ new_r2ogs6_porous_medium <- function(id,
                                      capillary_pressure,
                                      relative_permeability) {
 
-    validate_is_number(id)
+    are_numbers(id)
 
-    permeability <- validate_param_list(permeability,
+    permeability <- coerce_names(permeability,
                                         c("permeability_tensor_entries",
                                           "type"))
 
-    porosity <- validate_param_list(porosity,
+    porosity <- coerce_names(porosity,
                                     c("porosity_parameter",
                                       "type"))
 
-    storage <- validate_param_list(storage,
+    storage <- coerce_names(storage,
                                    c("value",
                                      "type"))
 
@@ -56,7 +56,7 @@ new_r2ogs6_porous_medium <- function(id,
 
     if(!"r2ogs6_relative_permeability" %in%
        class(relative_permeability)){
-        validate_wrapper_list(relative_permeability,
+        is_wrapper_list(relative_permeability,
                               "r2ogs6_relative_permeability")
     }
 
@@ -66,7 +66,8 @@ new_r2ogs6_porous_medium <- function(id,
                    storage = storage,
                    capillary_pressure = capillary_pressure,
                    relative_permeability = relative_permeability,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/material_property/",
+                                  "porous_medium/porous_medium"),
                    attr_names = c("id"),
                    flatten_on_exp = character()
     ),
@@ -125,9 +126,9 @@ new_r2ogs6_capillary_pressure <- function(type,
                                           has_regularized = NULL,
                                           curve = NULL) {
 
-    validate_is_string(type)
+    are_strings(type)
 
-    validate_is_null_or_number(pd,
+    are_null_or_numbers(pd,
                                sr,
                                smax,
                                m,
@@ -138,9 +139,9 @@ new_r2ogs6_capillary_pressure <- function(type,
                                                    "[:space:]*")
     }
 
-    validate_is_null_or_str_flag(has_regularized)
+    are_null_or_string_flags(has_regularized)
 
-    validate_is_null_or_param_list(curve, c("coords", "values"))
+    is_null_or_coerce_names(curve, c("coords", "values"))
 
     if(!is.null(curve)){
         curve[[1]] <- coerce_string_to_numeric(curve[[1]])
@@ -158,7 +159,8 @@ new_r2ogs6_capillary_pressure <- function(type,
                    pc_max = pc_max,
                    has_regularized = has_regularized,
                    curve = curve,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/material_property/",
+                                  "porous_medium/capillary_pressure"),
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
@@ -207,10 +209,10 @@ new_r2ogs6_relative_permeability <- function(type,
                                              m,
                                              krel_min,
                                              id = NULL) {
-    validate_is_string(type)
-    validate_is_null_or_string(id)
+    are_strings(type)
+    are_null_or_strings(id)
 
-    validate_is_number(sr,
+    are_numbers(sr,
                        smax,
                        m,
                        krel_min)
@@ -221,7 +223,9 @@ new_r2ogs6_relative_permeability <- function(type,
                    m = m,
                    krel_min = krel_min,
                    id = id,
-                   is_subclass = TRUE,
+                   xpath = paste0("processes/process/material_property/",
+                                  "porous_medium/relative_permeability/",
+                                  "relative_permeability"),
                    attr_names = c("id"),
                    flatten_on_exp = character()
     ),

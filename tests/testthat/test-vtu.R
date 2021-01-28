@@ -42,15 +42,13 @@ test_that("OGS6_pvd$get_timestep_by_vtu_path works", {
 
     vtu_path <- "flow_no_strain_ts_1000_t_100.000000.vtu"
 
-    timestep <- ogs6_pvd$get_timestep_by_vtu_path(vtu_path = vtu_path)
+    timestep <- ogs6_pvd$timestep_by_vtu(vtu_path = vtu_path)
 
     expect_equal(timestep, 99.9999999999986)
 })
 
 
-test_that("OGS6_pvd$get_PointData_time_tibble works", {
-
-    skip_if_python_modules_missing()
+test_that("OGS6_pvd$get_point_data_tbl works", {
 
     pvd_path <- system.file("extdata/benchmarks/flow_no_strain",
                             "flow_no_strain.pvd",
@@ -58,18 +56,23 @@ test_that("OGS6_pvd$get_PointData_time_tibble works", {
 
     ogs6_pvd <- OGS6_pvd$new(pvd_path)
 
-    Names <- c("pressure",
-               "velocity")
+    # Test for DataArray where NumberOfComponents == 1
+    tbl_simple <- ogs6_pvd$get_point_data_tbl(point_ids = c(0, 1, 2),
+                                             Names = c("epsilon_xx",
+                                                       "epsilon_xy"))
 
-    time_tibble <- ogs6_pvd$get_PointData_time_tibble(Names = Names)
-    expect_equal(length(time_tibble), 341)
-    expect_equal(length(time_tibble[[1]]), 2)
+    expect_equal(nrow(tbl_simple), 6)
+
+    # Test for DataArray where NumberOfComponents(displacement) == 2
+    tbl_nocomp <- ogs6_pvd$get_point_data_tbl(point_ids = c(0, 1, 2),
+                                             Names = c("displacement",
+                                                       "epsilon_xx"))
+
+    expect_equal(nrow(tbl_nocomp), 6)
 })
 
 
-test_that("OGS6_pvd$get_PointData_at_timestep works", {
-
-    skip_if_python_modules_missing()
+test_that("OGS6_pvd$get_cell_data_tbl works", {
 
     pvd_path <- system.file("extdata/benchmarks/flow_no_strain",
                             "flow_no_strain.pvd",
@@ -77,12 +80,13 @@ test_that("OGS6_pvd$get_PointData_at_timestep works", {
 
     ogs6_pvd <- OGS6_pvd$new(pvd_path)
 
-    point_data <- ogs6_pvd$get_PointData_at_timestep(point_ids = c(0, 1, 2),
-                                                     Names = "HydraulicFlow",
-                                                     timestep = 0)
+    # Test for DataArray where NumberOfComponents(displacement) == 2
+    tbl_nocomp <- ogs6_pvd$get_cell_data_tbl(
+        cell_ids = c(0, 1, 2),
+        Names = c("permeability",
+                  "principal_stress_values"))
 
-    expect_equal(length(point_data),3)
-    expect_equal(names(point_data), c("p0", "p1", "p2"))
+    expect_equal(nrow(tbl_nocomp), 6)
 })
 
 
@@ -99,6 +103,24 @@ test_that("OGS6_vtu initialization works", {
 
     expect_equal("vtkmodules.vtkCommonDataModel.vtkUnstructuredGrid" %in%
                      class(vtu_obj$vtkUnstructuredGrid), TRUE)
+
+    expect_equal(vtu_obj$number_of_points, 8)
+    expect_equal(vtu_obj$number_of_cells, 1)
+
+    expect_equal(dim(vtu_obj$points), as.integer(c(8, 3)))
+})
+
+
+test_that("OGS6_vtu$get_data_for_field works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain_ts_1000_t_100.000000.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    field_data <- vtu_obj$get_data_for_field("epsilon_ip")
+    expect_equal(length(field_data), 1)
 })
 
 
@@ -111,7 +133,67 @@ test_that("OGS6_vtu$get_data_for_points works", {
     vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
 
     point_data <- vtu_obj$get_data_for_points(c(0, 1, 2), "HydraulicFlow")
-    expect_equal(length(point_data), 3)
+    expect_equal(nrow(point_data), 3)
+    expect_equal(ncol(point_data), 5)
+})
+
+
+test_that("OGS6_vtu$get_data_for_cells works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain_ts_1000_t_100.000000.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    cell_data <- vtu_obj$get_data_for_cells(c(0, 1), "permeability")
+    expect_equal(nrow(cell_data), 2)
+})
+
+
+test_that("OGS6_vtu$get_point_coords works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_free_expansion",
+                            "cube_1x1x1.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    point_list <- vtu_obj$get_point_coords(c(0, 1))
+    expect_equal(point_list, list(c(0, 0, 0), c(1, 0, 0)))
+})
+
+
+test_that("OGS6_vtu$get_point_data_at() works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain_ts_1000_t_100.000000.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    tbl <- vtu_obj$get_point_data_at(c(0.01, 0, 0),
+                                     Names = "epsilon_xx")
+    expect_equal(tbl$epsilon_xx, 3.282899e-15)
+
+
+    bigger_tbl <- vtu_obj$get_point_data_at(list(c(0.01, 0, 0),
+                                                 c(0.42, 0, 0)),
+                                            Names = "epsilon_xx")
+    expect_equal(bigger_tbl$epsilon_xx[[2]], 1.233661e-16)
+})
+
+
+test_that("OGS6_vtu$vtkPointLocator works", {
+
+    vtu_path <- system.file("extdata/benchmarks/flow_no_strain",
+                            "flow_no_strain_ts_1000_t_100.000000.vtu",
+                            package = "r2ogs6")
+
+    vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
+
+    point_id <- vtu_obj$vtkPointLocator$FindClosestPoint(c(0.01, 0, 0))
+    expect_equal(point_id, 0)
 })
 
 

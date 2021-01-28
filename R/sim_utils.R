@@ -7,8 +7,12 @@
 #' files and starts OpenGeoSys6
 #'@param ogs6_obj OGS6: Simulation object
 #'@param write_logfile flag: Should output be written to a logfile?
+#'@param ogs_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
+#' to `options("r2ogs6.default_ogs_bin_path")`
 #'@export
-run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
+run_simulation <- function(ogs6_obj,
+                           write_logfile = TRUE,
+                           ogs_bin_path) {
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(assertthat::is.flag(write_logfile))
@@ -34,6 +38,10 @@ run_simulation <- function(ogs6_obj, write_logfile = TRUE) {
 
     # Export (and / or copy referenced) simulation files
     export_all_sim_files(ogs6_obj)
+
+    if(missing(ogs_bin_path)){
+        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
+    }
 
     # Construct the call
     ogs6_command_str <- paste0(ogs6_obj$ogs_bin_path, "ogs.exe")
@@ -184,7 +192,8 @@ run_benchmark <- function(prj_path,
     assertthat::assert_that(assertthat::is.string(ogs_bin_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
 
-    sim_path <- validate_is_dir_path(sim_path)
+    ogs_bin_path <- as_dir_path(ogs_bin_path)
+    sim_path <- as_dir_path(sim_path)
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
@@ -203,7 +212,8 @@ run_benchmark <- function(prj_path,
                 read_in_vtu = FALSE,
                 read_in_gml = TRUE)
 
-    return(invisible(run_simulation(ogs6_obj)))
+    return(invisible(run_simulation(ogs6_obj,
+                                    ogs_bin_path = ogs_bin_path)))
 }
 
 
@@ -251,7 +261,15 @@ run_all_benchmarks <- function(path,
 
     # If we know the benchmarks up to a specific file are working, skip them
     if(starting_from_prj_path != ""){
-        prj_paths <- get_path_sublist(prj_paths, starting_from_prj_path)
+
+        if(is.na(match(starting_from_prj_path, prj_paths))){
+            warning(paste("Couldn't find path to start from.",
+                          "Returning all paths."),
+                    call. = FALSE)
+        }else{
+            start_index <- match(starting_from_prj_path, prj_paths)
+            prj_paths <- prj_paths[start_index:length(prj_paths)]
+        }
     }
 
     # Filter invalid .prj files

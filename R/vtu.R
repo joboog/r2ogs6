@@ -29,7 +29,7 @@ OGS6_pvd <- R6::R6Class(
         #'@description
         #'Returns .vtu path for specified timestep
         #'@param timestep string: Timestep
-        get_vtu_path_by_timestep = function(timestep){
+        vtu_by_timestep = function(timestep){
 
             assertthat::assert_that(assertthat::is.number(timestep))
 
@@ -46,7 +46,7 @@ OGS6_pvd <- R6::R6Class(
         #'@description
         #'Returns timestep for specified .vtu path
         #'@param vtu_path string: .vtu path
-        get_timestep_by_vtu_path = function(vtu_path){
+        timestep_by_vtu = function(vtu_path){
 
             assertthat::assert_that(assertthat::is.string(vtu_path))
 
@@ -61,98 +61,63 @@ OGS6_pvd <- R6::R6Class(
         },
 
         #'@description
-        #'Creates a tibble object from PointData
-        #'@param point_ids numeric: Optional: IDs of the points of interest.
-        #' Will default to all point IDs if not defined.
-        #'@param Names character: `Name` attributes of `DataArray` elements
-        #'@param start_at_timestep number: Timestep to start at
-        #'@param end_at_timestep number: Timestep to end at
-        get_PointData_time_tibble = function(point_ids,
-                                             Names,
-                                             start_at_timestep,
-                                             end_at_timestep){
+        #'Returns a tibble with all of the PointData
+        #'@param point_ids numeric: Optional: Point IDs. Defaults to all.
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements. Defaults to all.
+        #'@param start_at_timestep number: Optional: Timestep to start at.
+        #' Defaults to first timestep.
+        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #' to last timestep.
+        get_point_data_tbl = function(point_ids,
+                                      Names,
+                                      start_at_timestep,
+                                      end_at_timestep){
 
             if(missing(point_ids)){
-                max_point_id <- self$OGS6_vtus[[1]]$get_number_of_points() - 1
-                point_ids <- seq(0, max_point_id)
+                max_id <- self$OGS6_vtus[[1]]$number_of_points - 1
+                point_ids <- seq(0, max_id)
             }
 
-            assertthat::assert_that(is.numeric(point_ids))
-
-            if(missing(start_at_timestep)){
-                start_at_timestep <- self$timesteps[[1]]
+            if(missing(Names)){
+                Names <- as.character(self$OGS6_vtus[[1]]$point_data$keys())
             }
 
-            if(missing(end_at_timestep)){
-                end_at_timestep <- self$timesteps[[length(self$timesteps)]]
-            }
-
-            assertthat::assert_that(assertthat::is.number(start_at_timestep))
-            assertthat::assert_that(assertthat::is.number(end_at_timestep))
-
-            relevant_vtus <- list()
-
-            for(i in seq_len(length(self$OGS6_vtus))){
-                timestep <- self$get_timestep_by_vtu_path(self$vtu_paths[[i]])
-
-                if(timestep >= start_at_timestep &&
-                   timestep <= end_at_timestep){
-                    relevant_vtus <- c(relevant_vtus, list(self$OGS6_vtus[[i]]))
-                }
-            }
-
-            time_list <- list()
-
-            # For each .vtu file referenced in pvd_path...
-            for(i in seq_len(length(relevant_vtus))){
-
-                # ... get all rows of PointData or get rows by Name
-                if(missing(Names)){
-                    Names <- names(relevant_vtus[[i]]$point_data)
-                }
-
-                assertthat::assert_that(is.character(Names))
-
-                point_data <-
-                    relevant_vtus[[i]]$get_data_for_points(point_ids,
-                                                           Names)
-
-                point_data_row <- list()
-
-                for(j in seq_len(length(point_data))){
-                    wrapped_point_data <- list(point_data[[j]])
-                    names(wrapped_point_data) <- names(point_data)[[j]]
-                    point_data_row <- c(point_data_row,
-                                        list(wrapped_point_data))
-                    names(point_data_row)[[length(point_data_row)]] <-
-                        names(point_data)[[j]]
-                }
-
-                time_list <- c(time_list,
-                               list(tibble::as_tibble_row(point_data_row)))
-            }
-
-            # Combine into tibble
-            time_tibble <- dplyr::bind_rows(time_list)
-
-            return(time_tibble)
+            private$get_data_tbl(data_type = "points",
+                                 ids = point_ids,
+                                 Names = Names,
+                                 start_at_timestep = start_at_timestep,
+                                 end_at_timestep = end_at_timestep)
         },
 
         #'@description
-        #'Gets PointData at specified timestep. Calls
-        #' `get_PointData_time_tibble` internally with `start_at_timestep` and
-        #' `end_at_timestep` both being `timestep`
-        #'@param point_ids number: Point IDs
-        #'@param Names character: `Name` attributes of `DataArray` elements
-        #'@param timestep string: Timestep
-        get_PointData_at_timestep = function(point_ids,
-                                             Names,
-                                             timestep){
+        #'Returns a tibble with all of the CellData
+        #'@param cell_ids numeric: Optional: Cell IDs. Defaults to all.
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements. Defaults to all.
+        #'@param start_at_timestep number: Optional: Timestep to start at.
+        #' Defaults to first timestep.
+        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #' to last timestep.
+        get_cell_data_tbl = function(cell_ids,
+                                     Names,
+                                     start_at_timestep,
+                                     end_at_timestep){
 
-            self$get_PointData_time_tibble(point_ids = point_ids,
-                                           Names = Names,
-                                           start_at_timestep = timestep,
-                                           end_at_timestep = timestep)
+            if(missing(cell_ids)){
+                max_id <- self$OGS6_vtus[[1]]$number_of_cells - 1
+                cell_ids <- seq(0, max_id)
+            }
+
+            if(missing(Names)){
+                Names <- as.character(self$OGS6_vtus[[1]]$cell_data$keys())
+            }
+
+            private$get_data_tbl(data_type = "cells",
+                                 ids = cell_ids,
+                                 Names = Names,
+                                 start_at_timestep = start_at_timestep,
+                                 end_at_timestep = end_at_timestep)
         }
     ),
 
@@ -206,6 +171,107 @@ OGS6_pvd <- R6::R6Class(
     ),
 
     private = list(
+
+        # Gets sublist from referenced .vtus by timesteps
+        get_relevant_vtus = function(start_at_timestep,
+                                     end_at_timestep){
+
+            assertthat::assert_that(assertthat::is.number(start_at_timestep))
+            assertthat::assert_that(assertthat::is.number(end_at_timestep))
+
+            relevant_vtus <- list()
+
+            for(i in seq_len(length(self$OGS6_vtus))){
+                timestep <- self$timestep_by_vtu(self$vtu_paths[[i]])
+
+                if(timestep >= start_at_timestep &&
+                   timestep <= end_at_timestep){
+                    relevant_vtus <- c(relevant_vtus, list(self$OGS6_vtus[[i]]))
+                }
+            }
+
+            return(relevant_vtus)
+        },
+
+        #Returns a dataframe with all of the CellData
+        get_data_tbl = function(data_type,
+                                ids,
+                                Names,
+                                start_at_timestep,
+                                end_at_timestep){
+
+            assertthat::assert_that(is.numeric(ids))
+            assertthat::assert_that(is.character(Names))
+
+            if(missing(start_at_timestep)){
+                start_at_timestep <- self$timesteps[[1]]
+            }
+
+            if(missing(end_at_timestep)){
+                end_at_timestep <- self$timesteps[[length(self$timesteps)]]
+            }
+
+            vtus <- private$get_relevant_vtus(start_at_timestep,
+                                              end_at_timestep)
+
+            tbl_rows <- list()
+
+            for(i in seq_len(length(ids))){
+
+                timestep_rows <- lapply(vtus, function(vtu){
+
+                    if (data_type == "points") {
+                        data <- vtu$point_data
+                        coords <- vtu$get_point_coords(ids[[i]])
+                        extra_columns <- list(x = coords[[1]],
+                                              y = coords[[2]],
+                                              z = coords[[3]])
+                    } else{
+                        data <- vtu$cell_data
+                        extra_columns <- list()
+                    }
+
+                    new_row <- list(id = ids[[i]])
+                    new_row <- c(new_row, extra_columns)
+
+                    values <- list()
+
+                    for(j in seq_len(length(Names))){
+
+                        rid <- ids[[i]] + 1
+
+                        if(length(
+                            dim(data[[Names[[j]]]])) == 1){
+                            value <- data[[Names[[j]]]][[rid]]
+
+                        }else{
+                            value <- list(as.numeric(
+                                data[[Names[[j]]]][rid,]))
+                        }
+
+                        values <- c(values, list(value))
+                        names(values)[[length(values)]] <- Names[[j]]
+                    }
+
+                    new_row <- c(new_row, values)
+
+                    new_row <-
+                        c(new_row,
+                          list(timestep =
+                                   self$timestep_by_vtu(
+                                       basename(vtu$vtu_path))))
+
+                    new_row <- tibble::as_tibble_row(new_row)
+                    return(new_row)
+                })
+
+                tbl_rows <- c(tbl_rows, timestep_rows)
+            }
+
+            tbl <- dplyr::bind_rows(tbl_rows)
+            return(tbl)
+        },
+
         .pvd_path = NULL,
         .datasets = NULL,
         .OGS6_vtus = NULL
@@ -231,61 +297,135 @@ OGS6_vtu <- R6::R6Class(
             vtk_xml_ugr <- vtk$vtkXMLUnstructuredGridReader()
             vtk_xml_ugr$SetFileName(vtu_path)
             vtk_xml_ugr$Update()
+            self$vtkUnstructuredGrid <- vtk_xml_ugr$GetOutput()
+
+            point_locator <- vtk$vtkPointLocator()
+            point_locator$SetDataSet(self$vtkUnstructuredGrid)
+            point_locator$BuildLocator()
+            private$.vtkPointLocator <- point_locator
 
             private$.vtu_path <- vtu_path
-            self$vtkUnstructuredGrid <- vtk_xml_ugr$GetOutput()
         },
 
         #'@description
-        #'Gets PointData for points with IDs in `point_ids`. If called without
-        #' arguments, this is equivalent to `OGS6_vtu$point_data`.
+        #'Gets FieldData.
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements, defaults to all in `FieldData`
+        #'@return list: List of format list(value_a = 1, value_b = 2), where the
+        #' names reference the `Name` attributes of the `DataArray` elements
+        get_data_for_field = function(Names){
+
+            if(missing(Names)){
+                Names <- as.character(self$field_data$keys())
+            }
+
+            field_data <- lapply(Names, function(x){
+                self$field_data[[x]]
+            })
+
+            return(field_data)
+        },
+
+        #'@description
+        #'Gets PointData for points with IDs in `point_ids`.
         #'@param point_ids numeric: Optional: Point IDs, defaults to all
         #'@param Names character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `PointData`
+        #'@return tibble: Tibble where each row represents a point.
         get_data_for_points = function(point_ids,
                                        Names){
 
             if(missing(point_ids)){
-                max_point_id <- self$get_number_of_points() - 1
+                max_point_id <- self$number_of_points() - 1
                 point_ids <- seq(0, max_point_id)
             }
 
-            assertthat::assert_that(is.numeric(point_ids))
+            if(missing(Names)){
+                Names <- as.character(self$point_data$keys())
+            }
+
+            private$get_data(data_type = "points",
+                             ids = point_ids,
+                             Names = Names)
+
+        },
+
+        #'@description
+        #'Gets CellData for cells with IDs in `cell_ids`.
+        #'@param cell_ids numeric: Optional: Cell IDs, defaults to all
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements, defaults to all in `CellData`
+        #'@return tibble: Tibble where each row represents a cell.
+        get_data_for_cells = function(cell_ids,
+                                      Names){
+
+            if(missing(cell_ids)){
+                max_cell_id <- self$number_of_cells() - 1
+                cell_ids <- seq(0, max_cell_id)
+            }
 
             if(missing(Names)){
-                Names <- names(self$point_data)
+                Names <- as.character(self$cell_data$keys())
+            }
+
+            private$get_data(data_type = "cells",
+                             ids = cell_ids,
+                             Names = Names)
+
+        },
+
+        #'@description
+        #'Gets coordinates of specific points by their IDs.
+        #'@param point_ids numeric: Point IDs
+        #'@return If `point_ids` is a number, a coordinate array. If `point_ids`
+        #' is a numeric vector with length > 1, a list of coordinate arrays.
+        get_point_coords = function(point_ids){
+            assertthat::assert_that(is.numeric(point_ids))
+
+            if(assertthat::is.number(point_ids)){
+                return(self$points[(point_ids + 1),])
+            }
+
+            point_coords <- lapply(point_ids, function(x){
+                return(self$points[(x + 1),])
+            })
+
+            return(point_coords)
+        },
+
+        #'@description
+        #'Gets PointData at specified coordinates.
+        #'@param coordinates list(numeric): List of coordinates (a coordinate
+        #' is a numeric vector of length 3)
+        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #' elements, defaults to all in `PointData`
+        get_point_data_at = function(coordinates,
+                                     Names){
+
+            # Wrap if its a single coordinate
+            if(!is.list(coordinates)){
+                coordinates <- list(coordinates)
+            }
+
+            # Check if contents of list are coordinates
+            lapply(coordinates, function(x){
+                assertthat::assert_that(is.numeric(x))
+                assertthat::assert_that(length(x) == 3)
+            })
+
+            if(missing(Names)){
+                Names <- as.character(self$point_data$keys())
             }
 
             assertthat::assert_that(is.character(Names))
 
-            point_data <- list()
+            # Use point locator to get data
+            point_ids <- lapply(coordinates, function(x){
+                self$vtkPointLocator$FindClosestPoint(x)
+            })
 
-            for(i in seq_len(length(point_ids))){
-
-                point_name <- paste0("p", point_ids[[i]])
-                single_point_data <- list()
-
-                for(j in seq_len(length(Names))){
-                    single_point_data <-
-                        c(single_point_data,
-                          list(self$point_data[[Names[[j]]]]
-                               [[(point_ids[[i]] + 1)]]))
-                    names(single_point_data)[[length(single_point_data)]] <-
-                        Names[[j]]
-                }
-
-                point_data <- c(point_data, list(single_point_data))
-                names(point_data)[[length(point_data)]] <- point_name
-            }
-
-            return(point_data)
-        },
-
-        #'@description
-        #'Gets number of points
-        #'@return number: The number of points
-        get_number_of_points = function(){
-            return(self$vtkUnstructuredGrid$GetNumberOfPoints())
+            return(self$get_data_for_points(point_ids = as.numeric(point_ids),
+                                            Names = Names))
         }
     ),
 
@@ -297,10 +437,52 @@ OGS6_vtu <- R6::R6Class(
             private$.vtu_path
         },
 
+        #'@field number_of_points
+        #'Getter for NumberOfPoints parameter of '.vtkUnstructuredGrid'
+        number_of_points = function() {
+            self$vtkUnstructuredGrid$GetNumberOfPoints()
+        },
+
+        #'@field number_of_cells
+        #'Getter for NumberOfCells parameter of '.vtkUnstructuredGrid'
+        number_of_cells = function() {
+            self$vtkUnstructuredGrid$GetNumberOfCells()
+        },
+
+        #'@field points
+        #'Getter for Points parameter of '.dsa_vtkUnstructuredGrid'
+        points = function() {
+            self$dsa_vtkUnstructuredGrid$Points
+        },
+
+        #'@field cells
+        #'Getter for Cells parameter of '.dsa_vtkUnstructuredGrid'
+        cells = function() {
+            self$dsa_vtkUnstructuredGrid$Cells
+        },
+
+        #'@field field_data
+        #'Getter for FieldData parameter of '.dsa_vtkUnstructuredGrid'
+        field_data = function() {
+            self$dsa_vtkUnstructuredGrid$FieldData
+        },
+
         #'@field point_data
         #'Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'
         point_data = function() {
             self$dsa_vtkUnstructuredGrid$PointData
+        },
+
+        #'@field cell_data
+        #'Getter for CellData parameter of '.dsa_vtkUnstructuredGrid'
+        cell_data = function() {
+            self$dsa_vtkUnstructuredGrid$CellData
+        },
+
+        #'@field vtkPointLocator
+        #'Getter for private parameter '.vtkPointLocator'
+        vtkPointLocator = function() {
+            private$.vtkPointLocator
         },
 
         #'@field vtkUnstructuredGrid
@@ -312,7 +494,7 @@ OGS6_vtu <- R6::R6Class(
                 # Check class
                 private$.vtkUnstructuredGrid <- value
                 private$.dsa_vtkUnstructuredGrid <-
-                    vtk_dsa$WrapDataObject(value)
+                    vtk$numpy_interface$dataset_adapter$WrapDataObject(value)
             }
         },
 
@@ -324,7 +506,62 @@ OGS6_vtu <- R6::R6Class(
     ),
 
     private = list(
+
+        get_data = function(data_type,
+                            ids,
+                            Names){
+
+            assertthat::assert_that(is.numeric(ids))
+            assertthat::assert_that(is.character(Names))
+
+            tbl_rows <- list()
+
+            for (i in seq_len(length(ids))) {
+                if (data_type == "points") {
+                    data <- self$point_data
+                    coords <- self$get_point_coords(ids[[i]])
+                    extra_columns <- list(x = coords[[1]],
+                                          y = coords[[2]],
+                                          z = coords[[3]])
+                } else{
+                    data <- self$cell_data
+                    extra_columns <- list()
+                }
+
+                new_row <- list(id = ids[[i]])
+                new_row <- c(new_row, extra_columns)
+
+
+                values <- list()
+
+                for (j in seq_len(length(Names))) {
+                    rid <- ids[[i]] + 1
+
+                    if (length(dim(data[[Names[[j]]]])) == 1) {
+                        value <- data[[Names[[j]]]][[rid]]
+
+                    } else{
+                        value <- list(as.numeric(data[[Names[[j]]]][rid,]))
+                    }
+
+                    values <- c(values, list(value))
+                    names(values)[[length(values)]] <-
+                        Names[[j]]
+                }
+
+                new_row <- c(new_row,
+                             values)
+
+                new_row <- tibble::as_tibble_row(new_row)
+                tbl_rows <- c(tbl_rows, list(new_row))
+            }
+
+            tbl <- dplyr::bind_rows(tbl_rows)
+            return(tbl)
+        },
+
         .vtu_path = NULL,
+        .vtkPointLocator = NULL,
         .vtkUnstructuredGrid = NULL,
         .dsa_vtkUnstructuredGrid = NULL
     )
