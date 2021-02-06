@@ -6,7 +6,7 @@
 \usage{
 r2ogs6_kinetic_reactant(
   name,
-  initial_amount,
+  initial_amount = NULL,
   chemical_formula = NULL,
   fix_amount = NULL
 )

@@ -45,17 +45,20 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
                                 "r2ogs6_flow_and_temperature_control")
     borehole <- coerce_names(borehole, c("length", "diameter"))
     grout <- coerce_names(grout, c("density",
-                                          "porosity",
-                                          "specific_heat_capacity",
-                                          "thermal_conductivity"))
+                                   "porosity",
+                                   "heat_capacity",
+                                   "thermal_conductivity"))
 
     assertthat::assert_that(class(pipes) == "r2ogs6_pipes")
 
-    refrigerant <- coerce_names(refrigerant, c("density",
-                                                      "viscosity",
-                                                      "specific_heat_capacity",
-                                                      "thermal_conductivity",
-                                                      "reference_temperature"))
+    refrigerant <- coerce_names(refrigerant, c(
+        "density",
+        "viscosity",
+        "specific_heat_capacity",
+        "thermal_conductivity",
+        "reference_temperature"
+    ))
+
     are_null_or_string_flags(use_bhe_pipe_network)
 
     structure(list(type = type,

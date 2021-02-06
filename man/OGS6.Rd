@@ -61,7 +61,7 @@ objects}
 
 \item{\code{insitu}}{.prj `insitu` tag. `value` must be `r2ogs6_insitu` object}
 
-\item{\code{pvd}}{.pvd. `value` must be `OGS6_pvd` object}
+\item{\code{pvds}}{.pvds. `value` must be list of `OGS6_pvd` objects}
 }
 \if{html}{\out{</div>}}
 }

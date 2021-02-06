@@ -362,7 +362,7 @@ new_r2ogs6_deactivated_subdomain <- function(time_interval,
     structure(list(time_interval = time_interval,
                    material_ids = material_ids,
                    xpath =
-                       paste0("process_variables/process_variable",
+                       paste0("process_variables/process_variable/",
                               "deactivated_subdomains/deactivated_subdomain"),
                    attr_names = character(),
                    flatten_on_exp = character()

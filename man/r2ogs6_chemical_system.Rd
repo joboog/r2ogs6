@@ -9,10 +9,12 @@ r2ogs6_chemical_system(
   database,
   solution,
   mesh = NULL,
-  equilibrium_reactants = NULL,
   knobs = NULL,
   kinetic_reactants = NULL,
-  rates = NULL
+  rates = NULL,
+  equilibrium_reactants = NULL,
+  surface = NULL,
+  user_punch = NULL
 )
 }
 \arguments{
@@ -24,13 +26,17 @@ r2ogs6_chemical_system(
 
 \item{mesh}{Optional: string:}
 
-\item{equilibrium_reactants}{Optional: list, r2ogs6_phase_component:}
-
 \item{knobs}{Optional: list:}
 
 \item{kinetic_reactants}{Optional: list, r2ogs6_kinetic_reactant:}
 
 \item{rates}{Optional: list, r2ogs6_rate:}
+
+\item{equilibrium_reactants}{Optional: list, r2ogs6_phase_component:}
+
+\item{surface}{Optional:}
+
+\item{user_punch}{Optional:}
 }
 \description{
 tag: chemical_system

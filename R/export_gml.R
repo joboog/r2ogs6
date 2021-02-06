@@ -24,13 +24,14 @@ export_gml <- function(gml, path) {
   points_list <- gml$points
 
   if(tibble::is_tibble(gml$points)){
-    points_list <- stats::setNames(split(gml$points,
-                                         seq(nrow(gml$points))),
-                                   rep("point", nrow(gml$points)))
+    points_list <- split(gml$points,
+                         seq(nrow(gml$points)))
 
     points_list <- lapply(points_list, function(x){
       as.list(x)
     })
+
+    names(points_list) <- rep("point", length(points_list))
   }
 
   # The points need an extra 'id' attribute

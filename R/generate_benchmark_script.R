@@ -61,33 +61,14 @@ generate_all_benchmark_scripts <-
         }
     }
 
-    invalid_xml_paths <- character()
-    invalid_prj_paths <- character()
+    invalid_xml_paths <- filter_invalid_xml(prj_paths)
+    prj_paths <- prj_paths[!prj_paths %in% invalid_xml_paths]
+
+    generate_failed_paths <- character()
 
     for(i in seq_len(length(prj_paths))){
 
         if(prj_paths[[i]] %in% skip_prj_paths){
-            next
-        }
-
-        skip_generate <- FALSE
-        generate_failed <- FALSE
-
-        out<- tryCatch(
-            {
-                xml2::read_xml(prj_paths[[i]],
-                               encoding="ISO-8859-1")
-            },
-            error = function(cond){
-                message(paste("\nxml2::read_xml() failed for",
-                              prj_paths[[i]], ". Original error message:"))
-                message(cond)
-                skip_generate <<- TRUE
-            }
-        )
-
-        if(skip_generate){
-            invalid_xml_paths <- c(invalid_xml_paths, prj_paths[[i]])
             next
         }
 
@@ -119,16 +100,13 @@ generate_all_benchmark_scripts <-
                 message(paste("\ngenerate_benchmark_script() failed for",
                               prj_paths[[i]], ". Original error message:"))
                 message(cond)
-                generate_failed <<- TRUE
+                generate_failed_paths <<-
+                    c(generate_failed_paths, prj_paths[[i]])
             }
         )
-
-        if(generate_failed){
-            invalid_prj_paths <- c(invalid_prj_paths, prj_paths[[i]])
-        }
     }
 
-    return(invisible(list(invalid_xml_paths, invalid_prj_paths)))
+    return(invisible(list(invalid_xml_paths, generate_failed_paths)))
 }
 
 
@@ -190,6 +168,8 @@ generate_benchmark_script <- function(prj_path,
     # If there is a .gml but it shouldn't be read in, add reference
     if (!is.null(ogs6_obj$geometry)) {
 
+        script_str <- paste0(script_str, "ogs6_obj$add_gml(")
+
         # If read_in_gml isn't supplied, check number of lines in .gml file
         # since string concatenation is slow
         if(missing(read_in_gml)){
@@ -201,16 +181,16 @@ generate_benchmark_script <- function(prj_path,
 
         if(!read_in_gml){
             script_str <- paste0(script_str,
-                                 "ogs6_obj$add_gml(",
-                                 construct_add_call(ogs6_obj$geometry),
-                                 ")\n\n"
-            )
+                                 construct_add_call(ogs6_obj$geometry,
+                                                    nested_call = TRUE))
         }else{
             ogs6_obj$add_gml(OGS6_gml$new(ogs6_obj$geometry))
             script_str <- paste0(script_str,
-                                 construct_add_call(ogs6_obj$gml),
-                                 "\n\n")
+                                 construct_add_call(ogs6_obj$gml,
+                                                    nested_call = TRUE))
         }
+
+        script_str <- paste0(script_str, ")\n\n")
     }
 
     # Add .vtu references and optionally, OGS6_vtu objects
@@ -248,8 +228,7 @@ generate_benchmark_script <- function(prj_path,
     }
 
     script_str <- paste0(script_str,
-                         "run_simulation(ogs6_obj,\n",
-                         "ogs_bin_path = \"", ogs_bin_path, "\")\n")
+                         "ogs_run_simulation(ogs6_obj)\n")
 
     #If no destination file was defined, print output to console
     if(script_path != ""){
@@ -299,8 +278,8 @@ construct_add_call <- function(object, nested_call = FALSE) {
         return(invisible(ret_str))
     }
 
-    #For NULL values we return "NULL" as string
-    if(is.null(object)){
+    #For NULL values and empty lists, return "NULL" as string
+    if(length(object) == 0){
         return("NULL")
     }
 
@@ -331,7 +310,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
         #Grab helper
         param_names <- get_class_args(class_name)
 
-        #Handle Ellipsis if it exists by removing and substituting it
+        #Handle Ellipsis if it exists by removing
         if("..." %in% param_names){
             param_names <- param_names[param_names != "..."]
             param_names <- c(param_names, object$unwrap_on_exp)
@@ -340,10 +319,15 @@ construct_add_call <- function(object, nested_call = FALSE) {
         param_strs <- list()
 
         for(i in seq_len(length(param_names))){
-            get_param_call <- paste0("object$", param_names[[i]])
-            param <- eval(parse(text = get_param_call))
 
+            param <- eval(parse(text = paste0("object$", param_names[[i]])))
             param_str <- construct_add_call(param, TRUE)
+
+            if(param_names[[i]] %in% object$unwrap_on_exp){
+                param_str <- stringr::str_remove_all(param_str,
+                                                     "(^list\\()|(\\)$)")
+            }
+
             param_strs <- c(param_strs, list(param_str))
         }
 
@@ -360,9 +344,13 @@ construct_add_call <- function(object, nested_call = FALSE) {
             ret_str <- paste0("ogs6_obj$add(", ret_str, ")\n")
         }
 
-        ret_str <- delete_nulls_from_str(ret_str)
+        regexp_1 <- "(,[:space:])[\\w_]* = ((NULL)|(list\\(\\)))"
+        regexp_2 <- "[\\w_]* = ((NULL)|(list\\(\\)))(,[:space:])"
+        ret_str <- stringr::str_remove_all(ret_str, regexp_1)
+        ret_str <- stringr::str_remove_all(ret_str, regexp_2)
         ret_str <- delete_keywords_from_str(ret_str)
-        ret_str <- delete_empty_from_str(ret_str)
+        ret_str <- stringr::str_replace_all(ret_str,
+                                            " = [A-Za-z_]* = ", " = ")
 
         return(invisible(ret_str))
     }
@@ -380,7 +368,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
         element_strs <- lapply(object, function(x){construct_add_call(x, TRUE)})
 
         if(is.null(names(object)) ||
-           rlist::list.any(names(object) == "")){
+           length(object[names(object) == ""]) > 0){
             content_str <- paste(element_strs, collapse = ",\n")
         }else{
             content_str <- paste(names(object),
@@ -392,40 +380,6 @@ construct_add_call <- function(object, nested_call = FALSE) {
         ret_str <- paste0("list(", content_str, ")")
         return(invisible(ret_str))
     }
-}
-
-
-#'delete_nulls_from_str
-#'@description Utility function to delete "param_name = NULL" from a string,
-#' this isn't necessary for functionality of generate_benchmark_script but will
-#' make generated scripts way more readable.
-#'@param string string
-delete_nulls_from_str <- function(string){
-
-    regexp_1 <- ",[\n|[:space:]]?[\\w_]* = NULL"
-    regexp_2 <- "[\\w_]* = NULL,[\n|[:space:]]?"
-
-    string <- stringr::str_remove_all(string, regexp_1)
-    string <- stringr::str_remove_all(string, regexp_2)
-
-    return(invisible(string))
-}
-
-
-#'delete_empty_from_str
-#'@description Utility function to delete "param_name = list()" from a string,
-#' this isn't necessary for functionality of generate_benchmark_script but will
-#' make generated scripts way more readable.
-#'@param string string
-delete_empty_from_str <- function(string){
-
-    regexp_1 <- ",[\n|[:space:]]?[\\w_]* = list\\(\\)"
-    regexp_2 <- "[\\w_]* = list\\(\\),[\n|[:space:]]?"
-
-    string <- stringr::str_remove_all(string, regexp_1)
-    string <- stringr::str_remove_all(string, regexp_2)
-
-    return(invisible(string))
 }
 
 

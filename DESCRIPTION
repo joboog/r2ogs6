@@ -26,19 +26,12 @@ Imports:
     readr,
     assertthat,
     crayon,
-    rlist,
     utils,
     rmarkdown,
-    rvest,
-    pbapply,
-    httr,
-    RCurl,
     curl,
-    xtable,
     dplyr,
     rlang,
     doParallel,
-    stats,
     reticulate
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

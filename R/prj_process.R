@@ -344,7 +344,7 @@ new_r2ogs6_process <- function(name,
 
     if(!is.null(constitutive_relation)){
         is_wrapper_list(constitutive_relation,
-                              "r2ogs6_constitutive_relation")
+                        "r2ogs6_constitutive_relation")
     }
 
     if(!is.null(darcy_gravity)){
@@ -358,8 +358,16 @@ new_r2ogs6_process <- function(name,
                                   "r2ogs6_phasefield_parameters")
 
     if(!is.null(calculatesurfaceflux)){
-        calculatesurfaceflux <- coerce_names(calculatesurfaceflux,
-                                                    c("mesh", "property_name"))
+        if(length(calculatesurfaceflux) == 2){
+            calculatesurfaceflux <- coerce_names(calculatesurfaceflux,
+                                                 c("mesh", "property_name"))
+        }else if(length(calculatesurfaceflux) == 3){
+            calculatesurfaceflux <- coerce_names(calculatesurfaceflux,
+                                                 c("mesh",
+                                                   "property_name",
+                                                   "output_mesh"))
+        }
+
     }
 
     if(!is.null(borehole_heat_exchangers)){
@@ -382,7 +390,7 @@ new_r2ogs6_process <- function(name,
 
     if(!is.null(porous_medium)){
         is_wrapper_list(porous_medium,
-                              "r2ogs6_porous_medium")
+                        "r2ogs6_porous_medium")
     }
 
     fluid <- validate_fluid(fluid)

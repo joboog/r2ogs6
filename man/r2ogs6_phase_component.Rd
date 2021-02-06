@@ -4,14 +4,14 @@
 \alias{r2ogs6_phase_component}
 \title{r2ogs6_phase_component}
 \usage{
-r2ogs6_phase_component(name, initial_amount, saturation_index)
+r2ogs6_phase_component(name, saturation_index, initial_amount = NULL)
 }
 \arguments{
 \item{name}{The component name}
 
-\item{initial_amount}{The initial amount of the component}
-
 \item{saturation_index}{The saturation index of the component}
+
+\item{initial_amount}{optional: The initial amount of the component}
 }
 \description{
 S3 class describing .prj phase_component

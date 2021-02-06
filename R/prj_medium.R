@@ -89,6 +89,7 @@ new_r2ogs6_medium <- function(phases = NULL,
 #'@param entry_pressure Optional:
 #'@param min_relative_permeability_liquid Optional:
 #'@param min_relative_permeability_gas Optional:
+#'@export
 r2ogs6_pr_property <- function(name,
                                type,
                                value = NULL,
@@ -288,6 +289,24 @@ new_r2ogs6_pr_property <- function(name,
     ),
     class = "r2ogs6_pr_property"
     )
+}
+
+
+#'ogs_get_medium_property
+#'@description Returns a medium property based on the property name
+#'@param medium r2ogs6_medium
+#'@param name string: The property name
+#'@return r2ogs6_pr_property
+#'@export
+ogs_get_medium_property <- function(medium, name){
+
+    assertthat::assert_that(class(medium) == "r2ogs6_medium")
+    assertthat::assert_that(assertthat::is.string(name))
+
+    properties_names <- lapply(medium$properties, `[[`, "name")
+    property <- properties[properties_names == name][[1]]
+
+    return(invisible(property))
 }
 
 
@@ -597,7 +616,7 @@ new_r2ogs6_com_property <- function(name,
             type = type,
             value = value,
             parameter_name = parameter_name,
-            xpath = paste0("media/medium/phases/phase/components/component",
+            xpath = paste0("media/medium/phases/phase/components/component/",
                            "properties/property"),
             attr_names = character(),
             flatten_on_exp = character()

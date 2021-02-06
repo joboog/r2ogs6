@@ -29,8 +29,9 @@ Constructor for the OGS6_pvd base class
 \item \href{#method-new}{\code{OGS6_pvd$new()}}
 \item \href{#method-vtu_by_timestep}{\code{OGS6_pvd$vtu_by_timestep()}}
 \item \href{#method-timestep_by_vtu}{\code{OGS6_pvd$timestep_by_vtu()}}
-\item \href{#method-get_point_data_tbl}{\code{OGS6_pvd$get_point_data_tbl()}}
-\item \href{#method-get_cell_data_tbl}{\code{OGS6_pvd$get_cell_data_tbl()}}
+\item \href{#method-get_point_data_at}{\code{OGS6_pvd$get_point_data_at()}}
+\item \href{#method-get_point_data}{\code{OGS6_pvd$get_point_data()}}
+\item \href{#method-get_cell_data}{\code{OGS6_pvd$get_cell_data()}}
 \item \href{#method-clone}{\code{OGS6_pvd$clone()}}
 }
 }
@@ -86,17 +87,44 @@ Returns timestep for specified .vtu path
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data_tbl"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data_tbl}{}}}
-\subsection{Method \code{get_point_data_tbl()}}{
-Returns a tibble with all of the PointData
+\if{html}{\out{<a id="method-get_point_data_at"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data_at}{}}}
+\subsection{Method \code{get_point_data_at()}}{
+Returns a tibble containing point data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_point_data_tbl(
-  point_ids,
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_point_data_at(
+  coordinates,
   Names,
   start_at_timestep,
   end_at_timestep
 )}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{coordinates}}{list(numeric): List of coordinates (a coordinate
+is a numeric vector of length 3)}
+
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements. Defaults to all.}
+
+\item{\code{start_at_timestep}}{number: Optional: Timestep to start at.
+Defaults to first timestep.}
+
+\item{\code{end_at_timestep}}{number: Optional: Timestep to end at. Defaults
+to last timestep.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\subsection{Method \code{get_point_data()}}{
+Returns a tibble containing point data
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_point_data(point_ids, Names, start_at_timestep, end_at_timestep)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -117,12 +145,12 @@ to last timestep.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_cell_data_tbl"></a>}}
-\if{latex}{\out{\hypertarget{method-get_cell_data_tbl}{}}}
-\subsection{Method \code{get_cell_data_tbl()}}{
-Returns a tibble with all of the CellData
+\if{html}{\out{<a id="method-get_cell_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_cell_data}{}}}
+\subsection{Method \code{get_cell_data()}}{
+Returns a tibble containing cell data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_cell_data_tbl(cell_ids, Names, start_at_timestep, end_at_timestep)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_pvd$get_cell_data(cell_ids, Names, start_at_timestep, end_at_timestep)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

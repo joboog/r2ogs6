@@ -1,36 +1,12 @@
-# Functionality for downloading benchmark files
 
-#'scrape_benchmarks
-#'@description Downloads all OGS6 benchmarks (WIP)
-#'@param url Optional: An URL
-#'@param path Optional: The path to save the benchmark folders to
-scrape_benchmarks <- function(
-    url = "https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/",
-    path = "extdata/benchmarks/") {
-
-    path <- as_dir_path(path)
-
-    data_page <- xml2::read_html(url)
-
-    data_folders <- grep(
-        "prj$",
-        rvest::html_attr(
-            rvest::html_nodes(data_page,
-                              "a[href^='/ogs/ogs/-/tree/master/Tests/Data/']"),
-            "href"), value = TRUE)
-
-    invisible(pbapply::pbsapply(data_folders, function(data_folder) {
-        httr::GET(paste0(url, data_folder),
-                  httr::write_disk(paste0(path, data_folder)))
-    }))
-}
+#===== download_benchmark =====
 
 
 #'download_benchmark
 #'@description Downloads a single benchmark (consisting of one .prj file and
-#' either one .gml and one .vtu file OR multiple .vtu files)
-#'@param prj_url The URL of a .prj file
-#'@param path The path the benchmark files should be saved to
+#' either one .gml and one .vtu file or multiple .vtu files)
+#'@param prj_url string: URL of a .prj file
+#'@param path string: Path the benchmark files should be saved to
 download_benchmark <- function(prj_url, path) {
 
     assertthat::assert_that(assertthat::is.string(prj_url))

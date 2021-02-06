@@ -222,6 +222,39 @@ as_dir_path <- function(path){
 }
 
 
+#'filter_invalid_xml
+#'@description Filters invalid XML paths out of a vector
+#'@param paths character: Vector of (maybe-)XML paths
+#'@param encoding string: Optional: XML encoding. Defaults to ISO-8859-1
+#'@param print_messages flag: Optional: Print error messages? Defaults to TRUE
+#'@return character: Vector of invalid XML paths
+filter_invalid_xml <- function(paths,
+                               encoding = "ISO-8859-1",
+                               print_messages = TRUE){
+
+  invalid_paths <- character()
+
+  for(i in seq_len(length(paths))){
+    out <- tryCatch(
+      {
+        xml2::read_xml(paths[[i]],
+                       encoding = encoding)
+      },
+      error = function(cond){
+        if(print_messages){
+          message(paste("\nxml2::read_xml() failed for",
+                        paths[[i]], ". Original error message:"))
+          message(cond)
+        }
+        invalid_paths <<- c(invalid_paths, paths[[i]])
+      }
+    )
+  }
+
+  return(invalid_paths)
+}
+
+
 #===== Validation utility =====
 
 

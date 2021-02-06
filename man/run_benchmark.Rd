@@ -11,7 +11,7 @@ run_benchmark(prj_path, ogs_bin_path, sim_path)
 
 \item{ogs_bin_path}{string:}
 
-\item{sim_path}{string: Path where simulation files will be saved.}
+\item{sim_path}{string: Path where simulation files will be saved}
 }
 \description{
 Utility function for quick benchmark runs
