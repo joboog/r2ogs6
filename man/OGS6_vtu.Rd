@@ -37,11 +37,11 @@ Constructor for the OGS6_vtu base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_vtu$new()}}
-\item \href{#method-get_data_for_field}{\code{OGS6_vtu$get_data_for_field()}}
-\item \href{#method-get_data_for_points}{\code{OGS6_vtu$get_data_for_points()}}
-\item \href{#method-get_data_for_cells}{\code{OGS6_vtu$get_data_for_cells()}}
+\item \href{#method-get_field_data}{\code{OGS6_vtu$get_field_data()}}
 \item \href{#method-get_point_coords}{\code{OGS6_vtu$get_point_coords()}}
 \item \href{#method-get_point_data_at}{\code{OGS6_vtu$get_point_data_at()}}
+\item \href{#method-get_point_data}{\code{OGS6_vtu$get_point_data()}}
+\item \href{#method-get_cell_data}{\code{OGS6_vtu$get_cell_data()}}
 \item \href{#method-clone}{\code{OGS6_vtu$clone()}}
 }
 }
@@ -63,12 +63,12 @@ Creates new OGS6_vtu object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data_for_field"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data_for_field}{}}}
-\subsection{Method \code{get_data_for_field()}}{
+\if{html}{\out{<a id="method-get_field_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_field_data}{}}}
+\subsection{Method \code{get_field_data()}}{
 Gets FieldData.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_field(Names)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_field_data(Names)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -82,52 +82,6 @@ elements, defaults to all in `FieldData`}
 \subsection{Returns}{
 list: List of format list(value_a = 1, value_b = 2), where the
 names reference the `Name` attributes of the `DataArray` elements
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data_for_points"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data_for_points}{}}}
-\subsection{Method \code{get_data_for_points()}}{
-Gets PointData for points with IDs in `point_ids`.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_points(point_ids, Names)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{point_ids}}{numeric: Optional: Point IDs, defaults to all}
-
-\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
-elements, defaults to all in `PointData`}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-tibble: Tibble where each row represents a point.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_data_for_cells"></a>}}
-\if{latex}{\out{\hypertarget{method-get_data_for_cells}{}}}
-\subsection{Method \code{get_data_for_cells()}}{
-Gets CellData for cells with IDs in `cell_ids`.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_data_for_cells(cell_ids, Names)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{cell_ids}}{numeric: Optional: Cell IDs, defaults to all}
-
-\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
-elements, defaults to all in `CellData`}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-tibble: Tibble where each row represents a cell.
 }
 }
 \if{html}{\out{<hr>}}
@@ -170,6 +124,52 @@ is a numeric vector of length 3)}
 elements, defaults to all in `PointData`}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\subsection{Method \code{get_point_data()}}{
+Gets PointData for points with IDs in `point_ids`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_point_data(point_ids, Names)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{point_ids}}{numeric: Optional: Point IDs, defaults to all}
+
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `PointData`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+tibble: Tibble where each row represents a point.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_cell_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_cell_data}{}}}
+\subsection{Method \code{get_cell_data()}}{
+Gets CellData for cells with IDs in `cell_ids`.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$get_cell_data(cell_ids, Names)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cell_ids}}{numeric: Optional: Cell IDs, defaults to all}
+
+\item{\code{Names}}{character: Optional: `Name` attributes of `DataArray`
+elements, defaults to all in `CellData`}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+tibble: Tibble where each row represents a cell.
 }
 }
 \if{html}{\out{<hr>}}

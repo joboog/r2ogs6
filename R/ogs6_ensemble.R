@@ -15,47 +15,73 @@ OGS6_Ensemble <- R6::R6Class(
     #' of a sublist references an OGS6 parameter, the second one is a list or
     #' vector of values. Note that the second elements of the sublists must
     #' have the same length.
-    #'@param ens_dir_name string: Name of ensemble directory
+    #'@param sequential_mode flag: Defaults to `FALSE`
+    #'@param percentages_mode flag: Defaults to `TRUE`
     #'@importFrom foreach %dopar%
     public = list(
         initialize = function(ogs6_obj,
                               parameters,
-                              ens_dir_name = "Ensemble") {
-
-            # Deparse ogs6_obj BEFORE evaluating it for the first time!
-            ogs6_obj_sub <- deparse(substitute(ogs6_obj))
+                              sequential_mode = FALSE,
+                              percentages_mode = TRUE) {
 
             assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
+            assertthat::assert_that(assertthat::is.flag(sequential_mode))
+            assertthat::assert_that(assertthat::is.flag(percentages_mode))
 
-            private$.ens_path <- paste0(ogs6_obj$sim_path,
-                                        as_dir_path(ens_dir_name))
+            private$.ens_path <- ogs6_obj$sim_path
+            ogs6_obj$sim_path <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name)
 
-            ogs6_obj$sim_path <- paste0(private$.ens_path, ogs6_obj$sim_name)
+            dp_str <- paste(deparse(substitute(parameters)), collapse = "\n")
 
-            private$.ensemble <- list(ogs6_obj)
+            dp_str <- stringr::str_remove_all(
+                dp_str,
+                "(^list\\()|(\\)$)|[:space:]|([A-Za-z_]*\\s*=\\s*)")
 
-            # Add all parameters to corresponding list
+            dp_strs <- unlist(strsplit(dp_str, "list\\("))
+            dp_strs <- dp_strs[dp_strs != ""]
+
+            private$.dp_parameters <- lapply(dp_strs, function(x){
+                unlist(strsplit(x, ","))[[1]]
+            })
+
             assertthat::assert_that(is.list(parameters))
 
-            for(i in seq_len(length(parameters))){
-                dp_param <- deparse(substitute(parameters[[i]]))
-
-                private$add_parameter(parameters[[i]],
-                                      dp_param,
-                                      ogs6_obj_sub)
+            # If not in sequential mode, value vectors must have same length
+            if(!sequential_mode){
+                lapply(parameters, function(x){
+                    assertthat::assert_that(length(x[[2]]) ==
+                                                length(parameters[[1]][[2]]))
+                })
+            }else{
+                assertthat::assert_that(!is.null(names(parameters)))
+                assertthat::assert_that(!any(names(parameters) == ""))
             }
 
-            private$make_ensemble()
+            second_elements <- lapply(parameters, function(x){x[[2]]})
+
+            if(percentages_mode){
+                private$.parameter_percs <- second_elements
+                private$calc_values_by_percs(ogs6_obj)
+                names(private$.parameter_values) <- names(parameters)
+            }else{
+                private$.parameter_values <- second_elements
+            }
+
+            private$make_ensemble(ogs6_obj$clone(deep = TRUE),
+                                  sequential_mode)
         },
 
         #'@description
-        #'Runs the simulation. This calls r2ogs6::run_simulation() internally.
+        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
         #' For ensembles, output will be written to logfiles.
         #'@param parallel flag: Should the function be run in parallel?
         #' This is implementented via the 'parallel' package.
-        run_simulation = function(parallel = FALSE){
+        #'@param verbose flag
+        ogs_run_simulation = function(parallel = FALSE,
+                                  verbose = F){
 
             assertthat::assert_that(assertthat::is.flag(parallel))
+            assertthat::assert_that(assertthat::is.flag(verbose))
 
             # Create ensemble directory
             assertthat::assert_that(!dir.exists(self$ens_path))
@@ -88,8 +114,9 @@ OGS6_Ensemble <- R6::R6Class(
 
                     foreach::foreach(i = seq_along(ensemble)) %dopar% {
                         ogs6_obj <- ensemble[[i]]
-                        r2ogs6::run_simulation(ogs6_obj,
-                                               write_logfile = TRUE)
+                        r2ogs6::ogs_run_simulation(ogs6_obj,
+                                               write_logfile = TRUE,
+                                               verbose = verbose)
                     }
 
                     # Cleanup
@@ -101,26 +128,61 @@ OGS6_Ensemble <- R6::R6Class(
                     # utilize it with mclapply
 
                     parallel::mclapply(self$ensemble,
-                                       run_simulation,
+                                       ogs_run_simulation,
                                        write_logfile = TRUE,
+                                       verbose = verbose,
                                        mc.cores = n_cores)
                 }
             }else{
 
                 # For serial ensembles, we can use lapply
-                lapply(self$ensemble,
-                       run_simulation,
-                       write_logfile = TRUE)
+                exit_codes <- lapply(self$ensemble,
+                                     ogs_run_simulation,
+                                     write_logfile = TRUE,
+                                     verbose = verbose)
+                return(exit_codes)
             }
+        },
+
+        relevant_parameter_at = function(index){
+
+            if(is.null(private$.ranges)){
+                warning(paste("This ensemble wasn't set up in sequential mode",
+                              call. = FALSE))
+                return(NULL)
+            }
+
+            for(i in seq_len(length(private$.ranges))){
+                if(index %in% private$.ranges[[i]]){
+                    return(names(private$.ranges)[[i]])
+                }
+            }
+
+            warning(paste("Could not find range for given index", index,
+                          call. = FALSE))
+
+            return(NULL)
         }
     ),
 
     active = list(
 
-        #'@field parameters
-        #'Getter for private parameter '.parameters'
-        parameters = function() {
-            private$.parameters
+        #'@field dp_parameters
+        #'Getter for private parameter '.dp_parameters'
+        dp_parameters = function() {
+            private$.dp_parameters
+        },
+
+        #'@field parameter_percs
+        #'Getter for private parameter '.parameter_percs'
+        parameter_percs = function() {
+            private$.parameter_percs
+        },
+
+        #'@field parameter_values
+        #'Getter for private parameter '.parameter_values'
+        parameter_values = function() {
+            private$.parameter_values
         },
 
         #'@field ens_path
@@ -138,100 +200,151 @@ OGS6_Ensemble <- R6::R6Class(
 
     private = list(
 
-        #@description
-        #Adds a parameter.
-        #@param parameter list, length == 2: The first element references an
-        # OGS6 parameter, the second one is a list or vector of values.
-        # To find out how many values you need to supply, call ensemble_size
-        # on this object.
-        #@param dp_param string: Deparsed paramter
-        add_parameter = function(parameter,
-                                 dp_param,
-                                 ogs6_obj_sub) {
+        # Calculates values based on given percentages
+        calc_values_by_percs = function(ogs6_obj){
 
-            assertthat::assert_that(is.list(parameter))
-            assertthat::assert_that(length(parameter) == 2)
-            assertthat::assert_that(assertthat::is.string(dp_param))
+            for(i in seq_len(length(private$.parameter_percs))){
+                val <- eval(parse(text = self$dp_parameters[[i]]))
 
-            # The parameter must have been defined previously!
-            assertthat::assert_that(length(parameter[[1]]) != 0)
+                val_vec <- lapply(private$.parameter_percs[[i]], function(x){
+                    val + (val * (x / 100))
+                    })
 
-            if(length(self$parameters) != 0){
-                assertthat::assert_that(
-                    length(parameter[[2]]) ==
-                        length(self$parameters[[1]][[2]]))
+                private$.parameter_values <- c(self$parameter_values,
+                                               list(val_vec))
             }
-
-            # To validate the original reference, deparse the parameter
-
-            regexp <- paste0("(.*list[:space:]*\\(list[:space:]*\\([:space:]*)",
-                             "|(,.*)")
-
-            dp_param <- stringr::str_remove_all(dp_param, regexp)
-
-            com_str <- unlist(strsplit(dp_param,
-                                       "$",
-                                       fixed = TRUE))[[1]]
-
-            if(ogs6_obj_sub != com_str){
-                stop(paste("Added parameters must belong to the OGS6 object",
-                           "the ensemble is based on!"),
-                     call. = FALSE)
-            }
-
-            # After validating the original reference, replace it for
-            # internal use
-            dp_param_split <- unlist(strsplit(dp_param,
-                                              "$",
-                                              fixed = TRUE))
-
-            dp_param_split[[1]] <- "ogs6_obj"
-            dp_param <- paste(dp_param_split,
-                              collapse = "$")
-
-            parameter[[1]] <- dp_param
-
-            private$.parameters <- c(private$.parameters, list(parameter))
         },
 
         #@description
         #Creates the actual ensemble.
-        make_ensemble = function() {
-
-            ogs6_obj <- self$ensemble[[1]]
+        make_ensemble = function(ogs6_obj,
+                                 sequential_mode,
+                                 percentages_mode) {
 
             orig_sim_name <- ogs6_obj$sim_name
             orig_sim_path <- ogs6_obj$sim_path
 
-            parameters <- private$.parameters
+            parameter_values <- self$parameter_values
 
-            # n iterations in first loop == n objects to create
-            for (i in seq_len(length(parameters[[1]][[2]]))) {
-                # Clone object, update parameter of clone
-                ogs6_obj <- ogs6_obj$clone()
+            # If sequential, put parameters behind each other
+            if(sequential_mode){
 
-                ogs6_obj$sim_name <- paste0(orig_sim_name, "_", (i + 1))
+                sim_id <- 1
 
-                new_path <- substr(orig_sim_path,
-                                   start = 1,
-                                   stop = nchar(orig_sim_path) - 1)
+                for(i in seq_len(length(parameter_values))){
 
-                ogs6_obj$sim_path <- paste0(new_path, "_", (i + 1))
+                    shift_index_by <-
+                        sum(unlist(lapply(seq_len(i - 1), function(x){
+                            length(parameter_values[[x]])
+                        })))
 
-                for (j in seq_len(length(parameters))) {
-                    set_param_call <-
-                        paste0(parameters[[j]][[1]],
-                               " <- parameters[[j]][[2]][[i]]")
-                    eval(parse(text = set_param_call))
+                    for(j in seq_len(length(parameter_values[[i]]))){
+
+                        # Modify parameter reference of original object
+                        set_param_call <-
+                            paste0(self$dp_parameters[[i]],
+                                   " <- parameter_values[[i]][[j]]")
+                        eval(parse(text = set_param_call))
+
+                        # Clone object
+                        new_ogs6_obj <- private$copy_and_modify(ogs6_obj,
+                                                                orig_sim_name,
+                                                                sim_id,
+                                                                orig_sim_path)
+
+                        private$.ensemble <-
+                            c(private$.ensemble, list(new_ogs6_obj))
+
+                        sim_id <- sim_id + 1
+                    }
+
+                    range <- (1 + shift_index_by):
+                        (shift_index_by + length(parameter_values[[i]]))
+
+                    private$.ranges <- c(private$.ranges,
+                                         list(range))
+                    names(private$.ranges)[[length(private$.ranges)]] <-
+                        names(parameter_values)[[i]]
                 }
 
-                # Add clone to list of simulation objects
-                private$.ensemble <- c(private$.ensemble, list(ogs6_obj))
+            }else{
+                # n iterations in first loop == n objects to create
+                for (i in seq_len(length(parameter_values[[1]]))) {
+
+                    # Modify parameter reference of original object
+                    for (j in seq_len(length(self$dp_parameters))) {
+                        set_param_call <-
+                            paste0(self$dp_parameters[[j]],
+                                   " <- parameter_values[[j]][[i]]")
+                        eval(parse(text = set_param_call))
+                    }
+
+                    # Clone object
+                    new_ogs6_obj <- private$copy_and_modify(ogs6_obj,
+                                                            orig_sim_name,
+                                                            (i + 1),
+                                                            orig_sim_path)
+
+                    # Add clone to list of simulation objects
+                    private$.ensemble <- c(private$.ensemble,
+                                           list(new_ogs6_obj))
+                }
             }
         },
 
+        copy_and_modify = function(ogs6_obj,
+                                   sim_name,
+                                   sim_id,
+                                   sim_path){
+            # Clone object
+            new_ogs6_obj <- ogs6_obj$clone(deep = TRUE)
+            new_ogs6_obj$sim_name <- paste0(sim_name, "_", sim_id)
+            new_path <- substr(sim_path,
+                               start = 1,
+                               stop = nchar(sim_path) - 1)
+            new_ogs6_obj$sim_path <- paste0(new_path, "_", sim_id)
+            return(invisible(new_ogs6_obj))
+        },
+
+        .ranges = NULL,
         .ens_path = NULL,
         .ensemble = list(),
-        .parameters = list()
+        .dp_parameters = list(),
+        .parameter_percs = list(),
+        .parameter_values = list()
     )
 )
+
+
+#'ogs_get_combinations
+#'@description Gets possible combinations from supplied vectors
+#'@param ... vector:
+#'@export
+ogs_get_combinations <- function(...){
+
+    vec_list <- list(...)
+    long_vec_list <- list()
+
+    # Multiply lengths of vectors to get total length
+    total_len <- prod(unlist(lapply(vec_list, length)))
+
+    # Produce one long vector for each vector in vec_list
+    for(i in seq_len(length(vec_list))){
+
+        div <- total_len
+
+        for(j in seq_len((i - 1))){
+            div <- div / length(vec_list[[j]])
+        }
+
+        long_vec <- rep(unlist(lapply(vec_list[[i]],
+                                             function(x){
+            rep(x, (div / length(vec_list[[i]])))
+        })), (total_len / div))
+
+        long_vec_list <- c(long_vec_list,
+                           list(long_vec))
+    }
+
+    return(invisible(long_vec_list))
+}

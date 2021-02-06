@@ -40,38 +40,35 @@ test_that("construct_add_call works", {
 })
 
 
+test_that("construct_add_call handles OGS6_gml correctly", {
+
+  ogs_gml <- OGS6_gml$new(name = "test",
+                          points = tibble::tibble(x = c(0),
+                                                  y = c(0),
+                                                  z = c(0)))
+
+  ogs_gml_call <- construct_add_call(ogs_gml)
+
+  expect_equal(ogs_gml_call,
+               paste0("ogs6_obj$add(OGS6_gml$new(name = \"test\",\n",
+               "points = tibble::tibble(x = 0,\ny = 0,\nz = 0)))\n"))
+})
+
+
 test_that("construct_add_call handles Ellipsis correctly", {
 
   ogs_parameter <- r2ogs6_parameter(name = "test",
                                     type = "test",
-                                    index_values = list("1", "1 2"))
+                                    index_values = list("1", "1 2"),
+                                    index_values = list("2", "2 3"))
 
   ogs_param_call <- construct_add_call(ogs_parameter)
 
   expect_equal(ogs_param_call,
                paste0("ogs6_obj$add(r2ogs6_parameter(name = ",
                       "\"test\",\ntype = \"test\",\nindex_values = ",
-                      "list(index_values = list(index = 1,\n",
-                      "values = c(1, 2)))))\n"))
-})
-
-
-
-test_that("delete_nulls_from_str works", {
-
-  #Single line strings
-  test_str <- "r2ogs6_object(one = NULL, two = 3, three = NULL, f_o_u_r = NULL)"
-
-  test_str <- delete_nulls_from_str(test_str)
-  expect_equal(test_str, "r2ogs6_object(two = 3)")
-
-  #Multiline strings
-  test_str_2 <-
-    "r2ogs6_object(one = NULL,\ntwo = 3,\nthree = NULL,\nf_o_u_r = NULL)"
-
-  test_str_2 <- delete_nulls_from_str(test_str_2)
-  expect_equal(test_str_2, "r2ogs6_object(two = 3)")
-
+                      "list(index = 1,\nvalues = c(1, 2)),\n",
+                      "index_values = list(index = 2,\nvalues = c(2, 3))))\n"))
 })
 
 

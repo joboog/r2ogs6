@@ -3,7 +3,7 @@
 test_that("export_gml works", {
 
     # Get extdata directory and create folder for the test
-    extdata_path <- system.file("extdata/", package = "r2ogs6")
+    extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
     test_path <- paste0(extdata_path, "/export_gml_test")
     dir.create(test_path)
 

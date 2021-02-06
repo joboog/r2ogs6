@@ -6,22 +6,26 @@
 \usage{
 run_all_benchmarks(
   path,
+  ogs_processlib_path,
   ogs_bin_path,
   sim_path,
   starting_from_prj_path = "",
-  print_failed_prj_paths = TRUE
+  print_results = TRUE
 )
 }
 \arguments{
-\item{path}{string:}
+\item{path}{string: Path to benchmark folder}
+
+\item{ogs_processlib_path}{string: Path to OpenGeoSys 6 ProcessLib folder
+which contains relevant Tests.cmake files}
 
 \item{ogs_bin_path}{string:}
 
-\item{sim_path}{string:}
+\item{sim_path}{string: Path where simulation files will be saved}
 
 \item{starting_from_prj_path}{string: .prj path to start from}
 
-\item{print_failed_prj_paths}{flag: Output paths where `read_in_prj()` failed?}
+\item{print_results}{flag: Print results in the end?}
 }
 \description{
 Utility function, for quick benchmark runs. Calls

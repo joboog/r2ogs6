@@ -8,32 +8,36 @@
 #'@param database string:
 #'@param solution r2ogs6_solution:
 #'@param mesh Optional: string:
-#'@param equilibrium_reactants Optional: list, r2ogs6_phase_component:
 #'@param knobs Optional: list:
 #'@param kinetic_reactants Optional: list, r2ogs6_kinetic_reactant:
 #'@param rates Optional: list, r2ogs6_rate:
+#'@param equilibrium_reactants Optional: list, r2ogs6_phase_component:
+#'@param surface Optional:
+#'@param user_punch Optional:
 #'@export
 r2ogs6_chemical_system <- function(chemical_solver,
                                    database,
                                    solution,
                                    mesh = NULL,
-                                   equilibrium_reactants = NULL,
                                    knobs = NULL,
                                    kinetic_reactants = NULL,
-                                   rates = NULL) {
+                                   rates = NULL,
+                                   equilibrium_reactants = NULL,
+                                   surface = NULL,
+                                   user_punch = NULL) {
 
-    #Coerce input
+    # Add coercing utility here
 
-    new_r2ogs6_chemical_system(
-        chemical_solver,
-        database,
-        solution,
-        mesh,
-        equilibrium_reactants,
-        knobs,
-        kinetic_reactants,
-        rates
-    )
+    new_r2ogs6_chemical_system(chemical_solver,
+                               database,
+                               solution,
+                               mesh,
+                               knobs,
+                               kinetic_reactants,
+                               rates,
+                               equilibrium_reactants,
+                               surface,
+                               user_punch)
 }
 
 
@@ -41,13 +45,16 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
                                        database,
                                        solution,
                                        mesh = NULL,
-                                       equilibrium_reactants = NULL,
                                        knobs = NULL,
                                        kinetic_reactants = NULL,
-                                       rates = NULL) {
+                                       rates = NULL,
+                                       equilibrium_reactants = NULL,
+                                       surface = NULL,
+                                       user_punch = NULL) {
+
 
     are_strings(chemical_solver,
-                       database)
+                database)
 
     assertthat::assert_that(class(solution) == "r2ogs6_solution")
 
@@ -55,7 +62,7 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
 
     if(!is.null(equilibrium_reactants)){
         is_wrapper_list(equilibrium_reactants,
-                              "r2ogs6_phase_component")
+                        "r2ogs6_phase_component")
     }
 
     knobs <- is_null_or_coerce_names(
@@ -69,29 +76,29 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
 
     if(!is.null(kinetic_reactants)){
         is_wrapper_list(kinetic_reactants,
-                              "r2ogs6_kinetic_reactant")
+                        "r2ogs6_kinetic_reactant")
     }
 
     if(!is.null(rates)){
         is_wrapper_list(rates,
-                              "r2ogs6_rate")
+                        "r2ogs6_rate")
     }
 
-    structure(
-        list(
-            chemical_solver = chemical_solver,
-            database = database,
-            solution = solution,
-            mesh = mesh,
-            equilibrium_reactants = equilibrium_reactants,
-            knobs = knobs,
-            kinetic_reactants = kinetic_reactants,
-            rates = rates,
-            xpath = "chemical_system",
-            attr_names = c("chemical_solver"),
-            flatten_on_exp = character()
-        ),
-        class = "r2ogs6_chemical_system"
+    structure(list(chemical_solver = chemical_solver,
+                   database = database,
+                   solution = solution,
+                   mesh = mesh,
+                   knobs = knobs,
+                   kinetic_reactants = kinetic_reactants,
+                   rates = rates,
+                   equilibrium_reactants = equilibrium_reactants,
+                   surface = surface,
+                   user_punch = user_punch,
+                   xpath = "chemical_system",
+                   attr_names = c("chemical_solver"),
+                   flatten_on_exp = character()
+    ),
+    class = "r2ogs6_chemical_system"
     )
 }
 
@@ -134,10 +141,10 @@ new_r2ogs6_solution <- function(temperature,
                                 charge_balance = NULL) {
 
     are_numbers(temperature,
-                       pressure,
-                       pe)
+                pressure,
+                pe)
 
-    assertthat::assert_that(is.character(components))
+    assertthat::assert_that(is.list(components))
     names(components) <- rep("component", length(components))
 
     are_null_or_strings(charge_balance)
@@ -164,37 +171,37 @@ new_r2ogs6_solution <- function(temperature,
 #'r2ogs6_phase_component
 #'@description S3 class describing .prj phase_component
 #'@param name The component name
-#'@param initial_amount The initial amount of the component
 #'@param saturation_index The saturation index of the component
+#'@param initial_amount optional: The initial amount of the component
 #'@export
 r2ogs6_phase_component <- function(name,
-                                   initial_amount,
-                                   saturation_index) {
+                                   saturation_index,
+                                   initial_amount = NULL) {
 
     #Coerce input
-    initial_amount <- coerce_string_to_numeric(initial_amount)
     saturation_index <- coerce_string_to_numeric(saturation_index)
+    initial_amount <- coerce_string_to_numeric(initial_amount)
 
     new_r2ogs6_phase_component(name,
-                               initial_amount,
-                               saturation_index)
+                               saturation_index,
+                               initial_amount)
 }
 
 
 new_r2ogs6_phase_component <- function(name,
-                                       initial_amount,
-                                       saturation_index) {
+                                       saturation_index,
+                                       initial_amount) {
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    are_numbers(initial_amount,
-                       saturation_index)
+    are_numbers(saturation_index)
+    are_null_or_numeric(initial_amount)
 
     structure(
         list(
             name = name,
-            initial_amount = initial_amount,
             saturation_index = saturation_index,
+            initial_amount = initial_amount,
             xpath = "chemical_system/equilibrium_reactants/phase_component",
             attr_names = character(),
             flatten_on_exp = character()
@@ -215,7 +222,7 @@ new_r2ogs6_phase_component <- function(name,
 #'@param fix_amount Should the amount be fixed or not?
 #'@export
 r2ogs6_kinetic_reactant <- function(name,
-                                   initial_amount,
+                                   initial_amount = NULL,
                                    chemical_formula = NULL,
                                    fix_amount = NULL) {
 
@@ -230,13 +237,12 @@ r2ogs6_kinetic_reactant <- function(name,
 
 
 new_r2ogs6_kinetic_reactant <- function(name,
-                                       initial_amount,
+                                       initial_amount = NULL,
                                        chemical_formula = NULL,
                                        fix_amount = NULL) {
 
     assertthat::assert_that(assertthat::is.string(name))
-    assertthat::assert_that(is.double(initial_amount))
-
+    are_null_or_numbers(initial_amount)
     are_null_or_strings(chemical_formula,
                                fix_amount)
 
@@ -276,7 +282,7 @@ new_r2ogs6_rate <- function(kinetic_reactant,
                             expression) {
 
     assertthat::assert_that(assertthat::is.string(kinetic_reactant))
-    assertthat::assert_that(is.character(expression))
+    assertthat::assert_that(is.list(expression))
     names(expression) <- rep("statement", length(expression))
 
     structure(

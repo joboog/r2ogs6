@@ -7,11 +7,11 @@
 download_benchmark(prj_url, path)
 }
 \arguments{
-\item{prj_url}{The URL of a .prj file}
+\item{prj_url}{string: URL of a .prj file}
 
-\item{path}{The path the benchmark files should be saved to}
+\item{path}{string: Path the benchmark files should be saved to}
 }
 \description{
 Downloads a single benchmark (consisting of one .prj file and
-either one .gml and one .vtu file OR multiple .vtu files)
+either one .gml and one .vtu file or multiple .vtu files)
 }

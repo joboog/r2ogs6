@@ -161,7 +161,7 @@ OGS6 <- R6::R6Class("OGS6",
 
         if(flag){
           cat(paste0("Your OGS6 object has all necessary components.\n",
-                     "You can try calling run_simulation().",
+                     "You can try calling ogs_run_simulation().",
                      "Note that this calls more validation functions, ",
                      "so you may not be done just yet.\n"))
         }
@@ -504,14 +504,14 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field pvd
-      #'.pvd. `value` must be `OGS6_pvd` object
-      pvd = function(value) {
+      #'@field pvds
+      #'.pvds. `value` must be list of `OGS6_pvd` objects
+      pvds = function(value) {
         if(missing(value)) {
-          private$.pvd
+          private$.pvds
         }else{
-          assertthat::assert_that(inherits(value, "OGS6_pvd"))
-          private$.pvd <- value
+          is_wrapper_list(value, "OGS6_pvd")
+          private$.pvds <- value
         }
       }
   ),
@@ -555,7 +555,7 @@ OGS6 <- R6::R6Class("OGS6",
       .test_definition = list(),
       .insitu = NULL,
 
-      # .pvd object (output)
-      .pvd = NULL
+      # .pvd objects (output)
+      .pvds = NULL
   )
 )

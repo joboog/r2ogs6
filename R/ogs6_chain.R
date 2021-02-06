@@ -25,18 +25,18 @@ OGS6_Chain <- R6::R6Class(
         },
 
         #'@description
-        #'Runs the simulation. This calls r2ogs6::run_simulation() internally.
+        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
         #' For chains, output will be written to logfiles.
-        run_simulation = function(){
+        ogs_run_simulation = function(){
 
             # WIP
 
             for(i in seq_len(iter_n)){
 
-                # run_simulation returns the exit code of ogs6.exe, so
+                # ogs_run_simulation returns the exit code of ogs6.exe, so
                 # we can use it to catch errors and stop the chain
 
-                exit_code <- run_simulation(self$chain[[i]])
+                exit_code <- ogs_run_simulation(self$chain[[i]])
 
                 # If simulation ran successfully, initialize new OGS6 object
                 # and add it to the chain.
