@@ -11,8 +11,6 @@ Constructor for the OGS6 base class
 \describe{
 \item{\code{sim_name}}{Simulation name. `value` must be string}
 
-\item{\code{sim_id}}{Simulation ID. read-only}
-
 \item{\code{sim_path}}{Simulation path. `value` must be string}
 
 \item{\code{logfile}}{Logfile path. `value` must be string}
@@ -73,6 +71,7 @@ objects}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-print}{\code{OGS6$print()}}
 \item \href{#method-print_log}{\code{OGS6$print_log()}}
 \item \href{#method-clear}{\code{OGS6$clear()}}
 \item \href{#method-clone}{\code{OGS6$clone()}}
@@ -84,15 +83,13 @@ objects}
 \subsection{Method \code{new()}}{
 Creates new OGS6 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_id, sim_path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$new(sim_name, sim_path)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{sim_name}}{string: Simulation name}
-
-\item{\code{sim_id}}{double: Simulation ID}
 
 \item{\code{sim_path}}{string: Path where all files for the simulation will be
 saved}
@@ -168,11 +165,21 @@ starting a simulation
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{print_status}}{flag: Should the status be printed to the console?
-print_log}
+\item{\code{print_status}}{flag: Should the status be printed to the console?}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+Overrides default printing behaviour
+print_log
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$print()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print_log"></a>}}
