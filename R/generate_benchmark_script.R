@@ -147,7 +147,6 @@ generate_benchmark_script <- function(prj_path,
 
     #Construct an object from a benchmark and then reverse engineer the call
     ogs6_obj <- OGS6$new(sim_name = "",
-                         sim_id = 1,
                          sim_path = "")
 
     read_in_prj(ogs6_obj,
@@ -162,7 +161,6 @@ generate_benchmark_script <- function(prj_path,
     script_str <- paste0("library(r2ogs6)\n\n",
                          "ogs6_obj <- OGS6$new(sim_name = \"",
                          sim_name, "\",\n",
-                         "sim_id = 1,\n",
                          "sim_path = \"", sim_path, "\")\n\n\n")
 
     # If there is a .gml but it shouldn't be read in, add reference
