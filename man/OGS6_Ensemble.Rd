@@ -25,7 +25,8 @@ Constructor for the OGS6_Ensemble base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_Ensemble$new()}}
-\item \href{#method-ogs_run_simulation}{\code{OGS6_Ensemble$ogs_run_simulation()}}
+\item \href{#method-print}{\code{OGS6_Ensemble$print()}}
+\item \href{#method-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
 \item \href{#method-relevant_parameter_at}{\code{OGS6_Ensemble$relevant_parameter_at()}}
 \item \href{#method-clone}{\code{OGS6_Ensemble$clone()}}
 }
@@ -62,13 +63,23 @@ have the same length.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ogs_run_simulation"></a>}}
-\if{latex}{\out{\hypertarget{method-ogs_run_simulation}{}}}
-\subsection{Method \code{ogs_run_simulation()}}{
-Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
-For ensembles, output will be written to logfiles.
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+Overrides default printing behaviour
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$ogs_run_simulation(parallel = FALSE, verbose = F)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$print()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-run_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-run_simulation}{}}}
+\subsection{Method \code{run_simulation()}}{
+Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+internally. For ensembles, output will always be written to logfiles.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE, verbose = F)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
