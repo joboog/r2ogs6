@@ -28,18 +28,42 @@ OGS6_vtu <- R6::R6Class(
         },
 
         #'@description
+        #'Overrides default printing behaviour
+        print = function(){
+            cat("OGS6_vtu\n")
+            cat("path:  ", self$vtu_path, "\n", sep = "")
+
+            cat("\nfield data keys:\n",
+                paste(self$field_data$keys(), collapse = ("\n")),
+                "\n", sep = "")
+
+            cat("\nnumber of points:  ", self$number_of_points, "\n", sep = "")
+            cat("\npoint data keys:\n",
+                paste(self$point_data$keys(), collapse = ("\n")),
+                "\n", sep = "")
+
+            cat("\nnumber of cells:  ", self$number_of_cells, "\n", sep = "")
+            cat("\ncell data keys:\n",
+                paste(self$cell_data$keys(), collapse = ("\n")),
+                "\n", sep = "")
+
+            invisible(self)
+        },
+
+
+        #'@description
         #'Gets FieldData.
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `FieldData`
         #'@return list: List of format list(value_a = 1, value_b = 2), where the
         #' names reference the `Name` attributes of the `DataArray` elements
-        get_field_data = function(Names){
+        get_field_data = function(keys){
 
-            if(missing(Names)){
-                Names <- as.character(self$field_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$field_data$keys())
             }
 
-            field_data <- lapply(Names, function(x){
+            field_data <- lapply(keys, function(x){
                 self$field_data[[x]]
             })
 
@@ -69,18 +93,18 @@ OGS6_vtu <- R6::R6Class(
         #'Gets PointData at specified coordinates.
         #'@param coordinates list(numeric): List of coordinates (a coordinate
         #' is a numeric vector of length 3)
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `PointData`
         get_point_data_at = function(coordinates,
-                                     Names){
+                                     keys){
 
             coordinates <- validate_coordinates(coordinates)
 
-            if(missing(Names)){
-                Names <- as.character(self$point_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$point_data$keys())
             }
 
-            assertthat::assert_that(is.character(Names))
+            assertthat::assert_that(is.character(keys))
 
             # Use point locator to get data
             point_ids <- lapply(coordinates, function(x){
@@ -88,54 +112,54 @@ OGS6_vtu <- R6::R6Class(
             })
 
             return(self$get_point_data(point_ids = as.numeric(point_ids),
-                                       Names = Names))
+                                       keys = keys))
         },
 
         #'@description
         #'Gets PointData for points with IDs in `point_ids`.
         #'@param point_ids numeric: Optional: Point IDs, defaults to all
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `PointData`
         #'@return tibble: Tibble where each row represents a point.
         get_point_data = function(point_ids,
-                                  Names){
+                                  keys){
 
             if(missing(point_ids)){
                 max_point_id <- self$number_of_points() - 1
                 point_ids <- seq(0, max_point_id)
             }
 
-            if(missing(Names)){
-                Names <- as.character(self$point_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$point_data$keys())
             }
 
             private$get_data(data_type = "points",
                              ids = point_ids,
-                             Names = Names)
+                             keys = keys)
 
         },
 
         #'@description
         #'Gets CellData for cells with IDs in `cell_ids`.
         #'@param cell_ids numeric: Optional: Cell IDs, defaults to all
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements, defaults to all in `CellData`
         #'@return tibble: Tibble where each row represents a cell.
         get_cell_data = function(cell_ids,
-                                 Names){
+                                 keys){
 
             if(missing(cell_ids)){
                 max_cell_id <- self$number_of_cells() - 1
                 cell_ids <- seq(0, max_cell_id)
             }
 
-            if(missing(Names)){
-                Names <- as.character(self$cell_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$cell_data$keys())
             }
 
             private$get_data(data_type = "cells",
                              ids = cell_ids,
-                             Names = Names)
+                             keys = keys)
 
         }
     ),
@@ -220,10 +244,10 @@ OGS6_vtu <- R6::R6Class(
 
         get_data = function(data_type,
                             ids,
-                            Names){
+                            keys){
 
             assertthat::assert_that(is.numeric(ids))
-            assertthat::assert_that(is.character(Names))
+            assertthat::assert_that(is.character(keys))
 
             tbl_rows <- list()
 
@@ -245,19 +269,19 @@ OGS6_vtu <- R6::R6Class(
 
                 values <- list()
 
-                for (j in seq_len(length(Names))) {
+                for (j in seq_len(length(keys))) {
                     rid <- ids[[i]] + 1
 
-                    if (length(dim(data[[Names[[j]]]])) == 1) {
-                        value <- data[[Names[[j]]]][[rid]]
+                    if (length(dim(data[[keys[[j]]]])) == 1) {
+                        value <- data[[keys[[j]]]][[rid]]
 
                     } else{
-                        value <- list(as.numeric(data[[Names[[j]]]][rid,]))
+                        value <- list(as.numeric(data[[keys[[j]]]][rid,]))
                     }
 
                     values <- c(values, list(value))
                     names(values)[[length(values)]] <-
-                        Names[[j]]
+                        keys[[j]]
                 }
 
                 new_row <- c(new_row,

@@ -11,18 +11,13 @@ OGS6 <- R6::R6Class("OGS6",
     #'@description
     #'Creates new OGS6 object
     #'@param sim_name string: Simulation name
-    #'@param sim_id double: Simulation ID
     #'@param sim_path string: Path where all files for the simulation will be
     #' saved
     initialize = function(sim_name,
-                          sim_id,
                           sim_path) {
 
       # Basic validation
       self$sim_name <- sim_name
-
-      assertthat::assert_that(assertthat::is.number(sim_id))
-      private$.sim_id <- sim_id
 
       if(missing(sim_path)){
         sim_path <- unlist(options("r2ogs6.default_sim_path"))
@@ -67,6 +62,8 @@ OGS6 <- R6::R6Class("OGS6",
 
         eval(parse(text = name_call))
       }
+
+      invisible(self)
     },
 
     #'@description
@@ -82,13 +79,10 @@ OGS6 <- R6::R6Class("OGS6",
       }else{
         assertthat::assert_that(inherits(gml, "OGS6_gml"))
         private$.gml <- gml
-
-        if(!is.null(private$.geometry)){
-          warning(paste("OGS6 parameter 'geometry' now refers",
-                        "to a different .gml object"), call. = FALSE)
-        }
         private$.geometry <- paste0(self$sim_name, ".gml")
       }
+
+      invisible(self)
     },
 
     #'@description
@@ -107,6 +101,8 @@ OGS6 <- R6::R6Class("OGS6",
       if(read_in_vtu){
         private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
       }
+
+      invisible(self)
     },
 
 
@@ -170,6 +166,37 @@ OGS6 <- R6::R6Class("OGS6",
       return(invisible(flag))
     },
 
+    #'@description
+    #'Overrides default printing behaviour
+    print = function(){
+      cat("OGS6\n")
+      cat("simulation name:  ", self$sim_name, "\n", sep = "")
+      cat("simulation path:  ", self$sim_path, "\n", sep = "")
+
+      cat("\n----- geometry:  ", self$geometry, "\n", sep = "")
+      cat("associated OGS6_gml:\n")
+      print(self$gml)
+
+      cat("\n----- meshes -----\n",
+          paste(self$meshes, collapse = "\n"),
+          "\n", sep = "")
+
+      prj_tags <- lapply(prj_top_level_tags(), function(x){x[["tag_name"]]})
+      prj_tags <- prj_tags[!prj_tags %in% c("geometry", "mesh", "meshes")]
+
+      for(i in seq_len(length(prj_tags))){
+        tag_name <- prj_tags[[i]]
+
+        prj_param_call <- paste0("print(self$", tag_name, ")")
+
+        cat("\n----- ", tag_name, " -----\n", sep = "")
+        eval(parse(text = prj_param_call))
+        cat("\n", sep = "")
+      }
+
+      invisible(self)
+    },
+
     #'print_log
     #'@description Prints logfile to console (if it exists)
     print_log = function(){
@@ -178,6 +205,8 @@ OGS6 <- R6::R6Class("OGS6",
       }else{
         cat("There is no logfile associated with this OGS6 object.\n")
       }
+
+      invisible(self)
     },
 
     #'@description
@@ -213,6 +242,8 @@ OGS6 <- R6::R6Class("OGS6",
           eval(parse(text = call_str))
         }
       }
+
+      invisible(self)
     }
 
   ),
@@ -232,12 +263,6 @@ OGS6 <- R6::R6Class("OGS6",
           assertthat::assert_that(assertthat::is.string(value))
           private$.sim_name <- value
         }
-      },
-
-      #'@field sim_id
-      #'Simulation ID. read-only
-      sim_id = function() {
-        private$.sim_id
       },
 
       #'@field sim_path

@@ -72,12 +72,32 @@ OGS6_Ensemble <- R6::R6Class(
         },
 
         #'@description
-        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
-        #' For ensembles, output will be written to logfiles.
+        #'Overrides default printing behaviour
+        print = function(){
+            cat("OGS6_Ensemble\n")
+            cat("ensemble size:  ", length(self$ensemble), "\n", sep = "")
+            cat("sequential_mode:  ",
+                !is.null(private$.ranges),
+                "\n", sep = "")
+            cat("percentages_mode:  ",
+                !is.null(self$parameter_percs),
+                "\n", sep = "")
+            cat("\nmodified parameters:\n",
+                paste(self$dp_parameters, collapse = "\n"),
+                "\n", sep = "")
+            cat("\nparameter values:\n")
+            print(self$parameter_values)
+
+            invisible(self)
+        },
+
+        #'@description
+        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+        #' internally. For ensembles, output will always be written to logfiles.
         #'@param parallel flag: Should the function be run in parallel?
         #' This is implementented via the 'parallel' package.
         #'@param verbose flag
-        ogs_run_simulation = function(parallel = FALSE,
+        run_simulation = function(parallel = FALSE,
                                   verbose = F){
 
             assertthat::assert_that(assertthat::is.flag(parallel))
@@ -144,7 +164,16 @@ OGS6_Ensemble <- R6::R6Class(
             }
         },
 
+        #'@description
+        #'If the ensemble was created in sequential_mode, this will get the
+        #' name of the value vector that was being iterated over at the given
+        #' `index` during ensemble creation. I. e. if the ensemble was created
+        #' with the value vectors `a = c(1, 2, 3)` and `b = c("foo", "bar")`,
+        #' an `index` of 4 would return `"b"`
+        #'@param index number: Index
         relevant_parameter_at = function(index){
+
+            assertthat::assert_that(assertthat::is.number(index))
 
             if(is.null(private$.ranges)){
                 warning(paste("This ensemble wasn't set up in sequential mode",
@@ -206,9 +235,10 @@ OGS6_Ensemble <- R6::R6Class(
             for(i in seq_len(length(private$.parameter_percs))){
                 val <- eval(parse(text = self$dp_parameters[[i]]))
 
-                val_vec <- lapply(private$.parameter_percs[[i]], function(x){
+                val_vec <- vapply(private$.parameter_percs[[i]], function(x){
                     val + (val * (x / 100))
-                    })
+                    },
+                    FUN.VALUE = numeric(length(val)))
 
                 private$.parameter_values <- c(self$parameter_values,
                                                list(val_vec))
@@ -310,7 +340,7 @@ OGS6_Ensemble <- R6::R6Class(
         .ens_path = NULL,
         .ensemble = list(),
         .dp_parameters = list(),
-        .parameter_percs = list(),
+        .parameter_percs = NULL,
         .parameter_values = list()
     )
 )

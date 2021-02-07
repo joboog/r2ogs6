@@ -49,6 +49,25 @@ OGS6_gml <- R6::R6Class(
 
             private$.gml_path <- gml_path
             private$validate()
+        },
+
+        #'@description
+        #'Overrides default printing behaviour
+        print = function(){
+            cat("OGS6_gml\n")
+            cat("path:  ", self$gml_path, "\n", sep = "")
+            cat("name:  ", self$name, "\n", sep = "")
+
+            cat("\npoints\n")
+            print(self$points)
+
+            cat("\npolylines\n")
+            print(self$polylines)
+
+            cat("\nsurfaces\n")
+            print(self$surfaces)
+
+            return(invisible(self))
         }
     ),
 
