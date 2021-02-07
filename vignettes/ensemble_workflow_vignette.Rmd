@@ -59,7 +59,6 @@ testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/axisym_theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
-                     sim_id = 1,
                      sim_path = sim_path)
 
 # Change this to fit your system
@@ -87,7 +86,7 @@ ogs6_ens <-
     percentages_mode = TRUE)
 
 # Now we run the simulations
-exit_codes <- ogs6_ens$ogs_run_simulation()
+exit_codes <- ogs6_ens$run_simulation()
 paste(exit_codes, collapse = " ")
 ```
 
@@ -100,7 +99,7 @@ Our simulations (hopefully) ran successfully - great! Now it'd be nice to see so
 storage_tbls <- 
   lapply(ogs6_ens$ensemble, function(x){
     x$pvds[[1]]$get_point_data(point_ids = c(0, 1, 2),
-                               Names = c("pressure"))
+                               keys = c("pressure"))
   })
 ```
 
@@ -205,7 +204,7 @@ ogs6_ens_big <-
                                  values = percentages)),
     sequential_mode = TRUE)
 
-exit_codes <- ogs6_ens_big$ogs_run_simulation()
+exit_codes <- ogs6_ens_big$run_simulation()
 paste(exit_codes)
 ```
 
@@ -215,7 +214,7 @@ This will take a short time. As soon as the simulations are done, we can extract
 # This will get a list of tibbles - one for each simulation.
 per_por_sto_tbls <- 
   lapply(ogs6_ens_big$ensemble, function(x){
-    x$pvds[[1]]$get_point_data(Names = c("pressure"),
+    x$pvds[[1]]$get_point_data(keys = c("pressure"),
                                start_at_timestep = x$pvds[[1]]$last_timestep)
   })
 ```
