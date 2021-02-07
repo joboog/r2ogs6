@@ -1,3 +1,17 @@
+
+
+test_that("OGS6_gml initialization works", {
+
+    gml <- OGS6_gml$new(name = "my_gml",
+                        points = tibble::tibble(x = c(0, 0),
+                                                y = c(1, 1),
+                                                z = c(0, 1)),
+                        polylines = list(list("my_line", c(1, 0, 1))))
+
+    expect_equal(length(gml$points), 3)
+})
+
+
 test_that("validate_points works", {
 
     point_list <- list(x = c(0, 0), y = c(1, 1), z = c(0, 1))

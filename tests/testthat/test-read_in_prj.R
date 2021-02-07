@@ -6,7 +6,6 @@ test_that("read_in works for process objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -31,7 +30,6 @@ test_that("read_in works for medium objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -48,7 +46,6 @@ test_that("read_in works for time_loop objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -68,7 +65,6 @@ test_that("read_in works for parameter objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -87,7 +83,6 @@ test_that("read_in works for process_variable objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -103,7 +98,6 @@ test_that("read_in works for nonlinear_solver objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -125,7 +119,6 @@ test_that("read_in works for linear_solver objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -146,7 +139,6 @@ test_that("read_in works with newline value separation", {
                              "liakopoulos.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -167,7 +159,6 @@ test_that("read_in_prj works for processes/include tags", {
                              "circle_1e1_axi.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
@@ -185,7 +176,6 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
                              "cube.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
