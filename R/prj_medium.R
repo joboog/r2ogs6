@@ -451,56 +451,57 @@ r2ogs6_ph_property <- function(name,
 
 
 new_r2ogs6_ph_property <- function(name,
-                                       type,
-                                       value = NULL,
-                                       reference_value = NULL,
-                                       independent_variable = NULL,
-                                       initial_porosity = NULL,
-                                       minimal_porosity = NULL,
-                                       maximal_porosity = NULL,
-                                       parameter_name = NULL,
-                                       exponents = NULL,
-                                       offset = NULL,
-                                       exponent = NULL,
-                                       swelling_pressures = NULL,
-                                       lower_saturation_limit = NULL,
-                                       upper_saturation_limit = NULL,
-                                       intrinsic_permeabilities = NULL) {
+                                   type,
+                                   value = NULL,
+                                   reference_value = NULL,
+                                   independent_variable = NULL,
+                                   initial_porosity = NULL,
+                                   minimal_porosity = NULL,
+                                   maximal_porosity = NULL,
+                                   parameter_name = NULL,
+                                   exponents = NULL,
+                                   offset = NULL,
+                                   exponent = NULL,
+                                   swelling_pressures = NULL,
+                                   lower_saturation_limit = NULL,
+                                   upper_saturation_limit = NULL,
+                                   intrinsic_permeabilities = NULL) {
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
     are_null_or_numeric(value)
 
-    are_null_or_numbers(reference_value,
-                               minimal_porosity,
-                               maximal_porosity,
-                               offset,
-                               lower_saturation_limit,
-                               upper_saturation_limit)
+    are_null_or_numbers(
+        reference_value,
+        minimal_porosity,
+        maximal_porosity,
+        offset,
+        lower_saturation_limit,
+        upper_saturation_limit
+    )
 
     are_null_or_numeric(exponents,
-                                swelling_pressures,
-                                intrinsic_permeabilities)
+                        swelling_pressures,
+                        intrinsic_permeabilities)
 
     are_null_or_strings(initial_porosity,
-                               parameter_name)
+                        parameter_name)
 
     if (!is.null(independent_variable)) {
-        for(i in seq_len(length(independent_variable))){
-            independent_variable[[i]] <-
-                coerce_names(independent_variable[[i]],
-                                    c("variable_name",
-                                      "reference_condition",
-                                      "slope"))
-        }
+        independent_variable <- lapply(independent_variable, function(x){
+            x <- coerce_names(x,
+                              c("variable_name",
+                                "reference_condition",
+                                "slope"))
+        })
     }
 
     if (!is.null(exponent)) {
         exponent <- coerce_names(exponent,
-                                        c("variable_name",
-                                          "reference_condition",
-                                          "factor"))
+                                 c("variable_name",
+                                   "reference_condition",
+                                   "factor"))
     }
 
     structure(

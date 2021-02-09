@@ -74,7 +74,7 @@ read_in_prj(ogs6_obj, prj_path)
 Let's create a small ensemble where we only alter the value of `storage`. Say we don't want to hardcode the values, but instead examine the effects of changing `storage` by 1%, 10% and 50%. We can use the `percentages_mode` parameter of `OGS6_Ensemble` for this. It already defaults to `TRUE`, below I'm merely being explicit for demonstration purposes.
 
 ```{r}
-# Assign percentages to a variable in case we want to reuse them later
+# Assign percentages
 percentages <- c(-50, -10, -1, 0, 1, 10, 50)
 
 # Define an ensemble object
@@ -221,9 +221,76 @@ We will consider the following parameters for our sensitivity analysis:
 * `slope`
 
 
-setup
+### Setup
 
-plot single
+First, we create a simulation object to base our ensemble on and read in the `.prj` file.
+
+```{r}
+# Change this to fit your system
+testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+sim_path <- paste0(testdir_path, "/theis_sim")
+
+ogs6_obj <- OGS6$new(sim_name = "theis",
+                     sim_path = sim_path)
+
+# Change this to fit your system
+prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
+                        "theis.prj", package = "r2ogs6")
+
+read_in_prj(ogs6_obj, prj_path)
+```
+
+### Multi-parameter sequential run
+
+```{r}
+# Assign percentages
+percentages <- c(-50, -10, -1, 0, 1, 10, 50)
+
+ogs6_ens_theis_2 <-
+  OGS6_Ensemble$new(
+    ogs6_obj = ogs6_obj,
+    parameters =
+      list(
+        per = list(
+          ogs6_obj$media[[1]]$phases[[1]]$properties[[1]]$independent_variable[[2]]$slope,
+          values = percentages),
+        por = list(ogs6_obj$media[[1]]$properties[[2]]$value,
+                   c(-50, -10, -1, 0)),
+        slo = list(ogs6_obj$media[[1]]$properties[[4]]$value,
+                   values = percentages)
+      ),
+    sequential_mode = TRUE
+  )
+
+exit_codes <- ogs6_ens_theis_2$run_simulation()
+paste(exit_codes)
+```
+
+When the simulations have run, we can extract and plot the results just like before.
+
+```{r}
+# Get combined dataframe
+per_por_slo_df <- 
+  ogs6_ens_theis_2$get_point_data(
+    keys = c("pressure"),
+    start_at_timestep = ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$last_timestep)
+```
+
+```{r}
+# Make plot
+ggplot(per_por_slo_df,
+       aes(x = x,
+           y = pressure,
+           group = perc)) +
+  geom_point(aes(color = as.factor(perc))) +
+  xlab("x point coordinate") +
+  labs(color = "%") +
+  facet_grid(cols = vars(name))
+```
+
+## Summary
+
+The `OGS6_Ensemble` class is a useful tool to set up ensemble runs for sensitivity analyses. In this vignette, we learned how to create `OGS6_Ensemble` objects. We looked at how the parameters `sequential_mode` and `percentages_mode` influence how our ensemble object is initialised. We started simulations via `OGS6_Ensemble$run_simulation()` and extracted information from the output files to plot them.
 
 ```{r, include = FALSE}
 # Cleanup created folders

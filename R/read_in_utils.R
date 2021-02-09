@@ -97,15 +97,35 @@ node_to_r2ogs6_class_object <- function(xml_node,
             xml2::xml_name(parameter_nodes[[i]])
     }
 
-    tag_name <- xml2::xml_name(xml_node)
-
     class_name <- get_class_from_xpath(xpath)
 
     ordered_parameters <- order_parameters(parameters, class_name)
 
-    param_call_strs <- lapply(names(parameters), function(x){
-        return(invisible(paste0("parameters[[\"", x, "\"]]")))
-    })
+    param_call_strs <- character()
+    seen <- numeric()
+
+    for(i in seq_len(length(ordered_parameters))){
+
+        name <- names(ordered_parameters)[[i]]
+
+        if(length(ordered_parameters[names(ordered_parameters) == name]) == 1){
+            param_call_str <- paste0("ordered_parameters[[\"", name, "\"]]")
+        }else{
+
+            if(!name %in% names(seen)){
+                seen[[name]] <- 1
+            }
+
+            param_call_str <-
+                paste0("ordered_parameters[names(ordered_parameters) == \"",
+                       name, "\"][[",
+                       seen[[name]], "]]")
+
+            seen[[name]] <- seen[[name]] + 1
+        }
+
+        param_call_strs <- c(param_call_strs, param_call_str)
+    }
 
     #Construct the call to the r2ogs6_object helper
     class_constructor_call <-
@@ -113,7 +133,7 @@ node_to_r2ogs6_class_object <- function(xml_node,
                ifelse(grepl("OGS6", class_name), "$new", ""),
                "(",
                paste(
-                   names(parameters),
+                   names(ordered_parameters),
                    param_call_strs,
                    sep = " = ",
                    collapse = ", "

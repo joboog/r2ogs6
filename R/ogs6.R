@@ -546,7 +546,6 @@ OGS6 <- R6::R6Class("OGS6",
   private = list(
     # general parameters
       .sim_name = NULL,
-      .sim_id = NULL,
       .sim_path = NULL,
 
       .logfile = NULL,
