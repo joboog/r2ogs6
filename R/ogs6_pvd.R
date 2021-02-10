@@ -27,6 +27,27 @@ OGS6_pvd <- R6::R6Class(
         },
 
         #'@description
+        #'Overrides default printing behaviour
+        print = function(){
+            cat("OGS6_pvd\n")
+            cat("number of referenced .vtu paths (= number of timesteps):  ",
+                length(self$abs_vtu_paths),
+                "\n", sep = "")
+            cat("\n.vtu paths (absolute):\n",
+                paste(self$abs_vtu_paths, collapse = "\n"),
+                "\n", sep = "")
+
+            cat("\ntimesteps:\n",
+                paste(self$timesteps, collapse = "\n"),
+                "\n", sep = "")
+
+            cat("\nfirst OGS6_vtu in OGS6_vtus:\n")
+            print(self$OGS6_vtus[[1]])
+
+            invisible(self)
+        },
+
+        #'@description
         #'Returns .vtu path for specified timestep
         #'@param timestep string: Timestep
         vtu_by_timestep = function(timestep){
@@ -64,24 +85,24 @@ OGS6_pvd <- R6::R6Class(
         #'Returns a tibble containing point data
         #'@param coordinates list(numeric): List of coordinates (a coordinate
         #' is a numeric vector of length 3)
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements. Defaults to all.
         #'@param start_at_timestep number: Optional: Timestep to start at.
         #' Defaults to first timestep.
         #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
         #' to last timestep.
         get_point_data_at = function(coordinates,
-                                     Names,
+                                     keys,
                                      start_at_timestep,
                                      end_at_timestep){
 
             coordinates <- validate_coordinates(coordinates)
 
-            if(missing(Names)){
-                Names <- as.character(self$point_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$point_data$keys())
             }
 
-            assertthat::assert_that(is.character(Names))
+            assertthat::assert_that(is.character(keys))
 
             # Use point locator to get data
             point_ids <- lapply(coordinates, function(x){
@@ -89,7 +110,7 @@ OGS6_pvd <- R6::R6Class(
             })
 
             return(self$get_point_data(point_ids = as.numeric(point_ids),
-                                       Names = Names,
+                                       keys = keys,
                                        start_at_timestep = start_at_timestep,
                                        end_at_timestep = end_at_timestep))
         },
@@ -97,14 +118,14 @@ OGS6_pvd <- R6::R6Class(
         #'@description
         #'Returns a tibble containing point data
         #'@param point_ids numeric: Optional: Point IDs. Defaults to all.
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements. Defaults to all.
         #'@param start_at_timestep number: Optional: Timestep to start at.
         #' Defaults to first timestep.
         #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
         #' to last timestep.
         get_point_data = function(point_ids,
-                                  Names,
+                                  keys,
                                   start_at_timestep,
                                   end_at_timestep){
 
@@ -113,14 +134,14 @@ OGS6_pvd <- R6::R6Class(
                 point_ids <- seq(0, max_id)
             }
 
-            if(missing(Names)){
-                Names <- as.character(self$OGS6_vtus[[1]]$point_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$OGS6_vtus[[1]]$point_data$keys())
             }
 
             private$get_data(
                 data_type = "points",
                 ids = point_ids,
-                Names = Names,
+                keys = keys,
                 start_at_timestep = start_at_timestep,
                 end_at_timestep = end_at_timestep
             )
@@ -129,14 +150,14 @@ OGS6_pvd <- R6::R6Class(
         #'@description
         #'Returns a tibble containing cell data
         #'@param cell_ids numeric: Optional: Cell IDs. Defaults to all.
-        #'@param Names character: Optional: `Name` attributes of `DataArray`
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
         #' elements. Defaults to all.
         #'@param start_at_timestep number: Optional: Timestep to start at.
         #' Defaults to first timestep.
         #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
         #' to last timestep.
         get_cell_data = function(cell_ids,
-                                 Names,
+                                 keys,
                                  start_at_timestep,
                                  end_at_timestep){
 
@@ -145,14 +166,14 @@ OGS6_pvd <- R6::R6Class(
                 cell_ids <- seq(0, max_id)
             }
 
-            if(missing(Names)){
-                Names <- as.character(self$OGS6_vtus[[1]]$cell_data$keys())
+            if(missing(keys)){
+                keys <- as.character(self$OGS6_vtus[[1]]$cell_data$keys())
             }
 
             private$get_data(
                 data_type = "cells",
                 ids = cell_ids,
-                Names = Names,
+                keys = keys,
                 start_at_timestep = start_at_timestep,
                 end_at_timestep = end_at_timestep
             )
@@ -240,12 +261,12 @@ OGS6_pvd <- R6::R6Class(
         #Returns a dataframe with all of the CellData
         get_data = function(data_type,
                             ids,
-                            Names,
+                            keys,
                             start_at_timestep,
                             end_at_timestep){
 
             assertthat::assert_that(is.numeric(ids))
-            assertthat::assert_that(is.character(Names))
+            assertthat::assert_that(is.character(keys))
 
             if(missing(start_at_timestep)){
                 start_at_timestep <- self$timesteps[[1]]
@@ -280,21 +301,21 @@ OGS6_pvd <- R6::R6Class(
 
                     values <- list()
 
-                    for(j in seq_len(length(Names))){
+                    for(j in seq_len(length(keys))){
 
                         rid <- ids[[i]] + 1
 
                         if(length(
-                            dim(data[[Names[[j]]]])) == 1){
-                            value <- data[[Names[[j]]]][[rid]]
+                            dim(data[[keys[[j]]]])) == 1){
+                            value <- data[[keys[[j]]]][[rid]]
 
                         }else{
                             value <- list(as.numeric(
-                                data[[Names[[j]]]][rid,]))
+                                data[[keys[[j]]]][rid,]))
                         }
 
                         values <- c(values, list(value))
-                        names(values)[[length(values)]] <- Names[[j]]
+                        names(values)[[length(values)]] <- keys[[j]]
                     }
 
                     new_row <- c(new_row, values)

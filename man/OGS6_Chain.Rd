@@ -10,7 +10,7 @@ Constructor for the OGS6_Chain base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_Chain$new()}}
-\item \href{#method-run_simulation}{\code{OGS6_Chain$run_simulation()}}
+\item \href{#method-ogs_run_simulation}{\code{OGS6_Chain$ogs_run_simulation()}}
 \item \href{#method-print_log}{\code{OGS6_Chain$print_log()}}
 \item \href{#method-clone}{\code{OGS6_Chain$clone()}}
 }
@@ -35,13 +35,13 @@ Creates new OGS6_Chain object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run_simulation"></a>}}
-\if{latex}{\out{\hypertarget{method-run_simulation}{}}}
-\subsection{Method \code{run_simulation()}}{
-Runs the simulation. This calls r2ogs6::run_simulation() internally.
+\if{html}{\out{<a id="method-ogs_run_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-ogs_run_simulation}{}}}
+\subsection{Method \code{ogs_run_simulation()}}{
+Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
 For chains, output will be written to logfiles.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Chain$run_simulation()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Chain$ogs_run_simulation()}\if{html}{\out{</div>}}
 }
 
 }

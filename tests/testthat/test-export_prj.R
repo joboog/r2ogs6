@@ -8,7 +8,6 @@ test_that("export_prj works", {
 
     # Define prj_path and OGS6 object, then read in .prj file
     ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
-                         sim_id = 1,
                          sim_path = test_path)
 
 

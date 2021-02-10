@@ -72,12 +72,32 @@ OGS6_Ensemble <- R6::R6Class(
         },
 
         #'@description
-        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation() internally.
-        #' For ensembles, output will be written to logfiles.
+        #'Overrides default printing behaviour
+        print = function(){
+            cat("OGS6_Ensemble\n")
+            cat("ensemble size:  ", length(self$ensemble), "\n", sep = "")
+            cat("sequential_mode:  ",
+                !is.null(private$.ranges),
+                "\n", sep = "")
+            cat("percentages_mode:  ",
+                !is.null(self$parameter_percs),
+                "\n", sep = "")
+            cat("\nmodified parameters:\n",
+                paste(self$dp_parameters, collapse = "\n"),
+                "\n", sep = "")
+            cat("\nparameter values:\n")
+            print(self$parameter_values)
+
+            invisible(self)
+        },
+
+        #'@description
+        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+        #' internally. For ensembles, output will always be written to logfiles.
         #'@param parallel flag: Should the function be run in parallel?
         #' This is implementented via the 'parallel' package.
         #'@param verbose flag
-        ogs_run_simulation = function(parallel = FALSE,
+        run_simulation = function(parallel = FALSE,
                                   verbose = F){
 
             assertthat::assert_that(assertthat::is.flag(parallel))
@@ -144,24 +164,54 @@ OGS6_Ensemble <- R6::R6Class(
             }
         },
 
-        relevant_parameter_at = function(index){
+        #'@description
+        #'Wrapper for `OGS6_pvd$get_point_data()` Returns combined dataframe
+        #' with extra `name` and / or `perc` column depending on if
+        #' `sequential_mode` and / or `percentages_mode` were used.
+        #'@param pvd_id number: Optional: Which .pvd to consider in OGS6$pvds.
+        #' Defaults to 1.
+        #'@param point_ids numeric: Optional: Point IDs. Defaults to all.
+        #'@param keys character: Optional: `Name` attributes of `DataArray`
+        #' elements. Defaults to all.
+        #'@param start_at_timestep number: Optional: Timestep to start at.
+        #' Defaults to first timestep.
+        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #' to last timestep.
+        get_point_data = function(pvd_id = 1,
+                                  point_ids,
+                                  keys,
+                                  start_at_timestep,
+                                  end_at_timestep){
 
-            if(is.null(private$.ranges)){
-                warning(paste("This ensemble wasn't set up in sequential mode",
-                              call. = FALSE))
-                return(NULL)
-            }
+            assertthat::assert_that(assertthat::is.number(pvd_id))
 
-            for(i in seq_len(length(private$.ranges))){
-                if(index %in% private$.ranges[[i]]){
-                    return(names(private$.ranges)[[i]])
+            sim_tbls <- list()
+
+            for(i in seq_len(length(self$ensemble))){
+
+                sim_tbl <- self$ensemble[[i]]$pvds[[pvd_id]]$get_point_data(
+                    point_ids = point_ids,
+                    keys = keys,
+                    start_at_timestep = start_at_timestep,
+                    end_at_timestep = end_at_timestep
+                )
+
+                sim_tbl$sim_id <- i
+
+                # If ensemble was created in sequential_mode
+                if(!is.null(private$.ranges)){
+                    sim_tbl$name <- private$relevant_parameter_at(i)
                 }
+
+                # If ensemble was created in percentages_mode
+                if(!is.null(self$parameter_percs)){
+                    sim_tbl$perc <- unlist(self$parameter_percs)[[i]]
+                }
+
+                sim_tbls <- c(sim_tbls, list(sim_tbl))
             }
 
-            warning(paste("Could not find range for given index", index,
-                          call. = FALSE))
-
-            return(NULL)
+            return(bind_rows(sim_tbls))
         }
     ),
 
@@ -200,15 +250,46 @@ OGS6_Ensemble <- R6::R6Class(
 
     private = list(
 
+        #@description
+        #If the ensemble was created in sequential_mode, this will get the
+        # name of the value vector that was being iterated over at the given
+        # `index` during ensemble creation. I. e. if the ensemble was created
+        # with the value vectors `a = c(1, 2, 3)` and `b = c("foo", "bar")`,
+        # an `index` of 4 would return `"b"`
+        #@param index number: Index
+        relevant_parameter_at = function(index){
+
+            assertthat::assert_that(assertthat::is.number(index))
+
+            if(is.null(private$.ranges)){
+                warning(paste("This ensemble wasn't set up in sequential mode",
+                              call. = FALSE))
+                return(NULL)
+            }
+
+            for(i in seq_len(length(private$.ranges))){
+                if(index %in% private$.ranges[[i]]){
+                    return(names(private$.ranges)[[i]])
+                }
+            }
+
+            warning(paste("Could not find range for given index", index,
+                          call. = FALSE))
+
+            return(NULL)
+        },
+
         # Calculates values based on given percentages
         calc_values_by_percs = function(ogs6_obj){
 
             for(i in seq_len(length(private$.parameter_percs))){
                 val <- eval(parse(text = self$dp_parameters[[i]]))
+                val <- as.numeric(val)
 
-                val_vec <- lapply(private$.parameter_percs[[i]], function(x){
+                val_vec <- vapply(private$.parameter_percs[[i]], function(x){
                     val + (val * (x / 100))
-                    })
+                    },
+                    FUN.VALUE = numeric(length(val)))
 
                 private$.parameter_values <- c(self$parameter_values,
                                                list(val_vec))
@@ -310,7 +391,7 @@ OGS6_Ensemble <- R6::R6Class(
         .ens_path = NULL,
         .ensemble = list(),
         .dp_parameters = list(),
-        .parameter_percs = list(),
+        .parameter_percs = NULL,
         .parameter_values = list()
     )
 )

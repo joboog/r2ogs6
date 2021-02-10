@@ -6,7 +6,6 @@ test_that("node_to_object works for simple r2ogs6 classes", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")

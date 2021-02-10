@@ -9,7 +9,11 @@ Constructor for the OGS6_Ensemble base class
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{parameters}}{Getter for private parameter '.parameters'}
+\item{\code{dp_parameters}}{Getter for private parameter '.dp_parameters'}
+
+\item{\code{parameter_percs}}{Getter for private parameter '.parameter_percs'}
+
+\item{\code{parameter_values}}{Getter for private parameter '.parameter_values'}
 
 \item{\code{ens_path}}{Getter for private parameter '.ens_path'}
 
@@ -21,7 +25,9 @@ Constructor for the OGS6_Ensemble base class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{OGS6_Ensemble$new()}}
+\item \href{#method-print}{\code{OGS6_Ensemble$print()}}
 \item \href{#method-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
+\item \href{#method-relevant_parameter_at}{\code{OGS6_Ensemble$relevant_parameter_at()}}
 \item \href{#method-clone}{\code{OGS6_Ensemble$clone()}}
 }
 }
@@ -31,7 +37,12 @@ Constructor for the OGS6_Ensemble base class
 \subsection{Method \code{new()}}{
 Creates new OGS6_Ensemble object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$new(ogs6_obj, parameters, ens_dir_name = "Ensemble")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$new(
+  ogs6_obj,
+  parameters,
+  sequential_mode = FALSE,
+  percentages_mode = TRUE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -44,19 +55,31 @@ of a sublist references an OGS6 parameter, the second one is a list or
 vector of values. Note that the second elements of the sublists must
 have the same length.}
 
-\item{\code{ens_dir_name}}{string: Name of ensemble directory}
+\item{\code{sequential_mode}}{flag: Defaults to `FALSE`}
+
+\item{\code{percentages_mode}}{flag: Defaults to `TRUE`}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-print"></a>}}
+\if{latex}{\out{\hypertarget{method-print}{}}}
+\subsection{Method \code{print()}}{
+Overrides default printing behaviour
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$print()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-run_simulation"></a>}}
 \if{latex}{\out{\hypertarget{method-run_simulation}{}}}
 \subsection{Method \code{run_simulation()}}{
-Runs the simulation. This calls r2ogs6::run_simulation() internally.
-For ensembles, output will be written to logfiles.
+Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+internally. For ensembles, output will always be written to logfiles.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE, verbose = F)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -64,6 +87,29 @@ For ensembles, output will be written to logfiles.
 \describe{
 \item{\code{parallel}}{flag: Should the function be run in parallel?
 This is implementented via the 'parallel' package.}
+
+\item{\code{verbose}}{flag}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-relevant_parameter_at"></a>}}
+\if{latex}{\out{\hypertarget{method-relevant_parameter_at}{}}}
+\subsection{Method \code{relevant_parameter_at()}}{
+If the ensemble was created in sequential_mode, this will get the
+name of the value vector that was being iterated over at the given
+`index` during ensemble creation. I. e. if the ensemble was created
+with the value vectors `a = c(1, 2, 3)` and `b = c("foo", "bar")`,
+an `index` of 4 would return `"b"`
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$relevant_parameter_at(index)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{index}}{number: Index}
 }
 \if{html}{\out{</div>}}
 }

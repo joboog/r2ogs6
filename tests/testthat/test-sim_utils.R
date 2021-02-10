@@ -62,7 +62,6 @@ test_that("ogs_export_sim_files works", {
                              "circle_1e1_axi.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "circle_1e1_axi",
-                         sim_id = 1,
                          sim_path = test_path)
 
     read_in_prj(ogs6_obj,

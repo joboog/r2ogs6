@@ -6,7 +6,6 @@ test_that("read_in works for process objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -31,7 +30,6 @@ test_that("read_in works for medium objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -42,13 +40,40 @@ test_that("read_in works for medium objects", {
 })
 
 
+test_that("read_in works for class objects with ellipsis", {
+
+    prj_path <- (system.file("extdata/benchmarks/theis_well_pumping",
+                             "theis.prj", package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in(ogs6_obj,
+            prj_path,
+            "/OpenGeoSysProject/media/medium")
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     independent_variable[[1]][["variable_name"]],
+                 "concentration")
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     independent_variable[[2]][["variable_name"]],
+                 "phase_pressure")
+})
+
+
 test_that("read_in works for time_loop objects", {
 
     prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -68,7 +93,6 @@ test_that("read_in works for parameter objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -87,7 +111,6 @@ test_that("read_in works for process_variable objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -103,7 +126,6 @@ test_that("read_in works for nonlinear_solver objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -125,7 +147,6 @@ test_that("read_in works for linear_solver objects", {
                              "flow_free_expansion.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -146,7 +167,6 @@ test_that("read_in works with newline value separation", {
                              "liakopoulos.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in(ogs6_obj,
@@ -167,7 +187,6 @@ test_that("read_in_prj works for processes/include tags", {
                              "circle_1e1_axi.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
@@ -185,7 +204,6 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
                              "cube.prj", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,

@@ -59,7 +59,6 @@ testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/axisym_theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
-                     sim_id = 1,
                      sim_path = sim_path)
 
 # Change this to fit your system
@@ -75,7 +74,7 @@ read_in_prj(ogs6_obj, prj_path)
 Let's create a small ensemble where we only alter the value of `storage`. Say we don't want to hardcode the values, but instead examine the effects of changing `storage` by 1%, 10% and 50%. We can use the `percentages_mode` parameter of `OGS6_Ensemble` for this. It already defaults to `TRUE`, below I'm merely being explicit for demonstration purposes.
 
 ```{r}
-# Assign percentages to a variable in case we want to reuse them later
+# Assign percentages
 percentages <- c(-50, -10, -1, 0, 1, 10, 50)
 
 # Define an ensemble object
@@ -87,7 +86,7 @@ ogs6_ens <-
     percentages_mode = TRUE)
 
 # Now we run the simulations
-exit_codes <- ogs6_ens$ogs_run_simulation()
+exit_codes <- ogs6_ens$run_simulation()
 paste(exit_codes, collapse = " ")
 ```
 
@@ -96,85 +95,60 @@ paste(exit_codes, collapse = " ")
 Our simulations (hopefully) ran successfully - great! Now it'd be nice to see some results. Say we're interested in the `pressure` data.
 
 ```{r}
-# This will get a list of tibbles - one for each simulation.
-storage_tbls <- 
-  lapply(ogs6_ens$ensemble, function(x){
-    x$pvds[[1]]$get_point_data(point_ids = c(0, 1, 2),
-                               Names = c("pressure"))
-  })
+# This will get a combined dataframe
+storage_tbl <- 
+  ogs6_ens$get_point_data(point_ids = c(0, 1, 2),
+                          keys = c("pressure"))
 ```
 
 You may leave out the `point_ids` parameter. It defaults to all points in the dataset - I specify it here because there's about 500 which would slow down building this vignette.
 
 ```{r}
-# Let's look at the first 10 rows of the dataset for the first simulation.
-head(storage_tbls[[1]], 10)
+# Let's look at the first 10 rows of the dataset
+head(storage_tbl, 10)
 ```
 
-You can see there's one row per timestep for each point ID. Say we want to plot the *average* pressure for each `timestep`, that is, the mean of the `pressure` values where the rows have the same `timestep`.
+You can see there's one row per timestep for each point ID. Say we want to plot the *average* pressure for each `timestep`, that is, the mean of the `pressure` values where the rows have the same `timestep`. We'll consider only the first simulation for now.
 
 ```{r}
-# Get average pressure from first dataframe (= from first simulation)
-avg_pr_df <- storage_tbls[[1]] %>% 
+# Get average pressure from first simulation
+avg_pr_first_sim <- storage_tbl[storage_tbl$sim_id == 1,] %>% 
   group_by(timestep) %>%
-  summarise(avg_pressure = mean(pressure))
-avg_pr_df
-```
+  summarize(avg_pressure = mean(pressure))
 
-
-```{r}
 # Plot pressure over time for first simulation
-ggplot(data = avg_pr_df) + 
-  geom_point(mapping = aes(x = as.numeric(row.names(avg_pr_df)),
+ggplot(data = avg_pr_first_sim) + 
+  geom_point(mapping = aes(x = as.numeric(row.names(avg_pr_first_sim)),
                            y = avg_pressure)) + xlab("Timestep")
-
-
 ```
 
 #### Plot results for multiple simulations
 
 ```{r}
-# Prepare dataframes for plotting
-reformatted_dfs <- list()
+# Get average pressure for all simulations
+avg_pr_df <- storage_tbl %>%
+  group_by(sim_id, timestep) %>%
+  summarise(avg_pressure = mean(pressure))
 
-for(i in seq_len(length(storage_tbls))){
-
-  tbl <- storage_tbls[[i]] %>% 
-    group_by(timestep) %>%
-    summarise(avg_pressure = mean(pressure))
-  
-  # Add column so we can separate values based on their old df 
-  tbl$df_id <- rep(i, nrow(tbl))
-  
-  # Add column so we can plot based on old df rownames
-  tbl$orig_rwns <- as.numeric(row.names(tbl))
-  
-  reformatted_dfs <- c(reformatted_dfs, list(tbl))
-}
-
-# Combine dataframes into single dataframe for plot
-avg_pr_combined_df <- bind_rows(reformatted_dfs)
-
-# Make plot
-ggplot(avg_pr_combined_df,
-       aes(x = orig_rwns,
+# Plot pressure over time for all simulations
+ggplot(avg_pr_df,
+       aes(x = as.numeric(as.factor(timestep)),
            y = avg_pressure)) +
-  geom_point(aes(color = as.factor(df_id))) +
-  geom_line(aes(color = as.factor(df_id))) + 
+  geom_point(aes(color = as.factor(sim_id))) +
+  geom_line(aes(color = as.factor(sim_id))) + 
   xlab("Timestep") + 
   labs(color = "sim id") +
-  facet_grid(rows = vars(df_id))
-
+  facet_grid(rows = vars(sim_id))
 ```
 
 Now we have the average `pressure` over time for each of the simulations (rows). Since they're pretty similar, let's put them in the same plot for a better comparison.
 
 ```{r}
-ggplot(avg_pr_combined_df, aes(x = orig_rwns,
-                               y = avg_pressure,
-                               group = df_id)) +
-  geom_point(aes(color = as.factor(df_id))) +
-  geom_line(aes(color = as.factor(df_id))) + 
+ggplot(avg_pr_df, aes(x = as.numeric(as.factor(timestep)),
+                      y = avg_pressure,
+                      group = sim_id)) +
+  geom_point(aes(color = as.factor(sim_id))) +
+  geom_line(aes(color = as.factor(sim_id))) + 
   labs(color = "sim id") +
   xlab("Timestep")
 ```
@@ -205,56 +179,35 @@ ogs6_ens_big <-
                                  values = percentages)),
     sequential_mode = TRUE)
 
-exit_codes <- ogs6_ens_big$ogs_run_simulation()
+exit_codes <- ogs6_ens_big$run_simulation()
 paste(exit_codes)
 ```
 
 This will take a short time. As soon as the simulations are done, we can extract the point data much like we did before. This time we want to plot the point x coodinates on the x axis so we're leaving out `point_ids` to get all points. Also we just want the data from the last timestep.
 
 ```{r}
-# This will get a list of tibbles - one for each simulation.
-per_por_sto_tbls <- 
-  lapply(ogs6_ens_big$ensemble, function(x){
-    x$pvds[[1]]$get_point_data(Names = c("pressure"),
-                               start_at_timestep = x$pvds[[1]]$last_timestep)
-  })
+# Get combined dataframe
+per_por_sto_df <- 
+  ogs6_ens_big$get_point_data(
+    keys = c("pressure"),
+    start_at_timestep = ogs6_ens_big$ensemble[[1]]$pvds[[1]]$last_timestep)
 ```
 
-Plotting time? Not quite. We can't really differentiate what values were used where yet. Since we set `sequential_mode` to `TRUE`, `OGS_Ensemble` allows us to utilize `relevant_parameter_at()` to fix this. It looks up which value vector the parameter we changed for each simulation came from. We will also put in an extra column `percs` so we can group by percentages.
-
-```{r}
-# Get list of dataframes
-x_pr_dfs <- list()
-
-for(i in seq_len(length(per_por_sto_tbls))){
-  new_df <- per_por_sto_tbls[[i]]
-  
-  # Add name and deviation column
-  new_df$name <- ogs6_ens_big$relevant_parameter_at(i)
-  new_df$percs <- unlist(ogs6_ens_big$parameter_percs)[[i]]
-  
-  x_pr_dfs <- c(x_pr_dfs, list(new_df))
-}
-
-# Combine dataframes into single dataframe 
-x_pr_combined_df <- bind_rows(x_pr_dfs)
-```
-
-*Now* it's plotting time. We group our variables corresponding to the deviations and then use a facet grid with the `name` parameter we added to the dataframes.
+Plotting time! Since we set `sequential_mode` to `TRUE`, the dataframe we just created contains a `name` column which allows us to group by parameters. Because we've also set `percentages_mode` to `TRUE`, it also has a column `perc` which allows us to group by percentages. Now we can simply use a facet grid to plot.
 
 ```{r}
 # Make plot
-ggplot(x_pr_combined_df,
+ggplot(per_por_sto_df,
        aes(x = x,
            y = pressure,
-           group = percs)) +
-  geom_point(aes(color = as.factor(percs))) +
+           group = perc)) +
+  geom_point(aes(color = as.factor(perc))) +
   xlab("x point coordinate") +
   labs(color = "%") +
   facet_grid(cols = vars(name))
 ```
 
-Ta-Daa! All nicely grouped. We can see `permeability` has the most influence on the pressure. Though they may seem suspicious, `porosity` and `storage` are being plotted correctly - the points are just being placed right on top of each other. Since `porosity` can't go over the value `1` which was the original value, our value vector only went from -50% to 0% which is why the line colors of `porosity` and `storage` differ.
+Ta-Daa! We can see `permeability` has the most influence on the pressure. Though they may seem suspicious, `porosity` and `storage` are being plotted correctly - the points are just being placed right on top of each other. Since `porosity` can't go over the value `1` which was the original value, our value vector only went from -50% to 0% which is why the line colors of `porosity` and `storage` differ.
 
 
 ## Theis solution for well pumping
@@ -268,9 +221,76 @@ We will consider the following parameters for our sensitivity analysis:
 * `slope`
 
 
-setup
+### Setup
 
-plot single
+First, we create a simulation object to base our ensemble on and read in the `.prj` file.
+
+```{r}
+# Change this to fit your system
+testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+sim_path <- paste0(testdir_path, "/theis_sim")
+
+ogs6_obj <- OGS6$new(sim_name = "theis",
+                     sim_path = sim_path)
+
+# Change this to fit your system
+prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
+                        "theis.prj", package = "r2ogs6")
+
+read_in_prj(ogs6_obj, prj_path)
+```
+
+### Multi-parameter sequential run
+
+```{r}
+# Assign percentages
+percentages <- c(-50, -10, -1, 0, 1, 10, 50)
+
+ogs6_ens_theis_2 <-
+  OGS6_Ensemble$new(
+    ogs6_obj = ogs6_obj,
+    parameters =
+      list(
+        per = list(
+          ogs6_obj$media[[1]]$phases[[1]]$properties[[1]]$independent_variable[[2]]$slope,
+          values = percentages),
+        por = list(ogs6_obj$media[[1]]$properties[[2]]$value,
+                   c(-50, -10, -1, 0)),
+        slo = list(ogs6_obj$media[[1]]$properties[[4]]$value,
+                   values = percentages)
+      ),
+    sequential_mode = TRUE
+  )
+
+exit_codes <- ogs6_ens_theis_2$run_simulation()
+paste(exit_codes)
+```
+
+When the simulations have run, we can extract and plot the results just like before.
+
+```{r}
+# Get combined dataframe
+per_por_slo_df <- 
+  ogs6_ens_theis_2$get_point_data(
+    keys = c("pressure"),
+    start_at_timestep = ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$last_timestep)
+```
+
+```{r}
+# Make plot
+ggplot(per_por_slo_df,
+       aes(x = x,
+           y = pressure,
+           group = perc)) +
+  geom_point(aes(color = as.factor(perc))) +
+  xlab("x point coordinate") +
+  labs(color = "%") +
+  facet_grid(cols = vars(name))
+```
+
+## Summary
+
+The `OGS6_Ensemble` class is a useful tool to set up ensemble runs for sensitivity analyses. In this vignette, we learned how to create `OGS6_Ensemble` objects. We looked at how the parameters `sequential_mode` and `percentages_mode` influence how our ensemble object is initialised. We started simulations via `OGS6_Ensemble$run_simulation()` and extracted information from the output files to plot them.
 
 ```{r, include = FALSE}
 # Cleanup created folders

@@ -5,7 +5,6 @@ test_that("OGS6$clear() works as expected", {
 
     ogs6_obj <- OGS6$new(
         sim_name = "sim",
-        sim_id = 1,
         sim_path = "sim_path")
 
     ogs6_obj$add(r2ogs6_parameter(
@@ -24,7 +23,6 @@ test_that("OGS6$add() works", {
 
     ogs6_obj <- OGS6$new(
         sim_name = "sim",
-        sim_id = 1,
         sim_path = "sim_path")
 
     ogs6_obj$add(r2ogs6_parameter(
