@@ -15,3 +15,6 @@ numeric if \code{obj} was a string, else unchanged \code{obj}
 \description{
 If an object is of type string, coerces it to a numeric type
 }
+\examples{
+  coerce_string_to_numeric("12  54 2    \n 2")
+}

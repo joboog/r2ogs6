@@ -15,3 +15,6 @@ string: The class name.
 \description{
 Gets r2ogs6 class name from an xpath-like expression
 }
+\examples{
+  get_class_from_xpath("processes/process")
+}
