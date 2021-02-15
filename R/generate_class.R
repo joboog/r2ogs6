@@ -5,14 +5,14 @@
 #===== generate_constructor =====
 
 
-#'generate_constructor
-#'@description Helper function to generate a constructor out of a tag name
+#' generate_constructor
+#' @description Helper function to generate a constructor out of a tag name
 #' and a flag vector
-#'@param params list: (Return value of analyse_xml())
-#'@param prefix Optional: For subclasses whose represented elements have
+#' @param params list: (Return value of \code{analyse_xml()})
+#' @param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
-#'@param print_result flag: Should the result be printed to the console?
+#' @param print_result flag: Should the result be printed to the console?
 generate_constructor <- function(params,
                                  prefix = "",
                                  print_result = FALSE){
@@ -66,14 +66,14 @@ generate_constructor <- function(params,
 #===== generate_helper =====
 
 
-#'generate_helper
-#'@description Helper function to generate a helper out of a tag name
+#' generate_helper
+#' @description Helper function to generate a helper out of a tag name
 #' and a flag vector
-#'@param params list: (Return value of analyse_xml())
-#'@param prefix Optional: For subclasses whose represented elements have
+#' @param params list: (Return value of \code{analyse_xml()})
+#' @param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
-#'@param print_result flag: Should the result be printed to the console?
+#' @param print_result flag: Should the result be printed to the console?
 generate_helper <- function(params,
                             prefix = "",
                             print_result = FALSE){
@@ -114,10 +114,10 @@ generate_helper <- function(params,
 #===== get parameter lists (for use in class constructor / helper) =====
 
 
-#'flags_to_con_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_con_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_con_str <- function(flags, print_result = FALSE) {
 
     assertthat::assert_that(is.logical(flags))
@@ -142,10 +142,10 @@ flags_to_con_str <- function(flags, print_result = FALSE) {
 }
 
 
-#'flags_to_con_call_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_con_call_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_con_call_str <- function(flags, print_result = FALSE) {
 
     assertthat::assert_that(is.logical(flags))
@@ -160,10 +160,10 @@ flags_to_con_call_str <- function(flags, print_result = FALSE) {
 }
 
 
-#'flags_to_name_str
-#'@description Helper function to generate a name string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_name_str
+#' @description Helper function to generate a name string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_name_str <- function(flags, print_result = FALSE) {
 
     assertthat::assert_that(is.logical(flags))
@@ -181,10 +181,10 @@ flags_to_name_str <- function(flags, print_result = FALSE) {
 #===== get class parameter list (for use in class constructor) =====
 
 
-#'flags_to_assign_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_assign_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_assign_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -205,10 +205,10 @@ flags_to_assign_str <- function(flags, print_result = FALSE){
 #===== get class parameter doc (for use in class helper) =====
 
 
-#'flags_to_doc_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_doc_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_doc_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -242,14 +242,14 @@ flags_to_doc_str <- function(flags, print_result = FALSE){
 #===== generate_R6 =====
 
 
-#'generate_R6
-#'@description Helper function to generate a R6 class out of a tag name
+#' generate_R6
+#' @description Helper function to generate a R6 class out of a tag name
 #' and a flag vector
-#'@param params list: (Return value of analyse_xml())
-#'@param prefix Optional: For subclasses whose represented elements have
+#' @param params list: (Return value of \code{analyse_xml()})
+#' @param prefix Optional: For subclasses whose represented elements have
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
-#'@param print_result flag: Should the result be printed to the console?
+#' @param print_result flag: Should the result be printed to the console?
 generate_R6 <- function(params,
                         prefix = "",
                         print_result = TRUE){
@@ -317,10 +317,10 @@ generate_R6 <- function(params,
 }
 
 
-#'flags_to_r6_init_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_r6_init_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_r6_init_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -347,11 +347,11 @@ flags_to_r6_init_str <- function(flags, print_result = FALSE){
 }
 
 
-#'flags_to_r6_active_field_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param mutable flag: On per default, turn off if parameters are static
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_r6_active_field_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param mutable flag: On per default, turn off if parameters are static
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_r6_active_field_str <- function(flags,
                                          mutable = TRUE,
                                          print_result = FALSE){
@@ -398,10 +398,10 @@ flags_to_r6_active_field_str <- function(flags,
 }
 
 
-#'flags_to_r6_private_str
-#'@description Helper function to generate a string out of a flag vector
-#'@param flags vector: Flags
-#'@param print_result flag: Should the result be printed to the console?
+#' flags_to_r6_private_str
+#' @description Helper function to generate a string out of a flag vector
+#' @param flags vector: Flags
+#' @param print_result flag: Should the result be printed to the console?
 flags_to_r6_private_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -427,12 +427,12 @@ flags_to_r6_private_str <- function(flags, print_result = FALSE){
 #===== code generation for OGS6 class =====
 
 
-#'generate_add_method
-#'@description Helper function to generate an R6 add_* method for a
+#' generate_add_method
+#' @description Helper function to generate an R6 \code{add_*} method for a
 #' r2ogs6 class object
-#'@param tag_name The tag name of the XML element represented by the class
+#' @param tag_name The tag name of the XML element represented by the class
 #' object
-#'@param parent_tag_name The tag name of the parent of the XML element
+#' @param parent_tag_name The tag name of the parent of the XML element
 #' represented by the class object
 generate_add_method <- function(tag_name, parent_tag_name) {
 
@@ -461,10 +461,10 @@ generate_add_method <- function(tag_name, parent_tag_name) {
 }
 
 
-#'generate_active_field
-#'@description Helper function to generate an R6 active field for a OGS6 class
+#' generate_active_field
+#' @description Helper function to generate an R6 active field for a OGS6 class
 #' parameter
-#'@param parameter_name The name of the OGS6 class parameter
+#' @param parameter_name The name of the OGS6 class parameter
 generate_active_field <- function(parameter_name){
 
     af_str <- paste0(parameter_name, " = function(value) {\n",

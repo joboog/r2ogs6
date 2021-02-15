@@ -2,10 +2,10 @@
 #===== export_gml =====
 
 
-#'export_gml
-#'@description Creates a .gml XML document based on  user input data
-#'@param gml OGS6_gml:
-#'@param path string:
+#' export_gml
+#' @description Creates a .gml XML document based on  user input data
+#' @param gml OGS6_gml:
+#' @param path string:
 export_gml <- function(gml, path) {
 
   assertthat::assert_that(assertthat::is.string(path))

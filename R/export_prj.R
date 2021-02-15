@@ -1,9 +1,11 @@
-#This script contains functions to export the .prj data
 
-#'export_prj
-#'@description Wrapper function to create a .prj XML document based on the user
-#' input data
-#'@param ogs6_obj OGS6: Simulation object
+#===== export_prj =====
+
+
+#' export_prj
+#' @description Wrapper function to create a \code{.prj} XML document based on
+#' the user input data
+#' @param ogs6_obj OGS6: Simulation object
 export_prj <- function(ogs6_obj) {
 
     prj_xml <- xml2::xml_new_root(

@@ -1,9 +1,10 @@
-#Functions to read in data from a .gml file to an OGS6 object
+
+#===== read_in_points =====
 
 
-#'read_in_points
-#'@description Reads points from a .gml file
-#'@param xml_doc A parsed XML document (of class 'xml2::xml_document')
+#' read_in_points
+#' @description Reads points from a \code{.gml} file
+#' @param xml_doc A parsed XML document (of class \code{xml2::xml_document})
 read_in_points <- function(xml_doc) {
 
     points_tibble <- tibble::tibble(x = c(),
@@ -33,9 +34,12 @@ read_in_points <- function(xml_doc) {
 }
 
 
-#'read_in_polylines
-#'@description Reads polylines from a .gml file
-#'@param xml_doc A parsed XML document (of class 'xml2::xml_document')
+#===== read_in_polylines =====
+
+
+#' read_in_polylines
+#' @description Reads polylines from a \code{.gml} file
+#' @param xml_doc A parsed XML document (of class \code{xml2::xml_document})
 read_in_polylines <- function(xml_doc) {
 
     polylines_list <- list()
@@ -64,9 +68,12 @@ read_in_polylines <- function(xml_doc) {
 }
 
 
-#'read_in_surfaces
-#'@description Reads surfaces from a .gml file
-#'@param xml_doc A parsed XML document (of class 'xml2::xml_document')
+#===== read_in_surfaces =====
+
+
+#' read_in_surfaces
+#' @description Reads surfaces from a \code{.gml} file
+#' @param xml_doc A parsed XML document (of class \code{xml2::xml_document})
 read_in_surfaces <- function(xml_doc) {
 
     surfaces_list <- list()

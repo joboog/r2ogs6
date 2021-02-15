@@ -1,12 +1,13 @@
 
-#===== VALIDATION UTILITY =====
+#===== XML validation =====
 
 
-#'validate_read_in_xml
-#'@description Utility function, tries parsing the provided file as an XML
+#' validate_read_in_xml
+#' @description Utility function, tries parsing the provided file as an XML
 #' document
-#'@param path string: A file to be parsed as XML
-#'@return The parsed XML file (as class object of type xml2::xml_document)
+#' @param path string: A file to be parsed as XML
+#' @return The parsed XML file (as class object of type
+#' \code{xml2::xml_document})
 validate_read_in_xml <- function(path){
 
     assertthat::assert_that(assertthat::is.string(path))
@@ -25,14 +26,14 @@ validate_read_in_xml <- function(path){
 }
 
 
-#===== GENERAL READ IN UTILITY =====
+#===== General read_in utility =====
 
 
-#'read_in
-#'@description Reads in elements from a file
-#'@param ogs6_obj A OGS6 class object
-#'@param path string: Path to file XML elements should be read from
-#'@param xpath string: An XPath expression (should be absolute!)
+#' read_in
+#' @description Reads in elements from a file
+#' @param ogs6_obj A OGS6 class object
+#' @param path string: Path to file XML elements should be read from
+#' @param xpath string: An XPath expression (should be absolute!)
 read_in <- function(ogs6_obj,
                     path,
                     xpath){
@@ -70,10 +71,10 @@ read_in <- function(ogs6_obj,
 }
 
 
-#'node_to_r2ogs6_class_object
-#'@description Takes an XML node and turns it into a class object
-#'@param xml_node xml2::xml_node: XML node
-#'@param xpath string: XPath expression (for subclass differentiation)
+#' node_to_r2ogs6_class_object
+#' @description Takes an XML node and turns it into a class object
+#' @param xml_node xml2::xml_node: XML node
+#' @param xpath string: XPath expression (for subclass differentiation)
 node_to_r2ogs6_class_object <- function(xml_node,
                                         xpath){
 
@@ -148,19 +149,15 @@ node_to_r2ogs6_class_object <- function(xml_node,
 
 
 
-#'node_to_object
-#'@description Returns representation of an XML node. This is a recursive
+#' node_to_object
+#' @description Returns representation of an XML node. This is a recursive
 #' function.
-#'ASSUMPTIONS:
-#'1) Leaf nodes will never be r2ogs6_* objects
-#'2) If there are multiple occurrences of r2ogs6_* class (and subclass)
-#' elements on the same level, they have a wrapper node as their parent
-#' (e.g. <processes>, <properties>) which  will contain ONLY elements of this
-#' type
-#'3) Wrapper nodes are represented as lists
-#'4) Parent nodes whose children have no children are represented as lists
-#'@param xml_node xml2::xml_node: XML node
-#'@param xpath string: XPath expression (for subclass differentiation)
+#' ASSUMPTIONS:
+#' 1) Leaf nodes will never be r2ogs6_* objects
+#' 2) Wrapper nodes are represented as lists
+#' 3) Parent nodes whose children have no children are represented as lists
+#' @param xml_node xml2::xml_node: XML node
+#' @param xpath string: XPath expression (for subclass differentiation)
 node_to_object <- function(xml_node,
                            xpath = ""){
 
@@ -224,10 +221,10 @@ node_to_object <- function(xml_node,
 }
 
 
-#'get_class_args
-#'@description Gets class arguments
-#'@param class_name string: The name of a class
-#'@return character: Named vector of class arguments
+#' get_class_args
+#' @description Gets class arguments
+#' @param class_name string: The name of a class
+#' @return character: Named vector of class arguments
 get_class_args <- function(class_name){
 
     assertthat::assert_that(assertthat::is.string(class_name))
@@ -243,12 +240,12 @@ get_class_args <- function(class_name){
 }
 
 
-#'order_parameters
-#'@description Orders a list of parameters corresponding to the argument order
+#' order_parameters
+#' @description Orders a list of parameters corresponding to the argument order
 #' of a class
-#'@param parameters list: Parameters
-#'@param class_name string: The name of a class
-#'@return list: Parameters ordered by argument order of class
+#' @param parameters list: Parameters
+#' @param class_name string: The name of a class
+#' @return list: Parameters ordered by argument order of class
 order_parameters <- function(parameters, class_name){
 
     assertthat::assert_that(is.list(parameters))

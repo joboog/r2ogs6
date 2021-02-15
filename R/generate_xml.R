@@ -2,13 +2,14 @@
 #===== build_redux_doc =====
 
 
-#'build_redux_doc
-#'@description Builds an XML document based on the findings of analyse_xml.
-#' Calls recursive function `build_redux_tree` internally.
-#'@param path string: See ?analyse_xml
-#'@param pattern string: See ?analyse_xml
-#'@param xpath string: See ?analyse_xml
-#'@param export_path string: Path to export the XML document to
+#' build_redux_doc
+#' @description Builds an XML document based on the findings of
+#' \code{analyse_xml()}. Calls recursive function \code{build_redux_tree()}
+#' internally.
+#' @param path string: See \code{?analyse_xml}
+#' @param pattern string: See \code{?analyse_xml}
+#' @param xpath string: See \code{?analyse_xml}
+#' @param export_path string: Path to export the XML document to
 build_redux_doc <- function(path,
                             pattern,
                             xpath,
@@ -45,13 +46,13 @@ build_redux_doc <- function(path,
 #===== build_redux_tree =====
 
 
-#'build_redux_tree
-#'@description Builds an XML tree based on the findings of analyse_xml.
-#' This is a recursive function. Handle with care.
-#'@param path string: See ?analyse_xml
-#'@param pattern string: See ?analyse_xml
-#'@param xpath string: See ?analyse_xml
-#'@param required flag: Recursion utility
+#' build_redux_tree
+#' @description Builds an XML tree based on the findings of
+#' \code{analyse_xml()}. This is a recursive function.
+#' @param path string: See \code{?analyse_xml}
+#' @param pattern string: See \code{?analyse_xml}
+#' @param xpath string: See \code{?analyse_xml}
+#' @param required flag: Recursion utility
 build_redux_tree <- function(path,
                              pattern,
                              xpath,

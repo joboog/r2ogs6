@@ -1,17 +1,19 @@
 
+#===== to_node =====
 
-#'to_node
-#'@description Recursive function to restructure objects so
+
+#' to_node
+#' @description Recursive function to restructure objects so
 #' xml2::as_xml_document() function will convert them to the desired XML format
-#'@param object An object (so far works for r2ogs6 class objects, strings,
+#' @param object An object (so far works for r2ogs6 class objects, strings,
 #' numbers, lists and vectors)
-#'@param object_name string: Optional: The object name. If not supplied, this
+#' @param object_name string: Optional: The object name. If not supplied, this
 #' function tries to guess the tag name by deparsing the 'object' parameter
-#'@param attribute_names Optional: A character vector containing names of
+#' @param attribute_names Optional: A character vector containing names of
 #' attributes or attribute nodes
-#'@param flatten_on_exp character: Optional: This is for vectors which will be
+#' @param flatten_on_exp character: Optional: This is for vectors which will be
 #' flattened to a string in XML
-#'@param unwrap_on_exp character: Optional: This is for lists which will not
+#' @param unwrap_on_exp character: Optional: This is for lists which will not
 #' be exported to XML
 to_node <- function(object, object_name = "",
                     attribute_names = character(),
