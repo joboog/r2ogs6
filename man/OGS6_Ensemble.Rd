@@ -27,7 +27,7 @@ Constructor for the OGS6_Ensemble base class
 \item \href{#method-new}{\code{OGS6_Ensemble$new()}}
 \item \href{#method-print}{\code{OGS6_Ensemble$print()}}
 \item \href{#method-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
-\item \href{#method-relevant_parameter_at}{\code{OGS6_Ensemble$relevant_parameter_at()}}
+\item \href{#method-get_point_data}{\code{OGS6_Ensemble$get_point_data()}}
 \item \href{#method-clone}{\code{OGS6_Ensemble$clone()}}
 }
 }
@@ -94,22 +94,38 @@ This is implementented via the 'parallel' package.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-relevant_parameter_at"></a>}}
-\if{latex}{\out{\hypertarget{method-relevant_parameter_at}{}}}
-\subsection{Method \code{relevant_parameter_at()}}{
-If the ensemble was created in sequential_mode, this will get the
-name of the value vector that was being iterated over at the given
-`index` during ensemble creation. I. e. if the ensemble was created
-with the value vectors `a = c(1, 2, 3)` and `b = c("foo", "bar")`,
-an `index` of 4 would return `"b"`
+\if{html}{\out{<a id="method-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\subsection{Method \code{get_point_data()}}{
+Wrapper for `OGS6_pvd$get_point_data()` Returns combined dataframe
+with extra `name` and / or `perc` column depending on if
+`sequential_mode` and / or `percentages_mode` were used.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$relevant_parameter_at(index)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$get_point_data(
+  pvd_id = 1,
+  point_ids,
+  keys,
+  start_at_timestep,
+  end_at_timestep
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{index}}{number: Index}
+\item{\code{pvd_id}}{number: Optional: Which .pvd to consider in OGS6$pvds.
+Defaults to 1.}
+
+\item{\code{point_ids}}{numeric: Optional: Point IDs. Defaults to all.}
+
+\item{\code{keys}}{character: Optional: `Name` attributes of `DataArray`
+elements. Defaults to all.}
+
+\item{\code{start_at_timestep}}{number: Optional: Timestep to start at.
+Defaults to first timestep.}
+
+\item{\code{end_at_timestep}}{number: Optional: Timestep to end at. Defaults
+to last timestep.}
 }
 \if{html}{\out{</div>}}
 }

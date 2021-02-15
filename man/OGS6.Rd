@@ -4,62 +4,105 @@
 \alias{OGS6}
 \title{OGS6}
 \description{
-Constructor for the OGS6 base class
+Constructor for the \code{OGS6} base class
+}
+\examples{
+
+## ------------------------------------------------
+## Method `OGS6$new`
+## ------------------------------------------------
+
+ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+
+## ------------------------------------------------
+## Method `OGS6$add`
+## ------------------------------------------------
+
+ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
+
+## ------------------------------------------------
+## Method `OGS6$add_gml`
+## ------------------------------------------------
+
+ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add_gml("this_works.gml")
+\dontrun{ogs6_obj$add_gml("this_doesnt.oops")}
+
+## ------------------------------------------------
+## Method `OGS6$add_vtu`
+## ------------------------------------------------
+
+ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add_vtu("this_works.vtu")
+\dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
+
+## ------------------------------------------------
+## Method `OGS6$get_status`
+## ------------------------------------------------
+
+ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$get_status()
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{sim_name}}{Simulation name. `value` must be string}
+\item{\code{sim_name}}{Simulation name. \code{value} must be string}
 
-\item{\code{sim_path}}{Simulation path. `value` must be string}
+\item{\code{sim_path}}{Simulation path. \code{value} must be string}
 
-\item{\code{logfile}}{Logfile path. `value` must be string}
+\item{\code{logfile}}{Logfile path. \code{value} must be string}
 
-\item{\code{gml}}{.gml. read-only}
+\item{\code{gml}}{\code{.gml}. read-only}
 
-\item{\code{geometry}}{.prj `geometry` tag. `value` must be string}
+\item{\code{geometry}}{\code{.prj} \code{geometry} tag. \code{value} must be string}
 
-\item{\code{meshes}}{.prj `meshes` tag. `value` must be list of strings}
+\item{\code{meshes}}{\code{.prj} \code{meshes} tag. \code{value} must be list of strings}
 
-\item{\code{vtus}}{.vtus. `value` must be list of `OGS_vtu` objects}
+\item{\code{vtus}}{\code{.vtu}s. \code{value} must be list of \code{OGS6_vtu} objects}
 
-\item{\code{python_script}}{.prj `python_script` tag. `value` must be string}
+\item{\code{python_script}}{\code{.prj} \code{python_script} tag. \code{value} must be string}
 
-\item{\code{search_length_algorithm}}{.prj `search_length_algorithm` tag. `value` must be
-`r2ogs6_search_length_algorithm` object}
+\item{\code{search_length_algorithm}}{\code{.prj} \code{search_length_algorithm} tag. \code{value} must be
+\code{r2ogs6_search_length_algorithm} object}
 
-\item{\code{processes}}{.prj `processes` tag. `value` must be list of `r2ogs6_process` objects}
+\item{\code{processes}}{\code{.prj} \code{processes} tag. \code{value} must be list of
+\code{r2ogs6_process} objects}
 
-\item{\code{time_loop}}{.prj `time_loop` tag. `value` must be `r2ogs6_time_loop` object}
+\item{\code{time_loop}}{\code{.prj} \code{time_loop} tag. \code{value} must be
+\code{r2ogs6_time_loop} object}
 
-\item{\code{local_coordinate_system}}{.prj `local_coordinate_system` tag. `value` must be
-`r2ogs6_local_coordinate_system` object}
+\item{\code{local_coordinate_system}}{\code{.prj} \code{local_coordinate_system} tag. \code{value} must be
+\code{r2ogs6_local_coordinate_system} object}
 
-\item{\code{media}}{.prj `media` tag. `value` must be list of `r2ogs6_medium` objects}
+\item{\code{media}}{\code{.prj} \code{media} tag. \code{value} must be list of
+\code{r2ogs6_medium} objects}
 
-\item{\code{parameters}}{.prj `parameters` tag. `value` must be list of `r2ogs6_parameter`
-objects}
+\item{\code{parameters}}{\code{.prj} \code{parameters} tag. \code{value} must be list of
+\code{r2ogs6_parameter} objects}
 
-\item{\code{chemical_system}}{.prj `chemical_system` tag. `value` must be `r2ogs6_chemical_system`
-object}
+\item{\code{chemical_system}}{\code{.prj} \code{chemical_system} tag. \code{value} must be
+\code{r2ogs6_chemical_system} object}
 
-\item{\code{curves}}{.prj `curves` tag. `value` must be list of `r2ogs6_curve` objects}
+\item{\code{curves}}{\code{.prj} \code{curves} tag. \code{value} must be list of
+\code{r2ogs6_curve} objects}
 
-\item{\code{process_variables}}{.prj `process_variables` tag. `value` must be list of
-`r2ogs6_process_variable` objects}
+\item{\code{process_variables}}{\code{.prj} \code{process_variables} tag. \code{value} must be list of
+\code{r2ogs6_process_variable} objects}
 
-\item{\code{nonlinear_solvers}}{.prj `nonlinear_solvers` tag. `value` must be list of
-`r2ogs6_nonlinear_solver` objects}
+\item{\code{nonlinear_solvers}}{\code{.prj} \code{nonlinear_solvers} tag. \code{value} must be list of
+\code{r2ogs6_nonlinear_solver} objects}
 
-\item{\code{linear_solvers}}{.prj `linear_solvers` tag. `value` must be list of
-`r2ogs6_linear_solver` objects}
+\item{\code{linear_solvers}}{\code{.prj} \code{linear_solvers} tag. \code{value} must be list of
+\code{r2ogs6_linear_solver} objects}
 
-\item{\code{test_definition}}{.prj `test_definition` tag. `value` must be list of `r2ogs6_vtkdiff`
-objects}
+\item{\code{test_definition}}{\code{.prj} \code{test_definition} tag. \code{value} must be list of
+\code{r2ogs6_vtkdiff} objects}
 
-\item{\code{insitu}}{.prj `insitu` tag. `value` must be `r2ogs6_insitu` object}
+\item{\code{insitu}}{\code{.prj} \code{insitu} tag. \code{value} must be
+\code{r2ogs6_insitu} object}
 
-\item{\code{pvds}}{.pvds. `value` must be list of `OGS6_pvd` objects}
+\item{\code{pvds}}{\code{.pvd}s. \code{value} must be list of \code{OGS6_pvd} objects}
 }
 \if{html}{\out{</div>}}
 }
@@ -96,6 +139,14 @@ saved}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add"></a>}}
@@ -113,12 +164,22 @@ Adds a .prj simulation component
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_gml"></a>}}
 \if{latex}{\out{\hypertarget{method-add_gml}{}}}
 \subsection{Method \code{add_gml()}}{
-Adds a reference to a .gml file and optionally, a OGS6_gml object
+Adds a reference to a file with ending .gml and optionally, a
+\code{OGS6_gml} object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_gml(gml)}\if{html}{\out{</div>}}
 }
@@ -126,17 +187,28 @@ Adds a reference to a .gml file and optionally, a OGS6_gml object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{gml}}{string | r2ogs6_gml: Either a path to a file with extension
-.gml or a r2ogs6_gml object.}
+\item{\code{gml}}{string | OGS6_gml: Either a path to a file with extension
+.gml or a OGS6_gml object.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add_gml("this_works.gml")
+\dontrun{ogs6_obj$add_gml("this_doesnt.oops")}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_vtu"></a>}}
 \if{latex}{\out{\hypertarget{method-add_vtu}{}}}
 \subsection{Method \code{add_vtu()}}{
-Adds a reference to a .vtu file and optionally, a OGS6_vtu object
+Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
+object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
 }
@@ -144,19 +216,29 @@ Adds a reference to a .vtu file and optionally, a OGS6_vtu object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{string:}
+\item{\code{path}}{string: A path}
 
-\item{\code{read_in_vtu}}{flag: Optional: Should .vtu file just be copied or
-read in too?}
+\item{\code{read_in_vtu}}{flag: Optional: Should \code{.vtu} file just be
+copied or read in too?}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$add_vtu("this_works.vtu")
+\dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-get_status}{}}}
 \subsection{Method \code{get_status()}}{
-Checks if the OGS6 object has all necessary parameters for
+Checks if the \code{OGS6} object has all necessary parameters for
 starting a simulation
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$get_status(print_status = TRUE)}\if{html}{\out{</div>}}
@@ -169,6 +251,15 @@ starting a simulation
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+ogs6_obj$get_status()
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
@@ -195,7 +286,7 @@ Prints logfile to console (if it exists)
 \if{html}{\out{<a id="method-clear"></a>}}
 \if{latex}{\out{\hypertarget{method-clear}{}}}
 \subsection{Method \code{clear()}}{
-Clears components from the OGS6 object
+Clears components from the \code{OGS6} object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6$clear(which)}\if{html}{\out{</div>}}
 }
@@ -205,7 +296,7 @@ Clears components from the OGS6 object
 \describe{
 \item{\code{which}}{character: The names of the components (all by default).
 If you want to delete only some components, run
-names(prj_top_level_classes()) for the available options.}
+\code{names(prj_top_level_classes())} for the available options.}
 }
 \if{html}{\out{</div>}}
 }

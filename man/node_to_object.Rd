@@ -16,10 +16,6 @@ Returns representation of an XML node. This is a recursive
 function.
 ASSUMPTIONS:
 1) Leaf nodes will never be r2ogs6_* objects
-2) If there are multiple occurrences of r2ogs6_* class (and subclass)
-elements on the same level, they have a wrapper node as their parent
-(e.g. <processes>, <properties>) which  will contain ONLY elements of this
-type
-3) Wrapper nodes are represented as lists
-4) Parent nodes whose children have no children are represented as lists
+2) Wrapper nodes are represented as lists
+3) Parent nodes whose children have no children are represented as lists
 }

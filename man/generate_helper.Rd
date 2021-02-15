@@ -7,7 +7,7 @@
 generate_helper(params, prefix = "", print_result = FALSE)
 }
 \arguments{
-\item{params}{list: (Return value of analyse_xml())}
+\item{params}{list: (Return value of \code{analyse_xml()})}
 
 \item{prefix}{Optional: For subclasses whose represented elements have
 the same tag name as an element for which a class was already specified,

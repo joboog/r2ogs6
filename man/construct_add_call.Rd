@@ -7,17 +7,17 @@
 construct_add_call(object, nested_call = FALSE)
 }
 \arguments{
-\item{object}{An object (numeric, character, list, NULL, OGS6 or r2ogs6 class
-object)}
+\item{object}{An object (numeric, character, list, NULL, \code{OGS6} or
+\code{r2ogs6} class object)}
 
 \item{nested_call}{Optional: For recursion purposes, you should leave this as
 it is.}
 }
 \value{
-A string representing the code with which the component would be added
-to an OGS6 object
+A string representing the code with which the component would be
+added to an \code{OGS6} object
 }
 \description{
-Constructs a call based on an OGS6 component. This is a
+Constructs a call based on an \code{OGS6} component. This is a
 recursive function, handle with care.
 }

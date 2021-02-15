@@ -9,10 +9,10 @@ ogs_export_sim_files(ogs6_obj, test_mode = FALSE)
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
 
-\item{test_mode}{flag: If `TRUE`, Will not check status of `ogs6_obj` before
-exporting files. Defaults to `FALSE`}
+\item{test_mode}{flag: If \code{TRUE}, Will not check status of
+\code{ogs6_obj} before exporting files. Defaults to \code{FALSE}}
 }
 \description{
-Creates `ogs6_obj$sim_path` directory if it does not exist yet
+Creates \code{ogs6$sim_path} directory if it does not exist yet
 and exports and / or copies all simulation files to it.
 }

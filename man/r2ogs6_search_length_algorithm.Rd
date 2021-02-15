@@ -14,3 +14,7 @@ r2ogs6_search_length_algorithm(type, value = NULL)
 \description{
 tag: search_length_algorithm
 }
+\examples{
+r2ogs6_search_length_algorithm(type = "fixed",
+                               value = 1e-06)
+}

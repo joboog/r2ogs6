@@ -10,6 +10,6 @@ export_prj(ogs6_obj)
 \item{ogs6_obj}{OGS6: Simulation object}
 }
 \description{
-Wrapper function to create a .prj XML document based on the user
-input data
+Wrapper function to create a \code{.prj} XML document based on
+the user input data
 }

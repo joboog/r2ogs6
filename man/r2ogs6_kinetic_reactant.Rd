@@ -23,3 +23,7 @@ r2ogs6_kinetic_reactant(
 \description{
 S3 class describing .prj kinetic_reactant
 }
+\examples{
+r2ogs6_kinetic_reactant(name = "Productc",
+                        initial_amount = 1e-06)
+}

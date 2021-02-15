@@ -11,7 +11,8 @@ filter_invalid_xml(paths, encoding = "ISO-8859-1", print_messages = TRUE)
 
 \item{encoding}{string: Optional: XML encoding. Defaults to ISO-8859-1}
 
-\item{print_messages}{flag: Optional: Print error messages? Defaults to TRUE}
+\item{print_messages}{flag: Optional: Print error messages? Defaults to
+\code{TRUE}}
 }
 \value{
 character: Vector of invalid XML paths

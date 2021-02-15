@@ -10,7 +10,7 @@ get_tag_from_class(class_name)
 \item{class_name}{string: The name of a r2ogs6 class}
 }
 \value{
-string: The tag name corresponding to `class_name`
+string: The tag name corresponding to \code{class_name}
 }
 \description{
 Utility function, returns the tag name of a r2ogs6 class

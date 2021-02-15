@@ -10,5 +10,5 @@ as_dir_path(path)
 \item{path}{string: A path}
 }
 \description{
-Checks if a given path ends on '/'
+Checks if a given path ends on \code{/}
 }

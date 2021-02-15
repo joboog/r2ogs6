@@ -17,3 +17,8 @@ are given}
 \description{
 tag: curve, a curve
 }
+\examples{
+r2ogs6_curve(name = "Dirichlet_temporal",
+             coords = "0 3",
+             values = "200 200")
+}

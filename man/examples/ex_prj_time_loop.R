@@ -1,0 +1,32 @@
+r2ogs6_time_loop(
+    processes = list(
+        process = r2ogs6_tl_process(
+            ref = "HM",
+            nonlinear_solver = "basic_newton",
+            convergence_criterion = r2ogs6_convergence_criterion(
+                type = "DeltaX",
+                norm_type = "NORM2",
+                reltol = 1e-08
+            ),
+            time_discretization = list(type = "BackwardEuler"),
+            time_stepping = r2ogs6_time_stepping(
+                type = "FixedTimeStepping",
+                t_initial = 0,
+                t_end = 10000,
+                timesteps = list(pair = list(1000,
+                                             delta_t = 10))
+            )
+        )
+    ),
+    output = r2ogs6_output(
+        type = "VTK",
+        prefix = "flow_free_expansion",
+        variables = list(
+            variable = "displacement",
+            variable = "pressure"
+        ),
+        suffix = "_ts_{:timestep}_t_{:time}",
+        timesteps = list(pair = list(1,
+                                     each_steps = 1000))
+    )
+)

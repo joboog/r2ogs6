@@ -13,7 +13,7 @@ coerce_names(vector, names)
 per default}
 }
 \value{
-vector: Named vector where the names correspond to `names`
+vector: Named vector where the names correspond to \code{names}
 }
 \description{
 Validator function for a parameter vector

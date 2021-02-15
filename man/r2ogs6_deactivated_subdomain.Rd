@@ -14,3 +14,8 @@ r2ogs6_deactivated_subdomain(time_interval, material_ids)
 \description{
 tag: deactivated_subdomain
 }
+\examples{
+r2ogs6_deactivated_subdomain(time_interval = list(start = "0",
+                                                  end = "1"),
+                             material_ids = 1)
+}

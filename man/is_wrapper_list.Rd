@@ -9,9 +9,9 @@ is_wrapper_list(list, element_class)
 \arguments{
 \item{list}{list: List to check}
 
-\item{element_class}{string: Class each element of `list` should have}
+\item{element_class}{string: Class each element of \code{list} should have}
 }
 \description{
 Checks if a list consists only of elements of class
-`element_class`
+\code{element_class}
 }

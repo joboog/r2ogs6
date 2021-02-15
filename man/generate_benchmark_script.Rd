@@ -14,7 +14,7 @@ generate_benchmark_script(
 )
 }
 \arguments{
-\item{prj_path}{string: .prj file the script will be based on}
+\item{prj_path}{string: \code{.prj} file the script will be based on}
 
 \item{sim_path}{string: Path where all simulation files will be saved}
 
@@ -22,12 +22,12 @@ generate_benchmark_script(
 
 \item{script_path}{string: Path where benchmark script will be saved}
 
-\item{read_in_gml}{flag: Optional: Should .gml file just be copied or read
-in too?}
+\item{read_in_gml}{flag: Optional: Should \code{.gml} file just be copied or
+read in too?}
 
-\item{read_in_vtu}{flag: Optional: Should .vtu file(s) just be copied or read
-in too?}
+\item{read_in_vtu}{flag: Optional: Should \code{.vtu} file(s) just be copied
+or read in too?}
 }
 \description{
-Generates a benchmark script from an existing .prj file.
+Generates a benchmark script from an existing \code{.prj} file.
 }
