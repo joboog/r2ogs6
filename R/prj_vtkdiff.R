@@ -2,15 +2,16 @@
 #===== r2ogs6_vtkdiff =====
 
 
-#'r2ogs6_vtkdiff
-#'@description tag: vtkdiff
+#' r2ogs6_vtkdiff
+#' @description tag: vtkdiff
 #'
-#'@param field string: ...
-#'@param absolute_tolerance string | double: Absolute tolerance
-#'@param relative_tolerance string | double: Relative tolerance
-#'@param file string: Optional: File
-#'@param regex string: Optional: A regular expression
-#'@export
+#' @param field string: ...
+#' @param absolute_tolerance string | double: Absolute tolerance
+#' @param relative_tolerance string | double: Relative tolerance
+#' @param file string: Optional: File
+#' @param regex string: Optional: A regular expression
+#' @example man/examples/ex_prj_vtkdiff.R
+#' @export
 r2ogs6_vtkdiff <- function(field,
                            absolute_tolerance,
                            relative_tolerance,
@@ -38,10 +39,10 @@ new_r2ogs6_vtkdiff <- function(field,
     assertthat::assert_that(assertthat::is.string(field))
 
     are_numbers(absolute_tolerance,
-                       relative_tolerance)
+                relative_tolerance)
 
     are_null_or_strings(file,
-                               regex)
+                        regex)
 
     structure(
         list(field = field,

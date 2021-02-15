@@ -2,13 +2,14 @@
 #===== r2ogs6_medium =====
 
 
-#'r2ogs6_medium
-#'@description tag: medium, a specific medium with optional id corresponding
-#' to the MaterialIDs
-#'@param phases list, r2ogs6_phase: Optional: Medium phases
-#'@param properties list, r2ogs6_pr_property: Optional: Medium properties
-#'@param id string | double: Optional: ID corresponding to the MaterialIDs
-#'@export
+#' r2ogs6_medium
+#' @description tag: medium, a specific medium with optional id corresponding
+#'   to the MaterialIDs
+#' @param phases list, r2ogs6_phase: Optional: Medium phases
+#' @param properties list, r2ogs6_pr_property: Optional: Medium properties
+#' @param id string | double: Optional: ID corresponding to the MaterialIDs
+#' @example man/examples/ex_prj_medium.R
+#' @export
 r2ogs6_medium <- function(phases = NULL,
                           properties = NULL,
                           id = NULL) {
@@ -54,42 +55,43 @@ new_r2ogs6_medium <- function(phases = NULL,
 #===== r2ogs6_pr_property =====
 
 
-#'r2ogs6_pr_property
-#'@description tag: property
-#'@param name string:
-#'@param type string:
-#'@param value Optional:
-#'@param parameter_name Optional:
-#'@param exponent Optional:
-#'@param residual_liquid_saturation Optional:
-#'@param residual_gas_saturation Optional:
-#'@param p_b Optional:
-#'@param independent_variable Optional:
-#'@param curve Optional:
-#'@param minimum_relative_permeability_liquid Optional:
-#'@param initial_permeability Optional:
-#'@param maximum_permeability Optional:
-#'@param lambda Optional:
-#'@param cutoff_value Optional:
-#'@param intrinsic_permeability Optional:
-#'@param initial_aperture Optional:
-#'@param mean_frac_distance Optional:
-#'@param threshold_strain Optional:
-#'@param fracture_normal Optional:
-#'@param reference_permeability Optional:
-#'@param fitting_factor Optional:
-#'@param cohesion Optional:
-#'@param friction_angle Optional:
-#'@param tensile_strength_parameter Optional:
-#'@param b1 Optional:
-#'@param b2 Optional:
-#'@param b3 Optional:
-#'@param minimum_permeability Optional:
-#'@param initial_porosity Optional:
-#'@param entry_pressure Optional:
-#'@param min_relative_permeability_liquid Optional:
-#'@param min_relative_permeability_gas Optional:
-#'@export
+#' r2ogs6_pr_property
+#' @description tag: property
+#' @param name string:
+#' @param type string:
+#' @param value Optional:
+#' @param parameter_name Optional:
+#' @param exponent Optional:
+#' @param residual_liquid_saturation Optional:
+#' @param residual_gas_saturation Optional:
+#' @param p_b Optional:
+#' @param independent_variable Optional:
+#' @param curve Optional:
+#' @param minimum_relative_permeability_liquid Optional:
+#' @param initial_permeability Optional:
+#' @param maximum_permeability Optional:
+#' @param lambda Optional:
+#' @param cutoff_value Optional:
+#' @param intrinsic_permeability Optional:
+#' @param initial_aperture Optional:
+#' @param mean_frac_distance Optional:
+#' @param threshold_strain Optional:
+#' @param fracture_normal Optional:
+#' @param reference_permeability Optional:
+#' @param fitting_factor Optional:
+#' @param cohesion Optional:
+#' @param friction_angle Optional:
+#' @param tensile_strength_parameter Optional:
+#' @param b1 Optional:
+#' @param b2 Optional:
+#' @param b3 Optional:
+#' @param minimum_permeability Optional:
+#' @param initial_porosity Optional:
+#' @param entry_pressure Optional:
+#' @param min_relative_permeability_liquid Optional:
+#' @param min_relative_permeability_gas Optional:
+#' @example man/examples/ex_prj_pr_property.R
+#' @export
 r2ogs6_pr_property <- function(name,
                                type,
                                value = NULL,
@@ -292,12 +294,12 @@ new_r2ogs6_pr_property <- function(name,
 }
 
 
-#'ogs_get_medium_property
-#'@description Returns a medium property based on the property name
-#'@param medium r2ogs6_medium
-#'@param name string: The property name
-#'@return r2ogs6_pr_property
-#'@export
+#' ogs_get_medium_property
+#' @description Returns a medium property based on the property name
+#' @param medium r2ogs6_medium
+#' @param name string: The property name
+#' @return r2ogs6_pr_property
+#' @export
 ogs_get_medium_property <- function(medium, name){
 
     assertthat::assert_that(class(medium) == "r2ogs6_medium")
@@ -313,13 +315,14 @@ ogs_get_medium_property <- function(medium, name){
 #===== r2ogs6_phase =====
 
 
-#'r2ogs6_phase
-#'@description tag: phase, a coherent material with homogeneous properties
-#'@param type string: Phase type
-#' (get valid types with get_valid_phase_types())
-#'@param properties list, r2ogs6_pr_property: Properties
-#'@param components list, components
-#'@export
+#' r2ogs6_phase
+#' @description tag: phase, a coherent material with homogeneous properties
+#' @param type string: Phase type
+#'   (get valid types with get_valid_phase_types())
+#' @param properties list, r2ogs6_pr_property: Properties
+#' @param components list, components
+#' @example man/examples/ex_prj_phase.R
+#' @export
 r2ogs6_phase <- function(type,
                          properties = NULL,
                          components = NULL){
@@ -375,25 +378,26 @@ get_valid_phase_types <- function(){
 #===== r2ogs6_ph_property =====
 
 
-#'r2ogs6_ph_property
-#'@description tag: property
-#'@param name string: Property name
-#'@param type string: Property type
-#'@param value Optional: string | double: ...
-#'@param reference_value Optional: string | double:
-#'@param initial_porosity Optional: string:
-#'@param minimal_porosity Optional: string | double:
-#'@param maximal_porosity Optional: string | double:
-#'@param parameter_name Optional: string:
-#'@param exponents Optional: string | numeric:
-#'@param offset Optional: string | double:
-#'@param exponent Optional: list:
-#'@param swelling_pressures Optional: string | numeric:
-#'@param lower_saturation_limit Optional: string | double:
-#'@param upper_saturation_limit Optional: string | double:
-#'@param intrinsic_permeabilities Optional: string | numeric:
-#'@param ... independent_variable
-#'@export
+#' r2ogs6_ph_property
+#' @description tag: property
+#' @param name string: Property name
+#' @param type string: Property type
+#' @param value Optional: string | double: ...
+#' @param reference_value Optional: string | double:
+#' @param initial_porosity Optional: string:
+#' @param minimal_porosity Optional: string | double:
+#' @param maximal_porosity Optional: string | double:
+#' @param parameter_name Optional: string:
+#' @param exponents Optional: string | numeric:
+#' @param offset Optional: string | double:
+#' @param exponent Optional: list:
+#' @param swelling_pressures Optional: string | numeric:
+#' @param lower_saturation_limit Optional: string | double:
+#' @param upper_saturation_limit Optional: string | double:
+#' @param intrinsic_permeabilities Optional: string | numeric:
+#' @param ... independent_variable
+#' @example man/examples/ex_prj_ph_property.R
+#' @export
 r2ogs6_ph_property <- function(name,
                                type,
                                value = NULL,
@@ -537,11 +541,12 @@ new_r2ogs6_ph_property <- function(name,
 #===== r2ogs6_component =====
 
 
-#'r2ogs6_component
-#'@description tag: component
-#'@param name string:
-#'@param properties list, r2ogs6_com_property:
-#'@export
+#' r2ogs6_component
+#' @description tag: component
+#' @param name string:
+#' @param properties list, r2ogs6_com_property:
+#' @example man/examples/ex_prj_component.R
+#' @export
 r2ogs6_component <- function(name,
                              properties){
 
@@ -577,13 +582,14 @@ new_r2ogs6_component <- function(name,
 #===== r2ogs6_com_property =====
 
 
-#'r2ogs6_com_property
-#'@description tag: property
-#'@param name string: Property name
-#'@param type string: Property type
-#'@param value Optional: string | double: ...
-#'@param parameter_name Optional:
-#'@export
+#' r2ogs6_com_property
+#' @description tag: property
+#' @param name string: Property name
+#' @param type string: Property type
+#' @param value Optional: string | double: ...
+#' @param parameter_name Optional:
+#' @example man/examples/ex_prj_com_property.R
+#' @export
 r2ogs6_com_property <- function(name,
                                 type,
                                 value = NULL,

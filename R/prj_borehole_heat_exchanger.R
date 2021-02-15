@@ -2,16 +2,17 @@
 #===== r2ogs6_borehole_heat_exchanger =====
 
 
-#'r2ogs6_borehole_heat_exchanger
-#'@description tag: borehole_heat_exchanger
-#'@param type string:
-#'@param flow_and_temperature_control r2ogs6_flow_and_temperature_control:
-#'@param borehole list:
-#'@param grout list:
-#'@param pipes r2ogs6_pipes:
-#'@param refrigerant list:
-#'@param use_bhe_pipe_network Optional: string ("true" | "false"):
-#'@export
+#' r2ogs6_borehole_heat_exchanger
+#' @description tag: borehole_heat_exchanger
+#' @param type string:
+#' @param flow_and_temperature_control r2ogs6_flow_and_temperature_control:
+#' @param borehole list:
+#' @param grout list:
+#' @param pipes r2ogs6_pipes:
+#' @param refrigerant list:
+#' @param use_bhe_pipe_network Optional: string ("true" | "false"):
+#' @example man/examples/ex_prj_borehole_heat_exchanger.R
+#' @export
 r2ogs6_borehole_heat_exchanger <- function(type,
                                            flow_and_temperature_control,
                                            borehole,
@@ -81,15 +82,16 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
 #===== r2ogs6_flow_and_temperature_control =====
 
 
-#'r2ogs6_flow_and_temperature_control
-#'@description tag: flow_and_temperature_control
-#'@param type string:
-#'@param flow_rate Optional: string | double:
-#'@param temperature_curve Optional: string:
-#'@param power Optional: string | double:
-#'@param power_curve Optional: string:
-#'@param flow_rate_curve Optional: string:
-#'@export
+#' r2ogs6_flow_and_temperature_control
+#' @description tag: flow_and_temperature_control
+#' @param type string:
+#' @param flow_rate Optional: string | double:
+#' @param temperature_curve Optional: string:
+#' @param power Optional: string | double:
+#' @param power_curve Optional: string:
+#' @param flow_rate_curve Optional: string:
+#' @example man/examples/ex_prj_flow_and_temperature_control.R
+#' @export
 r2ogs6_flow_and_temperature_control <- function(type,
                                                 flow_rate = NULL,
                                                 temperature_curve = NULL,
@@ -146,15 +148,16 @@ new_r2ogs6_flow_and_temperature_control <- function(type,
 #===== r2ogs6_pipes =====
 
 
-#'r2ogs6_pipes
-#'@description tag: pipes
-#'@param longitudinal_dispersion_length string | double:
-#'@param inlet Optional: list:
-#'@param outlet Optional: list:
-#'@param distance_between_pipes Optional: string | double:
-#'@param outer Optional: list:
-#'@param inner Optional: list:
-#'@export
+#' r2ogs6_pipes
+#' @description tag: pipes
+#' @param longitudinal_dispersion_length string | double:
+#' @param inlet Optional: list:
+#' @param outlet Optional: list:
+#' @param distance_between_pipes Optional: string | double:
+#' @param outer Optional: list:
+#' @param inner Optional: list:
+#' @example man/examples/ex_prj_pipes.R
+#' @export
 r2ogs6_pipes <- function(longitudinal_dispersion_length,
                          inlet = NULL,
                          outlet = NULL,

@@ -2,17 +2,18 @@
 #===== r2ogs6_process_variable =====
 
 
-#'r2ogs6_process_variable
-#'@description tag: process_variable
-#'@param name string: The name of the process variable
-#'@param components string | double:
-#'@param order string | double:
-#'@param initial_condition string:
-#'@param boundary_conditions list, r2ogs6_boundary_condition:
-#'@param source_terms Optional: list, r2ogs6_source_term:
-#'@param mesh Optional: string: list:
-#'@param deactivated_subdomains Optional: list, r2ogs6_deactivated_subdomain:
-#'@export
+#' r2ogs6_process_variable
+#' @description tag: process_variable
+#' @param name string: The name of the process variable
+#' @param components string | double:
+#' @param order string | double:
+#' @param initial_condition string:
+#' @param boundary_conditions list, r2ogs6_boundary_condition:
+#' @param source_terms Optional: list, r2ogs6_source_term:
+#' @param mesh Optional: string: list:
+#' @param deactivated_subdomains Optional: list, r2ogs6_deactivated_subdomain:
+#' @example man/examples/ex_prj_process_variable.R
+#' @export
 r2ogs6_process_variable <- function(name,
                                     components,
                                     order,
@@ -92,33 +93,34 @@ new_r2ogs6_process_variable <- function(name,
 #===== r2ogs6_boundary_condition =====
 
 
-#'r2ogs6_boundary_condition
-#'@description tag: boundary_condition
-#'@param type string:
-#'@param parameter string:
-#'@param geometrical_set Optional: string:
-#'@param geometry Optional: string:
-#'@param component Optional: string | double:
-#'@param mesh Optional: string:
-#'@param alpha Optional: string:
-#'@param u_0 Optional: string:
-#'@param constraint_type Optional: string:
-#'@param constraining_process_variable Optional: string:
-#'@param constraint_threshold Optional: string | double:
-#'@param constraint_direction Optional: string:
-#'@param area_parameter Optional: string:
-#'@param bc_object Optional: string:
-#'@param flush_stdout Optional: string:
-#'@param property_name Optional: string:
-#'@param initial_value_parameter Optional: string:
-#'@param constant_name Optional: string:
-#'@param coefficient_current_variable_name Optional: string:
-#'@param coefficient_other_variable_name Optional: string:
-#'@param coefficient_mixed_variables_name Optional: string:
-#'@param threshold_parameter Optional: string:
-#'@param comparison_operator Optional: string:
-#'@param time_interval Optional: list of 2, character:
-#'@export
+#' r2ogs6_boundary_condition
+#' @description tag: boundary_condition
+#' @param type string:
+#' @param parameter string:
+#' @param geometrical_set Optional: string:
+#' @param geometry Optional: string:
+#' @param component Optional: string | double:
+#' @param mesh Optional: string:
+#' @param alpha Optional: string:
+#' @param u_0 Optional: string:
+#' @param constraint_type Optional: string:
+#' @param constraining_process_variable Optional: string:
+#' @param constraint_threshold Optional: string | double:
+#' @param constraint_direction Optional: string:
+#' @param area_parameter Optional: string:
+#' @param bc_object Optional: string:
+#' @param flush_stdout Optional: string:
+#' @param property_name Optional: string:
+#' @param initial_value_parameter Optional: string:
+#' @param constant_name Optional: string:
+#' @param coefficient_current_variable_name Optional: string:
+#' @param coefficient_other_variable_name Optional: string:
+#' @param coefficient_mixed_variables_name Optional: string:
+#' @param threshold_parameter Optional: string:
+#' @param comparison_operator Optional: string:
+#' @param time_interval Optional: list of 2, character:
+#' @example man/examples/ex_prj_boundary_condition.R
+#' @export
 r2ogs6_boundary_condition <- function(type,
                                       parameter = NULL,
                                       geometrical_set = NULL,
@@ -275,15 +277,16 @@ new_r2ogs6_boundary_condition <- function(type,
 #===== r2ogs6_source_term =====
 
 
-#'r2ogs6_source_term
-#'@description tag: source_term
-#'@param type string:
-#'@param parameter Optional: string:
-#'@param geometrical_set Optional: string:
-#'@param geometry Optional: string:
-#'@param mesh Optional: string:
-#'@param source_term_object Optional: string:
-#'@export
+#' r2ogs6_source_term
+#' @description tag: source_term
+#' @param type string:
+#' @param parameter Optional: string:
+#' @param geometrical_set Optional: string:
+#' @param geometry Optional: string:
+#' @param mesh Optional: string:
+#' @param source_term_object Optional: string:
+#' @example man/examples/ex_prj_source_term.R
+#' @export
 r2ogs6_source_term <- function(type,
                                parameter = NULL,
                                geometrical_set = NULL,
@@ -312,10 +315,10 @@ new_r2ogs6_source_term <- function(type,
     assertthat::assert_that(assertthat::is.string(type))
 
     are_null_or_strings(parameter,
-                               geometrical_set,
-                               geometry,
-                               mesh,
-                               source_term_object)
+                        geometrical_set,
+                        geometry,
+                        mesh,
+                        source_term_object)
 
     structure(list(type = type,
                    parameter = parameter,
@@ -336,11 +339,12 @@ new_r2ogs6_source_term <- function(type,
 #===== r2ogs6_deactivated_subdomain =====
 
 
-#'r2ogs6_deactivated_subdomain
-#'@description tag: deactivated_subdomain
-#'@param time_interval list, numeric:
-#'@param material_ids string | double:
-#'@export
+#' r2ogs6_deactivated_subdomain
+#' @description tag: deactivated_subdomain
+#' @param time_interval list, numeric:
+#' @param material_ids string | double:
+#' @example man/examples/ex_prj_deactivated_subdomain.R
+#' @export
 r2ogs6_deactivated_subdomain <- function(time_interval,
                                          material_ids){
 

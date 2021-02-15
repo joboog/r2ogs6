@@ -2,13 +2,14 @@
 #===== r2ogs6_curve =====
 
 
-#'r2ogs6_curve
-#'@description tag: curve, a curve
-#'@param name string: Name of the curve
-#'@param coords string | numeric: Coordinates at which the curve's values
-#' are given
-#'@param values string | numeric: Values of the curve at the given coordinates
-#'@export
+#' r2ogs6_curve
+#' @description tag: curve, a curve
+#' @param name string: Name of the curve
+#' @param coords string | numeric: Coordinates at which the curve's values
+#'   are given
+#' @param values string | numeric: Values of the curve at the given coordinates
+#' @example man/examples/ex_prj_curve.R
+#' @export
 r2ogs6_curve <- function(name, coords, values){
 
     #Coerce input

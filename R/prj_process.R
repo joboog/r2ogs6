@@ -2,78 +2,79 @@
 #===== r2ogs6_process =====
 
 
-#'r2ogs6_process
-#'@description tag: process (parent tag: processes)
-#'@param name string:
-#'@param type string:
-#'@param integration_order string | double:
-#'@param process_variables list, character:
-#'@param secondary_variables Optional:
-#'@param specific_body_force Optional:
-#'@param solid_density Optional:
-#'@param dimension Optional:
-#'@param coupling_scheme Optional:
-#'@param reference_solid_density Optional:
-#'@param linear_thermal_expansion_coefficient Optional:
-#'@param specific_heat_capacity Optional:
-#'@param thermal_conductivity Optional:
-#'@param darcy_gravity Optional:
-#'@param reference_temperature Optional:
-#'@param fracture_model Optional:
-#'@param jacobian_assembler Optional:
-#'@param internal_length Optional:
-#'@param mass_lumping Optional:
-#'@param porosity Optional:
-#'@param calculatesurfaceflux Optional:
-#'@param intrinsic_permeability Optional:
-#'@param specific_storage Optional:
-#'@param fluid_viscosity Optional:
-#'@param biot_coefficient Optional:
-#'@param fluid_density Optional:
-#'@param initial_effective_stress Optional:
-#'@param initial_fracture_effective_stress Optional:
-#'@param phasefield_parameters Optional:
-#'@param deactivate_matrix_in_flow Optional:
-#'@param borehole_heat_exchangers Optional:
-#'@param temperature Optional:
-#'@param reactive_system Optional:
-#'@param fluid_specific_heat_source Optional:
-#'@param fluid_specific_isobaric_heat_capacity Optional:
-#'@param solid_hydraulic_permeability Optional:
-#'@param solid_specific_heat_source Optional:
-#'@param solid_heat_conductivity Optional:
-#'@param solid_specific_isobaric_heat_capacity Optional:
-#'@param tortuosity Optional:
-#'@param diffusion_coefficient Optional:
-#'@param solid_density_dry Optional:
-#'@param solid_density_initial Optional:
-#'@param characteristic_pressure Optional:
-#'@param characteristic_temperature Optional:
-#'@param characteristic_vapour_mass_fraction Optional:
-#'@param output_element_matrices Optional:
-#'@param material_property Optional:
-#'@param diffusion_coeff_component_b Optional:
-#'@param diffusion_coeff_component_a Optional:
-#'@param hydro_crack_scheme Optional:
-#'@param at_num Optional:
-#'@param initial_stress Optional:
-#'@param split_method Optional:
-#'@param reg_param Optional:
-#'@param thermal_parameters Optional:
-#'@param non_advective_form Optional:
-#'@param fluid Optional:
-#'@param porous_medium Optional:
-#'@param decay_rate Optional:
-#'@param fluid_reference_density Optional:
-#'@param retardation_factor Optional:
-#'@param solute_dispersivity_longitudinal Optional:
-#'@param solute_dispersivity_transverse Optional:
-#'@param molecular_diffusion_coefficient Optional:
-#'@param density_solid Optional:
-#'@param latent_heat_evaporation Optional:
-#'@param pf_irrv Optional:
-#'@param ... Optional: fracture_properties, constitutive_relation
-#'@export
+#' r2ogs6_process
+#' @description tag: process (parent tag: processes)
+#' @param name string:
+#' @param type string:
+#' @param integration_order string | double:
+#' @param process_variables list, character:
+#' @param secondary_variables Optional:
+#' @param specific_body_force Optional:
+#' @param solid_density Optional:
+#' @param dimension Optional:
+#' @param coupling_scheme Optional:
+#' @param reference_solid_density Optional:
+#' @param linear_thermal_expansion_coefficient Optional:
+#' @param specific_heat_capacity Optional:
+#' @param thermal_conductivity Optional:
+#' @param darcy_gravity Optional:
+#' @param reference_temperature Optional:
+#' @param fracture_model Optional:
+#' @param jacobian_assembler Optional:
+#' @param internal_length Optional:
+#' @param mass_lumping Optional:
+#' @param porosity Optional:
+#' @param calculatesurfaceflux Optional:
+#' @param intrinsic_permeability Optional:
+#' @param specific_storage Optional:
+#' @param fluid_viscosity Optional:
+#' @param biot_coefficient Optional:
+#' @param fluid_density Optional:
+#' @param initial_effective_stress Optional:
+#' @param initial_fracture_effective_stress Optional:
+#' @param phasefield_parameters Optional:
+#' @param deactivate_matrix_in_flow Optional:
+#' @param borehole_heat_exchangers Optional:
+#' @param temperature Optional:
+#' @param reactive_system Optional:
+#' @param fluid_specific_heat_source Optional:
+#' @param fluid_specific_isobaric_heat_capacity Optional:
+#' @param solid_hydraulic_permeability Optional:
+#' @param solid_specific_heat_source Optional:
+#' @param solid_heat_conductivity Optional:
+#' @param solid_specific_isobaric_heat_capacity Optional:
+#' @param tortuosity Optional:
+#' @param diffusion_coefficient Optional:
+#' @param solid_density_dry Optional:
+#' @param solid_density_initial Optional:
+#' @param characteristic_pressure Optional:
+#' @param characteristic_temperature Optional:
+#' @param characteristic_vapour_mass_fraction Optional:
+#' @param output_element_matrices Optional:
+#' @param material_property Optional:
+#' @param diffusion_coeff_component_b Optional:
+#' @param diffusion_coeff_component_a Optional:
+#' @param hydro_crack_scheme Optional:
+#' @param at_num Optional:
+#' @param initial_stress Optional:
+#' @param split_method Optional:
+#' @param reg_param Optional:
+#' @param thermal_parameters Optional:
+#' @param non_advective_form Optional:
+#' @param fluid Optional:
+#' @param porous_medium Optional:
+#' @param decay_rate Optional:
+#' @param fluid_reference_density Optional:
+#' @param retardation_factor Optional:
+#' @param solute_dispersivity_longitudinal Optional:
+#' @param solute_dispersivity_transverse Optional:
+#' @param molecular_diffusion_coefficient Optional:
+#' @param density_solid Optional:
+#' @param latent_heat_evaporation Optional:
+#' @param pf_irrv Optional:
+#' @param ... Optional: fracture_properties, constitutive_relation
+#' @example man/examples/ex_prj_process.R
+#' @export
 r2ogs6_process <- function(name,
                            type,
                            integration_order,
@@ -545,48 +546,50 @@ new_r2ogs6_process <- function(name,
 #===== r2ogs6_constitutive_relation =====
 
 
-#'r2ogs6_constitutive_relation
-#'@description tag: constitutive_relation
-#'@param type string:
-#'@param id Optional:
-#'@param youngs_modulus Optional:
-#'@param poissons_ratio Optional:
-#'@param nonlinear_solver Optional:
-#'@param behaviour Optional:
-#'@param material_properties Optional:
-#'@param shear_modulus Optional:
-#'@param bulk_modulus Optional:
-#'@param kappa Optional:
-#'@param beta Optional:
-#'@param gamma Optional:
-#'@param hardening_modulus Optional:
-#'@param alpha Optional:
-#'@param delta Optional:
-#'@param eps Optional:
-#'@param m Optional:
-#'@param alphap Optional:
-#'@param deltap Optional:
-#'@param epsp Optional:
-#'@param mp Optional:
-#'@param betap Optional:
-#'@param gammap Optional:
-#'@param tangent_type Optional:
-#'@param damage_properties Optional:
-#'@param youngs_moduli Optional:
-#'@param shear_moduli Optional:
-#'@param poissons_ratios Optional:
-#'@param a Optional:
-#'@param n Optional:
-#'@param sigma0 Optional:
-#'@param q Optional:
-#'@param kelvin_shear_modulus Optional:
-#'@param kelvin_viscosity Optional:
-#'@param maxwell_shear_modulus Optional:
-#'@param maxwell_bulk_modulus Optional:
-#'@param maxwell_viscosity Optional:
-#'@param dependency_parameter_mk Optional:
-#'@param dependency_parameter_mvk Optional:
-#'@param dependency_parameter_mvm Optional:
+#' r2ogs6_constitutive_relation
+#' @description tag: constitutive_relation
+#' @param type string:
+#' @param id Optional:
+#' @param youngs_modulus Optional:
+#' @param poissons_ratio Optional:
+#' @param nonlinear_solver Optional:
+#' @param behaviour Optional:
+#' @param material_properties Optional:
+#' @param shear_modulus Optional:
+#' @param bulk_modulus Optional:
+#' @param kappa Optional:
+#' @param beta Optional:
+#' @param gamma Optional:
+#' @param hardening_modulus Optional:
+#' @param alpha Optional:
+#' @param delta Optional:
+#' @param eps Optional:
+#' @param m Optional:
+#' @param alphap Optional:
+#' @param deltap Optional:
+#' @param epsp Optional:
+#' @param mp Optional:
+#' @param betap Optional:
+#' @param gammap Optional:
+#' @param tangent_type Optional:
+#' @param damage_properties Optional:
+#' @param youngs_moduli Optional:
+#' @param shear_moduli Optional:
+#' @param poissons_ratios Optional:
+#' @param a Optional:
+#' @param n Optional:
+#' @param sigma0 Optional:
+#' @param q Optional:
+#' @param kelvin_shear_modulus Optional:
+#' @param kelvin_viscosity Optional:
+#' @param maxwell_shear_modulus Optional:
+#' @param maxwell_bulk_modulus Optional:
+#' @param maxwell_viscosity Optional:
+#' @param dependency_parameter_mk Optional:
+#' @param dependency_parameter_mvk Optional:
+#' @param dependency_parameter_mvm Optional:
+#' @example man/examples/ex_prj_constitutive_relation.R
+#' @export
 r2ogs6_constitutive_relation <- function(type,
                                          id = NULL,
                                          youngs_modulus = NULL,
@@ -765,20 +768,21 @@ new_r2ogs6_constitutive_relation <- function(type,
 #===== r2ogs6_fracture_model =====
 
 
-#'r2ogs6_fracture_model
-#'@description tag: fracture_model
-#'@param type string:
-#'@param normal_stiffness string:
-#'@param shear_stiffness string:
-#'@param penalty_aperture_cutoff string | double:
-#'@param tension_cutoff string | double:
-#'@param fracture_toughness Optional: string:
-#'@param peak_normal_traction Optional: string:
-#'@param friction_angle Optional: string:
-#'@param dilatancy_angle Optional: string:
-#'@param cohesion Optional: string:
-#'@param nonlinear_solver Optional: list:
-#'@export
+#' r2ogs6_fracture_model
+#' @description tag: fracture_model
+#' @param type string:
+#' @param normal_stiffness string:
+#' @param shear_stiffness string:
+#' @param penalty_aperture_cutoff string | double:
+#' @param tension_cutoff string | double:
+#' @param fracture_toughness Optional: string:
+#' @param peak_normal_traction Optional: string:
+#' @param friction_angle Optional: string:
+#' @param dilatancy_angle Optional: string:
+#' @param cohesion Optional: string:
+#' @param nonlinear_solver Optional: list:
+#' @example man/examples/ex_prj_fracture_model.R
+#' @export
 r2ogs6_fracture_model <- function(type,
                                   normal_stiffness,
                                   shear_stiffness,
@@ -863,14 +867,15 @@ new_r2ogs6_fracture_model <- function(type,
 #===== r2ogs6_fracture_properties =====
 
 
-#'r2ogs6_fracture_properties
-#'@description tag: fracture_properties
-#'@param material_id string | double:
-#'@param initial_aperture string:
-#'@param specific_storage Optional: string:
-#'@param biot_coefficient Optional: string:
-#'@param permeability_model Optional: list:
-#'@export
+#' r2ogs6_fracture_properties
+#' @description tag: fracture_properties
+#' @param material_id string | double:
+#' @param initial_aperture string:
+#' @param specific_storage Optional: string:
+#' @param biot_coefficient Optional: string:
+#' @param permeability_model Optional: list:
+#' @example man/examples/ex_prj_fracture_properties.R
+#' @export
 r2ogs6_fracture_properties <- function(material_id,
                                        initial_aperture,
                                        specific_storage = NULL,
@@ -937,12 +942,13 @@ new_r2ogs6_fracture_properties <- function(material_id,
 #===== r2ogs6_jacobian_assembler =====
 
 
-#'r2ogs6_jacobian_assembler
-#'@description tag: jacobian_assembler
-#'@param type string:
-#'@param component_magnitudes Optional: string | double:
-#'@param relative_epsilons Optional: string | double:
-#'@export
+#' r2ogs6_jacobian_assembler
+#' @description tag: jacobian_assembler
+#' @param type string:
+#' @param component_magnitudes Optional: string | double:
+#' @param relative_epsilons Optional: string | double:
+#' @example man/examples/ex_prj_jacobian_assembler.R
+#' @export
 r2ogs6_jacobian_assembler <- function(type,
                                       component_magnitudes = NULL,
                                       relative_epsilons = NULL) {
@@ -981,14 +987,15 @@ new_r2ogs6_jacobian_assembler <- function(type,
 #===== r2ogs6_phasefield_parameters =====
 
 
-#'r2ogs6_phasefield_parameters
-#'@description tag: phasefield_parameters
-#'@param residual_stiffness string:
-#'@param crack_resistance string:
-#'@param crack_length_scale string:
-#'@param kinetic_coefficient string:
-#'@param history_field Optional: string:
-#'@export
+#' r2ogs6_phasefield_parameters
+#' @description tag: phasefield_parameters
+#' @param residual_stiffness string:
+#' @param crack_resistance string:
+#' @param crack_length_scale string:
+#' @param kinetic_coefficient string:
+#' @param history_field Optional: string:
+#' @example man/examples/ex_prj_phasefield_parameters.R
+#' @export
 r2ogs6_phasefield_parameters <- function(residual_stiffness,
                                          crack_resistance,
                                          crack_length_scale,

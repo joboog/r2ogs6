@@ -2,11 +2,12 @@
 #===== r2ogs6_search_length_algorithm =====
 
 
-#'r2ogs6_search_length_algorithm
-#'@description tag: search_length_algorithm
-#'@param type string: The type
-#'@param value string | double: The value
-#'@export
+#' r2ogs6_search_length_algorithm
+#' @description tag: search_length_algorithm
+#' @param type string: The type
+#' @param value string | double: The value
+#' @example man/examples/ex_prj_search_length_algorithm.R
+#' @export
 r2ogs6_search_length_algorithm <- function(type,
                                            value = NULL) {
 

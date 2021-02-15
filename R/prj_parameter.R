@@ -2,22 +2,23 @@
 #===== r2ogs6_parameter =====
 
 
-#'r2ogs6_parameter
-#'@description tag: parameter
-#'@param name string:
-#'@param type string:
-#'@param value Optional: string | double: Parameter value
-#'@param values Optional: string | double: Parameter values
-#'@param curve Optional: string:
-#'@param parameter Optional: string:
-#'@param group_id_property Optional: string:
-#'@param field_name Optional: string:
-#'@param mesh Optional: string:
-#'@param time_series Optional: list:
-#'@param use_local_coordinate_system Optional: string, "true" | "false":
-#'@param ... Optional: for index_values and expression tags (since there can be
+#' r2ogs6_parameter
+#' @description tag: parameter
+#' @param name string:
+#' @param type string:
+#' @param value Optional: string | double: Parameter value
+#' @param values Optional: string | double: Parameter values
+#' @param curve Optional: string:
+#' @param parameter Optional: string:
+#' @param group_id_property Optional: string:
+#' @param field_name Optional: string:
+#' @param mesh Optional: string:
+#' @param time_series Optional: list:
+#' @param use_local_coordinate_system Optional: string, "true" | "false":
+#' @param ... Optional: for index_values and expression tags (since there can be
 #' multiple)
-#'@export
+#' @example man/examples/ex_prj_parameter.R
+#' @export
 r2ogs6_parameter <- function(name,
                              type,
                              value = NULL,
