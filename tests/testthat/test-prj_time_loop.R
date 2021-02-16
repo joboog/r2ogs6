@@ -1,10 +1,10 @@
 
-test_that("new_r2ogs6_time_loop basic validation is working", {
+test_that("new_prj_time_loop basic validation is working", {
 
-    expect_error(new_r2ogs6_time_loop(
+    expect_error(new_prj_time_loop(
         list("missing"),
 
-        r2ogs6_tl_output(
+        prj_tl_output(
             type = "VTK",
             prefix = "flow_no_strain_pcs_{:process_id}",
             suffix = "_ts_{:timestep}_t_{:time}",
@@ -15,9 +15,9 @@ test_that("new_r2ogs6_time_loop basic validation is working", {
     ))
 
 
-    expect_error(new_r2ogs6_time_loop(
+    expect_error(new_prj_time_loop(
         list(
-            r2ogs6_tl_process(
+            prj_tl_process(
                 ref = "HM",
                 nonlinear_solver = "basic_newton",
                 convergence_criterion = list(

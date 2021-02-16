@@ -48,7 +48,7 @@ test_that("node_to_object works for simple lists", {
 
 test_that("order_parameters works for classes with Ellipsis argument", {
 
-    ogs_parameter <- r2ogs6_parameter(name = "test",
+    ogs6_parameter <- prj_parameter(name = "test",
                                       type = "test",
                                       index_values = list("1", "1 2"))
 
@@ -56,7 +56,7 @@ test_that("order_parameters works for classes with Ellipsis argument", {
                        index_values = list("1", "1 2"),
                        name = "test")
 
-    class_name <- "r2ogs6_parameter"
+    class_name <- "prj_parameter"
 
     ordered_parameters <- order_parameters(parameters,
                                            class_name)

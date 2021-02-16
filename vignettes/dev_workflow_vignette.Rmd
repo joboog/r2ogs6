@@ -132,10 +132,10 @@ Ta-daa, you now have some nice stubs. Copy them into a script in the `R` folder 
 Now that we have a class, we need to tell the package it exists. This is so when we're reading in or exporting a `.prj` file, it knows to automatically turn the content of our `nonlinear_solver` tag into an object of our new class and the other way around. To achieve this, execute the code in `data_raw/xpaths_for_classes.R`. What this will do is update the `xpaths_for_classes` parameter, adding an entry for your class. Afterwards, run `xpaths_for_classes[["your_class_name"]]`. It should return the `xpath` parameter of your class like so:
 
 ```{r}
-xpaths_for_classes[["r2ogs6_process"]]
+xpaths_for_classes[["prj_process"]]
 
 # A class can have multiple xpaths if the represented node occurs at different positions.
-xpaths_for_classes[["r2ogs6_convergence_criterion"]]
+xpaths_for_classes[["prj_convergence_criterion"]]
 ```
 
 If the class you've created is a `.prj` top level class or a child of a top level wrapper node like `processes`, add a corresponding `OGS6` private parameter and an active field. For example, the `processes` node is represented as a list, so I added the private parameter `.processes = list()` and the active field `processes`.

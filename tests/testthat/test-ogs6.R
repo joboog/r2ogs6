@@ -7,7 +7,7 @@ test_that("OGS6$clear() works as expected", {
         sim_name = "sim",
         sim_path = "sim_path")
 
-    ogs6_obj$add(r2ogs6_parameter(
+    ogs6_obj$add(prj_parameter(
         name = "pressure0",
         type = "Constant",
         values = 1e5
@@ -25,7 +25,7 @@ test_that("OGS6$add() works", {
         sim_name = "sim",
         sim_path = "sim_path")
 
-    ogs6_obj$add(r2ogs6_parameter(
+    ogs6_obj$add(prj_parameter(
         name = "pressure0",
         type = "Constant",
         values = 1e5

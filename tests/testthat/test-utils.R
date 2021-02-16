@@ -5,16 +5,16 @@
 test_that("get_class_from_xpath() works", {
 
     expect_equal(get_class_from_xpath("processes/process"),
-                 "r2ogs6_process")
+                 "prj_process")
 
     xpath = "time_loop/processes/process/convergence_criterion"
     expect_equal(get_class_from_xpath(xpath),
-                 "r2ogs6_convergence_criterion")
+                 "prj_convergence_criterion")
 })
 
 
 test_that("get_tag_from_class() works", {
-    expect_equal(get_tag_from_class(class_name = "r2ogs6_tl_process"),
+    expect_equal(get_tag_from_class(class_name = "prj_tl_process"),
                  "process")
 })
 
@@ -25,7 +25,7 @@ test_that("get_tag_from_xpath() works", {
 
 
 test_that("prj_top_level_classes() works", {
-    expect_equal(prj_top_level_classes()[["processes"]], "r2ogs6_process")
+    expect_equal(prj_top_level_classes()[["processes"]], "prj_process")
 })
 
 

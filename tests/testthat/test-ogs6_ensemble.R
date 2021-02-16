@@ -7,13 +7,13 @@ test_that("OGS6_Ensemble initialization works", {
         sim_name = "sim",
         sim_path = "sim_path")
 
-    ogs6_obj$add(r2ogs6_parameter(
+    ogs6_obj$add(prj_parameter(
         name = "pressure0",
         type = "Constant",
         value = 1
     ))
 
-    ogs6_obj$add(r2ogs6_parameter(
+    ogs6_obj$add(prj_parameter(
         name = "pressure1",
         type = "Constant",
         value = 4
@@ -62,13 +62,13 @@ test_that("OGS6_Ensemble initialization works", {
 })
 
 
-test_that("ogs_get_combinations works", {
+test_that("ogs6_get_combinations works", {
 
     a <- c(1, 2, 3, 4)
     b <- c("a", "b", "c")
     c <- c("+", "-")
 
-    combinations <- ogs_get_combinations(a, b, c)
+    combinations <- ogs6_get_combinations(a, b, c)
     a_long <- combinations[[1]]
     b_long <- combinations[[2]]
     c_long <- combinations[[3]]
