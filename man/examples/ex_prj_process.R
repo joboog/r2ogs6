@@ -1,4 +1,4 @@
-r2ogs6_process(
+prj_process(
     name = "HM",
     type = "HYDRO_MECHANICS",
     integration_order = 3,
@@ -10,7 +10,7 @@ r2ogs6_process(
     ),
     specific_body_force = c(0, 0, 0),
     dimension = 3,
-    constitutive_relation = r2ogs6_constitutive_relation(
+    constitutive_relation = prj_constitutive_relation(
         type = "LinearElasticIsotropic",
         youngs_modulus = "E",
         poissons_ratio = "nu"

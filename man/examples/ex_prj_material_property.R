@@ -1,5 +1,5 @@
-r2ogs6_material_property(
-    fluid = r2ogs6_fluid(
+prj_material_property(
+    fluid = prj_fluid(
         liquid_density = list(type = "Constant",
                               value = " 1.e3 "),
         gas_density = list(type = "IdealGasLaw",
@@ -10,7 +10,7 @@ r2ogs6_material_property(
                              value = " 2.8539e-13 ")
     ),
     porous_medium = list(
-        porous_medium = r2ogs6_porous_medium(
+        porous_medium = prj_porous_medium(
             id = 0,
             permeability = list(permeability_tensor_entries = "kappa1",
                                 type = "Constant"),
@@ -18,7 +18,7 @@ r2ogs6_material_property(
                             porosity_parameter = "constant_porosity_parameter"),
             storage = list(type = "Constant",
                            value = " 0.0 "),
-            capillary_pressure = r2ogs6_capillary_pressure(
+            capillary_pressure = prj_capillary_pressure(
                 type = "vanGenuchten",
                 pd = 2e+06,
                 sr = 0.4,
@@ -28,7 +28,7 @@ r2ogs6_material_property(
                 has_regularized = "true"
             ),
             relative_permeability = list(
-                relative_permeability = r2ogs6_relative_permeability(
+                relative_permeability = prj_relative_permeability(
                     type = "NonWettingPhaseVanGenuchten",
                     sr = 0,
                     smax = 0.6,

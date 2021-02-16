@@ -1,4 +1,4 @@
-r2ogs6_solution(
+prj_solution(
     temperature = 25,
     pressure = 1,
     pe = 4,

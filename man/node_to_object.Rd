@@ -15,7 +15,7 @@ node_to_object(xml_node, xpath = "")
 Returns representation of an XML node. This is a recursive
 function.
 ASSUMPTIONS:
-1) Leaf nodes will never be r2ogs6_* objects
+1) Leaf nodes will never be prj_* objects
 2) Wrapper nodes are represented as lists
 3) Parent nodes whose children have no children are represented as lists
 }

@@ -1,6 +1,6 @@
-r2ogs6_borehole_heat_exchanger(
+prj_borehole_heat_exchanger(
     type = "1U",
-    flow_and_temperature_control = r2ogs6_flow_and_temperature_control(
+    flow_and_temperature_control = prj_flow_and_temperature_control(
         type = "TemperatureCurveConstantFlow",
         flow_rate = 2e-04,
         temperature_curve = "inflow_temperature"
@@ -13,7 +13,7 @@ r2ogs6_borehole_heat_exchanger(
         heat_capacity = "1735.160",
         thermal_conductivity = "0.806"
     ),
-    pipes = r2ogs6_pipes(
+    pipes = prj_pipes(
         longitudinal_dispersion_length = 0.001,
         inlet = list(
             diameter = " 0.013665",

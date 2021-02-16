@@ -1,4 +1,4 @@
-r2ogs6_convergence_criterion(
+prj_convergence_criterion(
     type = "DeltaX",
     norm_type = "INFINITY_N",
     abstol = 1e-08,

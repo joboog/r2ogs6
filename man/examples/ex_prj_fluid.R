@@ -1,4 +1,4 @@
-r2ogs6_fluid(
+prj_fluid(
     liquid_density = list(type = "Constant",
                           value = " 1.e3 "),
     gas_density = list(type = "IdealGasLaw",

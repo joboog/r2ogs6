@@ -1,4 +1,4 @@
-r2ogs6_output(
+prj_output(
     type = "VTK",
     prefix = "flow_free_expansion",
     variables = list(

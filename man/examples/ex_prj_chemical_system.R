@@ -1,7 +1,7 @@
-r2ogs6_chemical_system(
+prj_chemical_system(
     chemical_solver = "Phreeqc",
     database = "PSINA_12_07_110615_DAV_s.dat",
-    solution = r2ogs6_solution(
+    solution = prj_solution(
         temperature = 25,
         pressure = 1,
         pe = 4,
@@ -20,7 +20,7 @@ r2ogs6_chemical_system(
         scaling = "0"
     ),
     equilibrium_reactants = list(
-        phase_component = r2ogs6_phase_component(
+        phase_component = prj_phase_component(
             name = "Calcite",
             saturation_index = 0,
             initial_amount = 0.000207

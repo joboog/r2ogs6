@@ -1,4 +1,4 @@
-r2ogs6_phasefield_parameters(
+prj_phasefield_parameters(
     residual_stiffness = "k",
     crack_resistance = "gc",
     crack_length_scale = "ls",
