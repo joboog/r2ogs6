@@ -16,3 +16,10 @@ r2ogs6_phase_component(name, saturation_index, initial_amount = NULL)
 \description{
 S3 class describing .prj phase_component
 }
+\examples{
+r2ogs6_phase_component(
+    name = "Calcite",
+    saturation_index = 0,
+    initial_amount = 0.000207
+)
+}

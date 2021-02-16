@@ -10,6 +10,6 @@ are_null_or_string_flags(...)
 \item{...}{Ellipsis}
 }
 \description{
-Checks if objects are either NULL or strings reading either
-"true" or "false"
+Checks if objects are either \code{NULL} or strings reading
+either "true" or "false"
 }

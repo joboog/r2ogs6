@@ -10,5 +10,5 @@ are_null_or_strings(...)
 \item{...}{Ellipsis}
 }
 \description{
-Checks if objects are either NULL or strings
+Checks if objects are either \code{NULL} or strings
 }

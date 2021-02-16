@@ -7,8 +7,8 @@
 read_in_surfaces(xml_doc)
 }
 \arguments{
-\item{xml_doc}{A parsed XML document (of class 'xml2::xml_document')}
+\item{xml_doc}{A parsed XML document (of class \code{xml2::xml_document})}
 }
 \description{
-Reads surfaces from a .gml file
+Reads surfaces from a \code{.gml} file
 }

@@ -6,6 +6,26 @@
 \description{
 Constructor for the OGS6_gml base class
 }
+\examples{
+OGS6_gml$new(
+    name = "cube_1x1x1_geometry",
+    points = tibble::tibble(
+        x = c(0, 0, 0, 0),
+        y = c(0, 0, 1, 1),
+        z = c(0, 1, 1, 0),
+        name = c("origin", "", "", "")
+    ),
+    polylines = list(polyline = list("front_left",
+                                     c(
+                                         pnt = 0, pnt = 1
+                                     ))),
+    surfaces = list(surface = list(
+        name = "left",
+        element = c(p1 = 0, p2 = 1, p3 = 2),
+        element = c(p1 = 0, p2 = 3, p3 = 2)
+    ))
+)
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -62,7 +82,7 @@ have optional 'name' vector}
 
 \item{\code{polylines}}{list(list("foo", c(1, 2))):}
 
-\item{\code{surfaces}}{list(list("foo", c(1, 2, 3), c(2, 3, 4))):}
+\item{\code{surfaces}}{list(list("foo", c(1, 2, 3), c(2, 3, 4)))}
 }
 \if{html}{\out{</div>}}
 }

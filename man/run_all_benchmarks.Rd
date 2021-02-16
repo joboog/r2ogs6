@@ -23,7 +23,7 @@ which contains relevant Tests.cmake files}
 
 \item{sim_path}{string: Path where simulation files will be saved}
 
-\item{starting_from_prj_path}{string: .prj path to start from}
+\item{starting_from_prj_path}{string: \code{.prj} path to start from}
 
 \item{print_results}{flag: Print results in the end?}
 }

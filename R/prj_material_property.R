@@ -2,11 +2,12 @@
 #===== r2ogs6_material_property =====
 
 
-#'r2ogs6_material_property
-#'@description tag: material_property
-#'@param fluid r2ogs6_fluid:
-#'@param porous_medium r2ogs6_porous_medium:
-#'@export
+#' r2ogs6_material_property
+#' @description tag: material_property
+#' @param fluid r2ogs6_fluid:
+#' @param porous_medium r2ogs6_porous_medium:
+#' @example man/examples/ex_prj_material_property.R
+#' @export
 r2ogs6_material_property <- function(fluid,
                                      porous_medium) {
 
@@ -38,19 +39,20 @@ new_r2ogs6_material_property <- function(fluid,
 #===== r2ogs6_fluid =====
 
 
-#'r2ogs6_fluid
-#'@description tag: fluid
-#'@param liquid_density list:
-#'@param gas_density list:
-#'@param liquid_viscosity list:
-#'@param gas_viscosity list:
-#'@param specific_heat_capacity_solid Optional:
-#'@param specific_heat_capacity_water Optional:
-#'@param specific_heat_capacity_air Optional:
-#'@param specific_heat_capacity_water_vapor Optional:
-#'@param thermal_conductivity_dry_solid Optional:
-#'@param thermal_conductivity_wet_solid Optional:
-#'@export
+#' r2ogs6_fluid
+#' @description tag: fluid
+#' @param liquid_density list:
+#' @param gas_density list:
+#' @param liquid_viscosity list:
+#' @param gas_viscosity list:
+#' @param specific_heat_capacity_solid Optional:
+#' @param specific_heat_capacity_water Optional:
+#' @param specific_heat_capacity_air Optional:
+#' @param specific_heat_capacity_water_vapor Optional:
+#' @param thermal_conductivity_dry_solid Optional:
+#' @param thermal_conductivity_wet_solid Optional:
+#' @example man/examples/ex_prj_fluid.R
+#' @export
 r2ogs6_fluid <- function(liquid_density,
                          gas_density,
                          liquid_viscosity,

@@ -10,8 +10,11 @@ get_tag_from_xpath(xpath)
 \item{xpath}{string: An xpath expression. Works for path-like xpaths only}
 }
 \value{
-string: The XML tag name.
+string: The XML tag name
 }
 \description{
 Gets the XML tag name from an xpath expression
+}
+\examples{
+  get_tag_from_xpath("processes/process")
 }

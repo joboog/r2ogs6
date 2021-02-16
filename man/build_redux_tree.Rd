@@ -7,15 +7,15 @@
 build_redux_tree(path, pattern, xpath, required)
 }
 \arguments{
-\item{path}{string: See ?analyse_xml}
+\item{path}{string: See \code{?analyse_xml}}
 
-\item{pattern}{string: See ?analyse_xml}
+\item{pattern}{string: See \code{?analyse_xml}}
 
-\item{xpath}{string: See ?analyse_xml}
+\item{xpath}{string: See \code{?analyse_xml}}
 
 \item{required}{flag: Recursion utility}
 }
 \description{
-Builds an XML tree based on the findings of analyse_xml.
-This is a recursive function. Handle with care.
+Builds an XML tree based on the findings of
+\code{analyse_xml()}. This is a recursive function.
 }

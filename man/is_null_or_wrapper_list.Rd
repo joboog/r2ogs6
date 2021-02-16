@@ -9,9 +9,9 @@ is_null_or_wrapper_list(obj, element_class)
 \arguments{
 \item{obj}{list | NULL: Object to check}
 
-\item{element_class}{string: Class each element of `obj` should have}
+\item{element_class}{string: Class each element of \code{obj} should have}
 }
 \description{
-Checks if an object is either NULL or a list of elements
-of class `element_class`
+Checks if an object is either \code{NULL} or a list of elements
+of class \code{element_class}
 }

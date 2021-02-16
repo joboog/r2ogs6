@@ -10,6 +10,7 @@ prj_top_level_classes()
 character
 }
 \description{
-Returns named character vector of `OGS6` top level .prj tags
-(names) represented by r2ogs6 classes along with their class names (values).
+Returns named character vector of \code{OGS6} top level
+\code{.prj} tags (names) represented by \code{r2ogs6} classes along with their
+class names (values).
 }

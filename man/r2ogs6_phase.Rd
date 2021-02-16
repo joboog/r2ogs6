@@ -17,3 +17,13 @@ r2ogs6_phase(type, properties = NULL, components = NULL)
 \description{
 tag: phase, a coherent material with homogeneous properties
 }
+\examples{
+r2ogs6_phase(
+    type = "Solid",
+    properties = list(
+        property = r2ogs6_ph_property(name = "porosity",
+                                      type = "Constant",
+                                      value = 0.3)
+    )
+)
+}

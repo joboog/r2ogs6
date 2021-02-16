@@ -2,13 +2,14 @@
 #===== r2ogs6_linear_solver =====
 
 
-#'r2ogs6_linear_solver
-#'@description tag: linear_solver
-#'@param name string: The name of the linear solver
-#'@param eigen Optional: list: ...
-#'@param lis Optional: string: ...
-#'@param petsc Optional: character: ...
-#'@export
+#' r2ogs6_linear_solver
+#' @description tag: linear_solver
+#' @param name string: The name of the linear solver
+#' @param eigen Optional: list: ...
+#' @param lis Optional: string: ...
+#' @param petsc Optional: character: ...
+#' @example man/examples/ex_prj_linear_solver.R
+#' @export
 r2ogs6_linear_solver <- function(name,
                                  eigen = NULL,
                                  lis = NULL,
@@ -60,15 +61,16 @@ new_r2ogs6_linear_solver <- function(name,
 #===== r2ogs6_eigen =====
 
 
-#'r2ogs6_eigen
-#'@description tag: eigen
-#'@param solver_type string:
-#'@param precon_type Optional: string:
-#'@param max_iteration_step Optional: string | double: ...
-#'@param error_tolerance Optional: string | double: ...
-#'@param scaling Optional: string | double: ...
-#'@param restart Optional: string | double: ...
-#'@export
+#' r2ogs6_eigen
+#' @description tag: eigen
+#' @param solver_type string:
+#' @param precon_type Optional: string:
+#' @param max_iteration_step Optional: string | double: ...
+#' @param error_tolerance Optional: string | double: ...
+#' @param scaling Optional: string | double: ...
+#' @param restart Optional: string | double: ...
+#' @example man/examples/ex_prj_eigen.R
+#' @export
 r2ogs6_eigen <- function(solver_type,
                          precon_type = NULL,
                          max_iteration_step = NULL,

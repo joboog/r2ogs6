@@ -9,12 +9,12 @@ ogs_call_ogs6(ogs6_obj, write_logfile = TRUE, ogs_bin_path, verbose = F)
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
 
-\item{write_logfile}{flag: Should output be written to a logfile? If `FALSE`,
-output will be written to console. If `TRUE`, logfile directory will be
-created in `ogs6$sim_path` directory}
+\item{write_logfile}{flag: Should output be written to a logfile? If
+\code{FALSE}, output will be written to console. If \code{TRUE}, logfile
+directory will be created in \code{ogs6$sim_path} directory}
 
 \item{ogs_bin_path}{string: Optional: OpenGeoSys 6 bin folder path. Defaults
-to `options("r2ogs6.default_ogs_bin_path")`}
+to \code{options("r2ogs6.default_ogs_bin_path")}}
 
 \item{verbose}{flag}
 }

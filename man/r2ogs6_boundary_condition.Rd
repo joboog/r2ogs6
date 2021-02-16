@@ -83,3 +83,12 @@ r2ogs6_boundary_condition(
 \description{
 tag: boundary_condition
 }
+\examples{
+r2ogs6_boundary_condition(
+    type = "Neumann",
+    parameter = "flux_in",
+    geometrical_set = "cube_1x1x1_geometry",
+    geometry = "left",
+    component = 0
+)
+}

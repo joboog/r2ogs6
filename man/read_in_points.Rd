@@ -7,8 +7,8 @@
 read_in_points(xml_doc)
 }
 \arguments{
-\item{xml_doc}{A parsed XML document (of class 'xml2::xml_document')}
+\item{xml_doc}{A parsed XML document (of class \code{xml2::xml_document})}
 }
 \description{
-Reads points from a .gml file
+Reads points from a \code{.gml} file
 }
