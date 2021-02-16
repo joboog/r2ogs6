@@ -12,5 +12,5 @@ is_null_or_coerce_names(obj, names)
 \item{names}{How the list elements will be named as per default}
 }
 \description{
-Validator function for a parameter list or vector or NULL
+Validator function for a parameter list or vector or \code{NULL}
 }

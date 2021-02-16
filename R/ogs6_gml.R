@@ -2,21 +2,40 @@
 #===== OGS6_gml =====
 
 
-#'OGS6_gml
-#'@description Constructor for the OGS6_gml base class
-#'@export
+#' OGS6_gml
+#' @description Constructor for the OGS6_gml base class
+#' @examples
+#' OGS6_gml$new(
+#'     name = "cube_1x1x1_geometry",
+#'     points = tibble::tibble(
+#'         x = c(0, 0, 0, 0),
+#'         y = c(0, 0, 1, 1),
+#'         z = c(0, 1, 1, 0),
+#'         name = c("origin", "", "", "")
+#'     ),
+#'     polylines = list(polyline = list("front_left",
+#'                                      c(
+#'                                          pnt = 0, pnt = 1
+#'                                      ))),
+#'     surfaces = list(surface = list(
+#'         name = "left",
+#'         element = c(p1 = 0, p2 = 1, p3 = 2),
+#'         element = c(p1 = 0, p2 = 3, p3 = 2)
+#'     ))
+#' )
+#' @export
 OGS6_gml <- R6::R6Class(
     "OGS6_gml",
     public = list(
 
-        #'@description
-        #'Creates new OGS6_gml object
-        #'@param gml_path string: Optional: Path to .gml file
-        #'@param name string: Geometry name
-        #'@param points tibble: Must have 3 vectors named 'x', 'y' and 'z', may
-        #' have optional 'name' vector
-        #'@param polylines list(list("foo", c(1, 2))):
-        #'@param surfaces list(list("foo", c(1, 2, 3), c(2, 3, 4))):
+        #' @description
+        #'   Creates new OGS6_gml object
+        #' @param gml_path string: Optional: Path to .gml file
+        #' @param name string: Geometry name
+        #' @param points tibble: Must have 3 vectors named 'x', 'y' and 'z', may
+        #'   have optional 'name' vector
+        #' @param polylines list(list("foo", c(1, 2))):
+        #' @param surfaces list(list("foo", c(1, 2, 3), c(2, 3, 4)))
         initialize = function(gml_path = NULL,
                               name = NULL,
                               points = NULL,

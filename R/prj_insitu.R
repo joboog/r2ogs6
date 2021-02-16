@@ -2,10 +2,11 @@
 #===== r2ogs6_insitu =====
 
 
-#'r2ogs6_insitu
-#'@description tag: insitu
-#'@param scripts character: Script names
-#'@export
+#' r2ogs6_insitu
+#' @description tag: insitu
+#' @param scripts character: Script names
+#' @example man/examples/ex_prj_insitu.R
+#' @export
 r2ogs6_insitu <- function(scripts) {
 
     #Make this more user friendly

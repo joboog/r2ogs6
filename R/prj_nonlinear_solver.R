@@ -2,14 +2,15 @@
 #===== r2ogs6_nonlinear_solver =====
 
 
-#'r2ogs6_nonlinear_solver
-#'@description tag: nonlinear_solver
-#'@param name string: Name
-#'@param type string: Type
-#'@param max_iter string | double: Maximal number of iterations
-#'@param linear_solver string: Name of corresponding linear_solver
-#'@param damping Optional: string | double: Damping
-#'@export
+#' r2ogs6_nonlinear_solver
+#' @description tag: nonlinear_solver
+#' @param name string: Name
+#' @param type string: Type
+#' @param max_iter string | double: Maximal number of iterations
+#' @param linear_solver string: Name of corresponding linear_solver
+#' @param damping Optional: string | double: Damping
+#' @example man/examples/ex_prj_nonlinear_solver.R
+#' @export
 r2ogs6_nonlinear_solver <- function(name,
                                     type,
                                     max_iter,

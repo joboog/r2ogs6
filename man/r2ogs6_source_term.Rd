@@ -29,3 +29,11 @@ r2ogs6_source_term(
 \description{
 tag: source_term
 }
+\examples{
+r2ogs6_source_term(
+    type = "Nodal",
+    parameter = "sourceterm_heat_transfer_coefficient",
+    geometrical_set = "geometry",
+    geometry = "po0"
+)
+}

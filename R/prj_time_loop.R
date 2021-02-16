@@ -2,12 +2,13 @@
 #===== r2ogs6_time_loop =====
 
 
-#'r2ogs6_time_loop
-#'@description tag: time_loop
-#'@param processes list, r2ogs6_tl_process:
-#'@param output r2ogs6_output:
-#'@param global_process_coupling Optional: r2ogs6_global_process_coupling:
-#'@export
+#' r2ogs6_time_loop
+#' @description tag: time_loop
+#' @param processes list, r2ogs6_tl_process:
+#' @param output r2ogs6_output:
+#' @param global_process_coupling Optional: r2ogs6_global_process_coupling:
+#' @example man/examples/ex_prj_time_loop.R
+#' @export
 r2ogs6_time_loop <- function(processes,
                              output,
                              global_process_coupling = NULL) {
@@ -48,16 +49,17 @@ new_r2ogs6_time_loop <- function(processes,
 #===== r2ogs6_tl_process =====
 
 
-#'r2ogs6_tl_process
-#'@description tag: process (parent: time_loop, NOT processes!)
-#'@param ref string: References a r2ogs6_process object by name
-#'@param nonlinear_solver string:
-#'@param convergence_criterion r2ogs6_convergence_criterion:
-#'@param time_discretization vector:
-#'@param time_stepping r2ogs6_time_stepping:
-#'@param compensate_non_equilibrium_initial_residuum string: Optional: Either
-#'"true" or "false"
-#'@export
+#' r2ogs6_tl_process
+#' @description tag: process (parent: time_loop, NOT processes!)
+#' @param ref string: References a r2ogs6_process object by name
+#' @param nonlinear_solver string:
+#' @param convergence_criterion r2ogs6_convergence_criterion:
+#' @param time_discretization vector:
+#' @param time_stepping r2ogs6_time_stepping:
+#' @param compensate_non_equilibrium_initial_residuum string: Optional: Either
+#'   "true" or "false"
+#' @example man/examples/ex_prj_tl_process.R
+#' @export
 r2ogs6_tl_process <- function(ref,
                               nonlinear_solver,
                               convergence_criterion,
@@ -126,30 +128,31 @@ new_r2ogs6_tl_process <- function(ref,
 #===== r2ogs6_output =====
 
 
-#'r2ogs6_output
-#'@description tag: output
-#'@param type string:
-#'@param prefix string:
-#'@param variables vector:
-#'@param suffix Optional: string:
-#'@param timesteps Optional:
-#'@param compress_output Optional: string: Should the output be compressed?
-#' Either "true" or "false"
-#'@param data_mode Optional: string:
-#'@param output_iteration_results Optional: string: Either "true" or "false"
-#'@param meshes Optional: character: A vector of mesh names
-#'@param fixed_output_times Optional: string | numeric:
-#'@export
+#' r2ogs6_output
+#' @description tag: output
+#' @param type string:
+#' @param prefix string:
+#' @param variables vector:
+#' @param suffix Optional: string:
+#' @param timesteps Optional:
+#' @param compress_output Optional: string: Should the output be compressed?
+#'   Either "true" or "false"
+#' @param data_mode Optional: string:
+#' @param output_iteration_results Optional: string: Either "true" or "false"
+#' @param meshes Optional: character: A vector of mesh names
+#' @param fixed_output_times Optional: string | numeric:
+#' @example man/examples/ex_prj_output.R
+#' @export
 r2ogs6_output <- function(type,
-                             prefix,
-                             variables,
-                             suffix = NULL,
-                             timesteps = NULL,
-                             compress_output = NULL,
-                             data_mode = NULL,
-                             output_iteration_results = NULL,
-                             meshes = NULL,
-                             fixed_output_times = NULL) {
+                          prefix,
+                          variables,
+                          suffix = NULL,
+                          timesteps = NULL,
+                          compress_output = NULL,
+                          data_mode = NULL,
+                          output_iteration_results = NULL,
+                          meshes = NULL,
+                          fixed_output_times = NULL) {
 
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
@@ -227,12 +230,13 @@ new_r2ogs6_output <- function(type,
 #===== r2ogs6_global_process_coupling =====
 
 
-#'r2ogs6_global_process_coupling
-#'@description tag: global_process_coupling
-#'@param max_iter string | double: Maximal number of iterations
-#'@param convergence_criteria list, r2ogs6_convergence_criterion:
-#' Convergence criteria
-#'@export
+#' r2ogs6_global_process_coupling
+#' @description tag: global_process_coupling
+#' @param max_iter string | double: Maximal number of iterations
+#' @param convergence_criteria list, r2ogs6_convergence_criterion:
+#'   Convergence criteria
+#' @example man/examples/ex_prj_global_process_coupling.R
+#' @export
 r2ogs6_global_process_coupling <- function(max_iter,
                                            convergence_criteria) {
 
@@ -268,15 +272,16 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
 #===== r2ogs6_convergence_criterion =====
 
 
-#'r2ogs6_convergence_criterion
-#'@description tag: convergence_criterion
-#'@param type string: Type
-#'@param norm_type string: ...
-#'@param abstol string | double: Absolute tolerance
-#'@param reltol string | double: Relative tolerance
-#'@param abstols string | numeric: Absolute tolerances
-#'@param reltols string | numeric: Relative tolerances
-#'@export
+#' r2ogs6_convergence_criterion
+#' @description tag: convergence_criterion
+#' @param type string: Type
+#' @param norm_type string: ...
+#' @param abstol string | double: Absolute tolerance
+#' @param reltol string | double: Relative tolerance
+#' @param abstols string | numeric: Absolute tolerances
+#' @param reltols string | numeric: Relative tolerances
+#' @example man/examples/ex_prj_convergence_criterion.R
+#' @export
 r2ogs6_convergence_criterion <- function(type,
                                          norm_type,
                                          abstol = NULL,
@@ -336,24 +341,25 @@ new_r2ogs6_convergence_criterion <- function(type,
 #===== r2ogs6_time_stepping =====
 
 
-#'r2ogs6_time_stepping
-#'@description tag: time_stepping
-#'@param type string:
-#'@param t_initial Optional: string | double:
-#'@param t_end Optional: string | double:
-#'@param timesteps Optional: list:
-#'@param initial_dt Optional: string | double:
-#'@param minimum_dt Optional: string | double:
-#'@param maximum_dt Optional: string | double:
-#'@param number_iterations Optional: string | numeric:
-#'@param multiplier Optional: string | numeric:
-#'@param dt_guess Optional: string | double:
-#'@param dt_min Optional: string | double:
-#'@param dt_max Optional: string | double:
-#'@param rel_dt_min Optional: string | double:
-#'@param rel_dt_max Optional: string | double:
-#'@param tol Optional: string | double:
-#'@export
+#' r2ogs6_time_stepping
+#' @description tag: time_stepping
+#' @param type string:
+#' @param t_initial Optional: string | double:
+#' @param t_end Optional: string | double:
+#' @param timesteps Optional: list:
+#' @param initial_dt Optional: string | double:
+#' @param minimum_dt Optional: string | double:
+#' @param maximum_dt Optional: string | double:
+#' @param number_iterations Optional: string | numeric:
+#' @param multiplier Optional: string | numeric:
+#' @param dt_guess Optional: string | double:
+#' @param dt_min Optional: string | double:
+#' @param dt_max Optional: string | double:
+#' @param rel_dt_min Optional: string | double:
+#' @param rel_dt_max Optional: string | double:
+#' @param tol Optional: string | double:
+#' @example man/examples/ex_prj_time_stepping.R
+#' @export
 r2ogs6_time_stepping <- function(type,
                                  t_initial = NULL,
                                  t_end = NULL,
@@ -423,16 +429,16 @@ new_r2ogs6_time_stepping <- function(type,
     are_strings(type)
 
     are_null_or_numbers(t_initial,
-                               t_end,
-                               initial_dt,
-                               minimum_dt,
-                               maximum_dt,
-                               dt_guess,
-                               dt_min,
-                               dt_max,
-                               rel_dt_min,
-                               rel_dt_max,
-                               tol)
+                        t_end,
+                        initial_dt,
+                        minimum_dt,
+                        maximum_dt,
+                        dt_guess,
+                        dt_min,
+                        dt_max,
+                        rel_dt_min,
+                        rel_dt_max,
+                        tol)
 
     are_null_or_numeric(number_iterations,
                                 multiplier)

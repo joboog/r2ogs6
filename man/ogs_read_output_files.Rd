@@ -10,5 +10,5 @@ ogs_read_output_files(ogs6_obj)
 \item{ogs6_obj}{OGS6: Simulation object}
 }
 \description{
-Read in generated .pvd files and add it to ogs6_obj
+Read in generated \code{.pvd} files and add it to ogs6_obj
 }

@@ -12,6 +12,6 @@ is_null_or_has_class(obj, class_name)
 \item{class_name}{The name of the expected class}
 }
 \description{
-Checks if an object is either null or a class object of class
-'class_name'
+Checks if an object is either \code{NULL} or a class object of
+class \code{class_name}
 }

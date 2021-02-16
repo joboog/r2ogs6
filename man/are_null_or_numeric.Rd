@@ -10,5 +10,5 @@ are_null_or_numeric(...)
 \item{...}{Ellipsis}
 }
 \description{
-Checks if objects are either NULL or numeric
+Checks if objects are either \code{NULL} or numeric
 }

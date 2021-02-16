@@ -22,3 +22,13 @@ r2ogs6_relative_permeability(type, sr, smax, m, krel_min, id = NULL)
 \description{
 tag: relative_permeability
 }
+\examples{
+r2ogs6_relative_permeability(
+    type = "NonWettingPhaseVanGenuchten",
+    sr = 0,
+    smax = 0.6,
+    m = 0.3288590604,
+    krel_min = 0,
+    id = "0"
+)
+}

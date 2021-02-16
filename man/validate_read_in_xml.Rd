@@ -10,7 +10,8 @@ validate_read_in_xml(path)
 \item{path}{string: A file to be parsed as XML}
 }
 \value{
-The parsed XML file (as class object of type xml2::xml_document)
+The parsed XML file (as class object of type
+\code{xml2::xml_document})
 }
 \description{
 Utility function, tries parsing the provided file as an XML

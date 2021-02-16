@@ -14,6 +14,6 @@ object}
 represented by the class object}
 }
 \description{
-Helper function to generate an R6 add_* method for a
+Helper function to generate an R6 \code{add_*} method for a
 r2ogs6 class object
 }

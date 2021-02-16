@@ -2,17 +2,19 @@
 #===== OGS6 =====
 
 
-#'OGS6
-#'@description Constructor for the OGS6 base class
-#'@export
+#' OGS6
+#' @description Constructor for the \code{OGS6} base class
+#' @export
 OGS6 <- R6::R6Class("OGS6",
   public = list(
 
-    #'@description
-    #'Creates new OGS6 object
-    #'@param sim_name string: Simulation name
-    #'@param sim_path string: Path where all files for the simulation will be
-    #' saved
+    #' @description
+    #' Creates new OGS6 object
+    #' @param sim_name string: Simulation name
+    #' @param sim_path string: Path where all files for the simulation will be
+    #'   saved
+    #' @examples
+    #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
     initialize = function(sim_name,
                           sim_path) {
 
@@ -30,9 +32,12 @@ OGS6 <- R6::R6Class("OGS6",
     #===== Adding components =====
 
 
-    #'@description
-    #'Adds a .prj simulation component
-    #'@param x An object of any .prj `r2ogs6` class
+    #' @description
+    #' Adds a .prj simulation component
+    #' @param x An object of any .prj `r2ogs6` class
+    #' @examples
+    #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+    #' ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
     add = function(x){
 
       # Assert that class name is in implemented .prj classes for OGS6
@@ -66,11 +71,15 @@ OGS6 <- R6::R6Class("OGS6",
       invisible(self)
     },
 
-    #'@description
-    #'Adds a reference to a .gml file and optionally, a OGS6_gml object
-    #'@param gml string | r2ogs6_gml: Either a path to a file with extension
-    #' .gml or a r2ogs6_gml object.
-    #@examples
+    #' @description
+    #' Adds a reference to a file with ending .gml and optionally, a
+    #' \code{OGS6_gml} object
+    #' @param gml string | OGS6_gml: Either a path to a file with extension
+    #' .gml or a OGS6_gml object.
+    #' @examples
+    #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+    #' ogs6_obj$add_gml("this_works.gml")
+    #' \dontrun{ogs6_obj$add_gml("this_doesnt.oops")}
     add_gml = function(gml){
 
       if(assertthat::is.string(gml)){
@@ -85,11 +94,16 @@ OGS6 <- R6::R6Class("OGS6",
       invisible(self)
     },
 
-    #'@description
-    #'Adds a reference to a .vtu file and optionally, a OGS6_vtu object
-    #'@param path string:
-    #'@param read_in_vtu flag: Optional: Should .vtu file just be copied or
-    #' read in too?
+    #' @description
+    #' Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
+    #' object
+    #' @param path string: A path
+    #' @param read_in_vtu flag: Optional: Should \code{.vtu} file just be
+    #' copied or read in too?
+    #' @examples
+    #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+    #' ogs6_obj$add_vtu("this_works.vtu")
+    #' \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
     add_vtu = function(path,
                        read_in_vtu = FALSE){
       assertthat::assert_that(assertthat::is.string(path))
@@ -109,10 +123,13 @@ OGS6 <- R6::R6Class("OGS6",
     #===== Utility =====
 
 
-    #'@description
-    #'Checks if the OGS6 object has all necessary parameters for
+    #' @description
+    #' Checks if the \code{OGS6} object has all necessary parameters for
     #' starting a simulation
-    #'@param print_status flag: Should the status be printed to the console?
+    #' @param print_status flag: Should the status be printed to the console?
+    #' @examples
+    #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
+    #' ogs6_obj$get_status()
     get_status = function(print_status = TRUE){
 
       assertthat::assert_that(assertthat::is.flag(print_status))
@@ -166,8 +183,8 @@ OGS6 <- R6::R6Class("OGS6",
       return(invisible(flag))
     },
 
-    #'@description
-    #'Overrides default printing behaviour
+    #' @description
+    #' Overrides default printing behaviour
     print = function(){
       cat("OGS6\n")
       cat("simulation name:  ", self$sim_name, "\n", sep = "")
@@ -197,8 +214,8 @@ OGS6 <- R6::R6Class("OGS6",
       invisible(self)
     },
 
-    #'print_log
-    #'@description Prints logfile to console (if it exists)
+    #' print_log
+    #' @description Prints logfile to console (if it exists)
     print_log = function(){
       if(!is.null(self$logfile)){
         writeLines(readLines(self$logfile))
@@ -209,11 +226,11 @@ OGS6 <- R6::R6Class("OGS6",
       invisible(self)
     },
 
-    #'@description
-    #'Clears components from the OGS6 object
-    #'@param which character: The names of the components (all by default).
+    #' @description
+    #' Clears components from the \code{OGS6} object
+    #' @param which character: The names of the components (all by default).
     #' If you want to delete only some components, run
-    #' names(prj_top_level_classes()) for the available options.
+    #' \code{names(prj_top_level_classes())} for the available options.
     clear = function(which){
 
       if(missing(which)){
@@ -254,8 +271,8 @@ OGS6 <- R6::R6Class("OGS6",
 
   active = list(
 
-      #'@field sim_name
-      #'Simulation name. `value` must be string
+      #' @field sim_name
+      #' Simulation name. \code{value} must be string
       sim_name = function(value) {
         if(missing(value)) {
           private$.sim_name
@@ -265,8 +282,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field sim_path
-      #'Simulation path. `value` must be string
+      #' @field sim_path
+      #' Simulation path. \code{value} must be string
       sim_path = function(value) {
         if(missing(value)) {
           private$.sim_path
@@ -275,8 +292,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field logfile
-      #'Logfile path. `value` must be string
+      #' @field logfile
+      #' Logfile path. \code{value} must be string
       logfile = function(value) {
         if(missing(value)) {
           private$.logfile
@@ -286,14 +303,14 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field gml
-      #'.gml. read-only
+      #' @field gml
+      #' \code{.gml}. read-only
       gml = function() {
         private$.gml
       },
 
-      #'@field geometry
-      #'.prj `geometry` tag. `value` must be string
+      #' @field geometry
+      #' \code{.prj} \code{geometry} tag. \code{value} must be string
       geometry = function(value) {
         if(missing(value)) {
           private$.geometry
@@ -303,8 +320,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field meshes
-      #'.prj `meshes` tag. `value` must be list of strings
+      #' @field meshes
+      #' \code{.prj} \code{meshes} tag. \code{value} must be list of strings
       meshes = function(value) {
         if(missing(value)) {
           private$.meshes
@@ -317,8 +334,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field vtus
-      #'.vtus. `value` must be list of `OGS_vtu` objects
+      #' @field vtus
+      #' \code{.vtu}s. \code{value} must be list of \code{OGS6_vtu} objects
       vtus = function(value) {
         if(missing(value)) {
           private$.vtus
@@ -329,8 +346,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field python_script
-      #'.prj `python_script` tag. `value` must be string
+      #' @field python_script
+      #' \code{.prj} \code{python_script} tag. \code{value} must be string
       python_script = function(value) {
         if(missing(value)) {
           private$.python_script
@@ -340,9 +357,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field search_length_algorithm
-      #'.prj `search_length_algorithm` tag. `value` must be
-      #' `r2ogs6_search_length_algorithm` object
+      #' @field search_length_algorithm
+      #' \code{.prj} \code{search_length_algorithm} tag. \code{value} must be
+      #' \code{r2ogs6_search_length_algorithm} object
       search_length_algorithm = function(value) {
         if(missing(value)) {
           private$.search_length_algorithm
@@ -354,8 +371,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field processes
-      #'.prj `processes` tag. `value` must be list of `r2ogs6_process` objects
+      #' @field processes
+      #' \code{.prj} \code{processes} tag. \code{value} must be list of
+      #' \code{r2ogs6_process} objects
       processes = function(value) {
         if(missing(value)) {
           private$.processes
@@ -384,8 +402,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field time_loop
-      #'.prj `time_loop` tag. `value` must be `r2ogs6_time_loop` object
+      #' @field time_loop
+      #' \code{.prj} \code{time_loop} tag. \code{value} must be
+      #' \code{r2ogs6_time_loop} object
       time_loop = function(value) {
         if(missing(value)) {
           private$.time_loop
@@ -397,9 +416,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field local_coordinate_system
-      #'.prj `local_coordinate_system` tag. `value` must be
-      #' `r2ogs6_local_coordinate_system` object
+      #' @field local_coordinate_system
+      #' \code{.prj} \code{local_coordinate_system} tag. \code{value} must be
+      #' \code{r2ogs6_local_coordinate_system} object
       local_coordinate_system = function(value) {
         if(missing(value)) {
           private$.local_coordinate_system
@@ -411,8 +430,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field media
-      #'.prj `media` tag. `value` must be list of `r2ogs6_medium` objects
+      #' @field media
+      #' \code{.prj} \code{media} tag. \code{value} must be list of
+      #' \code{r2ogs6_medium} objects
       media = function(value) {
         if(missing(value)) {
           private$.media
@@ -423,9 +443,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field parameters
-      #'.prj `parameters` tag. `value` must be list of `r2ogs6_parameter`
-      #' objects
+      #' @field parameters
+      #' \code{.prj} \code{parameters} tag. \code{value} must be list of
+      #' \code{r2ogs6_parameter} objects
       parameters = function(value) {
         if(missing(value)) {
           private$.parameters
@@ -436,9 +456,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field chemical_system
-      #'.prj `chemical_system` tag. `value` must be `r2ogs6_chemical_system`
-      #' object
+      #' @field chemical_system
+      #' \code{.prj} \code{chemical_system} tag. \code{value} must be
+      #' \code{r2ogs6_chemical_system} object
       chemical_system = function(value) {
         if(missing(value)) {
           private$.chemical_system
@@ -450,8 +470,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field curves
-      #'.prj `curves` tag. `value` must be list of `r2ogs6_curve` objects
+      #' @field curves
+      #' \code{.prj} \code{curves} tag. \code{value} must be list of
+      #' \code{r2ogs6_curve} objects
       curves = function(value) {
         if(missing(value)) {
           private$.curves
@@ -462,9 +483,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field process_variables
-      #'.prj `process_variables` tag. `value` must be list of
-      #' `r2ogs6_process_variable` objects
+      #' @field process_variables
+      #' \code{.prj} \code{process_variables} tag. \code{value} must be list of
+      #' \code{r2ogs6_process_variable} objects
       process_variables = function(value) {
         if(missing(value)) {
           private$.process_variables
@@ -476,9 +497,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field nonlinear_solvers
-      #'.prj `nonlinear_solvers` tag. `value` must be list of
-      #' `r2ogs6_nonlinear_solver` objects
+      #' @field nonlinear_solvers
+      #' \code{.prj} \code{nonlinear_solvers} tag. \code{value} must be list of
+      #' \code{r2ogs6_nonlinear_solver} objects
       nonlinear_solvers = function(value) {
         if(missing(value)) {
           private$.nonlinear_solvers
@@ -490,9 +511,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field linear_solvers
-      #'.prj `linear_solvers` tag. `value` must be list of
-      #' `r2ogs6_linear_solver` objects
+      #' @field linear_solvers
+      #' \code{.prj} \code{linear_solvers} tag. \code{value} must be list of
+      #' \code{r2ogs6_linear_solver} objects
       linear_solvers = function(value) {
         if(missing(value)) {
           private$.linear_solvers
@@ -503,9 +524,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field test_definition
-      #'.prj `test_definition` tag. `value` must be list of `r2ogs6_vtkdiff`
-      #' objects
+      #' @field test_definition
+      #' \code{.prj} \code{test_definition} tag. \code{value} must be list of
+      #' \code{r2ogs6_vtkdiff} objects
       test_definition = function(value) {
         if(missing(value)) {
           private$.test_definition
@@ -516,8 +537,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field insitu
-      #'.prj `insitu` tag. `value` must be `r2ogs6_insitu` object
+      #' @field insitu
+      #' \code{.prj} \code{insitu} tag. \code{value} must be
+      #' \code{r2ogs6_insitu} object
       insitu = function(value) {
         if(missing(value)) {
           private$.insitu
@@ -529,8 +551,8 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #'@field pvds
-      #'.pvds. `value` must be list of `OGS6_pvd` objects
+      #' @field pvds
+      #' \code{.pvd}s. \code{value} must be list of \code{OGS6_pvd} objects
       pvds = function(value) {
         if(missing(value)) {
           private$.pvds

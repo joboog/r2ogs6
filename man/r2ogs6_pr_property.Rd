@@ -110,3 +110,8 @@ r2ogs6_pr_property(
 \description{
 tag: property
 }
+\examples{
+r2ogs6_pr_property(name = "reference_temperature",
+                   type = "Constant",
+                   value = 293.15)
+}

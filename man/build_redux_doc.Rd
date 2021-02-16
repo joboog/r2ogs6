@@ -7,15 +7,16 @@
 build_redux_doc(path, pattern, xpath, export_path)
 }
 \arguments{
-\item{path}{string: See ?analyse_xml}
+\item{path}{string: See \code{?analyse_xml}}
 
-\item{pattern}{string: See ?analyse_xml}
+\item{pattern}{string: See \code{?analyse_xml}}
 
-\item{xpath}{string: See ?analyse_xml}
+\item{xpath}{string: See \code{?analyse_xml}}
 
 \item{export_path}{string: Path to export the XML document to}
 }
 \description{
-Builds an XML document based on the findings of analyse_xml.
-Calls recursive function `build_redux_tree` internally.
+Builds an XML document based on the findings of
+\code{analyse_xml()}. Calls recursive function \code{build_redux_tree()}
+internally.
 }

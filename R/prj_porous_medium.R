@@ -2,15 +2,16 @@
 #===== r2ogs6_porous_medium =====
 
 
-#'r2ogs6_porous_medium
-#'@description tag: porous_medium
-#'@param id string | double:
-#'@param permeability list:
-#'@param porosity list:
-#'@param storage list:
-#'@param capillary_pressure r2ogs6_capillary_pressure:
-#'@param relative_permeability list:
-#'@export
+#' r2ogs6_porous_medium
+#' @description tag: porous_medium
+#' @param id string | double:
+#' @param permeability list:
+#' @param porosity list:
+#' @param storage list:
+#' @param capillary_pressure r2ogs6_capillary_pressure:
+#' @param relative_permeability list:
+#' @example man/examples/ex_prj_porous_medium.R
+#' @export
 r2ogs6_porous_medium <- function(id,
                                  permeability,
                                  porosity,
@@ -80,17 +81,18 @@ new_r2ogs6_porous_medium <- function(id,
 #===== r2ogs6_capillary_pressure =====
 
 
-#'r2ogs6_capillary_pressure
-#'@description tag: capillary_pressure
-#'@param type string:
-#'@param pd Optional: string | double:
-#'@param sr Optional: string | double:
-#'@param smax Optional: string | double:
-#'@param m Optional: string | double:
-#'@param pc_max Optional: string | double:
-#'@param has_regularized Optional: string, "true" | "false":
-#'@param curve Optional: list:
-#'@export
+#' r2ogs6_capillary_pressure
+#' @description tag: capillary_pressure
+#' @param type string:
+#' @param pd Optional: string | double:
+#' @param sr Optional: string | double:
+#' @param smax Optional: string | double:
+#' @param m Optional: string | double:
+#' @param pc_max Optional: string | double:
+#' @param has_regularized Optional: string, "true" | "false":
+#' @param curve Optional: list:
+#' @example man/examples/ex_prj_capillary_pressure.R
+#' @export
 r2ogs6_capillary_pressure <- function(type,
                                       pd = NULL,
                                       sr = NULL,
@@ -177,14 +179,16 @@ new_r2ogs6_capillary_pressure <- function(type,
 #===== r2ogs6_relative_permeability =====
 
 
-#'r2ogs6_relative_permeability
-#'@description tag: relative_permeability
-#'@param type string:
-#'@param sr string | number:
-#'@param smax string | number:
-#'@param m string | number:
-#'@param krel_min string | number:
-#'@param id string: Optional:
+#' r2ogs6_relative_permeability
+#' @description tag: relative_permeability
+#' @param type string:
+#' @param sr string | number:
+#' @param smax string | number:
+#' @param m string | number:
+#' @param krel_min string | number:
+#' @param id string: Optional:
+#' @example man/examples/ex_prj_relative_permeability.R
+#' @export
 r2ogs6_relative_permeability <- function(type,
                                          sr,
                                          smax,

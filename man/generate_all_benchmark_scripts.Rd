@@ -21,17 +21,17 @@ generate_all_benchmark_scripts(
 
 \item{scripts_path}{string: Path where benchmark scripts will be saved}
 
-\item{read_in_gmls}{flag: Optional: Should .gml files just be copied or read
-in too?}
+\item{read_in_gmls}{flag: Optional: Should \code{.gml} files just be copied
+or read in too?}
 
-\item{read_in_vtus}{flag: Optional: Should .vtu files just be copied or read
-in too?}
+\item{read_in_vtus}{flag: Optional: Should \code{.vtu} files just be copied
+or read in too?}
 
 \item{starting_from_prj_path}{string: Optional:}
 
-\item{skip_prj_paths}{character: Optional: .prj paths to skip}
+\item{skip_prj_paths}{character: Optional: \code{.prj} paths to skip}
 }
 \description{
-Wrapper function to generate benchmark scripts from all .prj
-files in a directory
+Wrapper function to generate benchmark scripts from all
+\code{.prj} files in a directory
 }

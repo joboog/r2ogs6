@@ -18,3 +18,8 @@ r2ogs6_com_property(name, type, value = NULL, parameter_name = NULL)
 \description{
 tag: property
 }
+\examples{
+r2ogs6_com_property(name = "molecular_diffusion",
+                    type = "Constant",
+                    value = 2e-09)
+}
