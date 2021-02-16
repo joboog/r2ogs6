@@ -1,8 +1,8 @@
 
-#===== r2ogs6_process =====
+#===== prj_process =====
 
 
-#' r2ogs6_process
+#' prj_process
 #' @description tag: process (parent tag: processes)
 #' @param name string:
 #' @param type string:
@@ -75,7 +75,7 @@
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
-r2ogs6_process <- function(name,
+prj_process <- function(name,
                            type,
                            integration_order,
                            process_variables,
@@ -184,7 +184,7 @@ r2ogs6_process <- function(name,
     constitutive_relation <-
         ellipsis_list[names(ellipsis_list) == "constitutive_relation"]
 
-    new_r2ogs6_process(
+    new_prj_process(
         name,
         type,
         integration_order,
@@ -259,7 +259,7 @@ r2ogs6_process <- function(name,
 }
 
 
-new_r2ogs6_process <- function(name,
+new_prj_process <- function(name,
                                type,
                                integration_order,
                                process_variables,
@@ -336,7 +336,7 @@ new_r2ogs6_process <- function(name,
     assertthat::assert_that(assertthat::is.number(integration_order))
 
     is_null_or_has_class(material_property,
-                                  "r2ogs6_material_property")
+                                  "prj_material_property")
 
     process_variables <- validate_process_variables(process_variables)
     secondary_variables <- validate_secondary_variables(secondary_variables)
@@ -345,7 +345,7 @@ new_r2ogs6_process <- function(name,
 
     if(!is.null(constitutive_relation)){
         is_wrapper_list(constitutive_relation,
-                        "r2ogs6_constitutive_relation")
+                        "prj_constitutive_relation")
     }
 
     if(!is.null(darcy_gravity)){
@@ -353,10 +353,10 @@ new_r2ogs6_process <- function(name,
                                              c("axis_id", "g"))
     }
 
-    is_null_or_has_class(fracture_model, "r2ogs6_fracture_model")
+    is_null_or_has_class(fracture_model, "prj_fracture_model")
 
     is_null_or_has_class(phasefield_parameters,
-                                  "r2ogs6_phasefield_parameters")
+                                  "prj_phasefield_parameters")
 
     if(!is.null(calculatesurfaceflux)){
         if(length(calculatesurfaceflux) == 2){
@@ -373,7 +373,7 @@ new_r2ogs6_process <- function(name,
 
     if(!is.null(borehole_heat_exchangers)){
         is_wrapper_list(borehole_heat_exchangers,
-                              "r2ogs6_borehole_heat_exchanger")
+                              "prj_borehole_heat_exchanger")
     }
 
     if(!is.null(reactive_system)){
@@ -391,7 +391,7 @@ new_r2ogs6_process <- function(name,
 
     if(!is.null(porous_medium)){
         is_wrapper_list(porous_medium,
-                        "r2ogs6_porous_medium")
+                        "prj_porous_medium")
     }
 
     fluid <- validate_fluid(fluid)
@@ -538,15 +538,15 @@ new_r2ogs6_process <- function(name,
             unwrap_on_exp = c("fracture_properties", "constitutive_relation")
         ),
 
-        class = "r2ogs6_process"
+        class = "prj_process"
     )
 }
 
 
-#===== r2ogs6_constitutive_relation =====
+#===== prj_constitutive_relation =====
 
 
-#' r2ogs6_constitutive_relation
+#' prj_constitutive_relation
 #' @description tag: constitutive_relation
 #' @param type string:
 #' @param id Optional:
@@ -590,7 +590,7 @@ new_r2ogs6_process <- function(name,
 #' @param dependency_parameter_mvm Optional:
 #' @example man/examples/ex_prj_constitutive_relation.R
 #' @export
-r2ogs6_constitutive_relation <- function(type,
+prj_constitutive_relation <- function(type,
                                          id = NULL,
                                          youngs_modulus = NULL,
                                          poissons_ratio = NULL,
@@ -633,7 +633,7 @@ r2ogs6_constitutive_relation <- function(type,
 
     # Add coercing utility here
 
-    new_r2ogs6_constitutive_relation(type,
+    new_prj_constitutive_relation(type,
                                      id,
                                      youngs_modulus,
                                      poissons_ratio,
@@ -676,7 +676,7 @@ r2ogs6_constitutive_relation <- function(type,
 }
 
 
-new_r2ogs6_constitutive_relation <- function(type,
+new_prj_constitutive_relation <- function(type,
                                              id = NULL,
                                              youngs_modulus = NULL,
                                              poissons_ratio = NULL,
@@ -760,15 +760,15 @@ new_r2ogs6_constitutive_relation <- function(type,
                    attr_names = c("id", "material_property"),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_constitutive_relation"
+    class = "prj_constitutive_relation"
     )
 }
 
 
-#===== r2ogs6_fracture_model =====
+#===== prj_fracture_model =====
 
 
-#' r2ogs6_fracture_model
+#' prj_fracture_model
 #' @description tag: fracture_model
 #' @param type string:
 #' @param normal_stiffness string:
@@ -783,7 +783,7 @@ new_r2ogs6_constitutive_relation <- function(type,
 #' @param nonlinear_solver Optional: list:
 #' @example man/examples/ex_prj_fracture_model.R
 #' @export
-r2ogs6_fracture_model <- function(type,
+prj_fracture_model <- function(type,
                                   normal_stiffness,
                                   shear_stiffness,
                                   penalty_aperture_cutoff,
@@ -799,7 +799,7 @@ r2ogs6_fracture_model <- function(type,
     penalty_aperture_cutoff <- coerce_string_to_numeric(penalty_aperture_cutoff)
     tension_cutoff <- coerce_string_to_numeric(tension_cutoff)
 
-    new_r2ogs6_fracture_model(type,
+    new_prj_fracture_model(type,
                               normal_stiffness,
                               shear_stiffness,
                               penalty_aperture_cutoff,
@@ -813,7 +813,7 @@ r2ogs6_fracture_model <- function(type,
 }
 
 
-new_r2ogs6_fracture_model <- function(type,
+new_prj_fracture_model <- function(type,
                                       normal_stiffness,
                                       shear_stiffness,
                                       penalty_aperture_cutoff,
@@ -859,15 +859,15 @@ new_r2ogs6_fracture_model <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_fracture_model"
+    class = "prj_fracture_model"
     )
 }
 
 
-#===== r2ogs6_fracture_properties =====
+#===== prj_fracture_properties =====
 
 
-#' r2ogs6_fracture_properties
+#' prj_fracture_properties
 #' @description tag: fracture_properties
 #' @param material_id string | double:
 #' @param initial_aperture string:
@@ -876,7 +876,7 @@ new_r2ogs6_fracture_model <- function(type,
 #' @param permeability_model Optional: list:
 #' @example man/examples/ex_prj_fracture_properties.R
 #' @export
-r2ogs6_fracture_properties <- function(material_id,
+prj_fracture_properties <- function(material_id,
                                        initial_aperture,
                                        specific_storage = NULL,
                                        biot_coefficient = NULL,
@@ -885,7 +885,7 @@ r2ogs6_fracture_properties <- function(material_id,
     #Coerce input
     material_id <- coerce_string_to_numeric(material_id)
 
-    new_r2ogs6_fracture_properties(material_id,
+    new_prj_fracture_properties(material_id,
                                    initial_aperture,
                                    specific_storage,
                                    biot_coefficient,
@@ -893,7 +893,7 @@ r2ogs6_fracture_properties <- function(material_id,
 }
 
 
-new_r2ogs6_fracture_properties <- function(material_id,
+new_prj_fracture_properties <- function(material_id,
                                            initial_aperture,
                                            specific_storage = NULL,
                                            biot_coefficient = NULL,
@@ -934,22 +934,22 @@ new_r2ogs6_fracture_properties <- function(material_id,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_fracture_properties"
+    class = "prj_fracture_properties"
     )
 }
 
 
-#===== r2ogs6_jacobian_assembler =====
+#===== prj_jacobian_assembler =====
 
 
-#' r2ogs6_jacobian_assembler
+#' prj_jacobian_assembler
 #' @description tag: jacobian_assembler
 #' @param type string:
 #' @param component_magnitudes Optional: string | double:
 #' @param relative_epsilons Optional: string | double:
 #' @example man/examples/ex_prj_jacobian_assembler.R
 #' @export
-r2ogs6_jacobian_assembler <- function(type,
+prj_jacobian_assembler <- function(type,
                                       component_magnitudes = NULL,
                                       relative_epsilons = NULL) {
 
@@ -957,13 +957,13 @@ r2ogs6_jacobian_assembler <- function(type,
     component_magnitudes <- coerce_string_to_numeric(component_magnitudes)
     relative_epsilons <- coerce_string_to_numeric(relative_epsilons)
 
-    new_r2ogs6_jacobian_assembler(type,
+    new_prj_jacobian_assembler(type,
                                   component_magnitudes,
                                   relative_epsilons)
 }
 
 
-new_r2ogs6_jacobian_assembler <- function(type,
+new_prj_jacobian_assembler <- function(type,
                                           component_magnitudes = NULL,
                                           relative_epsilons = NULL) {
 
@@ -979,15 +979,15 @@ new_r2ogs6_jacobian_assembler <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_jacobian_assembler"
+    class = "prj_jacobian_assembler"
     )
 }
 
 
-#===== r2ogs6_phasefield_parameters =====
+#===== prj_phasefield_parameters =====
 
 
-#' r2ogs6_phasefield_parameters
+#' prj_phasefield_parameters
 #' @description tag: phasefield_parameters
 #' @param residual_stiffness string:
 #' @param crack_resistance string:
@@ -996,7 +996,7 @@ new_r2ogs6_jacobian_assembler <- function(type,
 #' @param history_field Optional: string:
 #' @example man/examples/ex_prj_phasefield_parameters.R
 #' @export
-r2ogs6_phasefield_parameters <- function(residual_stiffness,
+prj_phasefield_parameters <- function(residual_stiffness,
                                          crack_resistance,
                                          crack_length_scale,
                                          kinetic_coefficient,
@@ -1004,7 +1004,7 @@ r2ogs6_phasefield_parameters <- function(residual_stiffness,
 
     # Add coercing utility here
 
-    new_r2ogs6_phasefield_parameters(residual_stiffness,
+    new_prj_phasefield_parameters(residual_stiffness,
                                      crack_resistance,
                                      crack_length_scale,
                                      kinetic_coefficient,
@@ -1012,7 +1012,7 @@ r2ogs6_phasefield_parameters <- function(residual_stiffness,
 }
 
 
-new_r2ogs6_phasefield_parameters <- function(residual_stiffness,
+new_prj_phasefield_parameters <- function(residual_stiffness,
                                              crack_resistance,
                                              crack_length_scale,
                                              kinetic_coefficient,
@@ -1034,24 +1034,24 @@ new_r2ogs6_phasefield_parameters <- function(residual_stiffness,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_phasefield_parameters"
+    class = "prj_phasefield_parameters"
     )
 }
 
 
-#===== r2ogs6_borehole_heat_exchanger =====
+#===== prj_borehole_heat_exchanger =====
 
 
 #See prj_borehole_heat_exchanger.R
 
 
-#===== r2ogs6_material_property =====
+#===== prj_material_property =====
 
 
 #See prj_material_property.R
 
 
-#===== r2ogs6_porous_medium =====
+#===== prj_porous_medium =====
 
 
 #See prj_porous_medium.R

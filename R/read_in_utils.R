@@ -55,27 +55,27 @@ read_in <- function(ogs6_obj,
     # Remove root expression for better readability
     xpath <- stringr::str_remove(xpath, "\\/[A-Za-z_]*\\/")
 
-    r2ogs6_obj <- NULL
+    prj_obj <- NULL
 
     #Parse all children
     for (i in seq_len(length(nodes))) {
 
-        r2ogs6_obj <- node_to_r2ogs6_class_object(nodes[[i]],
+        prj_obj <- node_to_prj_class_object(nodes[[i]],
                                                   xpath)
 
-        #Add r2ogs6_obj with code snippet
-        eval(parse(text = "ogs6_obj$add(r2ogs6_obj)"))
+        #Add prj_obj with code snippet
+        eval(parse(text = "ogs6_obj$add(prj_obj)"))
     }
 
-    return(invisible(r2ogs6_obj))
+    return(invisible(prj_obj))
 }
 
 
-#' node_to_r2ogs6_class_object
+#' node_to_prj_class_object
 #' @description Takes an XML node and turns it into a class object
 #' @param xml_node xml2::xml_node: XML node
 #' @param xpath string: XPath expression (for subclass differentiation)
-node_to_r2ogs6_class_object <- function(xml_node,
+node_to_prj_class_object <- function(xml_node,
                                         xpath){
 
     assertthat::assert_that(class(xml_node) == "xml_node")
@@ -128,7 +128,7 @@ node_to_r2ogs6_class_object <- function(xml_node,
         param_call_strs <- c(param_call_strs, param_call_str)
     }
 
-    #Construct the call to the r2ogs6_object helper
+    #Construct the call to the prj_object helper
     class_constructor_call <-
         paste0(class_name,
                ifelse(grepl("OGS6", class_name), "$new", ""),
@@ -142,9 +142,9 @@ node_to_r2ogs6_class_object <- function(xml_node,
                ")")
 
     #Evaluate the constructed call
-    r2ogs6_obj <- eval(parse(text = class_constructor_call))
+    prj_obj <- eval(parse(text = class_constructor_call))
 
-    return(invisible(r2ogs6_obj))
+    return(invisible(prj_obj))
 }
 
 
@@ -153,7 +153,7 @@ node_to_r2ogs6_class_object <- function(xml_node,
 #' @description Returns representation of an XML node. This is a recursive
 #' function.
 #' ASSUMPTIONS:
-#' 1) Leaf nodes will never be r2ogs6_* objects
+#' 1) Leaf nodes will never be prj_* objects
 #' 2) Wrapper nodes are represented as lists
 #' 3) Parent nodes whose children have no children are represented as lists
 #' @param xml_node xml2::xml_node: XML node
@@ -188,7 +188,7 @@ node_to_object <- function(xml_node,
 
     #Node is represented by subclass
     if(!is.null(get_class_from_xpath(xpath))){
-        return(invisible(node_to_r2ogs6_class_object(xml_node,
+        return(invisible(node_to_prj_class_object(xml_node,
                                                      xpath)))
     }
 
@@ -206,7 +206,7 @@ node_to_object <- function(xml_node,
                             child_name)
 
         if (!is.null(get_class_from_xpath(new_xpath))) {
-            list_content <- node_to_r2ogs6_class_object(child_node,
+            list_content <- node_to_prj_class_object(child_node,
                                                         new_xpath)
         } else{
             list_content <- node_to_object(child_node,

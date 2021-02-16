@@ -1,25 +1,25 @@
 
-#===== r2ogs6_search_length_algorithm =====
+#===== prj_search_length_algorithm =====
 
 
-#' r2ogs6_search_length_algorithm
+#' prj_search_length_algorithm
 #' @description tag: search_length_algorithm
 #' @param type string: The type
 #' @param value string | double: The value
 #' @example man/examples/ex_prj_search_length_algorithm.R
 #' @export
-r2ogs6_search_length_algorithm <- function(type,
+prj_search_length_algorithm <- function(type,
                                            value = NULL) {
 
     #Coerce input
     value <- coerce_string_to_numeric(value)
 
-    new_r2ogs6_search_length_algorithm(type,
+    new_prj_search_length_algorithm(type,
                                        value)
 }
 
 
-new_r2ogs6_search_length_algorithm <- function(type,
+new_prj_search_length_algorithm <- function(type,
                                                value = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
@@ -34,6 +34,6 @@ new_r2ogs6_search_length_algorithm <- function(type,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_search_length_algorithm"
+        class = "prj_search_length_algorithm"
     )
 }

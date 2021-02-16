@@ -92,7 +92,7 @@ OGS6_Ensemble <- R6::R6Class(
         },
 
         #'@description
-        #'Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+        #'Runs the simulation. This calls r2ogs6::ogs6_run_simulation()
         #' internally. For ensembles, output will always be written to logfiles.
         #'@param parallel flag: Should the function be run in parallel?
         #' This is implementented via the 'parallel' package.
@@ -134,7 +134,7 @@ OGS6_Ensemble <- R6::R6Class(
 
                     foreach::foreach(i = seq_along(ensemble)) %dopar% {
                         ogs6_obj <- ensemble[[i]]
-                        r2ogs6::ogs_run_simulation(ogs6_obj,
+                        r2ogs6::ogs6_run_simulation(ogs6_obj,
                                                write_logfile = TRUE,
                                                verbose = verbose)
                     }
@@ -148,7 +148,7 @@ OGS6_Ensemble <- R6::R6Class(
                     # utilize it with mclapply
 
                     parallel::mclapply(self$ensemble,
-                                       ogs_run_simulation,
+                                       ogs6_run_simulation,
                                        write_logfile = TRUE,
                                        verbose = verbose,
                                        mc.cores = n_cores)
@@ -157,7 +157,7 @@ OGS6_Ensemble <- R6::R6Class(
 
                 # For serial ensembles, we can use lapply
                 exit_codes <- lapply(self$ensemble,
-                                     ogs_run_simulation,
+                                     ogs6_run_simulation,
                                      write_logfile = TRUE,
                                      verbose = verbose)
                 return(exit_codes)
@@ -397,11 +397,11 @@ OGS6_Ensemble <- R6::R6Class(
 )
 
 
-#'ogs_get_combinations
+#'ogs6_get_combinations
 #'@description Gets possible combinations from supplied vectors
 #'@param ... vector:
 #'@export
-ogs_get_combinations <- function(...){
+ogs6_get_combinations <- function(...){
 
     vec_list <- list(...)
     long_vec_list <- list()

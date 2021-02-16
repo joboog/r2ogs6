@@ -1,22 +1,22 @@
 
-#' r2ogs6_local_coordinate_system
+#' prj_local_coordinate_system
 #' @description tag: local_coordinate_system
 #' @param basis_vector_0 string | double: A basis vector
 #' @param basis_vector_1 string | double: A basis vector
 #' @param basis_vector_2 Optional: string | double: A basis vector
 #' @example man/examples/ex_prj_local_coordinate_system.R
 #' @export
-r2ogs6_local_coordinate_system <- function(basis_vector_0,
+prj_local_coordinate_system <- function(basis_vector_0,
                                            basis_vector_1,
                                            basis_vector_2 = NULL) {
 
-    new_r2ogs6_local_coordinate_system(basis_vector_0,
+    new_prj_local_coordinate_system(basis_vector_0,
                                        basis_vector_1,
                                        basis_vector_2)
 }
 
 
-new_r2ogs6_local_coordinate_system <- function(basis_vector_0,
+new_prj_local_coordinate_system <- function(basis_vector_0,
                                                basis_vector_1,
                                                basis_vector_2 = NULL) {
 
@@ -34,6 +34,6 @@ new_r2ogs6_local_coordinate_system <- function(basis_vector_0,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_local_coordinate_system"
+        class = "prj_local_coordinate_system"
     )
 }

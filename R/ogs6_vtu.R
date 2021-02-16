@@ -326,26 +326,26 @@ validate_coordinates <- function(coordinates){
 }
 
 
-#===== generate_structured_mesh =====
+#===== ogs6_generate_structured_mesh =====
 
 
-#' generate_structured_mesh
+#' ogs6_generate_structured_mesh
 #' @description Wrapper function to call generateStructuredMesh.exe
 #'   (VTK mesh generator). For full documentation see
 #'   https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
 #' @param args_str string: The arguments the script will be called with
-#' @param ogs_bin_path string: Optional: Path to OpenGeoSys6 bin folder.
-#'   Defaults to options("r2ogs6.default_ogs_bin_path")
+#' @param ogs6_bin_path string: Optional: Path to OpenGeoSys6 bin folder.
+#'   Defaults to options("r2ogs6.default_ogs6_bin_path")
 #' @return string: .vtu file path
 #' @export
-generate_structured_mesh = function(args_str,
-                                    ogs_bin_path) {
+ogs6_generate_structured_mesh = function(args_str,
+                                         ogs6_bin_path) {
 
-    if(missing(ogs_bin_path)){
-        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
+    if(missing(ogs6_bin_path)){
+        ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
     }
 
-    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+    assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.string(args_str))
 
 
@@ -353,7 +353,7 @@ generate_structured_mesh = function(args_str,
     vtu_path <- stringr::str_extract(args_str, "-o [^ ]*")
     vtu_path <- stringr::str_remove(vtu_path, "-o ")
 
-    system(command = paste0(ogs_bin_path,
+    system(command = paste0(ogs6_bin_path,
                             "generateStructuredMesh.exe ",
                             args_str))
 

@@ -27,7 +27,7 @@ generate_constructor <- function(params,
     attr_flags <- params[[3]]
     param_flags <- params[[4]]
 
-    class_name <- paste0("r2ogs6_", prefix, tag_name)
+    class_name <- paste0("prj_", prefix, tag_name)
 
     param_str <- flags_to_con_str(param_flags)
     assign_str <- flags_to_assign_str(param_flags)
@@ -87,7 +87,7 @@ generate_helper <- function(params,
 
     param_flags <- params[[4]]
 
-    class_name <- paste0("r2ogs6_", prefix, tag_name)
+    class_name <- paste0("prj_", prefix, tag_name)
 
     doc_str <- flags_to_doc_str(param_flags)
     con_str <- flags_to_con_str(param_flags)
@@ -440,7 +440,7 @@ generate_add_method <- function(tag_name, parent_tag_name) {
 
     method_str <- paste0("add_", tag_name, " = function(", tag_name, ") {\n",
                          "assertthat::assert_that(class(", tag_name,
-                         ") == \"r2ogs6_", tag_name, "\")\n")
+                         ") == \"prj_", tag_name, "\")\n")
 
     if(has_wrapper){
         method_str <- paste0(method_str, "private$.", parent_tag_name,

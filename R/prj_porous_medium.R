@@ -1,18 +1,18 @@
 
-#===== r2ogs6_porous_medium =====
+#===== prj_porous_medium =====
 
 
-#' r2ogs6_porous_medium
+#' prj_porous_medium
 #' @description tag: porous_medium
 #' @param id string | double:
 #' @param permeability list:
 #' @param porosity list:
 #' @param storage list:
-#' @param capillary_pressure r2ogs6_capillary_pressure:
+#' @param capillary_pressure prj_capillary_pressure:
 #' @param relative_permeability list:
 #' @example man/examples/ex_prj_porous_medium.R
 #' @export
-r2ogs6_porous_medium <- function(id,
+prj_porous_medium <- function(id,
                                  permeability,
                                  porosity,
                                  storage,
@@ -22,7 +22,7 @@ r2ogs6_porous_medium <- function(id,
     # COerce input
     id <- coerce_string_to_numeric(id)
 
-    new_r2ogs6_porous_medium(id,
+    new_prj_porous_medium(id,
                              permeability,
                              porosity,
                              storage,
@@ -31,7 +31,7 @@ r2ogs6_porous_medium <- function(id,
 }
 
 
-new_r2ogs6_porous_medium <- function(id,
+new_prj_porous_medium <- function(id,
                                      permeability,
                                      porosity,
                                      storage,
@@ -53,12 +53,12 @@ new_r2ogs6_porous_medium <- function(id,
                                      "type"))
 
     assertthat::assert_that(class(capillary_pressure) ==
-                                "r2ogs6_capillary_pressure")
+                                "prj_capillary_pressure")
 
-    if(!"r2ogs6_relative_permeability" %in%
+    if(!"prj_relative_permeability" %in%
        class(relative_permeability)){
         is_wrapper_list(relative_permeability,
-                              "r2ogs6_relative_permeability")
+                              "prj_relative_permeability")
     }
 
     structure(list(id = id,
@@ -73,15 +73,15 @@ new_r2ogs6_porous_medium <- function(id,
                    attr_names = c("id"),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_porous_medium"
+    class = "prj_porous_medium"
     )
 }
 
 
-#===== r2ogs6_capillary_pressure =====
+#===== prj_capillary_pressure =====
 
 
-#' r2ogs6_capillary_pressure
+#' prj_capillary_pressure
 #' @description tag: capillary_pressure
 #' @param type string:
 #' @param pd Optional: string | double:
@@ -93,7 +93,7 @@ new_r2ogs6_porous_medium <- function(id,
 #' @param curve Optional: list:
 #' @example man/examples/ex_prj_capillary_pressure.R
 #' @export
-r2ogs6_capillary_pressure <- function(type,
+prj_capillary_pressure <- function(type,
                                       pd = NULL,
                                       sr = NULL,
                                       smax = NULL,
@@ -109,7 +109,7 @@ r2ogs6_capillary_pressure <- function(type,
     m <- coerce_string_to_numeric(m)
     pc_max <- coerce_string_to_numeric(pc_max)
 
-    new_r2ogs6_capillary_pressure(type,
+    new_prj_capillary_pressure(type,
                                   pd,
                                   sr,
                                   smax,
@@ -120,7 +120,7 @@ r2ogs6_capillary_pressure <- function(type,
 }
 
 
-new_r2ogs6_capillary_pressure <- function(type,
+new_prj_capillary_pressure <- function(type,
                                           pd = NULL,
                                           sr = NULL,
                                           smax = NULL,
@@ -171,15 +171,15 @@ new_r2ogs6_capillary_pressure <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_capillary_pressure"
+    class = "prj_capillary_pressure"
     )
 }
 
 
-#===== r2ogs6_relative_permeability =====
+#===== prj_relative_permeability =====
 
 
-#' r2ogs6_relative_permeability
+#' prj_relative_permeability
 #' @description tag: relative_permeability
 #' @param type string:
 #' @param sr string | number:
@@ -189,7 +189,7 @@ new_r2ogs6_capillary_pressure <- function(type,
 #' @param id string: Optional:
 #' @example man/examples/ex_prj_relative_permeability.R
 #' @export
-r2ogs6_relative_permeability <- function(type,
+prj_relative_permeability <- function(type,
                                          sr,
                                          smax,
                                          m,
@@ -203,7 +203,7 @@ r2ogs6_relative_permeability <- function(type,
     m <- coerce_string_to_numeric(m)
     krel_min <- coerce_string_to_numeric(krel_min)
 
-    new_r2ogs6_relative_permeability(type,
+    new_prj_relative_permeability(type,
                                      sr,
                                      smax,
                                      m,
@@ -212,7 +212,7 @@ r2ogs6_relative_permeability <- function(type,
 }
 
 
-new_r2ogs6_relative_permeability <- function(type,
+new_prj_relative_permeability <- function(type,
                                              sr,
                                              smax,
                                              m,
@@ -242,6 +242,6 @@ new_r2ogs6_relative_permeability <- function(type,
                    attr_names = c("id"),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_relative_permeability"
+    class = "prj_relative_permeability"
     )
 }

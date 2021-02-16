@@ -34,10 +34,10 @@ OGS6 <- R6::R6Class("OGS6",
 
     #' @description
     #' Adds a .prj simulation component
-    #' @param x An object of any .prj `r2ogs6` class
+    #' @param x An object of any .prj `prj` class
     #' @examples
     #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-    #' ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
+    #' ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
     add = function(x){
 
       # Assert that class name is in implemented .prj classes for OGS6
@@ -136,8 +136,8 @@ OGS6 <- R6::R6Class("OGS6",
       flag <- TRUE
 
       status_strs <- character()
-      tag_names <- lapply(prj_top_level_tags(), `[[`, 1)
-      required <- lapply(prj_top_level_tags(), `[[`, 2)
+      tag_names <- lapply(get_prj_top_level_tags(), `[[`, 1)
+      required <- lapply(get_prj_top_level_tags(), `[[`, 2)
 
       for(i in seq_len(length(tag_names))){
 
@@ -174,7 +174,7 @@ OGS6 <- R6::R6Class("OGS6",
 
         if(flag){
           cat(paste0("Your OGS6 object has all necessary components.\n",
-                     "You can try calling ogs_run_simulation().",
+                     "You can try calling ogs6_run_simulation().",
                      "Note that this calls more validation functions, ",
                      "so you may not be done just yet.\n"))
         }
@@ -198,7 +198,7 @@ OGS6 <- R6::R6Class("OGS6",
           paste(self$meshes, collapse = "\n"),
           "\n", sep = "")
 
-      prj_tags <- lapply(prj_top_level_tags(), function(x){x[["tag_name"]]})
+      prj_tags <- lapply(get_prj_top_level_tags(), function(x){x[["tag_name"]]})
       prj_tags <- prj_tags[!prj_tags %in% c("geometry", "mesh", "meshes")]
 
       for(i in seq_len(length(prj_tags))){
@@ -359,7 +359,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field search_length_algorithm
       #' \code{.prj} \code{search_length_algorithm} tag. \code{value} must be
-      #' \code{r2ogs6_search_length_algorithm} object
+      #' \code{prj_search_length_algorithm} object
       search_length_algorithm = function(value) {
         if(missing(value)) {
           private$.search_length_algorithm
@@ -373,7 +373,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field processes
       #' \code{.prj} \code{processes} tag. \code{value} must be list of
-      #' \code{r2ogs6_process} objects
+      #' \code{prj_process} objects
       processes = function(value) {
         if(missing(value)) {
           private$.processes
@@ -404,7 +404,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field time_loop
       #' \code{.prj} \code{time_loop} tag. \code{value} must be
-      #' \code{r2ogs6_time_loop} object
+      #' \code{prj_time_loop} object
       time_loop = function(value) {
         if(missing(value)) {
           private$.time_loop
@@ -418,7 +418,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field local_coordinate_system
       #' \code{.prj} \code{local_coordinate_system} tag. \code{value} must be
-      #' \code{r2ogs6_local_coordinate_system} object
+      #' \code{prj_local_coordinate_system} object
       local_coordinate_system = function(value) {
         if(missing(value)) {
           private$.local_coordinate_system
@@ -432,7 +432,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field media
       #' \code{.prj} \code{media} tag. \code{value} must be list of
-      #' \code{r2ogs6_medium} objects
+      #' \code{prj_medium} objects
       media = function(value) {
         if(missing(value)) {
           private$.media
@@ -445,7 +445,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field parameters
       #' \code{.prj} \code{parameters} tag. \code{value} must be list of
-      #' \code{r2ogs6_parameter} objects
+      #' \code{prj_parameter} objects
       parameters = function(value) {
         if(missing(value)) {
           private$.parameters
@@ -458,7 +458,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field chemical_system
       #' \code{.prj} \code{chemical_system} tag. \code{value} must be
-      #' \code{r2ogs6_chemical_system} object
+      #' \code{prj_chemical_system} object
       chemical_system = function(value) {
         if(missing(value)) {
           private$.chemical_system
@@ -472,7 +472,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field curves
       #' \code{.prj} \code{curves} tag. \code{value} must be list of
-      #' \code{r2ogs6_curve} objects
+      #' \code{prj_curve} objects
       curves = function(value) {
         if(missing(value)) {
           private$.curves
@@ -485,7 +485,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field process_variables
       #' \code{.prj} \code{process_variables} tag. \code{value} must be list of
-      #' \code{r2ogs6_process_variable} objects
+      #' \code{prj_process_variable} objects
       process_variables = function(value) {
         if(missing(value)) {
           private$.process_variables
@@ -499,7 +499,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field nonlinear_solvers
       #' \code{.prj} \code{nonlinear_solvers} tag. \code{value} must be list of
-      #' \code{r2ogs6_nonlinear_solver} objects
+      #' \code{prj_nonlinear_solver} objects
       nonlinear_solvers = function(value) {
         if(missing(value)) {
           private$.nonlinear_solvers
@@ -513,7 +513,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field linear_solvers
       #' \code{.prj} \code{linear_solvers} tag. \code{value} must be list of
-      #' \code{r2ogs6_linear_solver} objects
+      #' \code{prj_linear_solver} objects
       linear_solvers = function(value) {
         if(missing(value)) {
           private$.linear_solvers
@@ -526,7 +526,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field test_definition
       #' \code{.prj} \code{test_definition} tag. \code{value} must be list of
-      #' \code{r2ogs6_vtkdiff} objects
+      #' \code{prj_vtkdiff} objects
       test_definition = function(value) {
         if(missing(value)) {
           private$.test_definition
@@ -539,7 +539,7 @@ OGS6 <- R6::R6Class("OGS6",
 
       #' @field insitu
       #' \code{.prj} \code{insitu} tag. \code{value} must be
-      #' \code{r2ogs6_insitu} object
+      #' \code{prj_insitu} object
       insitu = function(value) {
         if(missing(value)) {
           private$.insitu

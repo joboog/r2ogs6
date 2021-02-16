@@ -1,36 +1,36 @@
 
-#===== r2ogs6_time_loop =====
+#===== prj_time_loop =====
 
 
-#' r2ogs6_time_loop
+#' prj_time_loop
 #' @description tag: time_loop
-#' @param processes list, r2ogs6_tl_process:
-#' @param output r2ogs6_output:
-#' @param global_process_coupling Optional: r2ogs6_global_process_coupling:
+#' @param processes list, prj_tl_process:
+#' @param output prj_output:
+#' @param global_process_coupling Optional: prj_global_process_coupling:
 #' @example man/examples/ex_prj_time_loop.R
 #' @export
-r2ogs6_time_loop <- function(processes,
+prj_time_loop <- function(processes,
                              output,
                              global_process_coupling = NULL) {
 
     #Make this more user friendly
     #...
 
-    new_r2ogs6_time_loop(processes,
+    new_prj_time_loop(processes,
                          output,
                          global_process_coupling)
 }
 
 
-new_r2ogs6_time_loop <- function(processes,
+new_prj_time_loop <- function(processes,
                                  output,
                                  global_process_coupling = NULL) {
 
-    is_wrapper_list(processes, "r2ogs6_tl_process")
-    assertthat::assert_that(class(output) == "r2ogs6_output")
+    is_wrapper_list(processes, "prj_tl_process")
+    assertthat::assert_that(class(output) == "prj_output")
 
     is_null_or_has_class(global_process_coupling,
-                                  "r2ogs6_global_process_coupling")
+                                  "prj_global_process_coupling")
 
     structure(
         list(
@@ -41,26 +41,26 @@ new_r2ogs6_time_loop <- function(processes,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_time_loop"
+        class = "prj_time_loop"
     )
 }
 
 
-#===== r2ogs6_tl_process =====
+#===== prj_tl_process =====
 
 
-#' r2ogs6_tl_process
+#' prj_tl_process
 #' @description tag: process (parent: time_loop, NOT processes!)
-#' @param ref string: References a r2ogs6_process object by name
+#' @param ref string: References a prj_process object by name
 #' @param nonlinear_solver string:
-#' @param convergence_criterion r2ogs6_convergence_criterion:
+#' @param convergence_criterion prj_convergence_criterion:
 #' @param time_discretization vector:
-#' @param time_stepping r2ogs6_time_stepping:
+#' @param time_stepping prj_time_stepping:
 #' @param compensate_non_equilibrium_initial_residuum string: Optional: Either
 #'   "true" or "false"
 #' @example man/examples/ex_prj_tl_process.R
 #' @export
-r2ogs6_tl_process <- function(ref,
+prj_tl_process <- function(ref,
                               nonlinear_solver,
                               convergence_criterion,
                               time_discretization,
@@ -71,7 +71,7 @@ r2ogs6_tl_process <- function(ref,
     #Make this more user friendly
     #...
 
-    new_r2ogs6_tl_process(
+    new_prj_tl_process(
         ref,
         nonlinear_solver,
         convergence_criterion,
@@ -82,7 +82,7 @@ r2ogs6_tl_process <- function(ref,
 }
 
 
-new_r2ogs6_tl_process <- function(ref,
+new_prj_tl_process <- function(ref,
                                   nonlinear_solver,
                                   convergence_criterion,
                                   time_discretization,
@@ -94,11 +94,11 @@ new_r2ogs6_tl_process <- function(ref,
     assertthat::assert_that(assertthat::is.string(nonlinear_solver))
 
     assertthat::assert_that(class(convergence_criterion) ==
-                                "r2ogs6_convergence_criterion")
+                                "prj_convergence_criterion")
 
     assertthat::assert_that(is.vector(time_discretization))
 
-    assertthat::assert_that(class(time_stepping) == "r2ogs6_time_stepping")
+    assertthat::assert_that(class(time_stepping) == "prj_time_stepping")
 
     if(!is.null(compensate_non_equilibrium_initial_residuum)){
         compensate_non_equilibrium_initial_residuum <-
@@ -120,15 +120,15 @@ new_r2ogs6_tl_process <- function(ref,
              attr_names = c("ref"),
              flatten_on_exp = character()
         ),
-        class = "r2ogs6_tl_process"
+        class = "prj_tl_process"
     )
 }
 
 
-#===== r2ogs6_output =====
+#===== prj_output =====
 
 
-#' r2ogs6_output
+#' prj_output
 #' @description tag: output
 #' @param type string:
 #' @param prefix string:
@@ -143,7 +143,7 @@ new_r2ogs6_tl_process <- function(ref,
 #' @param fixed_output_times Optional: string | numeric:
 #' @example man/examples/ex_prj_output.R
 #' @export
-r2ogs6_output <- function(type,
+prj_output <- function(type,
                           prefix,
                           variables,
                           suffix = NULL,
@@ -161,7 +161,7 @@ r2ogs6_output <- function(type,
         meshes <- unlist(meshes)
     }
 
-    new_r2ogs6_output(type,
+    new_prj_output(type,
                          prefix,
                          variables,
                          suffix,
@@ -174,7 +174,7 @@ r2ogs6_output <- function(type,
 }
 
 
-new_r2ogs6_output <- function(type,
+new_prj_output <- function(type,
                                  prefix,
                                  variables,
                                  suffix = NULL,
@@ -222,39 +222,39 @@ new_r2ogs6_output <- function(type,
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
         ),
-        class = "r2ogs6_output"
+        class = "prj_output"
     )
 }
 
 
-#===== r2ogs6_global_process_coupling =====
+#===== prj_global_process_coupling =====
 
 
-#' r2ogs6_global_process_coupling
+#' prj_global_process_coupling
 #' @description tag: global_process_coupling
 #' @param max_iter string | double: Maximal number of iterations
-#' @param convergence_criteria list, r2ogs6_convergence_criterion:
+#' @param convergence_criteria list, prj_convergence_criterion:
 #'   Convergence criteria
 #' @example man/examples/ex_prj_global_process_coupling.R
 #' @export
-r2ogs6_global_process_coupling <- function(max_iter,
+prj_global_process_coupling <- function(max_iter,
                                            convergence_criteria) {
 
     #Coerce input
     max_iter <- coerce_string_to_numeric(max_iter)
 
-    new_r2ogs6_global_process_coupling(max_iter,
+    new_prj_global_process_coupling(max_iter,
                                        convergence_criteria)
 }
 
 
-new_r2ogs6_global_process_coupling <- function(max_iter,
+new_prj_global_process_coupling <- function(max_iter,
                                                convergence_criteria) {
 
     assertthat::assert_that(is.double(max_iter))
 
     is_wrapper_list(convergence_criteria,
-                          "r2ogs6_convergence_criterion")
+                          "prj_convergence_criterion")
 
     structure(
         list(
@@ -264,15 +264,15 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_global_process_coupling"
+        class = "prj_global_process_coupling"
     )
 }
 
 
-#===== r2ogs6_convergence_criterion =====
+#===== prj_convergence_criterion =====
 
 
-#' r2ogs6_convergence_criterion
+#' prj_convergence_criterion
 #' @description tag: convergence_criterion
 #' @param type string: Type
 #' @param norm_type string: ...
@@ -282,7 +282,7 @@ new_r2ogs6_global_process_coupling <- function(max_iter,
 #' @param reltols string | numeric: Relative tolerances
 #' @example man/examples/ex_prj_convergence_criterion.R
 #' @export
-r2ogs6_convergence_criterion <- function(type,
+prj_convergence_criterion <- function(type,
                                          norm_type,
                                          abstol = NULL,
                                          reltol = NULL,
@@ -295,7 +295,7 @@ r2ogs6_convergence_criterion <- function(type,
     abstols <- coerce_string_to_numeric(abstols)
     reltols <- coerce_string_to_numeric(reltols)
 
-    new_r2ogs6_convergence_criterion(type,
+    new_prj_convergence_criterion(type,
                                      norm_type,
                                      abstol,
                                      reltol,
@@ -304,7 +304,7 @@ r2ogs6_convergence_criterion <- function(type,
 }
 
 
-new_r2ogs6_convergence_criterion <- function(type,
+new_prj_convergence_criterion <- function(type,
                                              norm_type,
                                              abstol = NULL,
                                              reltol = NULL,
@@ -333,15 +333,15 @@ new_r2ogs6_convergence_criterion <- function(type,
             attr_names = character(),
             flatten_on_exp = c("abstols", "reltols")
         ),
-        class = "r2ogs6_convergence_criterion"
+        class = "prj_convergence_criterion"
     )
 }
 
 
-#===== r2ogs6_time_stepping =====
+#===== prj_time_stepping =====
 
 
-#' r2ogs6_time_stepping
+#' prj_time_stepping
 #' @description tag: time_stepping
 #' @param type string:
 #' @param t_initial Optional: string | double:
@@ -360,7 +360,7 @@ new_r2ogs6_convergence_criterion <- function(type,
 #' @param tol Optional: string | double:
 #' @example man/examples/ex_prj_time_stepping.R
 #' @export
-r2ogs6_time_stepping <- function(type,
+prj_time_stepping <- function(type,
                                  t_initial = NULL,
                                  t_end = NULL,
                                  timesteps = NULL,
@@ -392,7 +392,7 @@ r2ogs6_time_stepping <- function(type,
     number_iterations <- coerce_string_to_numeric(number_iterations)
     multiplier <- coerce_string_to_numeric(multiplier)
 
-    new_r2ogs6_time_stepping(type,
+    new_prj_time_stepping(type,
                              t_initial,
                              t_end,
                              timesteps,
@@ -410,7 +410,7 @@ r2ogs6_time_stepping <- function(type,
 }
 
 
-new_r2ogs6_time_stepping <- function(type,
+new_prj_time_stepping <- function(type,
                                      t_initial = NULL,
                                      t_end = NULL,
                                      timesteps = NULL,
@@ -468,7 +468,7 @@ new_r2ogs6_time_stepping <- function(type,
                    flatten_on_exp = c("number_iterations",
                                       "multiplier")
     ),
-    class = "r2ogs6_time_stepping"
+    class = "prj_time_stepping"
     )
 }
 

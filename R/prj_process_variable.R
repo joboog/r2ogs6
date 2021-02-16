@@ -1,20 +1,20 @@
 
-#===== r2ogs6_process_variable =====
+#===== prj_process_variable =====
 
 
-#' r2ogs6_process_variable
+#' prj_process_variable
 #' @description tag: process_variable
 #' @param name string: The name of the process variable
 #' @param components string | double:
 #' @param order string | double:
 #' @param initial_condition string:
-#' @param boundary_conditions list, r2ogs6_boundary_condition:
-#' @param source_terms Optional: list, r2ogs6_source_term:
+#' @param boundary_conditions list, prj_boundary_condition:
+#' @param source_terms Optional: list, prj_source_term:
 #' @param mesh Optional: string: list:
-#' @param deactivated_subdomains Optional: list, r2ogs6_deactivated_subdomain:
+#' @param deactivated_subdomains Optional: list, prj_deactivated_subdomain:
 #' @example man/examples/ex_prj_process_variable.R
 #' @export
-r2ogs6_process_variable <- function(name,
+prj_process_variable <- function(name,
                                     components,
                                     order,
                                     initial_condition,
@@ -27,7 +27,7 @@ r2ogs6_process_variable <- function(name,
     components <- coerce_string_to_numeric(components)
     order <- coerce_string_to_numeric(order)
 
-    new_r2ogs6_process_variable(name,
+    new_prj_process_variable(name,
                                 components,
                                 order,
                                 initial_condition,
@@ -38,7 +38,7 @@ r2ogs6_process_variable <- function(name,
 }
 
 
-new_r2ogs6_process_variable <- function(name,
+new_prj_process_variable <- function(name,
                                         components,
                                         order,
                                         initial_condition,
@@ -58,19 +58,19 @@ new_r2ogs6_process_variable <- function(name,
 
     if(!is.null(boundary_conditions)){
         is_wrapper_list(boundary_conditions,
-                              "r2ogs6_boundary_condition")
+                              "prj_boundary_condition")
     }
 
     if(!is.null(source_terms)){
         is_wrapper_list(source_terms,
-                              "r2ogs6_source_term")
+                              "prj_source_term")
     }
 
     are_null_or_strings(mesh)
 
     if(!is.null(deactivated_subdomains)){
         is_wrapper_list(deactivated_subdomains,
-                              "r2ogs6_deactivated_subdomain")
+                              "prj_deactivated_subdomain")
     }
 
     structure(list(name = name,
@@ -85,15 +85,15 @@ new_r2ogs6_process_variable <- function(name,
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
-              class = "r2ogs6_process_variable"
+              class = "prj_process_variable"
     )
 }
 
 
-#===== r2ogs6_boundary_condition =====
+#===== prj_boundary_condition =====
 
 
-#' r2ogs6_boundary_condition
+#' prj_boundary_condition
 #' @description tag: boundary_condition
 #' @param type string:
 #' @param parameter string:
@@ -121,7 +121,7 @@ new_r2ogs6_process_variable <- function(name,
 #' @param time_interval Optional: list of 2, character:
 #' @example man/examples/ex_prj_boundary_condition.R
 #' @export
-r2ogs6_boundary_condition <- function(type,
+prj_boundary_condition <- function(type,
                                       parameter = NULL,
                                       geometrical_set = NULL,
                                       geometry = NULL,
@@ -150,7 +150,7 @@ r2ogs6_boundary_condition <- function(type,
     component <- coerce_string_to_numeric(component)
     constraint_threshold <- coerce_string_to_numeric(constraint_threshold)
 
-    new_r2ogs6_boundary_condition(type,
+    new_prj_boundary_condition(type,
                                   parameter,
                                   geometrical_set,
                                   geometry,
@@ -177,7 +177,7 @@ r2ogs6_boundary_condition <- function(type,
 }
 
 
-new_r2ogs6_boundary_condition <- function(type,
+new_prj_boundary_condition <- function(type,
                                           parameter = NULL,
                                           geometrical_set = NULL,
                                           geometry = NULL,
@@ -269,15 +269,15 @@ new_r2ogs6_boundary_condition <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
-              class = "r2ogs6_boundary_condition"
+              class = "prj_boundary_condition"
     )
 }
 
 
-#===== r2ogs6_source_term =====
+#===== prj_source_term =====
 
 
-#' r2ogs6_source_term
+#' prj_source_term
 #' @description tag: source_term
 #' @param type string:
 #' @param parameter Optional: string:
@@ -287,7 +287,7 @@ new_r2ogs6_boundary_condition <- function(type,
 #' @param source_term_object Optional: string:
 #' @example man/examples/ex_prj_source_term.R
 #' @export
-r2ogs6_source_term <- function(type,
+prj_source_term <- function(type,
                                parameter = NULL,
                                geometrical_set = NULL,
                                geometry = NULL,
@@ -296,7 +296,7 @@ r2ogs6_source_term <- function(type,
 
     #Coerce input
 
-    new_r2ogs6_source_term(type,
+    new_prj_source_term(type,
                            parameter,
                            geometrical_set,
                            geometry,
@@ -305,7 +305,7 @@ r2ogs6_source_term <- function(type,
 }
 
 
-new_r2ogs6_source_term <- function(type,
+new_prj_source_term <- function(type,
                                    parameter = NULL,
                                    geometrical_set = NULL,
                                    geometry = NULL,
@@ -331,32 +331,32 @@ new_r2ogs6_source_term <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_source_term"
+    class = "prj_source_term"
     )
 }
 
 
-#===== r2ogs6_deactivated_subdomain =====
+#===== prj_deactivated_subdomain =====
 
 
-#' r2ogs6_deactivated_subdomain
+#' prj_deactivated_subdomain
 #' @description tag: deactivated_subdomain
 #' @param time_interval list, numeric:
 #' @param material_ids string | double:
 #' @example man/examples/ex_prj_deactivated_subdomain.R
 #' @export
-r2ogs6_deactivated_subdomain <- function(time_interval,
+prj_deactivated_subdomain <- function(time_interval,
                                          material_ids){
 
     #Coerce input
     material_ids <- coerce_string_to_numeric(material_ids)
 
-    new_r2ogs6_deactivated_subdomain(time_interval,
+    new_prj_deactivated_subdomain(time_interval,
                                      material_ids)
 }
 
 
-new_r2ogs6_deactivated_subdomain <- function(time_interval,
+new_prj_deactivated_subdomain <- function(time_interval,
                                              material_ids){
 
     time_interval <- coerce_names(time_interval, c("start", "end"))
@@ -371,6 +371,6 @@ new_r2ogs6_deactivated_subdomain <- function(time_interval,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_deactivated_subdomain"
+    class = "prj_deactivated_subdomain"
     )
 }

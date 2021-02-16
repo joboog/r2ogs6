@@ -1,8 +1,8 @@
 
-#===== r2ogs6_linear_solver =====
+#===== prj_linear_solver =====
 
 
-#' r2ogs6_linear_solver
+#' prj_linear_solver
 #' @description tag: linear_solver
 #' @param name string: The name of the linear solver
 #' @param eigen Optional: list: ...
@@ -10,28 +10,28 @@
 #' @param petsc Optional: character: ...
 #' @example man/examples/ex_prj_linear_solver.R
 #' @export
-r2ogs6_linear_solver <- function(name,
+prj_linear_solver <- function(name,
                                  eigen = NULL,
                                  lis = NULL,
                                  petsc = NULL){
 
     #Coerce input
 
-    new_r2ogs6_linear_solver(name,
+    new_prj_linear_solver(name,
                              eigen,
                              lis,
                              petsc)
 }
 
 
-new_r2ogs6_linear_solver <- function(name,
+new_prj_linear_solver <- function(name,
                                      eigen = NULL,
                                      lis = NULL,
                                      petsc = NULL){
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    is_null_or_has_class(eigen, "r2ogs6_eigen")
+    is_null_or_has_class(eigen, "prj_eigen")
     are_null_or_strings(lis)
 
     if(!is.null(petsc)){
@@ -53,15 +53,15 @@ new_r2ogs6_linear_solver <- function(name,
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
-              class = "r2ogs6_linear_solver"
+              class = "prj_linear_solver"
     )
 }
 
 
-#===== r2ogs6_eigen =====
+#===== prj_eigen =====
 
 
-#' r2ogs6_eigen
+#' prj_eigen
 #' @description tag: eigen
 #' @param solver_type string:
 #' @param precon_type Optional: string:
@@ -71,7 +71,7 @@ new_r2ogs6_linear_solver <- function(name,
 #' @param restart Optional: string | double: ...
 #' @example man/examples/ex_prj_eigen.R
 #' @export
-r2ogs6_eigen <- function(solver_type,
+prj_eigen <- function(solver_type,
                          precon_type = NULL,
                          max_iteration_step = NULL,
                          error_tolerance = NULL,
@@ -83,7 +83,7 @@ r2ogs6_eigen <- function(solver_type,
     error_tolerance <- coerce_string_to_numeric(error_tolerance)
     restart <- coerce_string_to_numeric(restart)
 
-    new_r2ogs6_eigen(solver_type,
+    new_prj_eigen(solver_type,
                      precon_type,
                      max_iteration_step,
                      error_tolerance,
@@ -92,7 +92,7 @@ r2ogs6_eigen <- function(solver_type,
 }
 
 
-new_r2ogs6_eigen <- function(solver_type,
+new_prj_eigen <- function(solver_type,
                              precon_type = NULL,
                              max_iteration_step = NULL,
                              error_tolerance = NULL,
@@ -117,6 +117,6 @@ new_r2ogs6_eigen <- function(solver_type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_eigen"
+    class = "prj_eigen"
     )
 }

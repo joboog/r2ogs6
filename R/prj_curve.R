@@ -1,8 +1,8 @@
 
-#===== r2ogs6_curve =====
+#===== prj_curve =====
 
 
-#' r2ogs6_curve
+#' prj_curve
 #' @description tag: curve, a curve
 #' @param name string: Name of the curve
 #' @param coords string | numeric: Coordinates at which the curve's values
@@ -10,17 +10,17 @@
 #' @param values string | numeric: Values of the curve at the given coordinates
 #' @example man/examples/ex_prj_curve.R
 #' @export
-r2ogs6_curve <- function(name, coords, values){
+prj_curve <- function(name, coords, values){
 
     #Coerce input
     coords <- coerce_string_to_numeric(coords)
     values <- coerce_string_to_numeric(values)
 
-    new_r2ogs6_curve(name, coords, values)
+    new_prj_curve(name, coords, values)
 }
 
 
-new_r2ogs6_curve <- function(name, coords, values){
+new_prj_curve <- function(name, coords, values){
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(is.numeric(coords))
@@ -33,6 +33,6 @@ new_r2ogs6_curve <- function(name, coords, values){
                    attr_names = character(),
                    flatten_on_exp = c("coords", "values")
                    ),
-              class = "r2ogs6_curve"
+              class = "prj_curve"
     )
 }

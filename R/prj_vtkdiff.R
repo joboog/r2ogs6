@@ -1,8 +1,8 @@
 
-#===== r2ogs6_vtkdiff =====
+#===== prj_vtkdiff =====
 
 
-#' r2ogs6_vtkdiff
+#' prj_vtkdiff
 #' @description tag: vtkdiff
 #'
 #' @param field string: ...
@@ -12,7 +12,7 @@
 #' @param regex string: Optional: A regular expression
 #' @example man/examples/ex_prj_vtkdiff.R
 #' @export
-r2ogs6_vtkdiff <- function(field,
+prj_vtkdiff <- function(field,
                            absolute_tolerance,
                            relative_tolerance,
                            file = NULL,
@@ -22,7 +22,7 @@ r2ogs6_vtkdiff <- function(field,
     absolute_tolerance <- coerce_string_to_numeric(absolute_tolerance)
     relative_tolerance <- coerce_string_to_numeric(relative_tolerance)
 
-    new_r2ogs6_vtkdiff(field,
+    new_prj_vtkdiff(field,
                        absolute_tolerance,
                        relative_tolerance,
                        file,
@@ -30,7 +30,7 @@ r2ogs6_vtkdiff <- function(field,
 }
 
 
-new_r2ogs6_vtkdiff <- function(field,
+new_prj_vtkdiff <- function(field,
                                absolute_tolerance,
                                relative_tolerance,
                                file = NULL,
@@ -54,6 +54,6 @@ new_r2ogs6_vtkdiff <- function(field,
              attr_names = character(),
              flatten_on_exp = character()
         ),
-        class = "r2ogs6_vtkdiff"
+        class = "prj_vtkdiff"
     )
 }

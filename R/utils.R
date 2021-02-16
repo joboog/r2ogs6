@@ -32,7 +32,7 @@ get_class_from_xpath <- function(xpath){
 #' @param class_name string: The name of a r2ogs6 class
 #' @return string: The tag name corresponding to \code{class_name}
 #' @examples
-#'   get_tag_from_class("r2ogs6_process")
+#'   get_tag_from_class("prj_process")
 get_tag_from_class <- function(class_name) {
 
   assertthat::assert_that(assertthat::is.string(class_name))
@@ -62,10 +62,10 @@ get_tag_from_xpath <- function(xpath){
 }
 
 
-#' prj_top_level_tags
+#' get_prj_top_level_tags
 #' @description Gets top level .prj tags along with info if they are required.
 #' @return list: List of lists.
-prj_top_level_tags <- function(){
+get_prj_top_level_tags <- function(){
 
   prj_reduxml <- system.file("extdata/xml_redux/", "prj_redu.xml",
                              package = "r2ogs6")

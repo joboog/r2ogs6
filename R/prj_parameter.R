@@ -1,8 +1,8 @@
 
-#===== r2ogs6_parameter =====
+#===== prj_parameter =====
 
 
-#' r2ogs6_parameter
+#' prj_parameter
 #' @description tag: parameter
 #' @param name string:
 #' @param type string:
@@ -19,7 +19,7 @@
 #' multiple)
 #' @example man/examples/ex_prj_parameter.R
 #' @export
-r2ogs6_parameter <- function(name,
+prj_parameter <- function(name,
                              type,
                              value = NULL,
                              values = NULL,
@@ -41,7 +41,7 @@ r2ogs6_parameter <- function(name,
     index_values <- ellipsis_list[names(ellipsis_list) == "index_values"]
     expression <- ellipsis_list[names(ellipsis_list) == "expression"]
 
-    new_r2ogs6_parameter(name,
+    new_prj_parameter(name,
                          type,
                          value,
                          values,
@@ -57,7 +57,7 @@ r2ogs6_parameter <- function(name,
 }
 
 
-new_r2ogs6_parameter <- function(name,
+new_prj_parameter <- function(name,
                                  type,
                                  value = NULL,
                                  values = NULL,
@@ -123,7 +123,7 @@ new_r2ogs6_parameter <- function(name,
                    flatten_on_exp = c("values"),
                    unwrap_on_exp = c("index_values", "expression")
     ),
-    class = "r2ogs6_parameter"
+    class = "prj_parameter"
     )
 }
 

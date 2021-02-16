@@ -1,19 +1,19 @@
 
-#===== r2ogs6_borehole_heat_exchanger =====
+#===== prj_borehole_heat_exchanger =====
 
 
-#' r2ogs6_borehole_heat_exchanger
+#' prj_borehole_heat_exchanger
 #' @description tag: borehole_heat_exchanger
 #' @param type string:
-#' @param flow_and_temperature_control r2ogs6_flow_and_temperature_control:
+#' @param flow_and_temperature_control prj_flow_and_temperature_control:
 #' @param borehole list:
 #' @param grout list:
-#' @param pipes r2ogs6_pipes:
+#' @param pipes prj_pipes:
 #' @param refrigerant list:
 #' @param use_bhe_pipe_network Optional: string ("true" | "false"):
 #' @example man/examples/ex_prj_borehole_heat_exchanger.R
 #' @export
-r2ogs6_borehole_heat_exchanger <- function(type,
+prj_borehole_heat_exchanger <- function(type,
                                            flow_and_temperature_control,
                                            borehole,
                                            grout,
@@ -23,7 +23,7 @@ r2ogs6_borehole_heat_exchanger <- function(type,
 
     # Add coercing utility here
 
-    new_r2ogs6_borehole_heat_exchanger(type,
+    new_prj_borehole_heat_exchanger(type,
                                        flow_and_temperature_control,
                                        borehole,
                                        grout,
@@ -33,7 +33,7 @@ r2ogs6_borehole_heat_exchanger <- function(type,
 }
 
 
-new_r2ogs6_borehole_heat_exchanger <- function(type,
+new_prj_borehole_heat_exchanger <- function(type,
                                                flow_and_temperature_control,
                                                borehole,
                                                grout,
@@ -43,14 +43,14 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
 
     are_strings(type)
     assertthat::assert_that(class(flow_and_temperature_control) ==
-                                "r2ogs6_flow_and_temperature_control")
+                                "prj_flow_and_temperature_control")
     borehole <- coerce_names(borehole, c("length", "diameter"))
     grout <- coerce_names(grout, c("density",
                                    "porosity",
                                    "heat_capacity",
                                    "thermal_conductivity"))
 
-    assertthat::assert_that(class(pipes) == "r2ogs6_pipes")
+    assertthat::assert_that(class(pipes) == "prj_pipes")
 
     refrigerant <- coerce_names(refrigerant, c(
         "density",
@@ -74,15 +74,15 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_borehole_heat_exchanger"
+    class = "prj_borehole_heat_exchanger"
     )
 }
 
 
-#===== r2ogs6_flow_and_temperature_control =====
+#===== prj_flow_and_temperature_control =====
 
 
-#' r2ogs6_flow_and_temperature_control
+#' prj_flow_and_temperature_control
 #' @description tag: flow_and_temperature_control
 #' @param type string:
 #' @param flow_rate Optional: string | double:
@@ -92,7 +92,7 @@ new_r2ogs6_borehole_heat_exchanger <- function(type,
 #' @param flow_rate_curve Optional: string:
 #' @example man/examples/ex_prj_flow_and_temperature_control.R
 #' @export
-r2ogs6_flow_and_temperature_control <- function(type,
+prj_flow_and_temperature_control <- function(type,
                                                 flow_rate = NULL,
                                                 temperature_curve = NULL,
                                                 power = NULL,
@@ -103,7 +103,7 @@ r2ogs6_flow_and_temperature_control <- function(type,
     flow_rate <- coerce_string_to_numeric(flow_rate)
     power <- coerce_string_to_numeric(power)
 
-    new_r2ogs6_flow_and_temperature_control(type,
+    new_prj_flow_and_temperature_control(type,
                                             flow_rate,
                                             temperature_curve,
                                             power,
@@ -112,7 +112,7 @@ r2ogs6_flow_and_temperature_control <- function(type,
 }
 
 
-new_r2ogs6_flow_and_temperature_control <- function(type,
+new_prj_flow_and_temperature_control <- function(type,
                                                     flow_rate = NULL,
                                                     temperature_curve = NULL,
                                                     power = NULL,
@@ -140,15 +140,15 @@ new_r2ogs6_flow_and_temperature_control <- function(type,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_flow_and_temperature_control"
+    class = "prj_flow_and_temperature_control"
     )
 }
 
 
-#===== r2ogs6_pipes =====
+#===== prj_pipes =====
 
 
-#' r2ogs6_pipes
+#' prj_pipes
 #' @description tag: pipes
 #' @param longitudinal_dispersion_length string | double:
 #' @param inlet Optional: list:
@@ -158,7 +158,7 @@ new_r2ogs6_flow_and_temperature_control <- function(type,
 #' @param inner Optional: list:
 #' @example man/examples/ex_prj_pipes.R
 #' @export
-r2ogs6_pipes <- function(longitudinal_dispersion_length,
+prj_pipes <- function(longitudinal_dispersion_length,
                          inlet = NULL,
                          outlet = NULL,
                          distance_between_pipes = NULL,
@@ -172,7 +172,7 @@ r2ogs6_pipes <- function(longitudinal_dispersion_length,
     distance_between_pipes <-
         coerce_string_to_numeric(distance_between_pipes)
 
-    new_r2ogs6_pipes(longitudinal_dispersion_length,
+    new_prj_pipes(longitudinal_dispersion_length,
                      inlet,
                      outlet,
                      distance_between_pipes,
@@ -181,7 +181,7 @@ r2ogs6_pipes <- function(longitudinal_dispersion_length,
 }
 
 
-new_r2ogs6_pipes <- function(longitudinal_dispersion_length,
+new_prj_pipes <- function(longitudinal_dispersion_length,
                              inlet = NULL,
                              outlet = NULL,
                              distance_between_pipes = NULL,
@@ -214,6 +214,6 @@ new_r2ogs6_pipes <- function(longitudinal_dispersion_length,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_pipes"
+    class = "prj_pipes"
     )
 }
