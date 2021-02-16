@@ -2,17 +2,17 @@
 #===== ogs_run_simulation =====
 
 
-#'ogs_run_simulation
-#'@description Wrapper function that calls `ogs_export_sim_files`,
-#' `ogs_call_ogs6` and `ogs_read_output_files`.
-#'@param ogs6_obj OGS6: Simulation object
-#'@param write_logfile flag: Should output be written to a logfile? If `FALSE`,
-#' output will be written to console. If `TRUE`, logfile directory will be
-#' created in `ogs6$sim_path` directory
-#'@param ogs_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
-#' to `options("r2ogs6.default_ogs_bin_path")`
-#'@param verbose flag
-#'@export
+#' ogs_run_simulation
+#' @description Wrapper function that calls \code{ogs_export_sim_files()},
+#'   \code{ogs_call_ogs6()} and \code{ogs_read_output_files()}.
+#' @param ogs6_obj OGS6: Simulation object
+#' @param write_logfile flag: Should output be written to a logfile? If
+#'   \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
+#'   directory will be created in \code{ogs6$sim_path} directory
+#' @param ogs_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
+#'   to \code{options("r2ogs6.default_ogs_bin_path")}
+#' @param verbose flag
+#' @export
 ogs_run_simulation <- function(ogs6_obj,
                                write_logfile = TRUE,
                                ogs_bin_path,
@@ -36,13 +36,13 @@ ogs_run_simulation <- function(ogs6_obj,
 #===== ogs_export_sim_files =====
 
 
-#'ogs_export_sim_files
-#'@description Creates `ogs6_obj$sim_path` directory if it does not exist yet
-#' and exports and / or copies all simulation files to it.
-#'@param ogs6_obj OGS6: Simulation object
-#'@param test_mode flag: If `TRUE`, Will not check status of `ogs6_obj` before
-#' exporting files. Defaults to `FALSE`
-#'@export
+#' ogs_export_sim_files
+#' @description Creates \code{ogs6$sim_path} directory if it does not exist yet
+#'   and exports and / or copies all simulation files to it.
+#' @param ogs6_obj OGS6: Simulation object
+#' @param test_mode flag: If \code{TRUE}, Will not check status of
+#'   \code{ogs6_obj} before exporting files. Defaults to \code{FALSE}
+#' @export
 ogs_export_sim_files <- function(ogs6_obj,
                                  test_mode = FALSE){
 
@@ -111,16 +111,16 @@ ogs_export_sim_files <- function(ogs6_obj,
 #===== ogs_call_ogs6 =====
 
 
-#'ogs_call_ogs6
-#'@description Makes system call to OpenGeoSys 6 and retrieves exit code.
-#'@param ogs6_obj OGS6: Simulation object
-#'@param write_logfile flag: Should output be written to a logfile? If `FALSE`,
-#' output will be written to console. If `TRUE`, logfile directory will be
-#' created in `ogs6$sim_path` directory
-#'@param ogs_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
-#' to `options("r2ogs6.default_ogs_bin_path")`
-#'@param verbose flag
-#'@export
+#' ogs_call_ogs6
+#' @description Makes system call to OpenGeoSys 6 and retrieves exit code.
+#' @param ogs6_obj OGS6: Simulation object
+#' @param write_logfile flag: Should output be written to a logfile? If
+#'   \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
+#'   directory will be created in \code{ogs6$sim_path} directory
+#' @param ogs_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
+#'   to \code{options("r2ogs6.default_ogs_bin_path")}
+#' @param verbose flag
+#' @export
 ogs_call_ogs6 <- function(ogs6_obj,
                           write_logfile = TRUE,
                           ogs_bin_path,
@@ -184,10 +184,10 @@ ogs_call_ogs6 <- function(ogs6_obj,
 #===== ogs_read_output_files =====
 
 
-#'ogs_read_output_files
-#'@description Read in generated .pvd files and add it to ogs6_obj
-#'@param ogs6_obj OGS6: Simulation object
-#'@export
+#' ogs_read_output_files
+#' @description Read in generated \code{.pvd} files and add it to ogs6_obj
+#' @param ogs6_obj OGS6: Simulation object
+#' @export
 ogs_read_output_files <- function(ogs6_obj){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
@@ -208,11 +208,11 @@ ogs_read_output_files <- function(ogs6_obj){
 #===== Test benchmarks =====
 
 
-#'run_benchmark
-#'@description Utility function for quick benchmark runs
-#'@param prj_path string:
-#'@param ogs_bin_path string:
-#'@param sim_path string: Path where simulation files will be saved
+#' run_benchmark
+#' @description Utility function for quick benchmark runs
+#' @param prj_path string:
+#' @param ogs_bin_path string:
+#' @param sim_path string: Path where simulation files will be saved
 run_benchmark <- function(prj_path,
                           ogs_bin_path,
                           sim_path){
@@ -243,16 +243,16 @@ run_benchmark <- function(prj_path,
 }
 
 
-#'run_all_benchmarks
-#'@description Utility function, for quick benchmark runs. Calls
-#' run_benchmark internally.
-#'@param path string: Path to benchmark folder
-#'@param ogs_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
-#' which contains relevant Tests.cmake files
-#'@param ogs_bin_path string:
-#'@param sim_path string: Path where simulation files will be saved
-#'@param starting_from_prj_path string: .prj path to start from
-#'@param print_results flag: Print results in the end?
+#' run_all_benchmarks
+#' @description Utility function, for quick benchmark runs. Calls
+#'   run_benchmark internally.
+#' @param path string: Path to benchmark folder
+#' @param ogs_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
+#'   which contains relevant Tests.cmake files
+#' @param ogs_bin_path string:
+#' @param sim_path string: Path where simulation files will be saved
+#' @param starting_from_prj_path string: \code{.prj} path to start from
+#' @param print_results flag: Print results in the end?
 run_all_benchmarks <- function(path,
                                ogs_processlib_path,
                                ogs_bin_path,
@@ -401,10 +401,10 @@ print_run_all_benchmarks <- function(nonexisting_prj_paths,
 }
 
 
-#'get_benchmark_paths
-#'@description Gets paths to all benchmarks that should work
-#'@param ogs_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
-#' which contains relevant Tests.cmake files
+#' get_benchmark_paths
+#' @description Gets paths to all benchmarks that should work
+#' @param ogs_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
+#'   which contains relevant Tests.cmake files
 get_benchmark_paths <- function(ogs_processlib_path){
 
     tests_cmake_files <- list.files(path = ogs_processlib_path,

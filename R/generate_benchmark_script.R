@@ -2,18 +2,18 @@
 #===== generate_all_benchmarks =====
 
 
-#'generate_all_benchmark_scripts
-#'@description Wrapper function to generate benchmark scripts from all .prj
-#' files in a directory
-#'@param path string: Path to a benchmark directory to generate scripts from
-#'@param sim_path string: Path where all simulation files will be saved
-#'@param scripts_path string: Path where benchmark scripts will be saved
-#'@param read_in_gmls flag: Optional: Should .gml files just be copied or read
-#' in too?
-#'@param read_in_vtus flag: Optional: Should .vtu files just be copied or read
-#' in too?
-#'@param starting_from_prj_path string: Optional:
-#'@param skip_prj_paths character: Optional: .prj paths to skip
+#' generate_all_benchmark_scripts
+#' @description Wrapper function to generate benchmark scripts from all
+#' \code{.prj} files in a directory
+#' @param path string: Path to a benchmark directory to generate scripts from
+#' @param sim_path string: Path where all simulation files will be saved
+#' @param scripts_path string: Path where benchmark scripts will be saved
+#' @param read_in_gmls flag: Optional: Should \code{.gml} files just be copied
+#' or read in too?
+#' @param read_in_vtus flag: Optional: Should \code{.vtu} files just be copied
+#' or read in too?
+#' @param starting_from_prj_path string: Optional:
+#' @param skip_prj_paths character: Optional: \code{.prj} paths to skip
 generate_all_benchmark_scripts <-
     function(path,
              sim_path,
@@ -113,17 +113,17 @@ generate_all_benchmark_scripts <-
 #===== generate_benchmark_script =====
 
 
-#'generate_benchmark_script
-#'@description Generates a benchmark script from an existing .prj file.
-#'@param prj_path string: .prj file the script will be based on
-#'@param sim_path string: Path where all simulation files will be saved
-#'@param ogs_bin_path string: OpenGeoSys bin folder path
-#'@param script_path string: Path where benchmark script will be saved
-#'@param read_in_gml flag: Optional: Should .gml file just be copied or read
-#' in too?
-#'@param read_in_vtu flag: Optional: Should .vtu file(s) just be copied or read
-#' in too?
-#'@export
+#' generate_benchmark_script
+#' @description Generates a benchmark script from an existing \code{.prj} file.
+#' @param prj_path string: \code{.prj} file the script will be based on
+#' @param sim_path string: Path where all simulation files will be saved
+#' @param ogs_bin_path string: OpenGeoSys bin folder path
+#' @param script_path string: Path where benchmark script will be saved
+#' @param read_in_gml flag: Optional: Should \code{.gml} file just be copied or
+#' read in too?
+#' @param read_in_vtu flag: Optional: Should \code{.vtu} file(s) just be copied
+#' or read in too?
+#' @export
 generate_benchmark_script <- function(prj_path,
                                       sim_path,
                                       ogs_bin_path,
@@ -258,15 +258,15 @@ generate_benchmark_script <- function(prj_path,
 }
 
 
-#'construct_add_call
-#'@description Constructs a call based on an OGS6 component. This is a
+#' construct_add_call
+#' @description Constructs a call based on an \code{OGS6} component. This is a
 #' recursive function, handle with care.
-#'@param object An object (numeric, character, list, NULL, OGS6 or r2ogs6 class
-#' object)
-#'@param nested_call Optional: For recursion purposes, you should leave this as
+#' @param object An object (numeric, character, list, NULL, \code{OGS6} or
+#' \code{r2ogs6} class object)
+#' @param nested_call Optional: For recursion purposes, you should leave this as
 #' it is.
-#'@return A string representing the code with which the component would be added
-#' to an OGS6 object
+#' @return A string representing the code with which the component would be
+#' added to an \code{OGS6} object
 construct_add_call <- function(object, nested_call = FALSE) {
 
     #For values of type numeric or character, dput will give us usable output
@@ -381,12 +381,12 @@ construct_add_call <- function(object, nested_call = FALSE) {
 }
 
 
-#'delete_keywords_from_str
-#'@description Utility function to delete keywords from a string,
+#' delete_keywords_from_str
+#' @description Utility function to delete keywords from a string,
 #' this is important because there is a <repeat> tag in <time_loop> and
 #' "repeat" is a reserved word in R (extend this function if you find more
 #' reserved words)
-#'@param string string
+#' @param string string
 delete_keywords_from_str <- function(string){
 
     string <- stringr::str_remove_all(string, "repeat = ")

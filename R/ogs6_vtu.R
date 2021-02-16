@@ -2,16 +2,16 @@
 #===== OGS6_vtu =====
 
 
-#'OGS6_vtu
-#'@description Constructor for the OGS6_vtu base class
-#'@export
+#' OGS6_vtu
+#' @description Constructor for the `OGS6_vtu` base class
+#' @export
 OGS6_vtu <- R6::R6Class(
     "OGS6_vtu",
     public = list(
 
-        #'@description
-        #'Creates new OGS6_vtu object
-        #'@param vtu_path string: Path to .vtu file
+        #' @description
+        #' Creates new OGS6_vtu object.
+        #' @param vtu_path string: Path to .vtu file
         initialize = function(vtu_path) {
 
             vtk_xml_ugr <- vtk$vtkXMLUnstructuredGridReader()
@@ -27,8 +27,8 @@ OGS6_vtu <- R6::R6Class(
             private$.vtu_path <- vtu_path
         },
 
-        #'@description
-        #'Overrides default printing behaviour
+        #' @description
+        #' Overrides default printing behaviour.
         print = function(){
             cat("OGS6_vtu\n")
             cat("path:  ", self$vtu_path, "\n", sep = "")
@@ -51,12 +51,14 @@ OGS6_vtu <- R6::R6Class(
         },
 
 
-        #'@description
-        #'Gets FieldData.
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements, defaults to all in `FieldData`
-        #'@return list: List of format list(value_a = 1, value_b = 2), where the
-        #' names reference the `Name` attributes of the `DataArray` elements
+        #' @description
+        #' Gets FieldData.
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements, defaults to all in `FieldData`.
+        #' @return
+        #' A list of format list(value_a = 1, value_b = 2), where
+        #' the names reference the `Name` attributes of the `DataArray`
+        #' elements.
         get_field_data = function(keys){
 
             if(missing(keys)){
@@ -70,11 +72,13 @@ OGS6_vtu <- R6::R6Class(
             return(field_data)
         },
 
-        #'@description
-        #'Gets coordinates of specific points by their IDs.
-        #'@param point_ids numeric: Point IDs
-        #'@return If `point_ids` is a number, a coordinate array. If `point_ids`
-        #' is a numeric vector with length > 1, a list of coordinate arrays.
+        #' @description
+        #' Gets coordinates of specific points by their IDs.
+        #' @param point_ids numeric: Point IDs
+        #' @return
+        #' If `point_ids` is a number, a coordinate array. If
+        #' point_ids` is a numeric vector with length > 1, a list of coordinate
+        #' arrays.
         get_point_coords = function(point_ids){
             assertthat::assert_that(is.numeric(point_ids))
 
@@ -89,12 +93,12 @@ OGS6_vtu <- R6::R6Class(
             return(point_coords)
         },
 
-        #'@description
-        #'Gets PointData at specified coordinates.
-        #'@param coordinates list(numeric): List of coordinates (a coordinate
-        #' is a numeric vector of length 3)
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements, defaults to all in `PointData`
+        #' @description
+        #' Gets PointData at specified coordinates.
+        #' @param coordinates list(numeric): List of coordinates (a coordinate
+        #'   is a numeric vector of length 3)
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements, defaults to all in `PointData`
         get_point_data_at = function(coordinates,
                                      keys){
 
@@ -115,12 +119,12 @@ OGS6_vtu <- R6::R6Class(
                                        keys = keys))
         },
 
-        #'@description
-        #'Gets PointData for points with IDs in `point_ids`.
-        #'@param point_ids numeric: Optional: Point IDs, defaults to all
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements, defaults to all in `PointData`
-        #'@return tibble: Tibble where each row represents a point.
+        #' @description
+        #' Gets PointData for points with IDs in `point_ids`.
+        #' @param point_ids numeric: Optional: Point IDs, defaults to all
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements, defaults to all in `PointData`
+        #' @return A tibble::tibble where each row represents a point.
         get_point_data = function(point_ids,
                                   keys){
 
@@ -139,12 +143,12 @@ OGS6_vtu <- R6::R6Class(
 
         },
 
-        #'@description
-        #'Gets CellData for cells with IDs in `cell_ids`.
-        #'@param cell_ids numeric: Optional: Cell IDs, defaults to all
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements, defaults to all in `CellData`
-        #'@return tibble: Tibble where each row represents a cell.
+        #' @description
+        #' Gets CellData for cells with IDs in `cell_ids`.
+        #' @param cell_ids numeric: Optional: Cell IDs, defaults to all
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements, defaults to all in `CellData`
+        #' @return A tibble::tibble where each row represents a cell.
         get_cell_data = function(cell_ids,
                                  keys){
 
@@ -166,62 +170,62 @@ OGS6_vtu <- R6::R6Class(
 
     active = list(
 
-        #'@field vtu_path
-        #'Getter for private parameter '.vtu_path'
+        #' @field vtu_path
+        #' Getter for private parameter `.vtu_path`
         vtu_path = function() {
             private$.vtu_path
         },
 
-        #'@field number_of_points
-        #'Getter for NumberOfPoints parameter of '.vtkUnstructuredGrid'
+        #' @field number_of_points
+        #' Getter for NumberOfPoints parameter of `.vtkUnstructuredGrid`
         number_of_points = function() {
             self$vtkUnstructuredGrid$GetNumberOfPoints()
         },
 
-        #'@field number_of_cells
-        #'Getter for NumberOfCells parameter of '.vtkUnstructuredGrid'
+        #' @field number_of_cells
+        #' Getter for NumberOfCells parameter of `.vtkUnstructuredGrid`
         number_of_cells = function() {
             self$vtkUnstructuredGrid$GetNumberOfCells()
         },
 
-        #'@field points
-        #'Getter for Points parameter of '.dsa_vtkUnstructuredGrid'
+        #' @field points
+        #' Getter for Points parameter of `.dsa_vtkUnstructuredGrid`
         points = function() {
             self$dsa_vtkUnstructuredGrid$Points
         },
 
-        #'@field cells
-        #'Getter for Cells parameter of '.dsa_vtkUnstructuredGrid'
+        #' @field cells
+        #' Getter for Cells parameter of `.dsa_vtkUnstructuredGrid`
         cells = function() {
             self$dsa_vtkUnstructuredGrid$Cells
         },
 
-        #'@field field_data
-        #'Getter for FieldData parameter of '.dsa_vtkUnstructuredGrid'
+        #' @field field_data
+        #' Getter for FieldData parameter of `.dsa_vtkUnstructuredGrid`
         field_data = function() {
             self$dsa_vtkUnstructuredGrid$FieldData
         },
 
-        #'@field point_data
-        #'Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'
+        #' @field point_data
+        #' Getter for PointData parameter of `.dsa_vtkUnstructuredGrid`
         point_data = function() {
             self$dsa_vtkUnstructuredGrid$PointData
         },
 
-        #'@field cell_data
-        #'Getter for CellData parameter of '.dsa_vtkUnstructuredGrid'
+        #' @field cell_data
+        #' Getter for CellData parameter of `.dsa_vtkUnstructuredGrid`
         cell_data = function() {
             self$dsa_vtkUnstructuredGrid$CellData
         },
 
-        #'@field vtkPointLocator
-        #'Getter for private parameter '.vtkPointLocator'
+        #' @field vtkPointLocator
+        #' Getter for private parameter `.vtkPointLocator`
         vtkPointLocator = function() {
             private$.vtkPointLocator
         },
 
-        #'@field vtkUnstructuredGrid
-        #'Access to private parameter '.vtkUnstructuredGrid'
+        #' @field vtkUnstructuredGrid
+        #' Access to private parameter `.vtkUnstructuredGrid`
         vtkUnstructuredGrid = function(value) {
             if(missing(value)) {
                 private$.vtkUnstructuredGrid
@@ -233,8 +237,8 @@ OGS6_vtu <- R6::R6Class(
             }
         },
 
-        #'@field dsa_vtkUnstructuredGrid
-        #'Getter for private parameter '.dsa_vtkUnstructuredGrid'
+        #' @field dsa_vtkUnstructuredGrid
+        #' Getter for private parameter `.dsa_vtkUnstructuredGrid`
         dsa_vtkUnstructuredGrid = function() {
             private$.dsa_vtkUnstructuredGrid
         }
@@ -325,15 +329,15 @@ validate_coordinates <- function(coordinates){
 #===== generate_structured_mesh =====
 
 
-#'generate_structured_mesh
-#'@description Wrapper function to call generateStructuredMesh.exe
-#' (VTK mesh generator). For full documentation see
-#'https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
-#'@param args_str string: The arguments the script will be called with
-#'@param ogs_bin_path string: Optional: Path to OpenGeoSys6 bin folder.
-#' Defaults to options("r2ogs6.default_ogs_bin_path").
-#'@return string: .vtu file path
-#'@export
+#' generate_structured_mesh
+#' @description Wrapper function to call generateStructuredMesh.exe
+#'   (VTK mesh generator). For full documentation see
+#'   https://www.opengeosys.org/docs/tools/meshing/structured-mesh-generation/
+#' @param args_str string: The arguments the script will be called with
+#' @param ogs_bin_path string: Optional: Path to OpenGeoSys6 bin folder.
+#'   Defaults to options("r2ogs6.default_ogs_bin_path")
+#' @return string: .vtu file path
+#' @export
 generate_structured_mesh = function(args_str,
                                     ogs_bin_path) {
 
