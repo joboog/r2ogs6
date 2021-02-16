@@ -1,23 +1,24 @@
 
 # While having r2ogs6 loaded:
 
-#'get_xpaths_for_classes
-#'@description Creates a list of all `xpath` arguments of `r2ogs6` classes.
+#' get_xpaths_for_classes
+#' @description
+#' Creates a list of all `xpath` arguments of `prj` classes.
 #' This is for efficiency as getting arguments from non-instantiated S3 classes
 #' requires string parsing.
 get_xpaths_for_classes <- function(){
 
     ns_exports <- getNamespaceExports("r2ogs6")
-    r2ogs6_class_constructor_names <-
-        sort(ns_exports[grepl("^new_r2ogs6", ns_exports)])
-    r2ogs6_class_helper_names <-
-        sort(ns_exports[grepl("^r2ogs6", ns_exports)])
+    prj_class_constructor_names <-
+        sort(ns_exports[grepl("^new_prj_", ns_exports)])
+    prj_class_helper_names <-
+        sort(ns_exports[grepl("^prj_", ns_exports)])
 
     xfc_list <- list()
 
-    for(i in seq_len(length(r2ogs6_class_constructor_names))){
+    for(i in seq_len(length(prj_class_constructor_names))){
 
-        cc <- r2ogs6_class_constructor_names[[i]]
+        cc <- prj_class_constructor_names[[i]]
         cc_str <-
             paste(utils::capture.output(dput(eval(parse(text = cc)))),
                   collapse="\n")
@@ -46,7 +47,7 @@ get_xpaths_for_classes <- function(){
                       list(xpath))
 
         names(xfc_list)[[length(xfc_list)]] <-
-            r2ogs6_class_helper_names[[i]]
+            prj_class_helper_names[[i]]
     }
 
     return(invisible(xfc_list))
