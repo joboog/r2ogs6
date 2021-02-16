@@ -2,16 +2,16 @@
 #===== OGS6_pvd =====
 
 
-#'OGS6_pvd
-#'@description Constructor for the OGS6_pvd base class
-#'@export
+#' OGS6_pvd
+#' @description Constructor for the OGS6_pvd base class
+#' @export
 OGS6_pvd <- R6::R6Class(
     "OGS6_pvd",
     public = list(
 
-        #'@description
-        #'Creates new OGS6_pvd object
-        #'@param pvd_path string: Path to .pvd file
+        #' @description
+        #' Creates new OGS6_pvd object
+        #' @param pvd_path string: Path to .pvd file
         initialize = function(pvd_path) {
 
             xml_doc <- validate_read_in_xml(pvd_path)
@@ -26,8 +26,8 @@ OGS6_pvd <- R6::R6Class(
 
         },
 
-        #'@description
-        #'Overrides default printing behaviour
+        #' @description
+        #' Overrides default printing behaviour
         print = function(){
             cat("OGS6_pvd\n")
             cat("number of referenced .vtu paths (= number of timesteps):  ",
@@ -47,9 +47,9 @@ OGS6_pvd <- R6::R6Class(
             invisible(self)
         },
 
-        #'@description
-        #'Returns .vtu path for specified timestep
-        #'@param timestep string: Timestep
+        #' @description
+        #' Returns .vtu path for specified timestep
+        #' @param timestep string: Timestep
         vtu_by_timestep = function(timestep){
 
             assertthat::assert_that(assertthat::is.number(timestep))
@@ -64,9 +64,9 @@ OGS6_pvd <- R6::R6Class(
                     call. = FALSE)
         },
 
-        #'@description
-        #'Returns timestep for specified .vtu path
-        #'@param vtu_path string: .vtu path
+        #' @description
+        #' Returns timestep for specified .vtu path
+        #' @param vtu_path string: .vtu path
         timestep_by_vtu = function(vtu_path){
 
             assertthat::assert_that(assertthat::is.string(vtu_path))
@@ -81,16 +81,16 @@ OGS6_pvd <- R6::R6Class(
                     call. = FALSE)
         },
 
-        #'@description
-        #'Returns a tibble containing point data
-        #'@param coordinates list(numeric): List of coordinates (a coordinate
-        #' is a numeric vector of length 3)
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements. Defaults to all.
-        #'@param start_at_timestep number: Optional: Timestep to start at.
-        #' Defaults to first timestep.
-        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
-        #' to last timestep.
+        #' @description
+        #' Returns a tibble containing point data
+        #' @param coordinates list(numeric): List of coordinates (a coordinate
+        #'   is a numeric vector of length 3)
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements. Defaults to all.
+        #' @param start_at_timestep number: Optional: Timestep to start at.
+        #'   Defaults to first timestep.
+        #' @param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #'   to last timestep.
         get_point_data_at = function(coordinates,
                                      keys,
                                      start_at_timestep,
@@ -115,15 +115,15 @@ OGS6_pvd <- R6::R6Class(
                                        end_at_timestep = end_at_timestep))
         },
 
-        #'@description
-        #'Returns a tibble containing point data
-        #'@param point_ids numeric: Optional: Point IDs. Defaults to all.
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements. Defaults to all.
-        #'@param start_at_timestep number: Optional: Timestep to start at.
-        #' Defaults to first timestep.
-        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
-        #' to last timestep.
+        #' @description
+        #' Returns a tibble containing point data
+        #' @param point_ids numeric: Optional: Point IDs. Defaults to all.
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements. Defaults to all.
+        #' @param start_at_timestep number: Optional: Timestep to start at.
+        #'   Defaults to first timestep.
+        #' @param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #'   to last timestep.
         get_point_data = function(point_ids,
                                   keys,
                                   start_at_timestep,
@@ -147,15 +147,15 @@ OGS6_pvd <- R6::R6Class(
             )
         },
 
-        #'@description
-        #'Returns a tibble containing cell data
-        #'@param cell_ids numeric: Optional: Cell IDs. Defaults to all.
-        #'@param keys character: Optional: `Name` attributes of `DataArray`
-        #' elements. Defaults to all.
-        #'@param start_at_timestep number: Optional: Timestep to start at.
-        #' Defaults to first timestep.
-        #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
-        #' to last timestep.
+        #' @description
+        #' Returns a tibble containing cell data
+        #' @param cell_ids numeric: Optional: Cell IDs. Defaults to all.
+        #' @param keys character: Optional: `Name` attributes of `DataArray`
+        #'   elements. Defaults to all.
+        #' @param start_at_timestep number: Optional: Timestep to start at.
+        #'   Defaults to first timestep.
+        #' @param end_at_timestep number: Optional: Timestep to end at. Defaults
+        #'   to last timestep.
         get_cell_data = function(cell_ids,
                                  keys,
                                  start_at_timestep,
@@ -182,20 +182,20 @@ OGS6_pvd <- R6::R6Class(
 
     active = list(
 
-        #'@field pvd_path
-        #'Getter for private parameter '.pvd_path'
+        #' @field pvd_path
+        #' Getter for private parameter '.pvd_path'
         pvd_path = function() {
             private$.pvd_path
         },
 
-        #'@field datasets
-        #'Getter for private parameter '.datasets'
+        #' @field datasets
+        #' Getter for private parameter '.datasets'
         datasets = function() {
             private$.datasets
         },
 
-        #'@field vtu_paths
-        #'Getter for `datasets` `file`
+        #' @field vtu_paths
+        #' Getter for `datasets` `file`
         vtu_paths = function() {
 
             vtu_paths <- lapply(private$.datasets, function(x){
@@ -203,8 +203,9 @@ OGS6_pvd <- R6::R6Class(
             })
         },
 
-        #'@field abs_vtu_paths
-        #'Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets` `file`
+        #' @field abs_vtu_paths
+        #' Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets`
+        #' `file`
         abs_vtu_paths = function() {
 
             abs_vtu_paths <- lapply(self$vtu_paths, function(x){
@@ -213,14 +214,14 @@ OGS6_pvd <- R6::R6Class(
             })
         },
 
-        #'@field last_timestep
-        #'Gets last timestep
+        #' @field last_timestep
+        #' Gets last timestep
         last_timestep = function() {
             self$timesteps[[length(self$timesteps)]]
         },
 
-        #'@field timesteps
-        #'Gets timesteps from private parameter '.datasets'
+        #' @field timesteps
+        #' Gets timesteps from private parameter `datasets`
         timesteps = function() {
 
             timesteps <- lapply(private$.datasets, function(x){
@@ -228,8 +229,8 @@ OGS6_pvd <- R6::R6Class(
             })
         },
 
-        #'@field OGS6_vtus
-        #'Getter for private parameter '.OGS6_vtus'
+        #' @field OGS6_vtus
+        #' Getter for private parameter `.OGS6_vtus`
         OGS6_vtus = function() {
             private$.OGS6_vtus
         }
@@ -258,7 +259,7 @@ OGS6_pvd <- R6::R6Class(
             return(relevant_vtus)
         },
 
-        #Returns a dataframe with all of the CellData
+        # Returns a dataframe with all of the CellData
         get_data = function(data_type,
                             ids,
                             keys,
