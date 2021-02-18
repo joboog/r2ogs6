@@ -9,11 +9,12 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = nzchar(Sys.getenv("r2ogs6_ensemble_guide_eval")),
   fig.width = 6,
   fig.align = "center",
   collapse = TRUE,
   comment = "#>",
-  message = FALSE
+  message = FALSE,
 )
 
 devtools::load_all(".")
@@ -55,7 +56,7 @@ First, we create a simulation object to base our ensemble on and read in the `.p
 
 ```{r}
 # Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/axisym_theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
@@ -227,7 +228,7 @@ First, we create a simulation object to base our ensemble on and read in the `.p
 
 ```{r}
 # Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "theis",
@@ -273,19 +274,25 @@ When the simulations have run, we can extract and plot the results like before. 
 
 ```{r}
 # Extract point ids
-all_points <- ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$OGS6_vtus[[1]]$points
-x_axis_ids <- numeric()
-
-for(i in seq_len(dim(all_points)[[1]])){
-  if(all_points[i,][[2]] == 0 && all_points[i,][[3]] == 0){
-    x_axis_ids <- c(x_axis_ids, (i-1))
+get_point_ids_x <- function(points){
+  x_axis_ids <- numeric()
+  
+  for(i in seq_len(dim(points)[[1]])) {
+    if (points[i, ][[2]] == 0 && points[i, ][[3]] == 0) {
+      x_axis_ids <- c(x_axis_ids, (i - 1))
+    }
   }
+  
+  return(x_axis_ids)
 }
+
+point_ids_x <- get_point_ids_x(
+  ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$OGS6_vtus[[1]]$points)
 
 # Get combined dataframe
 per_por_slo_df <- 
   ogs6_ens_theis_2$get_point_data(
-    point_ids = x_axis_ids,
+    point_ids = point_ids_x,
     keys = c("pressure"),
     start_at_timestep = ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$last_timestep)
 ```
@@ -316,6 +323,67 @@ ggplot(per_df,
   xlab("x point coordinate") +
   labs(color = "%")
 ```
+
+Maybe we want to try and use a logarithmic approach for `slope`. This won't work with the built-in functionality of `OGS6_Ensemble` so we'll set up our Ensemble a little differently.
+
+```{r}
+# Calculate log value
+log_val <- log(as.numeric(
+  ogs6_obj$media[[1]]$phases[[1]]$properties[[1]]$independent_variable[[2]]$slope),
+  base = 10)
+
+# Apply changes to log value
+log_vals <- vapply(percentages, function(x){
+    log_val + (log_val * (x / 100))
+}, FUN.VALUE = numeric(1))
+
+# Transfer back to non-logarithmic scale
+back_transf_vals <- 10^log_vals
+
+# Set up new ensemble
+ogs6_ens_slo <-
+    OGS6_Ensemble$new(
+        ogs6_obj = ogs6_obj,
+        parameters =
+            list(
+                slo = list(
+                    ogs6_obj$media[[1]]$phases[[1]]$properties[[1]]$independent_variable[[2]]$slope,
+                    values = back_transf_vals)
+            ),
+        percentages_mode = FALSE,
+        sequential_mode = TRUE
+    )
+
+exit_codes <- ogs6_ens_slo$run_simulation()
+```
+
+Let's check if we can observe any influence of `slope` on `pressure` now.
+
+```{r}
+# Filter point ids
+point_ids_x <- get_point_ids_x(
+  ogs6_ens_slo$ensemble[[1]]$pvds[[1]]$OGS6_vtus[[1]]$points)
+
+# Get combined dataframe
+slo_df <- 
+    ogs6_ens_slo$get_point_data(
+        point_ids = point_ids_x,
+        keys = c("pressure"),
+        start_at_timestep = ogs6_ens_slo$ensemble[[1]]$pvds[[1]]$last_timestep)
+
+# Supply percentages manually since we couldn't use `percentages_mode`
+percs <- vapply(slo_df$sim_id,
+                function(x){percentages[[x]]},
+                FUN.VALUE = numeric(1))
+
+ggplot(slo_df,
+       aes(x = x,
+           y = pressure)) +
+    geom_point(aes(color = as.factor(percs))) +
+    xlab("x point coordinate") +
+    labs(color = "%")
+```
+
 
 ## Summary
 
