@@ -223,7 +223,7 @@ We will consider the following parameters for our sensitivity analysis:
 
 ### Setup
 
-First, we create a simulation object to base our ensemble on and read in the `.prj` file.
+First, we create a simulation object to base our ensemble on and read in the `.prj` file. This time we want to specify that an output file only gets written at the last timestep.
 
 ```{r}
 # Change this to fit your system
@@ -238,6 +238,9 @@ prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
                         "theis.prj", package = "r2ogs6")
 
 read_in_prj(ogs6_obj, prj_path)
+
+# Increase each_steps
+ogs6_obj$time_loop$output$timesteps$pair$each_steps <- 200
 ```
 
 ### Multi-parameter sequential run
@@ -251,13 +254,13 @@ ogs6_ens_theis_2 <-
     ogs6_obj = ogs6_obj,
     parameters =
       list(
-        per = list(
+        per = list(ogs6_obj$parameters[[3]]$values,
+                   values = percentages),
+        por = list(ogs6_obj$parameters[[2]]$value,
+                   values = percentages),
+        slo = list(
           ogs6_obj$media[[1]]$phases[[1]]$properties[[1]]$independent_variable[[2]]$slope,
-          values = percentages),
-        por = list(ogs6_obj$media[[1]]$properties[[2]]$value,
-                   c(-50, -10, -1, 0)),
-        slo = list(ogs6_obj$media[[1]]$properties[[4]]$value,
-                   values = percentages)
+          values = percentages)
       ),
     sequential_mode = TRUE
   )
@@ -266,12 +269,23 @@ exit_codes <- ogs6_ens_theis_2$run_simulation()
 paste(exit_codes)
 ```
 
-When the simulations have run, we can extract and plot the results just like before.
+When the simulations have run, we can extract and plot the results like before. To avoid cluttering the plot, we only extract the `pressure` values for a single line. For this, we get the IDs of all points on the x axis.
 
 ```{r}
+# Extract point ids
+all_points <- ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$OGS6_vtus[[1]]$points
+x_axis_ids <- numeric()
+
+for(i in seq_len(dim(all_points)[[1]])){
+  if(all_points[i,][[2]] == 0 && all_points[i,][[3]] == 0){
+    x_axis_ids <- c(x_axis_ids, (i-1))
+  }
+}
+
 # Get combined dataframe
 per_por_slo_df <- 
   ogs6_ens_theis_2$get_point_data(
+    point_ids = x_axis_ids,
     keys = c("pressure"),
     start_at_timestep = ogs6_ens_theis_2$ensemble[[1]]$pvds[[1]]$last_timestep)
 ```
@@ -286,6 +300,21 @@ ggplot(per_por_slo_df,
   xlab("x point coordinate") +
   labs(color = "%") +
   facet_grid(cols = vars(name))
+```
+
+
+Let's take a closer look at `permeability`.
+
+```{r}
+per_df <- subset(per_por_slo_df, name == "per")
+
+# Make plot
+ggplot(per_df,
+       aes(x = x,
+           y = pressure)) +
+  geom_point(aes(color = as.factor(perc))) +
+  xlab("x point coordinate") +
+  labs(color = "%")
 ```
 
 ## Summary
