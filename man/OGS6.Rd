@@ -19,7 +19,7 @@ ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
 ## ------------------------------------------------
 
 ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
+ogs6_obj$add(prj_parameter(name = "foo", type = "bar"))
 
 ## ------------------------------------------------
 ## Method `OGS6$add_gml`
@@ -167,7 +167,7 @@ Adds a .prj simulation component
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
+ogs6_obj$add(prj_parameter(name = "foo", type = "bar"))
 }
 \if{html}{\out{</div>}}
 
@@ -296,7 +296,7 @@ Clears components from the \code{OGS6} object
 \describe{
 \item{\code{which}}{character: The names of the components (all by default).
 If you want to delete only some components, run
-\code{names(prj_top_level_classes())} for the available options.}
+\code{names(ogs6_prj_top_level_classes())} for the available options.}
 }
 \if{html}{\out{</div>}}
 }
