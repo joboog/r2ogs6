@@ -3,9 +3,11 @@
 
 
 #' export_prj
-#' @description Wrapper function to create a \code{.prj} XML document based on
-#' the user input data
+#' @description
+#' Wrapper function to create a \code{.prj} XML document based on the user
+#' input data
 #' @param ogs6_obj OGS6: Simulation object
+#' @noRd
 export_prj <- function(ogs6_obj) {
 
     prj_xml <- xml2::xml_new_root(
@@ -31,7 +33,7 @@ export_prj <- function(ogs6_obj) {
                         xml2::as_xml_document(meshes_node))
 
     #Get implemented classes
-    prj_components <- prj_top_level_classes()
+    prj_components <- ogs6_prj_top_level_classes()
 
     # Include file reference
     if(names(ogs6_obj$processes)[[1]] == "include"){

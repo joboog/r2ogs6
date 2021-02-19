@@ -1,25 +1,22 @@
 
-#===== generate_all_benchmarks =====
+#===== ogs6_generate_benchmark_scripts =====
 
 
-#' generate_all_benchmark_scripts
-#' @description Wrapper function to generate benchmark scripts from all
-#' \code{.prj} files in a directory
+#' Generate benchmark scripts
+#'
+#' This is a wrapper function for `ogs6_generate_benchmark_script()`.
+#'
 #' @param path string: Path to a benchmark directory to generate scripts from
-#' @param sim_path string: Path where all simulation files will be saved
-#' @param scripts_path string: Path where benchmark scripts will be saved
-#' @param read_in_gmls flag: Optional: Should \code{.gml} files just be copied
-#' or read in too?
-#' @param read_in_vtus flag: Optional: Should \code{.vtu} files just be copied
-#' or read in too?
-#' @param starting_from_prj_path string: Optional:
-#' @param skip_prj_paths character: Optional: \code{.prj} paths to skip
-generate_all_benchmark_scripts <-
+#' @inheritParams ogs6_generate_benchmark_script
+#' @param starting_from_prj_path string: Optional: `.prj` path to start from
+#' @param skip_prj_paths character: Optional: `.prj` paths to skip
+#' @export
+ogs6_generate_benchmark_scripts <-
     function(path,
              sim_path,
-             scripts_path,
-             read_in_gmls,
-             read_in_vtus = FALSE,
+             script_path,
+             read_in_gml,
+             read_in_vtu = FALSE,
              starting_from_prj_path = "",
              skip_prj_paths = character()){
 
@@ -31,17 +28,17 @@ generate_all_benchmark_scripts <-
         sim_path <- unlist(options("r2ogs6.default_sim_path"))
     }
 
-    if(missing(scripts_path)){
-        scripts_path <- unlist(options("r2ogs6.default_script_path"))
+    if(missing(script_path)){
+        script_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
-    missing_read_in_gmls <- missing(read_in_gmls)
+    missing_read_in_gml <- missing(read_in_gml)
 
     path <- as_dir_path(path)
-    scripts_path <- as_dir_path(scripts_path)
+    script_path <- as_dir_path(script_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
-    assertthat::assert_that(assertthat::is.flag(read_in_vtus))
+    assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
@@ -82,17 +79,17 @@ generate_all_benchmark_scripts <-
 
         out<- tryCatch(
             {
-                if(missing_read_in_gmls){
+                if(missing_read_in_gml){
                     ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
                                               sim_path = sim_subdir,
-                                              script_path = scripts_path,
-                                              read_in_vtu = read_in_vtus)
+                                              script_path = script_path,
+                                              read_in_vtu = read_in_vtu)
                 }else{
                     ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
                                               sim_path = sim_subdir,
-                                              script_path = scripts_path,
-                                              read_in_gml = read_in_gmls,
-                                              read_in_vtu = read_in_vtus)
+                                              script_path = script_path,
+                                              read_in_gml = read_in_gml,
+                                              read_in_vtu = read_in_vtu)
                 }
 
             },
@@ -113,15 +110,17 @@ generate_all_benchmark_scripts <-
 #===== ogs6_generate_benchmark_script =====
 
 
-#' ogs6_generate_benchmark_script
-#' @description Generates a benchmark script from an existing \code{.prj} file.
-#' @param prj_path string: \code{.prj} file the script will be based on
+#' Generate benchmark script
+#'
+#' Generates an R script from an existing `.prj` benchmark file.
+#'
+#' @param prj_path string: `.prj` file the script will be based on
 #' @param sim_path string: Path where all simulation files will be saved
 #' @param ogs6_bin_path string: OpenGeoSys bin folder path
 #' @param script_path string: Path where benchmark script will be saved
-#' @param read_in_gml flag: Optional: Should \code{.gml} file just be copied or
+#' @param read_in_gml flag: Optional: Should `.gml` file just be copied or
 #'   read in too?
-#' @param read_in_vtu flag: Optional: Should \code{.vtu} file(s) just be copied
+#' @param read_in_vtu flag: Optional: Should `.vtu` file(s) just be copied
 #'   or read in too?
 #' @export
 ogs6_generate_benchmark_script <- function(prj_path,
@@ -158,7 +157,7 @@ ogs6_generate_benchmark_script <- function(prj_path,
                 read_in_vtu,
                 read_in_gml = FALSE)
 
-    prj_components = prj_top_level_classes()
+    prj_components = ogs6_prj_top_level_classes()
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
@@ -262,15 +261,18 @@ ogs6_generate_benchmark_script <- function(prj_path,
 }
 
 
-#' construct_add_call
-#' @description Constructs a call based on an \code{OGS6} component. This is a
-#' recursive function, handle with care.
-#' @param object An object (numeric, character, list, NULL, \code{OGS6} or
-#' \code{r2ogs6} class object)
+#' Construct a call for `OGS6$add()`
+#'
+#' This is a recursive function.
+#'
+#' @param object An object (numeric, character, list, NULL, `OGS6` or
+#'   r2ogs6 class object)
 #' @param nested_call Optional: For recursion purposes, you should leave this as
-#' it is.
-#' @return A string representing the code with which the component would be
-#' added to an \code{OGS6} object
+#'   it is.
+#' @return
+#' A string representing the code with which the component would be
+#' added to an `OGS6` object
+#' @noRd
 construct_add_call <- function(object, nested_call = FALSE) {
 
     #For values of type numeric or character, dput will give us usable output
@@ -350,7 +352,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
         regexp_2 <- "[\\w_]* = ((NULL)|(list\\(\\)))(,[:space:])"
         ret_str <- stringr::str_remove_all(ret_str, regexp_1)
         ret_str <- stringr::str_remove_all(ret_str, regexp_2)
-        ret_str <- delete_keywords_from_str(ret_str)
+        ret_str <- stringr::str_remove_all(ret_str, "repeat = ")
         ret_str <- stringr::str_replace_all(ret_str,
                                             " = [A-Za-z_]* = ", " = ")
 
@@ -382,18 +384,4 @@ construct_add_call <- function(object, nested_call = FALSE) {
         ret_str <- paste0("list(", content_str, ")")
         return(invisible(ret_str))
     }
-}
-
-
-#' delete_keywords_from_str
-#' @description Utility function to delete keywords from a string,
-#' this is important because there is a <repeat> tag in <time_loop> and
-#' "repeat" is a reserved word in R (extend this function if you find more
-#' reserved words)
-#' @param string string
-delete_keywords_from_str <- function(string){
-
-    string <- stringr::str_remove_all(string, "repeat = ")
-
-    return(invisible(string))
 }

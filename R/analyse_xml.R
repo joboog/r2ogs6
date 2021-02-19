@@ -1,21 +1,20 @@
-#This is a helper function which can be used to combat missing documentation.
 
-#Benchmark HydroMechanics:
-# analyse_xml("D:\\Programme\\OpenGeoSys\\ogs-master-Tests-Data/",
-#             "\\.vtu$",
-#             "VTKFile")
+#===== analyse_xml =====
 
-#'analyse_xml
-#'@description This is a helper function which can be used to combat missing
+
+#' analyse_xml
+#' @description
+#' This is a helper function which can be used to combat missing
 #' documentation. It looks for files in a path which match the given pattern
 #' and then attempts to parse them as XML. For each occurence of the specified
 #' element, it documents its attributes and direct children and prints a little
 #' summary of its findings at the end.
-#'@param path string: A path
-#'@param pattern string: A regex pattern
-#'@param xpath string: An XPath expression. WARNING: Only works for expressions
-#' that return nodesets, use it to look up tag names.
-#'@param print_findings Optional: Should the results be printed to the console?
+#' @param path string: A path
+#' @param pattern string: A regex pattern
+#' @param xpath string: An XPath expression. WARNING: Only works for expressions
+#'   that return nodesets, use it to look up tag names.
+#' @param print_findings Optional: Should the results be printed to the console?
+#' @noRd
 analyse_xml <- function(path,
                         pattern,
                         xpath,
@@ -259,11 +258,13 @@ print_analysis_findings <- function(invalid_files_count,
 #===== get_required =====
 
 
-#'get_required
-#'@description Helper function to mark required attributes or children from a
+#' get_required
+#' @description
+#' Helper function to mark required attributes or children from a
 #' vector of names and a vector of occurrence probabilities
-#'@param names A vector of names
-#'@param occurence_probabilities A vector of occurrence probabilities
+#' @param names A vector of names
+#' @param occurence_probabilities A vector of occurrence probabilities
+#' @noRd
 get_required <- function(names, occurence_probabilities){
 
     required <- logical()

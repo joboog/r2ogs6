@@ -306,7 +306,7 @@ ogs6_get_medium_property <- function(medium, name){
     assertthat::assert_that(assertthat::is.string(name))
 
     properties_names <- lapply(medium$properties, `[[`, "name")
-    property <- properties[properties_names == name][[1]]
+    property <- medium$properties[properties_names == name][[1]]
 
     return(invisible(property))
 }

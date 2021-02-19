@@ -1,5 +1,4 @@
 
-
 #===== S3 class generation =====
 
 #===== generate_constructor =====
@@ -13,6 +12,7 @@
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 generate_constructor <- function(params,
                                  prefix = "",
                                  print_result = FALSE){
@@ -26,11 +26,16 @@ generate_constructor <- function(params,
 
     attr_flags <- params[[3]]
     param_flags <- params[[4]]
+    assertthat::assert_that(is.logical(param_flags))
 
     class_name <- paste0("prj_", prefix, tag_name)
 
     param_str <- flags_to_con_str(param_flags)
-    assign_str <- flags_to_assign_str(param_flags)
+
+    assign_str <- paste(names(param_flags),
+                        names(param_flags),
+                        sep = " = ",
+                        collapse = ",\n")
 
     con_str <- paste0("new_", class_name, " <- function(", param_str, ") {\n")
 
@@ -74,6 +79,7 @@ generate_constructor <- function(params,
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 generate_helper <- function(params,
                             prefix = "",
                             print_result = FALSE){
@@ -86,12 +92,12 @@ generate_helper <- function(params,
     tag_name <- get_tag_from_xpath(xpath)
 
     param_flags <- params[[4]]
+    assertthat::assert_that(is.logical(param_flags))
 
     class_name <- paste0("prj_", prefix, tag_name)
 
     doc_str <- flags_to_doc_str(param_flags)
     con_str <- flags_to_con_str(param_flags)
-    con_call_str <- flags_to_con_call_str(param_flags)
 
     helper_str <- paste0("#'", class_name, "\n",
                          "#'@description tag: ", tag_name, "\n",
@@ -100,7 +106,9 @@ generate_helper <- function(params,
                          "#'@export\n",
                          class_name, " <- function(", con_str, ") {\n",
                          "\n# Add coercing utility here\n\n",
-                         "new_", class_name, "(", con_call_str, ")\n",
+                         "new_", class_name, "(",
+                         paste(names(param_flags), collapse = ",\n"),
+                         ")\n",
                          "}\n")
 
     if(print_result){
@@ -111,16 +119,14 @@ generate_helper <- function(params,
 }
 
 
-#===== get parameter lists (for use in class constructor / helper) =====
+#===== flags_to_con_str =====
 
 
 #' flags_to_con_str
 #' @description Helper function to generate a string out of a flag vector
 #' @param flags vector: Flags
-#' @param print_result flag: Should the result be printed to the console?
-flags_to_con_str <- function(flags, print_result = FALSE) {
-
-    assertthat::assert_that(is.logical(flags))
+#' @noRd
+flags_to_con_str <- function(flags) {
 
     flag_strs <- character()
 
@@ -134,71 +140,7 @@ flags_to_con_str <- function(flags, print_result = FALSE) {
 
     flag_str <- paste(flag_strs, collapse = ",\n")
 
-    if(print_result){
-        cat(flag_str, "\n")
-    }
-
-    return(invisible(flag_str))
-}
-
-
-#' flags_to_con_call_str
-#' @description Helper function to generate a string out of a flag vector
-#' @param flags vector: Flags
-#' @param print_result flag: Should the result be printed to the console?
-flags_to_con_call_str <- function(flags, print_result = FALSE) {
-
-    assertthat::assert_that(is.logical(flags))
-
-    flag_str <- paste(names(flags), collapse = ",\n")
-
-    if(print_result){
-        cat(flag_str, "\n")
-    }
-
-    return(invisible(flag_str))
-}
-
-
-#' flags_to_name_str
-#' @description Helper function to generate a name string out of a flag vector
-#' @param flags vector: Flags
-#' @param print_result flag: Should the result be printed to the console?
-flags_to_name_str <- function(flags, print_result = FALSE) {
-
-    assertthat::assert_that(is.logical(flags))
-
-    flag_str <- paste0("\"", paste(names(flags), collapse = "\",\n\""), "\"")
-
-    if(print_result){
-        cat(flag_str, "\n")
-    }
-
-    return(invisible(flag_str))
-}
-
-
-#===== get class parameter list (for use in class constructor) =====
-
-
-#' flags_to_assign_str
-#' @description Helper function to generate a string out of a flag vector
-#' @param flags vector: Flags
-#' @param print_result flag: Should the result be printed to the console?
-flags_to_assign_str <- function(flags, print_result = FALSE){
-
-    assertthat::assert_that(is.logical(flags))
-
-    flag_str <- paste(names(flags),
-                      names(flags),
-                      sep = " = ",
-                      collapse = ",\n")
-
-    if(print_result){
-        cat(flag_str, "\n")
-    }
-
-    return(invisible(flag_str))
+    return(flag_str)
 }
 
 
@@ -209,6 +151,7 @@ flags_to_assign_str <- function(flags, print_result = FALSE){
 #' @description Helper function to generate a string out of a flag vector
 #' @param flags vector: Flags
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 flags_to_doc_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -250,6 +193,7 @@ flags_to_doc_str <- function(flags, print_result = FALSE){
 #' the same tag name as an element for which a class was already specified,
 #' a prefix must be appended to the class name
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 generate_R6 <- function(params,
                         prefix = "",
                         print_result = TRUE){
@@ -321,6 +265,7 @@ generate_R6 <- function(params,
 #' @description Helper function to generate a string out of a flag vector
 #' @param flags vector: Flags
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 flags_to_r6_init_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -352,6 +297,7 @@ flags_to_r6_init_str <- function(flags, print_result = FALSE){
 #' @param flags vector: Flags
 #' @param mutable flag: On per default, turn off if parameters are static
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 flags_to_r6_active_field_str <- function(flags,
                                          mutable = TRUE,
                                          print_result = FALSE){
@@ -402,6 +348,7 @@ flags_to_r6_active_field_str <- function(flags,
 #' @description Helper function to generate a string out of a flag vector
 #' @param flags vector: Flags
 #' @param print_result flag: Should the result be printed to the console?
+#' @noRd
 flags_to_r6_private_str <- function(flags, print_result = FALSE){
 
     assertthat::assert_that(is.logical(flags))
@@ -428,12 +375,14 @@ flags_to_r6_private_str <- function(flags, print_result = FALSE){
 
 
 #' generate_add_method
-#' @description Helper function to generate an R6 \code{add_*} method for a
-#' r2ogs6 class object
-#' @param tag_name The tag name of the XML element represented by the class
+#' @description
+#' Helper function to generate an R6 \code{add_*} method for a r2ogs6 class
 #' object
-#' @param parent_tag_name The tag name of the parent of the XML element
-#' represented by the class object
+#' @param tag_name
+#' The tag name of the XML element represented by the class object
+#' @param parent_tag_name
+#' The tag name of the parent of the XML element represented by the class object
+#' @noRd
 generate_add_method <- function(tag_name, parent_tag_name) {
 
     has_wrapper <- (tag_name != parent_tag_name)
@@ -462,9 +411,10 @@ generate_add_method <- function(tag_name, parent_tag_name) {
 
 
 #' generate_active_field
-#' @description Helper function to generate an R6 active field for a OGS6 class
-#' parameter
+#' @description
+#' Helper function to generate an R6 active field for a OGS6 class parameter
 #' @param parameter_name The name of the OGS6 class parameter
+#' @noRd
 generate_active_field <- function(parameter_name){
 
     af_str <- paste0(parameter_name, " = function(value) {\n",

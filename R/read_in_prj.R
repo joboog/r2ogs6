@@ -63,7 +63,7 @@ read_in_prj <- function(ogs6_obj,
                          read_in_vtu = read_in_vtu)
     }
 
-    prj_components <- prj_top_level_classes()
+    prj_components <- ogs6_prj_top_level_classes()
 
     # Include file reference
     processes_include_node <-

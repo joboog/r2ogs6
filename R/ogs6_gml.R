@@ -207,12 +207,14 @@ OGS6_gml <- R6::R6Class(
 #===== Validation utility =====
 
 
-#'validate_points
-#'@description Checks if the input is a tibble, if this tibble has the right
-#' number of elements, if those elements are named correctly and if there are
+#' validate_points
+#' @description
+#' Checks if the input is a tibble, if this tibble has the right number of
+#' elements, if those elements are named correctly and if there are
 #' any overlapping points or duplicate point names
-#'@param points tibble: Must have 3 vectors named 'x', 'y' and 'z', may have
-#' optional 'name' vector
+#' @param points tibble: Must have 3 vectors named 'x', 'y' and 'z', may have
+#'   optional 'name' vector
+#' @noRd
 validate_points <- function(points) {
 
     assertthat::assert_that(inherits(points, "tbl_df"))
@@ -256,11 +258,13 @@ validate_points <- function(points) {
 }
 
 
-#'validate_polylines
-#'@description Checks if the input is a list, if this list consists of other
+#' validate_polylines
+#' @description
+#' Checks if the input is a list, if this list consists of other
 #' lists and if those lists have the correct structure (length of 2, first
 #' element is a string named 'name', second element is a numeric vector)
-#'@param polylines list(list("foo", c(1, 2))):
+#' @param polylines list(list("foo", c(1, 2))):
+#' @noRd
 validate_polylines <- function(polylines) {
 
     assertthat::assert_that(is.list(polylines))
@@ -280,12 +284,14 @@ validate_polylines <- function(polylines) {
 }
 
 
-#'validate_surfaces
-#'@description Checks if the input is a list, if this list consists of other
+#' validate_surfaces
+#' @description
+#' Checks if the input is a list, if this list consists of other
 #' lists and if those lists have the correct structure (length of 2 or 3, first
 #' element is a string named 'name', second and third element are numeric
 #' vectors)
-#'@param surfaces list(list("foo", c(1, 2, 3), c(2, 3, 4))):
+#' @param surfaces list(list("foo", c(1, 2, 3), c(2, 3, 4))):
+#' @noRd
 validate_surfaces <- function(surfaces) {
 
     assertthat::assert_that(is.list(surfaces))
@@ -320,13 +326,15 @@ validate_surfaces <- function(surfaces) {
 }
 
 
-#'validate_pnt_values
-#'@description Checks if two numerical vectors of length 3
+#' validate_pnt_values
+#' @description
+#' Checks if two numerical vectors of length 3
 #' (two surface elements) each consist of 3 different elements and have
 #' exactly 2 matching elements between them. Think of the two vectors as
 #' triangles, and the triangles together form a square which is our surface.
-#'@param element_1 numeric, length = 3
-#'@param element_2 numeric, length = 3
+#' @param element_1 numeric, length = 3
+#' @param element_2 numeric, length = 3
+#' @noRd
 validate_pnt_values = function (element_1, element_2) {
 
     if(element_1[[1]] == element_1[[2]] ||

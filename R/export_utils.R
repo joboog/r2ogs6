@@ -15,6 +15,7 @@
 #' flattened to a string in XML
 #' @param unwrap_on_exp character: Optional: This is for lists which will not
 #' be exported to XML
+#' @noRd
 to_node <- function(object, object_name = "",
                     attribute_names = character(),
                     flatten_on_exp = character(),
