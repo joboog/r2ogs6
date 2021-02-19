@@ -24,8 +24,8 @@ test_that("get_tag_from_xpath() works", {
 })
 
 
-test_that("prj_top_level_classes() works", {
-    expect_equal(prj_top_level_classes()[["processes"]], "prj_process")
+test_that("ogs6_prj_top_level_classes() works", {
+    expect_equal(ogs6_prj_top_level_classes()[["processes"]], "prj_process")
 })
 
 
