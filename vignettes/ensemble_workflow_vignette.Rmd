@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.align = "center",
   collapse = TRUE,
   comment = "#>",
-  message = FALSE,
+  message = FALSE
 )
 
 devtools::load_all(".")
