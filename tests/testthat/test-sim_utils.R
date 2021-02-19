@@ -2,18 +2,18 @@
 # helper function to skip tests if we don't have OpenGeoSys 6 dependencies
 skip_if_ogs6_missing <- function() {
 
-    ogs_path <- paste0(unlist(options("r2ogs6.default_ogs_bin_path")),
+    ogs6_path <- paste0(unlist(options("r2ogs6.default_ogs6_bin_path")),
                        "ogs.exe")
 
-    if(!file.exists(ogs_path)){
+    if(!file.exists(ogs6_path)){
         skip("ogs.exe not available for testing")
     }
 
-    skip("Skipping tests that call ogs_run_simulation()")
+    skip("Skipping tests that call ogs6_run_simulation()")
 }
 
 
-test_that("ogs_run_simulation works for flow_no_strain.prj", {
+test_that("ogs6_run_simulation works for flow_no_strain.prj", {
 
     skip_if_ogs6_missing()
 
@@ -34,7 +34,7 @@ test_that("ogs_run_simulation works for flow_no_strain.prj", {
     read_in_prj(ogs6_obj, prj_path)
 
     # Run simulation
-    e <- ogs_run_simulation(ogs6_obj)
+    e <- ogs6_run_simulation(ogs6_obj)
 
     # Check exit code
     expect_equal(e, 0)
@@ -52,7 +52,7 @@ test_that("ogs_run_simulation works for flow_no_strain.prj", {
 #===== Export utility =====
 
 
-test_that("ogs_export_sim_files works", {
+test_that("ogs6_export_sim_files works", {
 
     extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
     test_path <- paste0(extdata_path, "/export_all_sim_files_test")
@@ -68,7 +68,7 @@ test_that("ogs_export_sim_files works", {
                 prj_path)
 
     # Now export all files
-    ogs_export_sim_files(ogs6_obj)
+    ogs6_export_sim_files(ogs6_obj)
 
     expect_equal(file.exists(paste0(test_path, "/circle_1e1_axi.prj")),
                  TRUE)

@@ -1,22 +1,22 @@
 
-#===== r2ogs6_chemical_system =====
+#===== prj_chemical_system =====
 
 
-#' r2ogs6_chemical_system
+#' prj_chemical_system
 #' @description tag: chemical_system
 #' @param chemical_solver string:
 #' @param database string:
-#' @param solution r2ogs6_solution:
+#' @param solution prj_solution:
 #' @param mesh Optional: string:
 #' @param knobs Optional: list:
-#' @param kinetic_reactants Optional: list, r2ogs6_kinetic_reactant:
-#' @param rates Optional: list, r2ogs6_rate:
-#' @param equilibrium_reactants Optional: list, r2ogs6_phase_component:
+#' @param kinetic_reactants Optional: list, prj_kinetic_reactant:
+#' @param rates Optional: list, prj_rate:
+#' @param equilibrium_reactants Optional: list, prj_phase_component:
 #' @param surface Optional:
 #' @param user_punch Optional:
 #' @example man/examples/ex_prj_chemical_system.R
 #' @export
-r2ogs6_chemical_system <- function(chemical_solver,
+prj_chemical_system <- function(chemical_solver,
                                    database,
                                    solution,
                                    mesh = NULL,
@@ -29,7 +29,7 @@ r2ogs6_chemical_system <- function(chemical_solver,
 
     # Add coercing utility here
 
-    new_r2ogs6_chemical_system(chemical_solver,
+    new_prj_chemical_system(chemical_solver,
                                database,
                                solution,
                                mesh,
@@ -42,7 +42,7 @@ r2ogs6_chemical_system <- function(chemical_solver,
 }
 
 
-new_r2ogs6_chemical_system <- function(chemical_solver,
+new_prj_chemical_system <- function(chemical_solver,
                                        database,
                                        solution,
                                        mesh = NULL,
@@ -57,13 +57,13 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
     are_strings(chemical_solver,
                 database)
 
-    assertthat::assert_that(class(solution) == "r2ogs6_solution")
+    assertthat::assert_that(class(solution) == "prj_solution")
 
     are_null_or_strings(mesh)
 
     if(!is.null(equilibrium_reactants)){
         is_wrapper_list(equilibrium_reactants,
-                        "r2ogs6_phase_component")
+                        "prj_phase_component")
     }
 
     knobs <- is_null_or_coerce_names(
@@ -77,12 +77,12 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
 
     if(!is.null(kinetic_reactants)){
         is_wrapper_list(kinetic_reactants,
-                        "r2ogs6_kinetic_reactant")
+                        "prj_kinetic_reactant")
     }
 
     if(!is.null(rates)){
         is_wrapper_list(rates,
-                        "r2ogs6_rate")
+                        "prj_rate")
     }
 
     structure(list(chemical_solver = chemical_solver,
@@ -99,15 +99,15 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
                    attr_names = c("chemical_solver"),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_chemical_system"
+    class = "prj_chemical_system"
     )
 }
 
 
-#===== r2ogs6_solution =====
+#===== prj_solution =====
 
 
-#' r2ogs6_solution
+#' prj_solution
 #' @description tag: solution
 #' @param temperature string | double: Temperature
 #' @param pressure string | double: Pressure
@@ -116,7 +116,7 @@ new_r2ogs6_chemical_system <- function(chemical_solver,
 #' @param charge_balance Optional: string: Charge balance
 #' @example man/examples/ex_prj_solution.R
 #' @export
-r2ogs6_solution <- function(temperature,
+prj_solution <- function(temperature,
                             pressure,
                             pe,
                             components,
@@ -128,7 +128,7 @@ r2ogs6_solution <- function(temperature,
     pe <- coerce_string_to_numeric(pe)
 
 
-    new_r2ogs6_solution(temperature,
+    new_prj_solution(temperature,
                         pressure,
                         pe,
                         components,
@@ -136,7 +136,7 @@ r2ogs6_solution <- function(temperature,
 }
 
 
-new_r2ogs6_solution <- function(temperature,
+new_prj_solution <- function(temperature,
                                 pressure,
                                 pe,
                                 components,
@@ -162,22 +162,22 @@ new_r2ogs6_solution <- function(temperature,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_solution"
+        class = "prj_solution"
     )
 }
 
 
-#===== r2ogs6_phase_component =====
+#===== prj_phase_component =====
 
 
-#' r2ogs6_phase_component
+#' prj_phase_component
 #' @description S3 class describing .prj phase_component
 #' @param name The component name
 #' @param saturation_index The saturation index of the component
 #' @param initial_amount optional: The initial amount of the component
 #' @example man/examples/ex_prj_phase_component.R
 #' @export
-r2ogs6_phase_component <- function(name,
+prj_phase_component <- function(name,
                                    saturation_index,
                                    initial_amount = NULL) {
 
@@ -185,13 +185,13 @@ r2ogs6_phase_component <- function(name,
     saturation_index <- coerce_string_to_numeric(saturation_index)
     initial_amount <- coerce_string_to_numeric(initial_amount)
 
-    new_r2ogs6_phase_component(name,
+    new_prj_phase_component(name,
                                saturation_index,
                                initial_amount)
 }
 
 
-new_r2ogs6_phase_component <- function(name,
+new_prj_phase_component <- function(name,
                                        saturation_index,
                                        initial_amount) {
 
@@ -209,15 +209,15 @@ new_r2ogs6_phase_component <- function(name,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_phase_component"
+        class = "prj_phase_component"
     )
 }
 
 
-#===== r2ogs6_kinetic_reactant =====
+#===== prj_kinetic_reactant =====
 
 
-#' r2ogs6_kinetic_reactant
+#' prj_kinetic_reactant
 #' @description S3 class describing .prj kinetic_reactant
 #' @param name The component name
 #' @param initial_amount The initial amount of the component
@@ -225,7 +225,7 @@ new_r2ogs6_phase_component <- function(name,
 #' @param fix_amount Should the amount be fixed or not?
 #' @example man/examples/ex_prj_kinetic_reactant.R
 #' @export
-r2ogs6_kinetic_reactant <- function(name,
+prj_kinetic_reactant <- function(name,
                                     initial_amount = NULL,
                                     chemical_formula = NULL,
                                     fix_amount = NULL) {
@@ -233,14 +233,14 @@ r2ogs6_kinetic_reactant <- function(name,
     #Coerce input
     initial_amount <- coerce_string_to_numeric(initial_amount)
 
-    new_r2ogs6_kinetic_reactant(name,
+    new_prj_kinetic_reactant(name,
                                 initial_amount,
                                 chemical_formula,
                                 fix_amount)
 }
 
 
-new_r2ogs6_kinetic_reactant <- function(name,
+new_prj_kinetic_reactant <- function(name,
                                        initial_amount = NULL,
                                        chemical_formula = NULL,
                                        fix_amount = NULL) {
@@ -260,30 +260,30 @@ new_r2ogs6_kinetic_reactant <- function(name,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_kinetic_reactant"
+        class = "prj_kinetic_reactant"
     )
 }
 
 
-#===== r2ogs6_rate =====
+#===== prj_rate =====
 
 
-#' r2ogs6_rate
+#' prj_rate
 #' @description S3 class describing .prj rate
 #' @param kinetic_reactant string: References a kinetic_reactant object
 #' @param expression character: Statements
 #' @example man/examples/ex_prj_rate.R
 #' @export
-r2ogs6_rate <- function(kinetic_reactant,
+prj_rate <- function(kinetic_reactant,
                         expression) {
 
     #Coerce input
 
-    new_r2ogs6_rate(kinetic_reactant, expression)
+    new_prj_rate(kinetic_reactant, expression)
 }
 
 
-new_r2ogs6_rate <- function(kinetic_reactant,
+new_prj_rate <- function(kinetic_reactant,
                             expression) {
 
     assertthat::assert_that(assertthat::is.string(kinetic_reactant))
@@ -298,6 +298,6 @@ new_r2ogs6_rate <- function(kinetic_reactant,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_rate"
+        class = "prj_rate"
     )
 }

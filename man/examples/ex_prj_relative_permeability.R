@@ -1,4 +1,4 @@
-r2ogs6_relative_permeability(
+prj_relative_permeability(
     type = "NonWettingPhaseVanGenuchten",
     sr = 0,
     smax = 0.6,

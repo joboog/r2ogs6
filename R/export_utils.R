@@ -74,7 +74,7 @@ to_node <- function(object, object_name = "",
     }
 
     #For r2ogs6 classes, we need recursion
-    if(any(grepl("r2ogs6_", class(object), fixed = TRUE))){
+    if(any(grepl("prj_", class(object), fixed = TRUE))){
 
         class_name <- class(object)[[1]]
 

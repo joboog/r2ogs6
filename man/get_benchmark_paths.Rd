@@ -4,10 +4,10 @@
 \alias{get_benchmark_paths}
 \title{get_benchmark_paths}
 \usage{
-get_benchmark_paths(ogs_processlib_path)
+get_benchmark_paths(ogs6_processlib_path)
 }
 \arguments{
-\item{ogs_processlib_path}{string: Path to OpenGeoSys 6 ProcessLib folder
+\item{ogs6_processlib_path}{string: Path to OpenGeoSys 6 ProcessLib folder
 which contains relevant Tests.cmake files}
 }
 \description{

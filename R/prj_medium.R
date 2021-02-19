@@ -1,16 +1,16 @@
 
-#===== r2ogs6_medium =====
+#===== prj_medium =====
 
 
-#' r2ogs6_medium
+#' prj_medium
 #' @description tag: medium, a specific medium with optional id corresponding
 #'   to the MaterialIDs
-#' @param phases list, r2ogs6_phase: Optional: Medium phases
-#' @param properties list, r2ogs6_pr_property: Optional: Medium properties
+#' @param phases list, prj_phase: Optional: Medium phases
+#' @param properties list, prj_pr_property: Optional: Medium properties
 #' @param id string | double: Optional: ID corresponding to the MaterialIDs
 #' @example man/examples/ex_prj_medium.R
 #' @export
-r2ogs6_medium <- function(phases = NULL,
+prj_medium <- function(phases = NULL,
                           properties = NULL,
                           id = NULL) {
 
@@ -18,22 +18,22 @@ r2ogs6_medium <- function(phases = NULL,
         phases <- NULL
     }
 
-    new_r2ogs6_medium(phases,
+    new_prj_medium(phases,
                       properties,
                       id)
 }
 
 
-new_r2ogs6_medium <- function(phases = NULL,
+new_prj_medium <- function(phases = NULL,
                               properties = NULL,
                               id = NULL) {
 
     if(length(phases) != 0){
-        is_wrapper_list(phases, "r2ogs6_phase")
+        is_wrapper_list(phases, "prj_phase")
     }
 
     if(!is.null(properties)){
-        is_wrapper_list(properties, "r2ogs6_pr_property")
+        is_wrapper_list(properties, "prj_pr_property")
     }
 
     are_null_or_strings(id)
@@ -47,15 +47,15 @@ new_r2ogs6_medium <- function(phases = NULL,
             attr_names = c("id"),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_medium"
+        class = "prj_medium"
     )
 }
 
 
-#===== r2ogs6_pr_property =====
+#===== prj_pr_property =====
 
 
-#' r2ogs6_pr_property
+#' prj_pr_property
 #' @description tag: property
 #' @param name string:
 #' @param type string:
@@ -92,7 +92,7 @@ new_r2ogs6_medium <- function(phases = NULL,
 #' @param min_relative_permeability_gas Optional:
 #' @example man/examples/ex_prj_pr_property.R
 #' @export
-r2ogs6_pr_property <- function(name,
+prj_pr_property <- function(name,
                                type,
                                value = NULL,
                                parameter_name = NULL,
@@ -151,7 +151,7 @@ r2ogs6_pr_property <- function(name,
     min_relative_permeability_gas <-
         coerce_string_to_numeric(min_relative_permeability_gas)
 
-    new_r2ogs6_pr_property(
+    new_prj_pr_property(
         name,
         type,
         value,
@@ -189,7 +189,7 @@ r2ogs6_pr_property <- function(name,
 }
 
 
-new_r2ogs6_pr_property <- function(name,
+new_prj_pr_property <- function(name,
                                    type,
                                    value = NULL,
                                    parameter_name = NULL,
@@ -289,20 +289,20 @@ new_r2ogs6_pr_property <- function(name,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_pr_property"
+    class = "prj_pr_property"
     )
 }
 
 
-#' ogs_get_medium_property
+#' ogs6_get_medium_property
 #' @description Returns a medium property based on the property name
-#' @param medium r2ogs6_medium
+#' @param medium prj_medium
 #' @param name string: The property name
-#' @return r2ogs6_pr_property
+#' @return prj_pr_property
 #' @export
-ogs_get_medium_property <- function(medium, name){
+ogs6_get_medium_property <- function(medium, name){
 
-    assertthat::assert_that(class(medium) == "r2ogs6_medium")
+    assertthat::assert_that(class(medium) == "prj_medium")
     assertthat::assert_that(assertthat::is.string(name))
 
     properties_names <- lapply(medium$properties, `[[`, "name")
@@ -312,31 +312,31 @@ ogs_get_medium_property <- function(medium, name){
 }
 
 
-#===== r2ogs6_phase =====
+#===== prj_phase =====
 
 
-#' r2ogs6_phase
+#' prj_phase
 #' @description tag: phase, a coherent material with homogeneous properties
 #' @param type string: Phase type
 #'   (get valid types with get_valid_phase_types())
-#' @param properties list, r2ogs6_pr_property: Properties
+#' @param properties list, prj_pr_property: Properties
 #' @param components list, components
 #' @example man/examples/ex_prj_phase.R
 #' @export
-r2ogs6_phase <- function(type,
+prj_phase <- function(type,
                          properties = NULL,
                          components = NULL){
 
     #Make this more user friendly
     #...
 
-    new_r2ogs6_phase(type,
+    new_prj_phase(type,
                      properties,
                      components)
 }
 
 
-new_r2ogs6_phase <- function(type,
+new_prj_phase <- function(type,
                              properties = NULL,
                              components = NULL) {
 
@@ -344,11 +344,11 @@ new_r2ogs6_phase <- function(type,
     assertthat::assert_that(type %in% get_valid_phase_types())
 
     if(!is.null(properties)){
-        is_wrapper_list(properties, "r2ogs6_ph_property")
+        is_wrapper_list(properties, "prj_ph_property")
     }
 
     if(!is.null(components)){
-        is_wrapper_list(components, "r2ogs6_component")
+        is_wrapper_list(components, "prj_component")
     }
 
     structure(
@@ -360,7 +360,7 @@ new_r2ogs6_phase <- function(type,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_phase"
+        class = "prj_phase"
     )
 }
 
@@ -375,10 +375,10 @@ get_valid_phase_types <- function(){
 }
 
 
-#===== r2ogs6_ph_property =====
+#===== prj_ph_property =====
 
 
-#' r2ogs6_ph_property
+#' prj_ph_property
 #' @description tag: property
 #' @param name string: Property name
 #' @param type string: Property type
@@ -398,7 +398,7 @@ get_valid_phase_types <- function(){
 #' @param ... independent_variable
 #' @example man/examples/ex_prj_ph_property.R
 #' @export
-r2ogs6_ph_property <- function(name,
+prj_ph_property <- function(name,
                                type,
                                value = NULL,
                                reference_value = NULL,
@@ -433,7 +433,7 @@ r2ogs6_ph_property <- function(name,
     independent_variable <-
         ellipsis_list[names(ellipsis_list) == "independent_variable"]
 
-    new_r2ogs6_ph_property(
+    new_prj_ph_property(
         name,
         type,
         value,
@@ -454,7 +454,7 @@ r2ogs6_ph_property <- function(name,
 }
 
 
-new_r2ogs6_ph_property <- function(name,
+new_prj_ph_property <- function(name,
                                    type,
                                    value = NULL,
                                    reference_value = NULL,
@@ -533,37 +533,37 @@ new_r2ogs6_ph_property <- function(name,
                                "intrinsic_permeabilities"),
             unwrap_on_exp = c("independent_variable")
         ),
-        class = "r2ogs6_ph_property"
+        class = "prj_ph_property"
     )
 }
 
 
-#===== r2ogs6_component =====
+#===== prj_component =====
 
 
-#' r2ogs6_component
+#' prj_component
 #' @description tag: component
 #' @param name string:
-#' @param properties list, r2ogs6_com_property:
+#' @param properties list, prj_com_property:
 #' @example man/examples/ex_prj_component.R
 #' @export
-r2ogs6_component <- function(name,
+prj_component <- function(name,
                              properties){
 
     #Make this more user friendly
     #...
 
-    new_r2ogs6_component(name,
+    new_prj_component(name,
                          properties)
 }
 
 
-new_r2ogs6_component <- function(name,
+new_prj_component <- function(name,
                                  properties) {
 
     assertthat::assert_that(assertthat::is.string(name))
 
-    is_wrapper_list(properties, "r2ogs6_com_property")
+    is_wrapper_list(properties, "prj_com_property")
 
     structure(
         list(
@@ -574,15 +574,15 @@ new_r2ogs6_component <- function(name,
             flatten_on_exp = character()
         ),
 
-        class = "r2ogs6_component"
+        class = "prj_component"
     )
 }
 
 
-#===== r2ogs6_com_property =====
+#===== prj_com_property =====
 
 
-#' r2ogs6_com_property
+#' prj_com_property
 #' @description tag: property
 #' @param name string: Property name
 #' @param type string: Property type
@@ -590,7 +590,7 @@ new_r2ogs6_component <- function(name,
 #' @param parameter_name Optional:
 #' @example man/examples/ex_prj_com_property.R
 #' @export
-r2ogs6_com_property <- function(name,
+prj_com_property <- function(name,
                                 type,
                                 value = NULL,
                                 parameter_name = NULL) {
@@ -598,14 +598,14 @@ r2ogs6_com_property <- function(name,
     #Coerce input
     value <- coerce_string_to_numeric(value)
 
-    new_r2ogs6_com_property(name,
+    new_prj_com_property(name,
                             type,
                             value,
                             parameter_name)
 }
 
 
-new_r2ogs6_com_property <- function(name,
+new_prj_com_property <- function(name,
                                     type,
                                     value = NULL,
                                     parameter_name = NULL) {
@@ -628,6 +628,6 @@ new_r2ogs6_com_property <- function(name,
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_com_property"
+        class = "prj_com_property"
     )
 }

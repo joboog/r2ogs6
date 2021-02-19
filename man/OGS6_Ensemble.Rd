@@ -76,7 +76,7 @@ Overrides default printing behaviour
 \if{html}{\out{<a id="method-run_simulation"></a>}}
 \if{latex}{\out{\hypertarget{method-run_simulation}{}}}
 \subsection{Method \code{run_simulation()}}{
-Runs the simulation. This calls r2ogs6::ogs_run_simulation()
+Runs the simulation. This calls r2ogs6::ogs6_run_simulation()
 internally. For ensembles, output will always be written to logfiles.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE, verbose = F)}\if{html}{\out{</div>}}

@@ -19,7 +19,7 @@ ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
 ## ------------------------------------------------
 
 ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
+ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
 
 ## ------------------------------------------------
 ## Method `OGS6$add_gml`
@@ -64,43 +64,43 @@ ogs6_obj$get_status()
 \item{\code{python_script}}{\code{.prj} \code{python_script} tag. \code{value} must be string}
 
 \item{\code{search_length_algorithm}}{\code{.prj} \code{search_length_algorithm} tag. \code{value} must be
-\code{r2ogs6_search_length_algorithm} object}
+\code{prj_search_length_algorithm} object}
 
 \item{\code{processes}}{\code{.prj} \code{processes} tag. \code{value} must be list of
-\code{r2ogs6_process} objects}
+\code{prj_process} objects}
 
 \item{\code{time_loop}}{\code{.prj} \code{time_loop} tag. \code{value} must be
-\code{r2ogs6_time_loop} object}
+\code{prj_time_loop} object}
 
 \item{\code{local_coordinate_system}}{\code{.prj} \code{local_coordinate_system} tag. \code{value} must be
-\code{r2ogs6_local_coordinate_system} object}
+\code{prj_local_coordinate_system} object}
 
 \item{\code{media}}{\code{.prj} \code{media} tag. \code{value} must be list of
-\code{r2ogs6_medium} objects}
+\code{prj_medium} objects}
 
 \item{\code{parameters}}{\code{.prj} \code{parameters} tag. \code{value} must be list of
-\code{r2ogs6_parameter} objects}
+\code{prj_parameter} objects}
 
 \item{\code{chemical_system}}{\code{.prj} \code{chemical_system} tag. \code{value} must be
-\code{r2ogs6_chemical_system} object}
+\code{prj_chemical_system} object}
 
 \item{\code{curves}}{\code{.prj} \code{curves} tag. \code{value} must be list of
-\code{r2ogs6_curve} objects}
+\code{prj_curve} objects}
 
 \item{\code{process_variables}}{\code{.prj} \code{process_variables} tag. \code{value} must be list of
-\code{r2ogs6_process_variable} objects}
+\code{prj_process_variable} objects}
 
 \item{\code{nonlinear_solvers}}{\code{.prj} \code{nonlinear_solvers} tag. \code{value} must be list of
-\code{r2ogs6_nonlinear_solver} objects}
+\code{prj_nonlinear_solver} objects}
 
 \item{\code{linear_solvers}}{\code{.prj} \code{linear_solvers} tag. \code{value} must be list of
-\code{r2ogs6_linear_solver} objects}
+\code{prj_linear_solver} objects}
 
 \item{\code{test_definition}}{\code{.prj} \code{test_definition} tag. \code{value} must be list of
-\code{r2ogs6_vtkdiff} objects}
+\code{prj_vtkdiff} objects}
 
 \item{\code{insitu}}{\code{.prj} \code{insitu} tag. \code{value} must be
-\code{r2ogs6_insitu} object}
+\code{prj_insitu} object}
 
 \item{\code{pvds}}{\code{.pvd}s. \code{value} must be list of \code{OGS6_pvd} objects}
 }
@@ -160,14 +160,14 @@ Adds a .prj simulation component
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{An object of any .prj `r2ogs6` class}
+\item{\code{x}}{An object of any .prj `prj` class}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add(r2ogs6_parameter$new(name = "foo", type = "bar"))
+ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
 }
 \if{html}{\out{</div>}}
 

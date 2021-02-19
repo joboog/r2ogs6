@@ -1,8 +1,8 @@
 
-#===== r2ogs6_nonlinear_solver =====
+#===== prj_nonlinear_solver =====
 
 
-#' r2ogs6_nonlinear_solver
+#' prj_nonlinear_solver
 #' @description tag: nonlinear_solver
 #' @param name string: Name
 #' @param type string: Type
@@ -11,7 +11,7 @@
 #' @param damping Optional: string | double: Damping
 #' @example man/examples/ex_prj_nonlinear_solver.R
 #' @export
-r2ogs6_nonlinear_solver <- function(name,
+prj_nonlinear_solver <- function(name,
                                     type,
                                     max_iter,
                                     linear_solver,
@@ -21,7 +21,7 @@ r2ogs6_nonlinear_solver <- function(name,
     max_iter <- coerce_string_to_numeric(max_iter)
     damping <- coerce_string_to_numeric(damping)
 
-    new_r2ogs6_nonlinear_solver(name,
+    new_prj_nonlinear_solver(name,
                                 type,
                                 max_iter,
                                 linear_solver,
@@ -29,7 +29,7 @@ r2ogs6_nonlinear_solver <- function(name,
 }
 
 
-new_r2ogs6_nonlinear_solver <- function(name,
+new_prj_nonlinear_solver <- function(name,
                                         type,
                                         max_iter,
                                         linear_solver,
@@ -51,6 +51,6 @@ new_r2ogs6_nonlinear_solver <- function(name,
                    attr_names = character(),
                    flatten_on_exp = character()
                    ),
-              class = "r2ogs6_nonlinear_solver"
+              class = "prj_nonlinear_solver"
     )
 }

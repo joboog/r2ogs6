@@ -1,4 +1,4 @@
-r2ogs6_eigen(
+prj_eigen(
     solver_type = "BiCGSTAB",
     precon_type = "ILUT",
     max_iteration_step = 10000,

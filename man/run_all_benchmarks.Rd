@@ -6,8 +6,8 @@
 \usage{
 run_all_benchmarks(
   path,
-  ogs_processlib_path,
-  ogs_bin_path,
+  ogs6_processlib_path,
+  ogs6_bin_path,
   sim_path,
   starting_from_prj_path = "",
   print_results = TRUE
@@ -16,10 +16,10 @@ run_all_benchmarks(
 \arguments{
 \item{path}{string: Path to benchmark folder}
 
-\item{ogs_processlib_path}{string: Path to OpenGeoSys 6 ProcessLib folder
+\item{ogs6_processlib_path}{string: Path to OpenGeoSys 6 ProcessLib folder
 which contains relevant Tests.cmake files}
 
-\item{ogs_bin_path}{string:}
+\item{ogs6_bin_path}{string:}
 
 \item{sim_path}{string: Path where simulation files will be saved}
 
@@ -29,5 +29,5 @@ which contains relevant Tests.cmake files}
 }
 \description{
 Utility function, for quick benchmark runs. Calls
-run_benchmark internally.
+  run_benchmark internally.
 }

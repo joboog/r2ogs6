@@ -15,13 +15,14 @@ Constructor for the OGS6_pvd base class
 
 \item{\code{vtu_paths}}{Getter for `datasets` `file`}
 
-\item{\code{abs_vtu_paths}}{Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets` `file`}
+\item{\code{abs_vtu_paths}}{Gets absolute .vtu paths, e.g. `dirname(pvd_path)` + `datasets`
+`file`}
 
 \item{\code{last_timestep}}{Gets last timestep}
 
-\item{\code{timesteps}}{Gets timesteps from private parameter '.datasets'}
+\item{\code{timesteps}}{Gets timesteps from private parameter `datasets`}
 
-\item{\code{OGS6_vtus}}{Getter for private parameter '.OGS6_vtus'}
+\item{\code{OGS6_vtus}}{Getter for private parameter `.OGS6_vtus`}
 }
 \if{html}{\out{</div>}}
 }

@@ -1,4 +1,4 @@
-r2ogs6_pipes(
+prj_pipes(
     longitudinal_dispersion_length = 0.001,
     inlet = list(
         diameter = " 0.013665",

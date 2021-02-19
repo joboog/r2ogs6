@@ -1,4 +1,4 @@
-r2ogs6_phase_component(
+prj_phase_component(
     name = "Calcite",
     saturation_index = 0,
     initial_amount = 0.000207

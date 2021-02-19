@@ -32,7 +32,7 @@ After loading `r2ogs6`, we can set the package options so it knows where to look
 
 ```r
 # Set path for OpenGeoSys 6
-options("r2ogs6.default_ogs_bin_path" = "your_ogs_bin_path")
+options("r2ogs6.default_ogs6_bin_path" = "your_ogs6_bin_path")
 
 # Set path for Python
 options("r2ogs6.use_python" = "your_python_path")
@@ -88,10 +88,10 @@ The results of `get_status()` already gave us a hint what we can add. We'll go f
 
 ```r
 # To take a look at the documentation, use ? followed by the name of a class
-?r2ogs6_process
+?prj_process
 ```
 
-As a rule of thumb, classes are named with the prefix `r2ogs6_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `r2ogs6_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `r2ogs6_tl_process`.
+As a rule of thumb, classes are named with the prefix `prj_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `prj_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `prj_tl_process`.
 
 (...)
 
@@ -104,7 +104,7 @@ Let's try adding something now.
 To add data to our simulation object, we use `OGS6$add()`. 
 
 ```{r}
-    ogs6_obj$add(r2ogs6_parameter(
+    ogs6_obj$add(prj_parameter(
         name = "pressure0",
         type = "Constant",
         value = 1
@@ -114,7 +114,7 @@ To add data to our simulation object, we use `OGS6$add()`.
 
 ## Running the simulation
 
-As soon as we've added all necessary parameters, we can try starting our simulation by calling `ogs_run_simulation(ogs6_obj, write_logfile = TRUE)`. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console. 
+As soon as we've added all necessary parameters, we can try starting our simulation by calling `ogs6_run_simulation(ogs6_obj, write_logfile = TRUE)`. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console. 
 
 ## Running multiple simulations
 
@@ -133,7 +133,7 @@ To set up an ensemble run, we first need a base simulation object. Conveniently,
 
 Internally, the `OGS6_Ensemble` object clones the `OGS6` object provided to it and for these clones, it overwrites the parameters we defined with the values we provided. The parameters we define must belong to the same `OGS6` object we passed to the ensemble object as a blueprint via the `ogs6_obj` argument. 
 
-Note that for our example, I'm altering the first object in `ogs6_obj$parameters` because so far, one `r2ogs6_parameter` is the only thing we have added to our simulation. Don't let the `parameters` argument of the `OGS6_Ensemble` constructor confuse you though - you can define all kinds of parameters here and aren't limited to variables of `r2ogs6_parameter`. If we had defined a `r2ogs6_process` already, we could have passed the variable `ogs6_obj$processes[[1]]$reference_temperature` along with the value vector `c(20, 30, 40)` to the `OGS6_Ensemble` constructor.
+Note that for our example, I'm altering the first object in `ogs6_obj$parameters` because so far, one `prj_parameter` is the only thing we have added to our simulation. Don't let the `parameters` argument of the `OGS6_Ensemble` constructor confuse you though - you can define all kinds of parameters here and aren't limited to variables of `prj_parameter`. If we had defined a `prj_process` already, we could have passed the variable `ogs6_obj$processes[[1]]$reference_temperature` along with the value vector `c(20, 30, 40)` to the `OGS6_Ensemble` constructor.
 
 We can check if the initialization of our ensemble object worked like this:
 
@@ -145,7 +145,7 @@ We can check if the initialization of our ensemble object worked like this:
 
 Note that the class variables of `OGS6_Ensemble` objects are read-only, so be sure to define all parameters during initialization.
 
-To start an ensemble run, we call `ogs6_ens$ogs_run_simulation(parallel = FALSE)`. This calls `ogs_run_simulation()` on each of the simulation objects in `ogs6_ens$ensemble`. Depending on the size of our ensemble and the available system resources, it might make sense to set the `parallel` parameter to `TRUE`. 
+To start an ensemble run, we call `ogs6_ens$ogs6_run_simulation(parallel = FALSE)`. This calls `ogs6_run_simulation()` on each of the simulation objects in `ogs6_ens$ensemble`. Depending on the size of our ensemble and the available system resources, it might make sense to set the `parallel` parameter to `TRUE`. 
 
 NOTE: Parallelization depends on the OS: A fork cluster is used on UNIX-like Systems while on Windows systems, a socket cluster is used. Parallelization hasn't been tested on Windows yet.
 
@@ -156,4 +156,4 @@ Chaining simulations works in a similar manner to creating ensembles. The main d
 
 ...
 
-To start a chain run, we call `ogs6_chain$ogs_run_simulation()`. This calls `ogs_run_simulation()` on the base object and then reads in the information required to start the next simulation from the output files produced by OpenGeoSys 6 (based on the parameters we defined). Since chain runs can't be parallelized, this might take a while.
+To start a chain run, we call `ogs6_chain$ogs6_run_simulation()`. This calls `ogs6_run_simulation()` on the base object and then reads in the information required to start the next simulation from the output files produced by OpenGeoSys 6 (based on the parameters we defined). Since chain runs can't be parallelized, this might take a while.

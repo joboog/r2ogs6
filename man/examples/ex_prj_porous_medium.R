@@ -1,4 +1,4 @@
-r2ogs6_porous_medium(
+prj_porous_medium(
     id = 0,
     permeability = list(permeability_tensor_entries = "kappa1",
                         type = "Constant"),
@@ -6,7 +6,7 @@ r2ogs6_porous_medium(
                     porosity_parameter = "constant_porosity_parameter"),
     storage = list(type = "Constant",
                    value = " 0.0 "),
-    capillary_pressure = r2ogs6_capillary_pressure(
+    capillary_pressure = prj_capillary_pressure(
         type = "vanGenuchten",
         pd = 2e+06,
         sr = 0.4,
@@ -16,7 +16,7 @@ r2ogs6_porous_medium(
         has_regularized = "true"
     ),
     relative_permeability = list(
-        relative_permeability = r2ogs6_relative_permeability(
+        relative_permeability = prj_relative_permeability(
             type = "NonWettingPhaseVanGenuchten",
             sr = 0,
             smax = 0.6,

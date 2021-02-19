@@ -1,4 +1,4 @@
-r2ogs6_rate(
+prj_rate(
     kinetic_reactant = "Productc",
     expression = list(
         statement = "Km = 10",

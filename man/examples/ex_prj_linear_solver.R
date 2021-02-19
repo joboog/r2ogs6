@@ -1,6 +1,6 @@
-r2ogs6_linear_solver(
+prj_linear_solver(
     name = "general_linear_solver",
-    eigen = r2ogs6_eigen(
+    eigen = prj_eigen(
         solver_type = "BiCGSTAB",
         precon_type = "ILUT",
         max_iteration_step = 10000,

@@ -30,4 +30,4 @@ read_in_prj(ogs6_obj, prj_path)
 #===== Run simulation =====
 
 
-e <- ogs_run_simulation(ogs6_obj, write_logfile = FALSE)
+e <- ogs6_run_simulation(ogs6_obj, write_logfile = FALSE)

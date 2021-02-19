@@ -4,32 +4,32 @@
 \alias{OGS6_vtu}
 \title{OGS6_vtu}
 \description{
-Constructor for the OGS6_vtu base class
+Constructor for the `OGS6_vtu` base class
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{vtu_path}}{Getter for private parameter '.vtu_path'}
+\item{\code{vtu_path}}{Getter for private parameter `.vtu_path`}
 
-\item{\code{number_of_points}}{Getter for NumberOfPoints parameter of '.vtkUnstructuredGrid'}
+\item{\code{number_of_points}}{Getter for NumberOfPoints parameter of `.vtkUnstructuredGrid`}
 
-\item{\code{number_of_cells}}{Getter for NumberOfCells parameter of '.vtkUnstructuredGrid'}
+\item{\code{number_of_cells}}{Getter for NumberOfCells parameter of `.vtkUnstructuredGrid`}
 
-\item{\code{points}}{Getter for Points parameter of '.dsa_vtkUnstructuredGrid'}
+\item{\code{points}}{Getter for Points parameter of `.dsa_vtkUnstructuredGrid`}
 
-\item{\code{cells}}{Getter for Cells parameter of '.dsa_vtkUnstructuredGrid'}
+\item{\code{cells}}{Getter for Cells parameter of `.dsa_vtkUnstructuredGrid`}
 
-\item{\code{field_data}}{Getter for FieldData parameter of '.dsa_vtkUnstructuredGrid'}
+\item{\code{field_data}}{Getter for FieldData parameter of `.dsa_vtkUnstructuredGrid`}
 
-\item{\code{point_data}}{Getter for PointData parameter of '.dsa_vtkUnstructuredGrid'}
+\item{\code{point_data}}{Getter for PointData parameter of `.dsa_vtkUnstructuredGrid`}
 
-\item{\code{cell_data}}{Getter for CellData parameter of '.dsa_vtkUnstructuredGrid'}
+\item{\code{cell_data}}{Getter for CellData parameter of `.dsa_vtkUnstructuredGrid`}
 
-\item{\code{vtkPointLocator}}{Getter for private parameter '.vtkPointLocator'}
+\item{\code{vtkPointLocator}}{Getter for private parameter `.vtkPointLocator`}
 
-\item{\code{vtkUnstructuredGrid}}{Access to private parameter '.vtkUnstructuredGrid'}
+\item{\code{vtkUnstructuredGrid}}{Access to private parameter `.vtkUnstructuredGrid`}
 
-\item{\code{dsa_vtkUnstructuredGrid}}{Getter for private parameter '.dsa_vtkUnstructuredGrid'}
+\item{\code{dsa_vtkUnstructuredGrid}}{Getter for private parameter `.dsa_vtkUnstructuredGrid`}
 }
 \if{html}{\out{</div>}}
 }
@@ -50,7 +50,7 @@ Constructor for the OGS6_vtu base class
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Creates new OGS6_vtu object
+Creates new OGS6_vtu object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$new(vtu_path)}\if{html}{\out{</div>}}
 }
@@ -67,7 +67,7 @@ Creates new OGS6_vtu object
 \if{html}{\out{<a id="method-print"></a>}}
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
-Overrides default printing behaviour
+Overrides default printing behaviour.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{OGS6_vtu$print()}\if{html}{\out{</div>}}
 }
@@ -86,13 +86,14 @@ Gets FieldData.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{keys}}{character: Optional: `Name` attributes of `DataArray`
-elements, defaults to all in `FieldData`}
+elements, defaults to all in `FieldData`.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-list: List of format list(value_a = 1, value_b = 2), where the
-names reference the `Name` attributes of the `DataArray` elements
+A list of format list(value_a = 1, value_b = 2), where
+the names reference the `Name` attributes of the `DataArray`
+elements.
 }
 }
 \if{html}{\out{<hr>}}
@@ -112,8 +113,9 @@ Gets coordinates of specific points by their IDs.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-If `point_ids` is a number, a coordinate array. If `point_ids`
-is a numeric vector with length > 1, a list of coordinate arrays.
+If `point_ids` is a number, a coordinate array. If
+point_ids` is a numeric vector with length > 1, a list of coordinate
+arrays.
 }
 }
 \if{html}{\out{<hr>}}
@@ -157,7 +159,7 @@ elements, defaults to all in `PointData`}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-tibble: Tibble where each row represents a point.
+A tibble::tibble where each row represents a point.
 }
 }
 \if{html}{\out{<hr>}}
@@ -180,7 +182,7 @@ elements, defaults to all in `CellData`}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-tibble: Tibble where each row represents a cell.
+A tibble::tibble where each row represents a cell.
 }
 }
 \if{html}{\out{<hr>}}

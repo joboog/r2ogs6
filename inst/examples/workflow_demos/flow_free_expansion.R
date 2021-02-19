@@ -1,6 +1,7 @@
 
 
 
+
 library(r2ogs6)
 
 #===== Set up simulation object =====
@@ -16,8 +17,7 @@ library(r2ogs6)
 # Then we can create a simulation object.
 
 ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
-                     sim_id = 1,
-                     sim_path = "D:/OGS_Sim/")
+                     sim_path = "D:/OGS_sims/")
 
 
 ogs6_obj$add_gml(
@@ -90,13 +90,11 @@ ogs6_obj$add_gml(
     )
 )
 
-ogs6_obj$add_vtu(
-    "D:/Programme/OpenGeoSys/ogs-master-Tests-Data/HydroMechanics/IdealGas/flow_free_expansion/cube_1x1x1_quad.vtu",
-    FALSE
-)
+ogs6_obj$add_vtu("inst/extdata/benchmarks/flow_free_expansion/cube_1x1x1_quad.vtu",
+                 FALSE)
 
 ogs6_obj$add(
-    r2ogs6_process(
+    prj_process(
         name = "HM",
         type = "HYDRO_MECHANICS",
         integration_order = 3,
@@ -115,7 +113,7 @@ ogs6_obj$add(
         ),
         specific_body_force = c(0, 0, 0),
         dimension = 3,
-        constitutive_relation = r2ogs6_constitutive_relation(
+        constitutive_relation = prj_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",
             poissons_ratio = "nu"
@@ -125,48 +123,48 @@ ogs6_obj$add(
 
 
 ogs6_obj$add(
-    r2ogs6_process_variable(
+    prj_process_variable(
         name = "displacement",
         components = 3,
         order = 2,
         initial_condition = "displacement0",
         boundary_conditions = list(
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Dirichlet",
                 parameter = "zero",
                 geometrical_set = "cube_1x1x1_geometry",
                 geometry = "front",
                 component = 1
             ),
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Dirichlet",
                 parameter = "zero",
                 geometrical_set = "cube_1x1x1_geometry",
                 geometry = "left",
                 component = 0
             ),
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Dirichlet",
                 parameter = "zero",
                 geometrical_set = "cube_1x1x1_geometry",
                 geometry = "bottom",
                 component = 2
             ),
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Neumann",
                 parameter = "pressure_load",
                 geometrical_set = "cube_1x1x1_geometry",
                 geometry = "back",
                 component = 1
             ),
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Neumann",
                 parameter = "pressure_load",
                 geometrical_set = "cube_1x1x1_geometry",
                 geometry = "right",
                 component = 0
             ),
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Neumann",
                 parameter = "pressure_load",
                 geometrical_set = "cube_1x1x1_geometry",
@@ -179,13 +177,13 @@ ogs6_obj$add(
 
 
 ogs6_obj$add(
-    r2ogs6_process_variable(
+    prj_process_variable(
         name = "pressure",
         components = 1,
         order = 1,
         initial_condition = "pressure0",
         boundary_conditions = list(
-            boundary_condition = r2ogs6_boundary_condition(
+            boundary_condition = prj_boundary_condition(
                 type = "Neumann",
                 parameter = "flux_in",
                 geometrical_set = "cube_1x1x1_geometry",
@@ -197,59 +195,59 @@ ogs6_obj$add(
 )
 
 
-ogs6_obj$add(r2ogs6_medium(
+ogs6_obj$add(prj_medium(
     phases = list(
-        phase = r2ogs6_phase(
+        phase = prj_phase(
             type = "Gas",
             properties = list(
-                property = r2ogs6_ph_property(name = "viscosity",
-                                              type = "Constant",
-                                              value = 1e-05),
-                property = r2ogs6_ph_property(name = "density",
-                                              type = "IdealGasLaw"),
-                property = r2ogs6_ph_property(name = "molar_mass",
-                                              type = "Constant",
-                                              value = 0.0289643977872068)
+                property = prj_ph_property(name = "viscosity",
+                                           type = "Constant",
+                                           value = 1e-05),
+                property = prj_ph_property(name = "density",
+                                           type = "IdealGasLaw"),
+                property = prj_ph_property(name = "molar_mass",
+                                           type = "Constant",
+                                           value = 0.0289643977872068)
             )
         ),
-        phase = r2ogs6_phase(
+        phase = prj_phase(
             type = "Solid",
             properties = list(
-                property = r2ogs6_ph_property(name = "porosity",
-                                              type = "Constant",
-                                              value = 0.3),
-                property = r2ogs6_ph_property(name = "density",
-                                              type = "Constant",
-                                              value = 1430),
-                property = r2ogs6_ph_property(name = "biot_coefficient",
-                                              type = "Constant",
-                                              value = 0.6)
+                property = prj_ph_property(name = "porosity",
+                                           type = "Constant",
+                                           value = 0.3),
+                property = prj_ph_property(name = "density",
+                                           type = "Constant",
+                                           value = 1430),
+                property = prj_ph_property(name = "biot_coefficient",
+                                           type = "Constant",
+                                           value = 0.6)
             )
         )
     ),
     properties = list(
-        property = r2ogs6_pr_property(name = "reference_temperature",
-                                      type = "Constant",
-                                      value = 293.15),
-        property = r2ogs6_pr_property(name = "permeability",
-                                      type = "Constant",
-                                      value = 1e-05)
+        property = prj_pr_property(name = "reference_temperature",
+                                   type = "Constant",
+                                   value = 293.15),
+        property = prj_pr_property(name = "permeability",
+                                   type = "Constant",
+                                   value = 1e-05)
     )
 ))
 
 
-ogs6_obj$add(r2ogs6_time_loop(
+ogs6_obj$add(prj_time_loop(
     processes = list(
-        process = r2ogs6_tl_process(
+        process = prj_tl_process(
             ref = "HM",
             nonlinear_solver = "basic_newton",
-            convergence_criterion = r2ogs6_convergence_criterion(
+            convergence_criterion = prj_convergence_criterion(
                 type = "DeltaX",
                 norm_type = "NORM2",
                 reltol = 1e-08
             ),
             time_discretization = list(type = "BackwardEuler"),
-            time_stepping = r2ogs6_time_stepping(
+            time_stepping = prj_time_stepping(
                 type = "FixedTimeStepping",
                 t_initial = 0,
                 t_end = 10000,
@@ -258,7 +256,7 @@ ogs6_obj$add(r2ogs6_time_loop(
             )
         )
     ),
-    output = r2ogs6_output(
+    output = prj_output(
         type = "VTK",
         prefix = "flow_free_expansion",
         variables = list(
@@ -282,9 +280,9 @@ ogs6_obj$add(r2ogs6_time_loop(
 
 
 ogs6_obj$add(
-    r2ogs6_linear_solver(
+    prj_linear_solver(
         name = "general_linear_solver",
-        eigen = r2ogs6_eigen(
+        eigen = prj_eigen(
             solver_type = "BiCGSTAB",
             precon_type = "ILUT",
             max_iteration_step = 10000,
@@ -296,7 +294,7 @@ ogs6_obj$add(
 
 
 ogs6_obj$add(
-    r2ogs6_nonlinear_solver(
+    prj_nonlinear_solver(
         name = "basic_newton",
         type = "Newton",
         max_iter = 50,
@@ -305,45 +303,45 @@ ogs6_obj$add(
 )
 
 
-ogs6_obj$add(r2ogs6_parameter(name = "E",
-                              type = "Constant",
-                              value = 1e+10))
+ogs6_obj$add(prj_parameter(name = "E",
+                           type = "Constant",
+                           value = 1e+10))
 
 
-ogs6_obj$add(r2ogs6_parameter(name = "nu",
-                              type = "Constant",
-                              value = 0.3))
+ogs6_obj$add(prj_parameter(name = "nu",
+                           type = "Constant",
+                           value = 0.3))
 
 
-ogs6_obj$add(r2ogs6_parameter(
+ogs6_obj$add(prj_parameter(
     name = "displacement0",
     type = "Constant",
     values = c(0, 0, 0)
 ))
 
 
-ogs6_obj$add(r2ogs6_parameter(
+ogs6_obj$add(prj_parameter(
     name = "pressure0",
     type = "Constant",
     values = 1e+05
 ))
 
 
-ogs6_obj$add(r2ogs6_parameter(
+ogs6_obj$add(prj_parameter(
     name = "pressure_load",
     type = "Constant",
     values = -60000
 ))
 
 
-ogs6_obj$add(r2ogs6_parameter(name = "zero",
-                              type = "Constant",
-                              value = 0))
+ogs6_obj$add(prj_parameter(name = "zero",
+                           type = "Constant",
+                           value = 0))
 
 
-ogs6_obj$add(r2ogs6_parameter(name = "flux_in",
-                              type = "Constant",
-                              value = 1e-04))
+ogs6_obj$add(prj_parameter(name = "flux_in",
+                           type = "Constant",
+                           value = 1e-04))
 
 
-run_simulation(ogs6_obj)
+ogs6_run_simulation(ogs6_obj)

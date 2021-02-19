@@ -1,29 +1,29 @@
 
-#===== r2ogs6_material_property =====
+#===== prj_material_property =====
 
 
-#' r2ogs6_material_property
+#' prj_material_property
 #' @description tag: material_property
-#' @param fluid r2ogs6_fluid:
-#' @param porous_medium r2ogs6_porous_medium:
+#' @param fluid prj_fluid:
+#' @param porous_medium prj_porous_medium:
 #' @example man/examples/ex_prj_material_property.R
 #' @export
-r2ogs6_material_property <- function(fluid,
+prj_material_property <- function(fluid,
                                      porous_medium) {
 
     # Add coercing utility here
 
-    new_r2ogs6_material_property(fluid,
+    new_prj_material_property(fluid,
                                  porous_medium)
 }
 
 
-new_r2ogs6_material_property <- function(fluid,
+new_prj_material_property <- function(fluid,
                                          porous_medium) {
 
-    assertthat::assert_that(class(fluid) == "r2ogs6_fluid")
+    assertthat::assert_that(class(fluid) == "prj_fluid")
 
-    is_wrapper_list(porous_medium, "r2ogs6_porous_medium")
+    is_wrapper_list(porous_medium, "prj_porous_medium")
 
     structure(list(fluid = fluid,
                    porous_medium = porous_medium,
@@ -31,15 +31,15 @@ new_r2ogs6_material_property <- function(fluid,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_material_property"
+    class = "prj_material_property"
     )
 }
 
 
-#===== r2ogs6_fluid =====
+#===== prj_fluid =====
 
 
-#' r2ogs6_fluid
+#' prj_fluid
 #' @description tag: fluid
 #' @param liquid_density list:
 #' @param gas_density list:
@@ -53,7 +53,7 @@ new_r2ogs6_material_property <- function(fluid,
 #' @param thermal_conductivity_wet_solid Optional:
 #' @example man/examples/ex_prj_fluid.R
 #' @export
-r2ogs6_fluid <- function(liquid_density,
+prj_fluid <- function(liquid_density,
                          gas_density,
                          liquid_viscosity,
                          gas_viscosity,
@@ -66,7 +66,7 @@ r2ogs6_fluid <- function(liquid_density,
 
     # Add coercing utility here
 
-    new_r2ogs6_fluid(liquid_density,
+    new_prj_fluid(liquid_density,
                      gas_density,
                      liquid_viscosity,
                      gas_viscosity,
@@ -79,7 +79,7 @@ r2ogs6_fluid <- function(liquid_density,
 }
 
 
-new_r2ogs6_fluid <- function(liquid_density,
+new_prj_fluid <- function(liquid_density,
                              gas_density,
                              liquid_viscosity,
                              gas_viscosity,
@@ -153,6 +153,6 @@ new_r2ogs6_fluid <- function(liquid_density,
                    attr_names = character(),
                    flatten_on_exp = character()
     ),
-    class = "r2ogs6_fluid"
+    class = "prj_fluid"
     )
 }

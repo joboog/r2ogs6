@@ -4,12 +4,12 @@
 \alias{run_benchmark}
 \title{run_benchmark}
 \usage{
-run_benchmark(prj_path, ogs_bin_path, sim_path)
+run_benchmark(prj_path, ogs6_bin_path, sim_path)
 }
 \arguments{
 \item{prj_path}{string:}
 
-\item{ogs_bin_path}{string:}
+\item{ogs6_bin_path}{string:}
 
 \item{sim_path}{string: Path where simulation files will be saved}
 }

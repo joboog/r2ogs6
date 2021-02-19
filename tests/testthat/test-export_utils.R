@@ -64,7 +64,7 @@ test_that("to_node reads parameter names implicitly if not given", {
 test_that("to_node works for simple classes", {
 
     #Test for a single class element
-    parameter <- r2ogs6_parameter(name = "pressure0",
+    parameter <- prj_parameter(name = "pressure0",
                                   type = "Constant",
                                   values = 1e5)
 
@@ -79,7 +79,7 @@ test_that("to_node works for simple classes", {
                  1e5)
 
     #Test for a wrapper list
-    parameter_2 <- r2ogs6_parameter(name = "pressure1",
+    parameter_2 <- prj_parameter(name = "pressure1",
                                     type = "Constant",
                                     values = c(0, 0))
 
@@ -98,7 +98,7 @@ test_that("to_node works for simple classes", {
 
 test_that("to_node works for classes that have lists as parameters", {
 
-    insitu <- r2ogs6_insitu(c("script_1",
+    insitu <- prj_insitu(c("script_1",
                               "script_2",
                               "script_3"))
 
@@ -112,13 +112,13 @@ test_that("to_node works for classes that have lists as parameters", {
 
 test_that("to_node works for classes that have subclasses", {
 
-    process_variable <- r2ogs6_process_variable(
+    process_variable <- prj_process_variable(
         name = "pressure",
         components = 1,
         order = 1,
         initial_condition = "pressure0",
         boundary_conditions = list(
-            r2ogs6_boundary_condition(
+            prj_boundary_condition(
                 type = "Neumann",
                 parameter = "flux",
                 component = 0,
@@ -145,16 +145,16 @@ test_that("to_node works for classes that have subclasses", {
 
 test_that("to_node works for classes that have attributes", {
 
-    tl_process <- r2ogs6_tl_process(
+    tl_process <- prj_tl_process(
         ref = "HM",
         nonlinear_solver = "basic_newton",
-        convergence_criterion = r2ogs6_convergence_criterion(
+        convergence_criterion = prj_convergence_criterion(
             type = "PerComponentDeltaX",
             norm_type = "NORM2",
             reltols = "5e-8 1e10 1e10"
         ),
         time_discretization = list(type = "BackwardEuler"),
-        time_stepping = r2ogs6_time_stepping(
+        time_stepping = prj_time_stepping(
             type = "FixedTimeStepping",
             t_initial = 0,
             t_end = 100,
@@ -174,7 +174,7 @@ test_that("to_node works for classes that have attributes", {
 test_that("to_node works for classes that have non-exported wrappers", {
 
     #Test for a single class element
-    parameter <- r2ogs6_parameter(name = "pressure0",
+    parameter <- prj_parameter(name = "pressure0",
                                   type = "Constant",
                                   values = 1e5,
                                   index_values = list("1", "1 2"),
@@ -190,14 +190,14 @@ test_that("to_node works for classes that have non-exported wrappers", {
 })
 
 
-test_that("to_node works for r2ogs6_process class", {
+test_that("to_node works for prj_process class", {
 
-    process <- r2ogs6_process(
+    process <- prj_process(
         name = "HM",
         type = "HYDRO_MECHANICS",
         integration_order = 3,
         dimension = 2,
-        constitutive_relation = r2ogs6_constitutive_relation(
+        constitutive_relation = prj_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",
             poissons_ratio = "nu"

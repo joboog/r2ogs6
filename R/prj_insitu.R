@@ -1,13 +1,13 @@
 
-#===== r2ogs6_insitu =====
+#===== prj_insitu =====
 
 
-#' r2ogs6_insitu
+#' prj_insitu
 #' @description tag: insitu
 #' @param scripts character: Script names
 #' @example man/examples/ex_prj_insitu.R
 #' @export
-r2ogs6_insitu <- function(scripts) {
+prj_insitu <- function(scripts) {
 
     #Make this more user friendly
     #...
@@ -16,11 +16,11 @@ r2ogs6_insitu <- function(scripts) {
         scripts <- unlist(scripts)
     }
 
-    new_r2ogs6_insitu(scripts)
+    new_prj_insitu(scripts)
 }
 
 
-new_r2ogs6_insitu <- function(scripts) {
+new_prj_insitu <- function(scripts) {
 
     assertthat::assert_that(is.character(scripts))
     names(scripts) <- rep("script", length(scripts))
@@ -32,6 +32,6 @@ new_r2ogs6_insitu <- function(scripts) {
             attr_names = character(),
             flatten_on_exp = character()
         ),
-        class = "r2ogs6_insitu"
+        class = "prj_insitu"
     )
 }

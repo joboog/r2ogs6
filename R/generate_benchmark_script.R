@@ -83,12 +83,12 @@ generate_all_benchmark_scripts <-
         out<- tryCatch(
             {
                 if(missing_read_in_gmls){
-                    generate_benchmark_script(prj_path = prj_paths[[i]],
+                    ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
                                               sim_path = sim_subdir,
                                               script_path = scripts_path,
                                               read_in_vtu = read_in_vtus)
                 }else{
-                    generate_benchmark_script(prj_path = prj_paths[[i]],
+                    ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
                                               sim_path = sim_subdir,
                                               script_path = scripts_path,
                                               read_in_gml = read_in_gmls,
@@ -97,7 +97,7 @@ generate_all_benchmark_scripts <-
 
             },
             error = function(cond){
-                message(paste("\ngenerate_benchmark_script() failed for",
+                message(paste("\nogs6_generate_benchmark_script() failed for",
                               prj_paths[[i]], ". Original error message:"))
                 message(cond)
                 generate_failed_paths <<-
@@ -110,29 +110,33 @@ generate_all_benchmark_scripts <-
 }
 
 
-#===== generate_benchmark_script =====
+#===== ogs6_generate_benchmark_script =====
 
 
-#' generate_benchmark_script
+#' ogs6_generate_benchmark_script
 #' @description Generates a benchmark script from an existing \code{.prj} file.
 #' @param prj_path string: \code{.prj} file the script will be based on
 #' @param sim_path string: Path where all simulation files will be saved
-#' @param ogs_bin_path string: OpenGeoSys bin folder path
+#' @param ogs6_bin_path string: OpenGeoSys bin folder path
 #' @param script_path string: Path where benchmark script will be saved
 #' @param read_in_gml flag: Optional: Should \code{.gml} file just be copied or
-#' read in too?
+#'   read in too?
 #' @param read_in_vtu flag: Optional: Should \code{.vtu} file(s) just be copied
-#' or read in too?
+#'   or read in too?
 #' @export
-generate_benchmark_script <- function(prj_path,
-                                      sim_path,
-                                      ogs_bin_path,
-                                      script_path,
-                                      read_in_gml,
-                                      read_in_vtu = FALSE) {
+ogs6_generate_benchmark_script <- function(prj_path,
+                                           sim_path,
+                                           ogs6_bin_path,
+                                           script_path,
+                                           read_in_gml,
+                                           read_in_vtu = FALSE) {
 
-    if(missing(ogs_bin_path)){
-        ogs_bin_path <- unlist(options("r2ogs6.default_ogs_bin_path"))
+    if(missing(sim_path)){
+        sim_path <- unlist(options("r2ogs6.default_sim_path"))
+    }
+
+    if(missing(ogs6_bin_path)){
+        ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
     }
 
     if(missing(script_path)){
@@ -141,7 +145,7 @@ generate_benchmark_script <- function(prj_path,
 
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
-    assertthat::assert_that(assertthat::is.string(ogs_bin_path))
+    assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.string(script_path))
     assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
@@ -212,7 +216,7 @@ generate_benchmark_script <- function(prj_path,
         }
 
         #If objects are not in wrapper list, wrap them up for seq_along()
-        if(any(grepl("r2ogs6_", class(ogs6_component), fixed = TRUE)) ||
+        if(any(grepl("prj_", class(ogs6_component), fixed = TRUE)) ||
            any(grepl("OGS6_", class(ogs6_component), fixed = TRUE))){
             ogs6_component <- list(ogs6_component)
         }
@@ -226,7 +230,7 @@ generate_benchmark_script <- function(prj_path,
     }
 
     script_str <- paste0(script_str,
-                         "ogs_run_simulation(ogs6_obj)\n")
+                         "ogs6_run_simulation(ogs6_obj)\n")
 
     #If no destination file was defined, print output to console
     if(script_path != ""){
@@ -282,7 +286,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
     }
 
     #For r2ogs6 objects we need to use recursion
-    if(any(grepl("r2ogs6", class(object), fixed = TRUE)) ||
+    if(any(grepl("prj_", class(object), fixed = TRUE)) ||
        any(grepl("OGS6", class(object), fixed = TRUE))){
 
         class_name <- ""
@@ -296,7 +300,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
             use_s3_syntax <- FALSE
             init_prefix <- "$new"
         }else{
-            class_name <- grep("r2ogs6", class(object),
+            class_name <- grep("prj_", class(object),
                                fixed = TRUE, value = TRUE)
         }
 
