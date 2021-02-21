@@ -32,18 +32,27 @@ ogs6_generate_benchmark_scripts <-
         script_path <- unlist(options("r2ogs6.default_script_path"))
     }
 
-    missing_read_in_gml <- missing(read_in_gml)
+    if(missing(read_in_gml)){
+        read_in_gml <- substitute()
+    }
 
     path <- as_dir_path(path)
     script_path <- as_dir_path(script_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
-    assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
                             recursive = TRUE,
                             full.names = TRUE)
+
+    script_paths_rel <- lapply(list.files(
+        path = path,
+        pattern = "\\.prj$",
+        recursive = T,
+        full.names = F
+    ),
+    dirname)
 
     # If we know the benchmarks up to a specific file are working, skip them
     if(starting_from_prj_path != ""){
@@ -72,26 +81,28 @@ ogs6_generate_benchmark_scripts <-
         # cat("\nGenerating script from path", prj_paths[[i]])
 
         # Put simulations in their own subfolders under sim_path
-        sim_subdir <-
-            paste0(sim_path,
-                   basename(dirname(prj_paths[[i]])), "_",
-                   tools::file_path_sans_ext(basename(prj_paths[[i]])))
+        sim_subfolder_path <- paste0(
+            sim_path,
+            script_paths_rel[[i]],
+            "/",
+            tools::file_path_sans_ext(basename(prj_paths[[i]])))
+
+        script_subfolder_path <- paste0(script_path, script_paths_rel[[i]])
+
+        if(!dir.exists(script_subfolder_path)){
+            dir.create(script_subfolder_path,
+                       recursive = TRUE)
+        }
 
         out<- tryCatch(
             {
-                if(missing_read_in_gml){
-                    ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
-                                              sim_path = sim_subdir,
-                                              script_path = script_path,
-                                              read_in_vtu = read_in_vtu)
-                }else{
-                    ogs6_generate_benchmark_script(prj_path = prj_paths[[i]],
-                                              sim_path = sim_subdir,
-                                              script_path = script_path,
-                                              read_in_gml = read_in_gml,
-                                              read_in_vtu = read_in_vtu)
-                }
-
+                ogs6_generate_benchmark_script(
+                    prj_path = prj_paths[[i]],
+                    sim_path = sim_subfolder_path,
+                    script_path = script_subfolder_path,
+                    read_in_gml = read_in_gml,
+                    read_in_vtu = read_in_vtu
+                )
             },
             error = function(cond){
                 message(paste("\nogs6_generate_benchmark_script() failed for",
@@ -237,7 +248,7 @@ ogs6_generate_benchmark_script <- function(prj_path,
             dir.create(script_path, showWarnings = FALSE)
         }
 
-        filename <- paste0(script_path, sim_name, ".R")
+        filename <- paste0(script_path, "/", sim_name, ".R")
 
         if(file.exists(filename)){
             filename <- paste0(script_path,
