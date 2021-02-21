@@ -29,7 +29,7 @@ ogs6_run_simulation <- function(ogs6_obj,
 
     ogs6_read_output_files(ogs6_obj = ogs6_obj)
 
-    return(invisible(exit_code))
+    return(exit_code)
 }
 
 
@@ -177,7 +177,7 @@ ogs6_call_ogs6 <- function(ogs6_obj,
                              args = ogs6_args)
     }
 
-    return(invisible(exit_code))
+    return(exit_code)
 }
 
 
