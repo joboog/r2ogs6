@@ -1,5 +1,6 @@
 ---
 title: "r2ogs6 Ensemble Guide"
+#output: pdf_document
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{r2ogs6 Ensemble Guide}
@@ -55,14 +56,11 @@ We will consider the following parameters for our sensitivity analysis:
 First, we create a simulation object to base our ensemble on and read in the `.prj` file.
 
 ```{r}
-# Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
-sim_path <- paste0(testdir_path, "/axisym_theis_sim")
-
+# Change sim_path to fit your system
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
-                     sim_path = sim_path)
+                     sim_path = "D:/ogs6_theis/axisym_theis_sim")
 
-# Change this to fit your system
+# Change prj_path to fit your system
 prj_path <- system.file("examples/Theis_problem/benchmark_files/",
                         "axisym_theis.prj", package = "r2ogs6")
 
@@ -85,10 +83,16 @@ ogs6_ens <-
     parameters = list(list(ogs6_obj$media[[1]]$properties[[4]]$value,
                            percentages)),
     percentages_mode = TRUE)
+```
 
-# Now we run the simulations
-exit_codes <- ogs6_ens$run_simulation()
-paste(exit_codes, collapse = " ")
+Now you can start the simulation.
+
+```{r, eval = FALSE}
+ogs6_ens$run_simulation()
+```
+
+```{r, include = FALSE}
+lapply(ogs6_ens$ensemble, ogs6_read_output_files)
 ```
 
 #### Plot results for single simulation
@@ -163,11 +167,8 @@ This time it's important we set the `OGS6_Ensemble` parameter `sequential_mode` 
 The default `FALSE` would give an error message because our value vectors do not have the same length and even if they had, it wouldn't do what we want - the number of simulations would equal the length of *one* value vector (thus requiring them to be of the same length). Generally, set `sequential_mode` to `TRUE` if you want to examine the influence of parameters on a simulation *independently*. If you want to examine how the parameters influence *each other* as in wanting to test parameter combinations, the default mode is the way to go. 
 
 ```{r}
-# Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
-sim_path <- paste0(testdir_path, "/axisym_theis_sim_big")
-
-ogs6_obj$sim_path <- sim_path
+# Change sim_path to fit your system
+ogs6_obj$sim_path <- "D:/ogs6_theis/axisym_theis_sim_big"
 
 ogs6_ens_big <-
   OGS6_Ensemble$new(
@@ -179,9 +180,16 @@ ogs6_ens_big <-
                       sto = list(ogs6_obj$media[[1]]$properties[[4]]$value, 
                                  values = percentages)),
     sequential_mode = TRUE)
+```
 
-exit_codes <- ogs6_ens_big$run_simulation()
-paste(exit_codes)
+Now you can start the simulation.
+
+```{r, eval = FALSE}
+ogs6_ens_big$run_simulation()
+```
+
+```{r, include = FALSE}
+lapply(ogs6_ens_big$ensemble, ogs6_read_output_files)
 ```
 
 This will take a short time. As soon as the simulations are done, we can extract the point data much like we did before. This time we want to plot the point x coodinates on the x axis so we're leaving out `point_ids` to get all points. Also we just want the data from the last timestep.
@@ -227,14 +235,11 @@ We will consider the following parameters for our sensitivity analysis:
 First, we create a simulation object to base our ensemble on and read in the `.prj` file. This time we want to specify that an output file only gets written at the last timestep.
 
 ```{r}
-# Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
-sim_path <- paste0(testdir_path, "/theis_sim")
-
+# Change sim_path to fit your system
 ogs6_obj <- OGS6$new(sim_name = "theis",
-                     sim_path = sim_path)
+                     sim_path = "D:/ogs6_theis/theis_sim")
 
-# Change this to fit your system
+# Change prj_path to fit your system
 prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
                         "theis.prj", package = "r2ogs6")
 
@@ -265,9 +270,16 @@ ogs6_ens_theis_2 <-
       ),
     sequential_mode = TRUE
   )
+```
 
-exit_codes <- ogs6_ens_theis_2$run_simulation()
-paste(exit_codes)
+Now you can start the simulation.
+
+```{r, eval = FALSE}
+ogs6_ens_theis_2$run_simulation()
+```
+
+```{r, include = FALSE}
+lapply(ogs6_ens_theis_2$ensemble, ogs6_read_output_files)
 ```
 
 When the simulations have run, we can extract and plot the results like before. To avoid cluttering the plot, we only extract the `pressure` values for a single line. For this, we get the IDs of all points on the x axis.
@@ -340,6 +352,9 @@ log_vals <- vapply(percentages, function(x){
 # Transfer back to non-logarithmic scale
 back_transf_vals <- 10^log_vals
 
+# Change sim_path to fit your system
+ogs6_obj$sim_path <- "D:/ogs6_theis/theis_sim_log_slope"
+
 # Set up new ensemble
 ogs6_ens_slo <-
     OGS6_Ensemble$new(
@@ -353,8 +368,16 @@ ogs6_ens_slo <-
         percentages_mode = FALSE,
         sequential_mode = TRUE
     )
+```
 
-exit_codes <- ogs6_ens_slo$run_simulation()
+As before, we can run the simulation right away.
+
+```{r, eval = FALSE}
+ogs6_ens_slo$run_simulation()
+```
+
+```{r, include = FALSE}
+lapply(ogs6_ens_slo$ensemble, ogs6_read_output_files)
 ```
 
 Let's check if we can observe any influence of `slope` on `pressure` now.
@@ -388,8 +411,3 @@ ggplot(slo_df,
 ## Summary
 
 The `OGS6_Ensemble` class is a useful tool to set up ensemble runs for sensitivity analyses. In this vignette, we learned how to create `OGS6_Ensemble` objects. We looked at how the parameters `sequential_mode` and `percentages_mode` influence how our ensemble object is initialised. We started simulations via `OGS6_Ensemble$run_simulation()` and extracted information from the output files to plot them.
-
-```{r, include = FALSE}
-# Cleanup created folders
-do.call(file.remove, list(list.files(testdir_path, full.names = TRUE)))
-```
