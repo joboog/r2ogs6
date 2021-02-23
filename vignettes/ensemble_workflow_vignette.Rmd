@@ -213,11 +213,77 @@ ggplot(per_por_sto_df,
   geom_point(aes(color = as.factor(perc))) +
   xlab("x point coordinate") +
   labs(color = "%") +
-  facet_grid(cols = vars(name))
+  facet_grid(cols = vars(name),
+             labeller = as_labeller(c(per = "permeability",
+                                      por = "porosity",
+                                      sto =  "storage")))
 ```
 
-Ta-Daa! We can see `permeability` has the most influence on the pressure. Though they may seem suspicious, `porosity` and `storage` are being plotted correctly - the points are just being placed right on top of each other. Since `porosity` can't go over the value `1` which was the original value, our value vector only went from -50% to 0% which is why the line colors of `porosity` and `storage` differ.
+Ta-Daa! We can see `permeability` has the most influence on the pressure. Though they may seem suspicious, `porosity` and `storage` are being plotted correctly - the points are just being placed right on top of each other. Since `porosity` can't go over the value `1` which was the original value, our value vector only went from -50% to 0% which is why the line colors of `porosity` and `storage` differ. Maybe we want to try and use a logarithmic approach for `storage`. This won't work with the built-in functionality of `OGS6_Ensemble` so we'll set up our Ensemble a little differently.
 
+```{r}
+# Calculate log value
+log_val <- log(as.numeric(
+  ogs6_obj$media[[1]]$properties[[4]]$value),
+  base = 10)
+
+# Apply changes to log value
+log_vals <- vapply(percentages, function(x){
+    log_val + (log_val * (x / 100))
+}, FUN.VALUE = numeric(1))
+
+# Transfer back to non-logarithmic scale
+back_transf_vals <- 10^log_vals
+
+# Change sim_path to fit your system
+ogs6_obj$sim_path <- "D:/ogs6_theis/axisym_theis_sim_log_storage"
+
+# Set up new ensemble
+ogs6_ens_sto <-
+    OGS6_Ensemble$new(
+        ogs6_obj = ogs6_obj,
+        parameters =
+            list(
+                sto = list(
+                    ogs6_obj$media[[1]]$properties[[4]]$value,
+                    values = back_transf_vals)
+            ),
+        percentages_mode = FALSE,
+        sequential_mode = TRUE
+    )
+```
+
+As before, we can run the simulation right away.
+
+```{r, eval = FALSE}
+ogs6_ens_sto$run_simulation()
+```
+
+```{r, include = FALSE}
+lapply(ogs6_ens_sto$ensemble, ogs6_read_output_files)
+```
+
+Let's check if we can observe any influence of `storage` on `pressure` now.
+
+```{r}
+# Get combined dataframe
+sto_df <- 
+    ogs6_ens_sto$get_point_data(
+        keys = c("pressure"),
+        start_at_timestep = ogs6_ens_sto$ensemble[[1]]$pvds[[1]]$last_timestep)
+
+# Supply percentages manually since we couldn't use `percentages_mode`
+percs <- vapply(sto_df$sim_id,
+                function(x){percentages[[x]]},
+                FUN.VALUE = numeric(1))
+
+ggplot(sto_df,
+       aes(x = x,
+           y = pressure)) +
+    geom_point(aes(color = as.factor(percs))) +
+    xlab("x point coordinate") +
+    labs(color = "%")
+```
 
 ## Theis solution for well pumping
 
