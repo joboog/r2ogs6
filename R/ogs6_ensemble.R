@@ -29,7 +29,6 @@ OGS6_Ensemble <- R6::R6Class(
             assertthat::assert_that(assertthat::is.flag(percentages_mode))
 
             private$.ens_path <- ogs6_obj$sim_path
-            ogs6_obj$sim_path <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name)
 
             dp_str <- paste(deparse(substitute(parameters)), collapse = "\n")
 
@@ -96,16 +95,20 @@ OGS6_Ensemble <- R6::R6Class(
         #' internally. For ensembles, output will always be written to logfiles.
         #'@param parallel flag: Should the function be run in parallel?
         #' This is implementented via the 'parallel' package.
+        #' @param overwrite flag: Should existing files be overwritten?
         #'@param verbose flag
         run_simulation = function(parallel = FALSE,
+                                  overwrite = T,
                                   verbose = F){
 
             assertthat::assert_that(assertthat::is.flag(parallel))
+            assertthat::assert_that(assertthat::is.flag(overwrite))
             assertthat::assert_that(assertthat::is.flag(verbose))
 
             # Create ensemble directory
-            assertthat::assert_that(!dir.exists(self$ens_path))
-            dir.create(self$ens_path)
+            if(!dir.exists(self$ens_path)){
+                dir.create(self$ens_path)
+            }
 
             if(parallel){
 
@@ -136,6 +139,7 @@ OGS6_Ensemble <- R6::R6Class(
                         ogs6_obj <- ensemble[[i]]
                         r2ogs6::ogs6_run_simulation(ogs6_obj,
                                                write_logfile = TRUE,
+                                               overwrite = overwrite,
                                                verbose = verbose)
                     }
 
@@ -150,6 +154,7 @@ OGS6_Ensemble <- R6::R6Class(
                     parallel::mclapply(self$ensemble,
                                        ogs6_run_simulation,
                                        write_logfile = TRUE,
+                                       overwrite = overwrite,
                                        verbose = verbose,
                                        mc.cores = n_cores)
                 }
@@ -159,6 +164,7 @@ OGS6_Ensemble <- R6::R6Class(
                 exit_codes <- lapply(self$ensemble,
                                      ogs6_run_simulation,
                                      write_logfile = TRUE,
+                                     overwrite = overwrite,
                                      verbose = verbose)
                 return(exit_codes)
             }
@@ -362,7 +368,7 @@ OGS6_Ensemble <- R6::R6Class(
                     # Clone object
                     new_ogs6_obj <- private$copy_and_modify(ogs6_obj,
                                                             orig_sim_name,
-                                                            (i + 1),
+                                                            i,
                                                             orig_sim_path)
 
                     # Add clone to list of simulation objects
@@ -379,10 +385,7 @@ OGS6_Ensemble <- R6::R6Class(
             # Clone object
             new_ogs6_obj <- ogs6_obj$clone(deep = TRUE)
             new_ogs6_obj$sim_name <- paste0(sim_name, "_", sim_id)
-            new_path <- substr(sim_path,
-                               start = 1,
-                               stop = nchar(sim_path) - 1)
-            new_ogs6_obj$sim_path <- paste0(new_path, "_", sim_id)
+            new_ogs6_obj$sim_path <- paste0(sim_path, new_ogs6_obj$sim_name)
             return(invisible(new_ogs6_obj))
         },
 
