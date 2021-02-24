@@ -70,6 +70,9 @@ test_that("ogs6_export_sim_files works", {
     # Now export all files
     ogs6_export_sim_files(ogs6_obj)
 
+    # Trying to overwrite should yield an error
+    expect_error(ogs6_export_sim_files(ogs6_obj, overwrite = F))
+
     expect_equal(file.exists(paste0(test_path, "/circle_1e1_axi.prj")),
                  TRUE)
 
