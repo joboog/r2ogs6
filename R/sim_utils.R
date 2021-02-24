@@ -11,15 +11,18 @@
 #'   directory will be created in \code{ogs6$sim_path} directory
 #' @param ogs6_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
+#' @param overwrite flag: Should existing files be overwritten?
 #' @param verbose flag
 #' @export
 ogs6_run_simulation <- function(ogs6_obj,
                                write_logfile = TRUE,
                                ogs6_bin_path,
+                               overwrite = T,
                                verbose = F) {
 
     # Export (and / or copy referenced) simulation files
     ogs6_export_sim_files(ogs6_obj = ogs6_obj,
+                          overwrite = overwrite,
                          test_mode = FALSE)
 
     exit_code <- ogs6_call_ogs6(ogs6_obj = ogs6_obj,
@@ -40,10 +43,12 @@ ogs6_run_simulation <- function(ogs6_obj,
 #' @description Creates \code{ogs6$sim_path} directory if it does not exist yet
 #'   and exports and / or copies all simulation files to it.
 #' @param ogs6_obj OGS6: Simulation object
+#' @param overwrite flag: Should existing files be overwritten?
 #' @param test_mode flag: If \code{TRUE}, Will not check status of
 #'   \code{ogs6_obj} before exporting files. Defaults to \code{FALSE}
 #' @export
 ogs6_export_sim_files <- function(ogs6_obj,
+                                  overwrite = T,
                                  test_mode = FALSE){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
@@ -60,13 +65,8 @@ ogs6_export_sim_files <- function(ogs6_obj,
     if (!dir.exists(ogs6_obj$sim_path)) {
         dir.create(ogs6_obj$sim_path)
     } else{
-        if (length(list.files(ogs6_obj$sim_path)) != 0) {
-            warning(
-                paste0("sim_path directory '", ogs6_obj$sim_path,
-                       "' is not empty. Files may be overwritten."
-                ),
-                call. = FALSE
-            )
+        if(!overwrite){
+            assertthat::assert_that(length(list.files(ogs6_obj$sim_path)) == 0)
         }
     }
 
@@ -160,9 +160,14 @@ ogs6_call_ogs6 <- function(ogs6_obj,
 
         if(!dir.exists(logfile_dir)){
             dir.create(logfile_dir)
+        }else{
+            # If old logfile exists, delete it
+            if(file.exists(ogs6_obj$logfile)){
+                file.remove(ogs6_obj$logfile)
+            }
         }
 
-        assertthat::assert_that(!file.exists(ogs6_obj$logfile))
+        # (Re)create logfile
         file.create(ogs6_obj$logfile)
 
         if(verbose){
