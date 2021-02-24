@@ -286,10 +286,9 @@ OGS6_Ensemble <- R6::R6Class(
                 val <- eval(parse(text = self$dp_parameters[[i]]))
                 val <- as.numeric(val)
 
-                val_vec <- vapply(private$.parameter_percs[[i]], function(x){
+                val_vec <- lapply(private$.parameter_percs[[i]], function(x){
                     val + (val * (x / 100))
-                    },
-                    FUN.VALUE = numeric(length(val)))
+                    })
 
                 private$.parameter_values <- c(self$parameter_values,
                                                list(val_vec))
