@@ -41,7 +41,7 @@ vtk <- NULL
             r2ogs6.default_ogs6_bin_path =
                 paste0(
                     "D:/Programme/OpenGeoSys/",
-                    "ogs-6.3.2-Windows-10.0.14393-x64-python-3.7.2-de-utils",
+                    "ogs-6.3.3-Windows-10.0.14393-python-3.7.2-de-utils",
                     "/bin/"
                 ),
             r2ogs6.max_lines_gml = 300,
