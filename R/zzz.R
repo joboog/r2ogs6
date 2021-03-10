@@ -13,6 +13,7 @@ vtk <- NULL
         r2ogs6.default_script_path = "",
         r2ogs6.default_benchmark_path = "",
         r2ogs6.default_ogs6_processlib_path = "",
+        r2ogs6.default_ogs6_utils_path = "",
         r2ogs6.default_ogs6_bin_path = "",
         r2ogs6.max_lines_gml = 300,
 
@@ -38,11 +39,17 @@ vtk <- NULL
                 "D:/Programme/OpenGeoSys/ogs-master/Tests/Data/",
             r2ogs6.default_ogs6_processlib_path =
                 "D:/Programme/OpenGeoSys/ogs-master/ProcessLib/",
-            r2ogs6.default_ogs6_bin_path =
+            r2ogs6.default_ogs6_utils_path =
                 paste0(
                     "D:/Programme/OpenGeoSys/",
                     "ogs-6.3.2-Windows-10.0.14393-x64-python-3.7.2-de-utils",
                     "/bin/"
+                ),
+            r2ogs6.default_ogs6_bin_path =
+                paste0(
+                    "D:/Programme/OpenGeoSys/",
+                    "ogs-6.3.2-Windows-10.0.14393-x64-python-3.7.2-de-utils",
+                    "/bin/ogs.exe"
                 ),
             r2ogs6.max_lines_gml = 300,
             r2ogs6.use_python = "D:/Programme/anaconda3/envs/rtest/python.exe"
