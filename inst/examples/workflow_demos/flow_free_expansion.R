@@ -15,9 +15,9 @@ library(r2ogs6)
 
 
 # Then we can create a simulation object.
-
+tmp = tempdir()
 ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
-                     sim_path = "D:/OGS_sims/")
+                     sim_path = paste0(tmp, "flow_free_expansion"))
 
 
 ogs6_obj$add_gml(
