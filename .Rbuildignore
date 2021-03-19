@@ -5,6 +5,7 @@
 ^inst/examples/Theis_problem
 ^inst/examples/Theis_well_pumping
 ^LICENSE.md
+^config.yml
 ^doc$
 ^Meta$
 ^data-raw$
