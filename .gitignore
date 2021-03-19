@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+config.yml
 packrat/lib*/
 packrat/src/
 inst/doc
