@@ -32,7 +32,8 @@ Imports:
     dplyr,
     rlang,
     doParallel,
-    reticulate
+    reticulate,
+    config
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Depends: 
