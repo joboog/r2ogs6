@@ -14,16 +14,18 @@ vtk <- NULL
         r2ogs6.default_benchmark_path = NULL,
         r2ogs6.default_ogs6_processlib_path = NULL,
         r2ogs6.default_ogs6_bin_path = NULL,
-        r2ogs6.max_lines_gml = NULL
+        r2ogs6.max_lines_gml = 300
     )
 
     toset <- !(names(op.r2ogs6) %in% names(op))
     if (any(toset)) options(op.r2ogs6[toset])
 
-    cfg <- config::get()
+    if(file.exists("config.yml")){
+        cfg <- config::get()
 
-    for(i in names(op.r2ogs6)){
-        eval(parse(text = paste0("options(", i, " = cfg$", i, ")")))
+        for(i in names(op.r2ogs6)){
+            eval(parse(text = paste0("options(", i, " = cfg$", i, ")")))
+        }
     }
 
     # use superassignments to update global Python references
@@ -38,7 +40,7 @@ vtk <- NULL
     packageStartupMessage(
         paste("r2ogs6 works best with its options set :)\nFor",
               "an overview, use the command",
-              "'options()[grepl(\"r2ogs6.\",",
-              "names(options()), fixed = TRUE)]'\nTo set an option, use the",
+              "'options()[grepl(\"^r2ogs6\",",
+              "names(options()))]'\nTo set an option, use the",
               "command 'options(\"<option_name>\" = <option_value>)'\n"))
 }
