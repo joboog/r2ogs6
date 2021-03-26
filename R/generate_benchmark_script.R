@@ -117,7 +117,8 @@ generate_all_benchmark_scripts <-
 #' @description Generates a benchmark script from an existing \code{.prj} file.
 #' @param prj_path string: \code{.prj} file the script will be based on
 #' @param sim_path string: Path where all simulation files will be saved
-#' @param ogs6_bin_path string: OpenGeoSys bin folder path
+#' @param ogs6_bin_path string: Path to OpenGeoSys executable. Defaults to
+#'   options("r2ogs6.default_ogs6_bin_path").
 #' @param script_path string: Path where benchmark script will be saved
 #' @param read_in_gml flag: Optional: Should \code{.gml} file just be copied or
 #'   read in too?

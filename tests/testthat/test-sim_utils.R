@@ -2,11 +2,10 @@
 # helper function to skip tests if we don't have OpenGeoSys 6 dependencies
 skip_if_ogs6_missing <- function() {
 
-    ogs6_path <- paste0(unlist(options("r2ogs6.default_ogs6_bin_path")),
-                       "ogs.exe")
+    ogs6_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
 
     if(!file.exists(ogs6_path)){
-        skip("ogs.exe not available for testing")
+        skip("ogs executable not available for testing")
     }
 
     skip("Skipping tests that call ogs6_run_simulation()")
