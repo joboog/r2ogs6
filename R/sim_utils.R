@@ -96,7 +96,7 @@ ogs6_export_sim_files <- function(ogs6_obj,
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
     lapply(ogs6_obj$meshes, function(x){
-        file.copy(x, ogs6_obj$sim_path)
+        file.copy(x[["path"]], ogs6_obj$sim_path)
     })
 
     if(!is.null(ogs6_obj$python_script)){

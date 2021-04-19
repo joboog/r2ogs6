@@ -146,12 +146,6 @@ OGS6_gml <- R6::R6Class(
             }
         },
 
-        #'@field is_subclass
-        #'Getter for private parameter '.is_subclass'
-        is_subclass = function(value) {
-            private$.is_subclass
-        },
-
         #'@field attr_names
         #'Getter for private parameter '.attr_names'
         attr_names = function(value) {
@@ -197,7 +191,6 @@ OGS6_gml <- R6::R6Class(
         .points = NULL,
         .polylines = NULL,
         .surfaces = NULL,
-        .is_subclass = TRUE,
         .attr_names = c("point", "name", "id", "element"),
         .flatten_on_exp = character()
     )

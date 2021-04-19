@@ -58,8 +58,17 @@ read_in_prj <- function(ogs6_obj,
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
         vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
 
+        axisym_val <- xml2::xml_attr(vtu_ref_nodes[[i]], "axially_symmetric")
+
+        if(!is.na(axisym_val) && axisym_val == "true"){
+            axisym_val <- TRUE
+        }else{
+            axisym_val <- FALSE
+        }
+
         # Read in .vtu file(s) or just save their path
         ogs6_obj$add_vtu(path = vtu_path,
+                         axisym = axisym_val,
                          read_in_vtu = read_in_vtu)
     }
 

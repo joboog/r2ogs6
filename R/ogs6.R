@@ -98,6 +98,7 @@ OGS6 <- R6::R6Class("OGS6",
     #' Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
     #' object
     #' @param path string: A path
+    #' @param axisym flag: Is the mesh axially symmetrical?
     #' @param read_in_vtu flag: Optional: Should \code{.vtu} file just be
     #' copied or read in too?
     #' @examples
@@ -105,12 +106,16 @@ OGS6 <- R6::R6Class("OGS6",
     #' ogs6_obj$add_vtu("this_works.vtu")
     #' \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
     add_vtu = function(path,
+                       axisym = FALSE,
                        read_in_vtu = FALSE){
       assertthat::assert_that(assertthat::is.string(path))
       assertthat::assert_that(grepl("\\.vtu$", path))
+      assertthat::assert_that(assertthat::is.flag(axisym))
       assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
-      self$meshes <- c(self$meshes, mesh = path)
+      self$meshes <- c(self$meshes,
+                       list(mesh = list(path = path,
+                                        axially_symmetric = axisym)))
 
       if(read_in_vtu){
         private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
@@ -328,11 +333,14 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           assertthat::assert_that(is.list(value))
           lapply(value, function(x){
-            assertthat::assert_that(assertthat::is.string(x))
+            assertthat::assert_that(is.list(x), length(x) == 2)
+            assertthat::assert_that(assertthat::is.string(x[[1]]))
+            assertthat::assert_that(assertthat::is.flag(x[[2]]))
           })
           private$.meshes <- value
         }
       },
+
 
       #' @field vtus
       #' \code{.vtu}s. \code{value} must be list of \code{OGS6_vtu} objects

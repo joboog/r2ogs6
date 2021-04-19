@@ -20,17 +20,16 @@ export_prj <- function(ogs6_obj) {
 
     #If there is a .gml defined, add "mesh" node, else add "meshes" node
     if(is.null(ogs6_obj$geometry)) {
-        basenames <- lapply(ogs6_obj$meshes, function(x){basename(x)})
-        meshes_node <- to_node(basenames, "meshes")
+        meshes_node <- meshes_to_xml(ogs6_obj$meshes)
     }else{
         xml2::xml_add_child(
             prj_xml,
             xml2::as_xml_document(to_node(ogs6_obj$geometry)))
-        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
+        meshes_node <- meshes_to_xml(ogs6_obj$meshes)
     }
 
     xml2::xml_add_child(prj_xml,
-                        xml2::as_xml_document(meshes_node))
+                        meshes_node)
 
     #Get implemented classes
     prj_components <- ogs6_prj_top_level_classes()
