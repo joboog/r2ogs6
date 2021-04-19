@@ -174,3 +174,38 @@ to_node <- function(object, object_name = "",
         return(invisible(object_node))
     }
 }
+
+
+#===== meshes_to_xml =====
+
+
+#' meshes_to_xml
+#' @description
+#' Helper function for a mesh element of a .prj file.
+#' @param meshes list: List of meshes
+#' @noRd
+meshes_to_xml <- function(meshes){
+
+    meshes_doc <- xml2::read_xml("<meshes/>")
+
+    xml_children <- lapply(meshes, function(x){
+        if(x[["axially_symmetric"]]){
+            xml2::as_xml_document(
+                list(mesh = structure(list(basename(x[["path"]])),
+                                      axially_symmetric = "true")))
+        }else{
+            xml2::as_xml_document(
+                list(mesh = list(basename(x[["path"]]))))
+        }
+    })
+
+    if(length(meshes) == 1){
+       return(xml_children[[1]])
+    }else{
+        for(i in seq_len(length(xml_children))){
+            xml2::xml_add_child(meshes_doc, xml_children[[i]])
+        }
+        return(meshes_doc)
+    }
+}
+
