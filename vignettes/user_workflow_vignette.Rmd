@@ -22,12 +22,7 @@ library(r2ogs6)
 ```
 
 ## Prerequisites
-Apart from having the library itself loaded, there are two more prerequisites that need to be met for you to be able to use `r2ogs6` to its full extent.
 
-The most important one is having OpenGeoSys 6 installed on your system. You can download the current version of OpenGeoSys 6 from [here](https://www.opengeosys.org/releases/). 
-
-Secondly, to read in the `.vtu` and `.pvd` files produced by OpenGeoSys 6, you need a Python installation including the library `vtk`. If you have an Anaconda installation on your system, setting up a Python environment with `vtk` will work. If you don't have any Python installation on your system, you can download the latest release of Python from [here](https://www.python.org/downloads/). Instructions on how to install `vtk` can be found [here](https://pypi.org/project/vtk/).
- 
 After loading `r2ogs6`, we can set the package options so it knows where to look for OpenGeoSys 6 and Python.
 
 ```r
