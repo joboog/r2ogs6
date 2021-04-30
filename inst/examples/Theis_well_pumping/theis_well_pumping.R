@@ -22,7 +22,7 @@ ogs6_obj <- OGS6$new(sim_name = "theis",
 #===== Read in benchmark file =====
 
 # Modify the prj_path depending on where you saved the benchmark file.
-prj_path <- "inst/examples/Theis_well_pumping/benchmark_files/theis.prj"
+prj_path <- "inst/extdata/benchmarks/theis_well_pumping/theis.prj"
 
 # Read in the benchmark into our simulation object
 read_in_prj(ogs6_obj, prj_path)

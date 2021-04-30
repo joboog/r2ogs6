@@ -16,8 +16,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE
 )
-
-devtools::load_all(".")
 ```
 
 ```{r setup}
@@ -56,14 +54,14 @@ First, we create a simulation object to base our ensemble on and read in the `.p
 
 ```{r}
 # Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
+testdir_path <- tempdir()
 sim_path <- paste0(testdir_path, "/axisym_theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
                      sim_path = sim_path)
 
 # Change this to fit your system
-prj_path <- system.file("examples/Theis_problem/benchmark_files/",
+prj_path <- system.file("extdata/benchmarks/AxiSymTheis/",
                         "axisym_theis.prj", package = "r2ogs6")
 
 read_in_prj(ogs6_obj, prj_path)
@@ -164,7 +162,6 @@ The default `FALSE` would give an error message because our value vectors do not
 
 ```{r}
 # Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/axisym_theis_sim_big")
 
 ogs6_obj$sim_path <- sim_path
@@ -228,14 +225,13 @@ First, we create a simulation object to base our ensemble on and read in the `.p
 
 ```{r}
 # Change this to fit your system
-testdir_path <- system.file("extdata/test_tempdirs", package = "r2ogs6")
 sim_path <- paste0(testdir_path, "/theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "theis",
                      sim_path = sim_path)
 
 # Change this to fit your system
-prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
+prj_path <- system.file("extdata/benchmarks/theis_well_pumping/",
                         "theis.prj", package = "r2ogs6")
 
 read_in_prj(ogs6_obj, prj_path)
