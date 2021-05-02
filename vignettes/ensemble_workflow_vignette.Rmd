@@ -208,10 +208,11 @@ Plotting time! Since we set `sequential_mode` to `TRUE`, the dataframe we just c
 # Make plot
 ggplot(per_por_sto_df,
        aes(x = x,
-           y = pressure,
+           y = -pressure, # Flip pressure because source term was positive
            group = perc)) +
   geom_point(aes(color = as.factor(perc))) +
-  xlab("x point coordinate") +
+  xlab("Radius (m)") +
+  ylab("Head (m)") +
   labs(color = "%") +
   facet_grid(cols = vars(name),
              labeller = as_labeller(c(per = "permeability",
@@ -279,9 +280,10 @@ percs <- vapply(sto_df$sim_id,
 
 ggplot(sto_df,
        aes(x = x,
-           y = pressure)) +
+           y = -pressure)) +
     geom_point(aes(color = as.factor(percs))) +
-    xlab("x point coordinate") +
+    xlab("Radius (m)") +
+    ylab("Head (m)") +
     labs(color = "%")
 ```
 
@@ -379,12 +381,17 @@ per_por_slo_df <-
 # Make plot
 ggplot(per_por_slo_df,
        aes(x = x,
-           y = pressure,
+           y = pressure / 9806.65, # 1mH2O = 9806.65 kPa
            group = perc)) +
   geom_point(aes(color = as.factor(perc))) +
-  xlab("x point coordinate") +
+  xlab("Radius (m)") +
+  ylab("Absenkung (m)") +
   labs(color = "%") +
-  facet_grid(cols = vars(name))
+  facet_grid(cols = vars(name),
+             labeller = as_labeller(c(per = "permeability",
+                                      por = "porosity",
+                                      slo =  "slope"
+                                      )))
 ```
 
 
@@ -398,7 +405,8 @@ ggplot(per_df,
        aes(x = x,
            y = pressure)) +
   geom_point(aes(color = as.factor(perc))) +
-  xlab("x point coordinate") +
+  xlab("Radius (m)") +
+  ylab("Head (m)") +
   labs(color = "%")
 ```
 
@@ -467,9 +475,10 @@ percs <- vapply(slo_df$sim_id,
 
 ggplot(slo_df,
        aes(x = x,
-           y = pressure)) +
+           y = pressure / 9806.65)) + # 1mH2O = 9806.65 kPa
     geom_point(aes(color = as.factor(percs))) +
-    xlab("x point coordinate") +
+    xlab("Radius (m)") +
+    ylab("Head (m)") +
     labs(color = "%")
 ```
 
