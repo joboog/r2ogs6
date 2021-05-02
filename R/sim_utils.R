@@ -9,17 +9,20 @@
 #' @param write_logfile flag: Should output be written to a logfile? If
 #'   \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
 #'   directory will be created in \code{ogs6$sim_path} directory
-#' @param ogs6_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
+#' @param ogs6_bin_path string: Optional: OpenGeoSys 6 executable path. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
+#' @param overwrite flag: Should existing files be overwritten?
 #' @param verbose flag
 #' @export
 ogs6_run_simulation <- function(ogs6_obj,
                                write_logfile = TRUE,
                                ogs6_bin_path,
+                               overwrite = T,
                                verbose = F) {
 
     # Export (and / or copy referenced) simulation files
     ogs6_export_sim_files(ogs6_obj = ogs6_obj,
+                          overwrite = overwrite,
                          test_mode = FALSE)
 
     exit_code <- ogs6_call_ogs6(ogs6_obj = ogs6_obj,
@@ -40,10 +43,12 @@ ogs6_run_simulation <- function(ogs6_obj,
 #' @description Creates \code{ogs6$sim_path} directory if it does not exist yet
 #'   and exports and / or copies all simulation files to it.
 #' @param ogs6_obj OGS6: Simulation object
+#' @param overwrite flag: Should existing files be overwritten?
 #' @param test_mode flag: If \code{TRUE}, Will not check status of
 #'   \code{ogs6_obj} before exporting files. Defaults to \code{FALSE}
 #' @export
 ogs6_export_sim_files <- function(ogs6_obj,
+                                  overwrite = T,
                                  test_mode = FALSE){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
@@ -60,13 +65,8 @@ ogs6_export_sim_files <- function(ogs6_obj,
     if (!dir.exists(ogs6_obj$sim_path)) {
         dir.create(ogs6_obj$sim_path)
     } else{
-        if (length(list.files(ogs6_obj$sim_path)) != 0) {
-            warning(
-                paste0("sim_path directory '", ogs6_obj$sim_path,
-                       "' is not empty. Files may be overwritten."
-                ),
-                call. = FALSE
-            )
+        if(!overwrite){
+            assertthat::assert_that(length(list.files(ogs6_obj$sim_path)) == 0)
         }
     }
 
@@ -117,7 +117,8 @@ ogs6_export_sim_files <- function(ogs6_obj,
 #' @param write_logfile flag: Should output be written to a logfile? If
 #'   \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
 #'   directory will be created in \code{ogs6$sim_path} directory
-#' @param ogs6_bin_path string: Optional: OpenGeoSys 6 bin folder path. Defaults
+#' @param ogs6_bin_path string: Optional: Path to OpenGeoSys 6 executable or
+#'   OpenGeoSys container (singularity image) file. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
 #' @param verbose flag
 #' @export
@@ -136,16 +137,20 @@ ogs6_call_ogs6 <- function(ogs6_obj,
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.flag(verbose))
 
-    # Construct the call
-    exe_str <- ifelse(Sys.info()["sysname"] == "Windows",
-                      "ogs.exe",
-                      "ogs")
-
-    ogs6_command_str <- paste0(ogs6_bin_path, exe_str)
-    sim_path_full <- paste0(ogs6_obj$sim_path,
+    # construt call to os
+    prj_path_full <- paste0(ogs6_obj$sim_path,
                             ogs6_obj$sim_name,
                             ".prj")
-    ogs6_args <- c(sim_path_full, "-o", ogs6_obj$sim_path)
+    ogs6_args <- c(prj_path_full, "-o", ogs6_obj$sim_path)
+    ogs6_command <- construct_ogs_command(ogs6_bin_path)
+
+    #  reorder for using 'system2()'
+    if (length(ogs6_command)>1) {
+        ogs6_command_str <- ogs6_command[1]
+        ogs6_args <- c(ogs6_command[-1], ogs6_args)
+    } else {
+        ogs6_command_str <- ogs6_command
+    }
 
     exit_code <- 0
 
@@ -160,9 +165,14 @@ ogs6_call_ogs6 <- function(ogs6_obj,
 
         if(!dir.exists(logfile_dir)){
             dir.create(logfile_dir)
+        }else{
+            # If old logfile exists, delete it
+            if(file.exists(ogs6_obj$logfile)){
+                file.remove(ogs6_obj$logfile)
+            }
         }
 
-        assertthat::assert_that(!file.exists(ogs6_obj$logfile))
+        # (Re)create logfile
         file.create(ogs6_obj$logfile)
 
         if(verbose){
@@ -180,6 +190,44 @@ ogs6_call_ogs6 <- function(ogs6_obj,
     return(exit_code)
 }
 
+
+
+#' construct_ogs_command
+#' @description Constructs the call string to for 'system2()'.
+#' @param ogs6_bin_path string: Optional: Path to OpenGeoSys 6 executable or
+#'   OpenGeoSys container (singularity image) file. Defaults
+#'   to \code{options("r2ogs6.default_ogs6_bin_path")}
+#'
+#' @return string: Call object.
+construct_ogs_command <- function(ogs6_bin_path){
+
+    assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
+
+    # check if existent
+    if (dir.exists(ogs6_bin_path)) {
+        stop("'ogs6_bin_path' has to be an executable or container image file.",
+             call. = FALSE)
+    }
+    else if (!(file.exists(ogs6_bin_path))) {
+        stop("'ogs6_bin_path' does not exist.'",
+             call. = FALSE)
+    }
+
+    # Construct the call wether ogs6_bin_path is executable or
+    # container image file
+    if (stringr::str_sub(ogs6_bin_path, -4) == ".sif"){
+
+        assertthat::assert_that(file.exists(ogs6_bin_path))
+        ogs6_command <- c("singularity","exec", "--app ogs",
+                          ogs6_bin_path, "ogs")
+    }
+    else {
+        ogs6_command <- paste0(ogs6_bin_path)
+        assertthat::assert_that(file.exists(ogs6_command))
+    }
+
+    return(ogs6_command)
+}
 
 #===== ogs6_read_output_files =====
 

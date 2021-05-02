@@ -17,8 +17,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE
 )
-
-devtools::load_all(".")
 ```
 
 ```{r setup}
@@ -56,12 +54,15 @@ We will consider the following parameters for our sensitivity analysis:
 First, we create a simulation object to base our ensemble on and read in the `.prj` file.
 
 ```{r}
-# Change sim_path to fit your system
+# Change this to fit your system
+testdir_path <- tempdir()
+sim_path <- paste0(testdir_path, "/axisym_theis_sim")
+
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
                      sim_path = "D:/ogs6_theis/axisym_theis_sim")
 
-# Change prj_path to fit your system
-prj_path <- system.file("examples/Theis_problem/benchmark_files/",
+# Change this to fit your system
+prj_path <- system.file("extdata/benchmarks/AxiSymTheis/",
                         "axisym_theis.prj", package = "r2ogs6")
 
 read_in_prj(ogs6_obj, prj_path)
@@ -167,8 +168,10 @@ This time it's important we set the `OGS6_Ensemble` parameter `sequential_mode` 
 The default `FALSE` would give an error message because our value vectors do not have the same length and even if they had, it wouldn't do what we want - the number of simulations would equal the length of *one* value vector (thus requiring them to be of the same length). Generally, set `sequential_mode` to `TRUE` if you want to examine the influence of parameters on a simulation *independently*. If you want to examine how the parameters influence *each other* as in wanting to test parameter combinations, the default mode is the way to go. 
 
 ```{r}
-# Change sim_path to fit your system
-ogs6_obj$sim_path <- "D:/ogs6_theis/axisym_theis_sim_big"
+# Change this to fit your system
+sim_path <- paste0(testdir_path, "/axisym_theis_sim_big")
+
+ogs6_obj$sim_path <- sim_path
 
 ogs6_ens_big <-
   OGS6_Ensemble$new(
@@ -303,12 +306,14 @@ We will consider the following parameters for our sensitivity analysis:
 First, we create a simulation object to base our ensemble on and read in the `.prj` file. This time we want to specify that an output file only gets written at the last timestep.
 
 ```{r}
-# Change sim_path to fit your system
+# Change this to fit your system
+sim_path <- paste0(testdir_path, "/theis_sim")
+
 ogs6_obj <- OGS6$new(sim_name = "theis",
                      sim_path = "D:/ogs6_theis/theis_sim")
 
-# Change prj_path to fit your system
-prj_path <- system.file("examples/Theis_well_pumping/benchmark_files/",
+# Change this to fit your system
+prj_path <- system.file("extdata/benchmarks/theis_well_pumping/",
                         "theis.prj", package = "r2ogs6")
 
 read_in_prj(ogs6_obj, prj_path)
