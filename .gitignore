@@ -2,9 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+
 packrat/lib*/
-packrat/src/
 inst/doc
 inst/extdata/test_tempdirs
 doc
 Meta
+tmp
+packrat/src/
