@@ -39,8 +39,6 @@ OGS6_gml$new(
 
 \item{\code{surfaces}}{Access to private parameter '.surfaces'}
 
-\item{\code{is_subclass}}{Getter for private parameter '.is_subclass'}
-
 \item{\code{attr_names}}{Getter for private parameter '.attr_names'}
 
 \item{\code{flatten_on_exp}}{Getter for private parameter '.flatten_on_exp'}
