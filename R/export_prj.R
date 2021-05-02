@@ -3,9 +3,11 @@
 
 
 #' export_prj
-#' @description Wrapper function to create a \code{.prj} XML document based on
-#' the user input data
+#' @description
+#' Wrapper function to create a \code{.prj} XML document based on the user
+#' input data
 #' @param ogs6_obj OGS6: Simulation object
+#' @noRd
 export_prj <- function(ogs6_obj) {
 
     prj_xml <- xml2::xml_new_root(
@@ -18,20 +20,19 @@ export_prj <- function(ogs6_obj) {
 
     #If there is a .gml defined, add "mesh" node, else add "meshes" node
     if(is.null(ogs6_obj$geometry)) {
-        basenames <- lapply(ogs6_obj$meshes, function(x){basename(x)})
-        meshes_node <- to_node(basenames, "meshes")
+        meshes_node <- meshes_to_xml(ogs6_obj$meshes)
     }else{
         xml2::xml_add_child(
             prj_xml,
             xml2::as_xml_document(to_node(ogs6_obj$geometry)))
-        meshes_node <- to_node(basename(ogs6_obj$meshes[[1]]), "mesh")
+        meshes_node <- meshes_to_xml(ogs6_obj$meshes)
     }
 
     xml2::xml_add_child(prj_xml,
-                        xml2::as_xml_document(meshes_node))
+                        meshes_node)
 
     #Get implemented classes
-    prj_components <- prj_top_level_classes()
+    prj_components <- ogs6_prj_top_level_classes()
 
     # Include file reference
     if(names(ogs6_obj$processes)[[1]] == "include"){

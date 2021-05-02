@@ -34,13 +34,16 @@ OGS6_Ensemble <- R6::R6Class(
 
             dp_str <- stringr::str_remove_all(
                 dp_str,
-                "(^list\\()|(\\)$)|[:space:]|([A-Za-z_]*\\s*=\\s*)")
+                "(^list\\()|(\\)$)|[:space:]|([A-Za-z_0-9]*\\s*=\\s*)")
 
             dp_strs <- unlist(strsplit(dp_str, "list\\("))
             dp_strs <- dp_strs[dp_strs != ""]
 
             private$.dp_parameters <- lapply(dp_strs, function(x){
-                unlist(strsplit(x, ","))[[1]]
+                dp_p <- unlist(strsplit(x, ","))[[1]]
+                dp_p <- gsub("^[A-Za-z_0-9]*\\$", "ogs6_obj$", dp_p)
+                #cat("after:", dp_p, "\n")
+                return(dp_p)
             })
 
             assertthat::assert_that(is.list(parameters))
@@ -217,7 +220,7 @@ OGS6_Ensemble <- R6::R6Class(
                 sim_tbls <- c(sim_tbls, list(sim_tbl))
             }
 
-            return(bind_rows(sim_tbls))
+            return(dplyr::bind_rows(sim_tbls))
         }
     ),
 
@@ -307,8 +310,7 @@ OGS6_Ensemble <- R6::R6Class(
                                  sequential_mode,
                                  percentages_mode) {
 
-            orig_sim_name <- ogs6_obj$sim_name
-            orig_sim_path <- ogs6_obj$sim_path
+            orig_ogs6 <- ogs6_obj$clone(deep = T)
 
             parameter_values <- self$parameter_values
 
@@ -326,20 +328,23 @@ OGS6_Ensemble <- R6::R6Class(
 
                     for(j in seq_len(length(parameter_values[[i]]))){
 
-                        # Modify parameter reference of original object
+                        # Clone object
+                        ogs6_obj <- private$copy_and_modify(
+                            orig_ogs6,
+                            orig_ogs6$sim_name,
+                            sim_id,
+                            orig_ogs6$sim_path)
+
+                        # Modify parameter
                         set_param_call <-
                             paste0(self$dp_parameters[[i]],
                                    " <- parameter_values[[i]][[j]]")
                         eval(parse(text = set_param_call))
 
-                        # Clone object
-                        new_ogs6_obj <- private$copy_and_modify(ogs6_obj,
-                                                                orig_sim_name,
-                                                                sim_id,
-                                                                orig_sim_path)
+
 
                         private$.ensemble <-
-                            c(private$.ensemble, list(new_ogs6_obj))
+                            c(private$.ensemble, list(ogs6_obj))
 
                         sim_id <- sim_id + 1
                     }
@@ -357,7 +362,13 @@ OGS6_Ensemble <- R6::R6Class(
                 # n iterations in first loop == n objects to create
                 for (i in seq_len(length(parameter_values[[1]]))) {
 
-                    # Modify parameter reference of original object
+                    # Clone object
+                    ogs6_obj <- private$copy_and_modify(orig_ogs6,
+                                                        orig_ogs6$sim_name,
+                                                        (i + 1),
+                                                        orig_ogs6$sim_path)
+
+                    # Modify parameter
                     for (j in seq_len(length(self$dp_parameters))) {
                         set_param_call <-
                             paste0(self$dp_parameters[[j]],
@@ -365,15 +376,9 @@ OGS6_Ensemble <- R6::R6Class(
                         eval(parse(text = set_param_call))
                     }
 
-                    # Clone object
-                    new_ogs6_obj <- private$copy_and_modify(ogs6_obj,
-                                                            orig_sim_name,
-                                                            i,
-                                                            orig_sim_path)
-
                     # Add clone to list of simulation objects
                     private$.ensemble <- c(private$.ensemble,
-                                           list(new_ogs6_obj))
+                                           list(ogs6_obj))
                 }
             }
         },

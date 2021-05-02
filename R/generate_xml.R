@@ -10,6 +10,7 @@
 #' @param pattern string: See \code{?analyse_xml}
 #' @param xpath string: See \code{?analyse_xml}
 #' @param export_path string: Path to export the XML document to
+#' @noRd
 build_redux_doc <- function(path,
                             pattern,
                             xpath,
@@ -53,6 +54,7 @@ build_redux_doc <- function(path,
 #' @param pattern string: See \code{?analyse_xml}
 #' @param xpath string: See \code{?analyse_xml}
 #' @param required flag: Recursion utility
+#' @noRd
 build_redux_tree <- function(path,
                              pattern,
                              xpath,

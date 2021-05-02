@@ -220,3 +220,27 @@ test_that("to_node works for prj_process class", {
 
     expect_equal(attrs, c(internal_name = "sigma_xx", output_name = "sigma_xx"))
 })
+
+
+
+test_that("meshes_to_node works for mesh / meshes elements", {
+
+    meshes <- list(mesh = list(path = "a", axially_symmetric = TRUE),
+                   mesh = list(path = "b", axially_symmetric = FALSE))
+
+    test_xml_1 <- meshes_to_xml(meshes)
+
+    expect_equal(length(xml2::xml_find_all(test_xml_1,"/meshes/mesh")), 2)
+    expect_equal(xml2::xml_attrs(xml2::xml_find_first(test_xml_1,
+                                                      "/meshes/mesh")),
+                 c(axially_symmetric = "true"))
+
+
+    lone_mesh <- list(mesh = list(path = "a", axially_symmetric = TRUE))
+    test_xml_2 <- meshes_to_xml(lone_mesh)
+
+    expect_equal(length(xml2::xml_find_all(test_xml_2,"/mesh")), 1)
+    expect_equal(xml2::xml_attrs(xml2::xml_find_first(test_xml_2,
+                                                      "/mesh")),
+                 c(axially_symmetric = "true"))
+})

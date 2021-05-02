@@ -44,7 +44,19 @@ test_that("OGS6_Ensemble initialization works", {
     )
 
     expect_equal(length(ogs6_ens_seq_noper$ensemble), 4)
+
+    expect_equal(ogs6_ens_seq_noper$ensemble[[1]]$parameters[[1]]$value, 2)
+    expect_equal(ogs6_ens_seq_noper$ensemble[[1]]$parameters[[2]]$value, 4)
+
+    expect_equal(ogs6_ens_seq_noper$ensemble[[2]]$parameters[[1]]$value, 3)
+    expect_equal(ogs6_ens_seq_noper$ensemble[[2]]$parameters[[2]]$value, 4)
+
+    expect_equal(ogs6_ens_seq_noper$ensemble[[3]]$parameters[[1]]$value, 1)
+    expect_equal(ogs6_ens_seq_noper$ensemble[[3]]$parameters[[2]]$value, 5)
+
+    expect_equal(ogs6_ens_seq_noper$ensemble[[4]]$parameters[[1]]$value, 1)
     expect_equal(ogs6_ens_seq_noper$ensemble[[4]]$parameters[[2]]$value, 6)
+
 
 
     # Test with sequential_mode off and percentages_mode on

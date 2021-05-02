@@ -32,7 +32,7 @@ ogs6_run_simulation <- function(ogs6_obj,
 
     ogs6_read_output_files(ogs6_obj = ogs6_obj)
 
-    return(invisible(exit_code))
+    return(exit_code)
 }
 
 
@@ -96,7 +96,7 @@ ogs6_export_sim_files <- function(ogs6_obj,
 
     # Copy all referenced .vtu files to ogs6_obj$sim_path
     lapply(ogs6_obj$meshes, function(x){
-        file.copy(x, ogs6_obj$sim_path)
+        file.copy(x[["path"]], ogs6_obj$sim_path)
     })
 
     if(!is.null(ogs6_obj$python_script)){
@@ -187,7 +187,7 @@ ogs6_call_ogs6 <- function(ogs6_obj,
                              args = ogs6_args)
     }
 
-    return(invisible(exit_code))
+    return(exit_code)
 }
 
 
@@ -256,11 +256,14 @@ ogs6_read_output_files <- function(ogs6_obj){
 #===== Test benchmarks =====
 
 
-#' run_benchmark
-#' @description Utility function for quick benchmark runs
+#' Run benchmark
+#'
+#' Utility function for quick benchmark runs
+#'
 #' @param prj_path string:
 #' @param ogs6_bin_path string:
 #' @param sim_path string: Path where simulation files will be saved
+#' @noRd
 run_benchmark <- function(prj_path,
                           ogs6_bin_path,
                           sim_path){
@@ -280,7 +283,6 @@ run_benchmark <- function(prj_path,
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
     ogs6_obj <- OGS6$new(sim_name = sim_name,
-                         sim_id = 1,
                          sim_path = sim_path)
 
     read_in_prj(ogs6_obj = ogs6_obj,
@@ -291,16 +293,18 @@ run_benchmark <- function(prj_path,
 }
 
 
-#' run_all_benchmarks
-#' @description Utility function, for quick benchmark runs. Calls
-#'   run_benchmark internally.
+#' Run benchmarks
+#'
+#' This is a wrapper function for `run_benchmark()`.
+#'
 #' @param path string: Path to benchmark folder
 #' @param ogs6_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
 #'   which contains relevant Tests.cmake files
 #' @param ogs6_bin_path string:
 #' @param sim_path string: Path where simulation files will be saved
-#' @param starting_from_prj_path string: \code{.prj} path to start from
+#' @param starting_from_prj_path string: `.prj` path to start from
 #' @param print_results flag: Print results in the end?
+#' @noRd
 run_all_benchmarks <- function(path,
                                ogs6_processlib_path,
                                ogs6_bin_path,
@@ -449,10 +453,13 @@ print_run_all_benchmarks <- function(nonexisting_prj_paths,
 }
 
 
-#' get_benchmark_paths
-#' @description Gets paths to all benchmarks that should work
+#' Get benchmark paths
+#'
+#' Gets paths to all benchmarks that should work from `Tests.cmake` files
+#'
 #' @param ogs6_processlib_path string: Path to OpenGeoSys 6 ProcessLib folder
-#'   which contains relevant Tests.cmake files
+#'   which contains relevant `Tests.cmake` files
+#' @noRd
 get_benchmark_paths <- function(ogs6_processlib_path){
 
     tests_cmake_files <- list.files(path = ogs6_processlib_path,

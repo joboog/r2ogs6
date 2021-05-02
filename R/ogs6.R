@@ -37,11 +37,11 @@ OGS6 <- R6::R6Class("OGS6",
     #' @param x An object of any .prj `prj` class
     #' @examples
     #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-    #' ogs6_obj$add(prj_parameter$new(name = "foo", type = "bar"))
+    #' ogs6_obj$add(prj_parameter(name = "foo", type = "bar"))
     add = function(x){
 
       # Assert that class name is in implemented .prj classes for OGS6
-      ogs6_prj_classes <- prj_top_level_classes()
+      ogs6_prj_classes <- ogs6_prj_top_level_classes()
       assertthat::assert_that(class(x) %in% ogs6_prj_classes)
 
       # Get name of corresponding OGS6 component
@@ -98,6 +98,7 @@ OGS6 <- R6::R6Class("OGS6",
     #' Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
     #' object
     #' @param path string: A path
+    #' @param axisym flag: Is the mesh axially symmetrical?
     #' @param read_in_vtu flag: Optional: Should \code{.vtu} file just be
     #' copied or read in too?
     #' @examples
@@ -105,12 +106,16 @@ OGS6 <- R6::R6Class("OGS6",
     #' ogs6_obj$add_vtu("this_works.vtu")
     #' \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
     add_vtu = function(path,
+                       axisym = FALSE,
                        read_in_vtu = FALSE){
       assertthat::assert_that(assertthat::is.string(path))
       assertthat::assert_that(grepl("\\.vtu$", path))
+      assertthat::assert_that(assertthat::is.flag(axisym))
       assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
-      self$meshes <- c(self$meshes, mesh = path)
+      self$meshes <- c(self$meshes,
+                       list(mesh = list(path = path,
+                                        axially_symmetric = axisym)))
 
       if(read_in_vtu){
         private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
@@ -230,14 +235,14 @@ OGS6 <- R6::R6Class("OGS6",
     #' Clears components from the \code{OGS6} object
     #' @param which character: The names of the components (all by default).
     #' If you want to delete only some components, run
-    #' \code{names(prj_top_level_classes())} for the available options.
+    #' \code{names(ogs6_prj_top_level_classes())} for the available options.
     clear = function(which){
 
       if(missing(which)){
-        which <- names(prj_top_level_classes())
+        which <- names(ogs6_prj_top_level_classes())
       }
 
-      valid_input = names(prj_top_level_classes())
+      valid_input = names(ogs6_prj_top_level_classes())
 
       null_it <- c("geometry", "time_loop")
 
@@ -328,11 +333,14 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           assertthat::assert_that(is.list(value))
           lapply(value, function(x){
-            assertthat::assert_that(assertthat::is.string(x))
+            assertthat::assert_that(is.list(x), length(x) == 2)
+            assertthat::assert_that(assertthat::is.string(x[[1]]))
+            assertthat::assert_that(assertthat::is.flag(x[[2]]))
           })
           private$.meshes <- value
         }
       },
+
 
       #' @field vtus
       #' \code{.vtu}s. \code{value} must be list of \code{OGS6_vtu} objects
@@ -341,7 +349,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.vtus
         }else{
           is_wrapper_list(value,
-                          prj_top_level_classes()[["vtus"]])
+                          ogs6_prj_top_level_classes()[["vtus"]])
           private$.vtus <- value
         }
       },
@@ -365,7 +373,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.search_length_algorithm
         }else{
           assertthat::assert_that(
-            prj_top_level_classes()[["search_length_algorithm"]] %in%
+            ogs6_prj_top_level_classes()[["search_length_algorithm"]] %in%
               class(value))
           private$.search_length_algorithm <- value
         }
@@ -380,10 +388,10 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           # If there already is a process element
           if(length(private$.processes) > 0){
-            if(prj_top_level_classes()[["processes"]] %in%
+            if(ogs6_prj_top_level_classes()[["processes"]] %in%
                class(private$.processes[[1]])){
                  is_wrapper_list(value,
-                                       prj_top_level_classes()[["processes"]])
+                                 ogs6_prj_top_level_classes()[["processes"]])
             }else{
               assertthat::assert_that(assertthat::is.string(value))
               value <- list(include = c(file = value))
@@ -394,7 +402,7 @@ OGS6 <- R6::R6Class("OGS6",
               value <- list(include = c(file = value))
             }else{
               is_wrapper_list(value,
-                                    prj_top_level_classes()[["processes"]])
+                              ogs6_prj_top_level_classes()[["processes"]])
             }
           }
 
@@ -410,7 +418,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.time_loop
         }else{
           assertthat::assert_that(
-            prj_top_level_classes()[["time_loop"]] %in%
+            ogs6_prj_top_level_classes()[["time_loop"]] %in%
               class(value))
           private$.time_loop <- value
         }
@@ -424,7 +432,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.local_coordinate_system
         }else{
           assertthat::assert_that(
-            prj_top_level_classes()[["local_coordinate_system"]] %in%
+            ogs6_prj_top_level_classes()[["local_coordinate_system"]] %in%
               class(value))
           private$.local_coordinate_system <- value
         }
@@ -438,7 +446,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.media
         }else{
           is_wrapper_list(value,
-                          prj_top_level_classes()[["media"]])
+                          ogs6_prj_top_level_classes()[["media"]])
           private$.media <- value
         }
       },
@@ -451,7 +459,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.parameters
         }else{
           is_wrapper_list(value,
-                                prj_top_level_classes()[["parameters"]])
+                          ogs6_prj_top_level_classes()[["parameters"]])
           private$.parameters <- value
         }
       },
@@ -464,7 +472,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.chemical_system
         }else{
           assertthat::assert_that(
-            prj_top_level_classes()[["chemical_system"]] %in%
+            ogs6_prj_top_level_classes()[["chemical_system"]] %in%
               class(value))
           private$.chemical_system <- value
         }
@@ -478,7 +486,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.curves
         }else{
           is_wrapper_list(value,
-                                prj_top_level_classes()[["curves"]])
+                          ogs6_prj_top_level_classes()[["curves"]])
           private$.curves <- value
         }
       },
@@ -492,7 +500,7 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           is_wrapper_list(
             value,
-            prj_top_level_classes()[["process_variables"]])
+            ogs6_prj_top_level_classes()[["process_variables"]])
           private$.process_variables <- value
         }
       },
@@ -506,7 +514,7 @@ OGS6 <- R6::R6Class("OGS6",
         }else{
           is_wrapper_list(
             value,
-            prj_top_level_classes()[["nonlinear_solvers"]])
+            ogs6_prj_top_level_classes()[["nonlinear_solvers"]])
           private$.nonlinear_solvers <- value
         }
       },
@@ -519,7 +527,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.linear_solvers
         }else{
           is_wrapper_list(value,
-                          prj_top_level_classes()[["linear_solvers"]])
+                          ogs6_prj_top_level_classes()[["linear_solvers"]])
           private$.linear_solvers <- value
         }
       },
@@ -532,7 +540,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.test_definition
         }else{
           is_wrapper_list(value,
-                          prj_top_level_classes()[["test_definition"]])
+                          ogs6_prj_top_level_classes()[["test_definition"]])
           private$.test_definition <- value
         }
       },
@@ -545,7 +553,7 @@ OGS6 <- R6::R6Class("OGS6",
           private$.insitu
         }else{
           assertthat::assert_that(
-            prj_top_level_classes()[["insitu"]] %in%
+            ogs6_prj_top_level_classes()[["insitu"]] %in%
               class(value))
           private$.insitu <- value
         }
@@ -605,3 +613,47 @@ OGS6 <- R6::R6Class("OGS6",
       .pvds = NULL
   )
 )
+
+
+#===== ogs6_prj_top_level_classes =====
+
+
+#' ogs6_prj_top_level_classes
+#' @description Returns named character vector of \code{OGS6} top level
+#' \code{.prj} tags (names) represented by \code{r2ogs6} classes along with
+#' their class names (values).
+#' @return character
+#' @export
+ogs6_prj_top_level_classes <- function(){
+
+  xpaths_for_classes <- xpaths_for_classes
+
+  flattened_xpaths <- unlist(xpaths_for_classes)
+  names(flattened_xpaths) <- NULL
+
+  prj_components <- character()
+  seen <- character()
+
+  for(i in seq_len(length(flattened_xpaths))){
+
+    split_xpath <-
+      unlist(strsplit(flattened_xpaths[[i]], "/", fixed = TRUE))
+
+    if(!split_xpath[[1]] %in% seen){
+      if(!is.null(get_class_from_xpath(split_xpath[[1]]))){
+        prj_components <- c(prj_components,
+                            get_class_from_xpath(split_xpath[[1]]))
+
+      }else{
+        xpath <- paste(split_xpath[[1]], split_xpath[[2]], sep = "/")
+        prj_components <- c(prj_components,
+                            get_class_from_xpath(xpath))
+      }
+
+      names(prj_components)[[length(prj_components)]] <- split_xpath[[1]]
+      seen <- c(seen, split_xpath[[1]])
+    }
+  }
+
+  return(prj_components)
+}

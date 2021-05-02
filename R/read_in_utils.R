@@ -8,6 +8,7 @@
 #' @param path string: A file to be parsed as XML
 #' @return The parsed XML file (as class object of type
 #' \code{xml2::xml_document})
+#' @noRd
 validate_read_in_xml <- function(path){
 
     assertthat::assert_that(assertthat::is.string(path))
@@ -34,6 +35,7 @@ validate_read_in_xml <- function(path){
 #' @param ogs6_obj A OGS6 class object
 #' @param path string: Path to file XML elements should be read from
 #' @param xpath string: An XPath expression (should be absolute!)
+#' @noRd
 read_in <- function(ogs6_obj,
                     path,
                     xpath){
@@ -75,6 +77,7 @@ read_in <- function(ogs6_obj,
 #' @description Takes an XML node and turns it into a class object
 #' @param xml_node xml2::xml_node: XML node
 #' @param xpath string: XPath expression (for subclass differentiation)
+#' @noRd
 node_to_prj_class_object <- function(xml_node,
                                         xpath){
 
@@ -158,6 +161,7 @@ node_to_prj_class_object <- function(xml_node,
 #' 3) Parent nodes whose children have no children are represented as lists
 #' @param xml_node xml2::xml_node: XML node
 #' @param xpath string: XPath expression (for subclass differentiation)
+#' @noRd
 node_to_object <- function(xml_node,
                            xpath = ""){
 
@@ -225,6 +229,7 @@ node_to_object <- function(xml_node,
 #' @description Gets class arguments
 #' @param class_name string: The name of a class
 #' @return character: Named vector of class arguments
+#' @noRd
 get_class_args <- function(class_name){
 
     assertthat::assert_that(assertthat::is.string(class_name))
@@ -246,6 +251,7 @@ get_class_args <- function(class_name){
 #' @param parameters list: Parameters
 #' @param class_name string: The name of a class
 #' @return list: Parameters ordered by argument order of class
+#' @noRd
 order_parameters <- function(parameters, class_name){
 
     assertthat::assert_that(is.list(parameters))

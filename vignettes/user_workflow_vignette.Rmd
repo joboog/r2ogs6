@@ -53,7 +53,6 @@ Usually, you will only ever define `sim_name`, `sim_path`.
 
 ```{r}
 ogs6_obj <- OGS6$new(sim_name = "my_simulation",
-                     sim_id = 1,
                      sim_path = "my_sim_path")
 ```
 

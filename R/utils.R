@@ -6,8 +6,7 @@
 #' @description Gets r2ogs6 class name from an xpath-like expression
 #' @param xpath string: An xpath expression. Works for path-like xpaths only
 #' @return string: The class name.
-#' @examples
-#'   get_class_from_xpath("processes/process")
+#' @noRd
 get_class_from_xpath <- function(xpath){
 
   assertthat::assert_that(assertthat::is.string(xpath))
@@ -31,8 +30,7 @@ get_class_from_xpath <- function(xpath){
 #' @description Utility function, returns the tag name of a r2ogs6 class
 #' @param class_name string: The name of a r2ogs6 class
 #' @return string: The tag name corresponding to \code{class_name}
-#' @examples
-#'   get_tag_from_class("prj_process")
+#' @noRd
 get_tag_from_class <- function(class_name) {
 
   assertthat::assert_that(assertthat::is.string(class_name))
@@ -51,8 +49,7 @@ get_tag_from_class <- function(class_name) {
 #' @description Gets the XML tag name from an xpath expression
 #' @param xpath string: An xpath expression. Works for path-like xpaths only
 #' @return string: The XML tag name
-#' @examples
-#'   get_tag_from_xpath("processes/process")
+#' @noRd
 get_tag_from_xpath <- function(xpath){
 
   xpath_split <- unlist(strsplit(xpath, "/", fixed = TRUE))
@@ -65,6 +62,7 @@ get_tag_from_xpath <- function(xpath){
 #' get_prj_top_level_tags
 #' @description Gets top level .prj tags along with info if they are required.
 #' @return list: List of lists.
+#' @noRd
 get_prj_top_level_tags <- function(){
 
   prj_reduxml <- system.file("extdata/xml_redux/", "prj_redu.xml",
@@ -81,46 +79,6 @@ get_prj_top_level_tags <- function(){
 }
 
 
-#' prj_top_level_classes
-#' @description Returns named character vector of \code{OGS6} top level
-#' \code{.prj} tags (names) represented by \code{r2ogs6} classes along with their
-#' class names (values).
-#' @return character
-prj_top_level_classes <- function(){
-
-  xpaths_for_classes <- xpaths_for_classes
-
-  flattened_xpaths <- unlist(xpaths_for_classes)
-  names(flattened_xpaths) <- NULL
-
-  prj_components <- character()
-  seen <- character()
-
-  for(i in seq_len(length(flattened_xpaths))){
-
-    split_xpath <-
-      unlist(strsplit(flattened_xpaths[[i]], "/", fixed = TRUE))
-
-    if(!split_xpath[[1]] %in% seen){
-      if(!is.null(get_class_from_xpath(split_xpath[[1]]))){
-        prj_components <- c(prj_components,
-                            get_class_from_xpath(split_xpath[[1]]))
-
-      }else{
-        xpath <- paste(split_xpath[[1]], split_xpath[[2]], sep = "/")
-        prj_components <- c(prj_components,
-                            get_class_from_xpath(xpath))
-      }
-
-      names(prj_components)[[length(prj_components)]] <- split_xpath[[1]]
-      seen <- c(seen, split_xpath[[1]])
-    }
-  }
-
-  return(prj_components)
-}
-
-
 #===== Coercion utility =====
 
 
@@ -128,8 +86,7 @@ prj_top_level_classes <- function(){
 #' @description If an object is of type string, coerces it to a numeric type
 #' @param obj object: Any object
 #' @return numeric if \code{obj} was a string, else unchanged \code{obj}
-#' @examples
-#'   coerce_string_to_numeric("12  54 2    \n 2")
+#' @noRd
 coerce_string_to_numeric <- function(obj){
 
   if(assertthat::is.string(obj)){
@@ -147,6 +104,7 @@ coerce_string_to_numeric <- function(obj){
 #' @param names character: How the vector elements will be named as
 #' per default
 #' @return vector: Named vector where the names correspond to \code{names}
+#' @noRd
 coerce_names <- function(vector, names) {
 
   assertthat::assert_that(is.vector(vector))
@@ -178,6 +136,7 @@ coerce_names <- function(vector, names) {
 #' @description Validator function for a parameter list or vector or \code{NULL}
 #' @param obj A list (or vector) of parameters
 #' @param names How the list elements will be named as per default
+#' @noRd
 is_null_or_coerce_names <- function(obj, names){
 
   if(!is.null(obj)){
@@ -192,6 +151,7 @@ is_null_or_coerce_names <- function(obj, names){
 #' @description Cleans an imported list because sometimes strings containing
 #' only newline characters and spaces get imported in
 #' @param list list: A list
+#' @noRd
 clean_imported_list <- function(list){
 
   assertthat::assert_that(is.list(list))
@@ -214,6 +174,7 @@ clean_imported_list <- function(list){
 #' as_dir_path
 #' @description Checks if a given path ends on \code{/}
 #' @param path string: A path
+#' @noRd
 as_dir_path <- function(path){
 
   assertthat::assert_that(assertthat::is.string(path))
@@ -237,6 +198,7 @@ as_dir_path <- function(path){
 #' @param print_messages flag: Optional: Print error messages? Defaults to
 #' \code{TRUE}
 #' @return character: Vector of invalid XML paths
+#' @noRd
 filter_invalid_xml <- function(paths,
                                encoding = "ISO-8859-1",
                                print_messages = TRUE){
@@ -270,6 +232,7 @@ filter_invalid_xml <- function(paths,
 #' are_numbers
 #' @description Checks if objects are numbers
 #' @param ... Ellipsis
+#' @noRd
 are_numbers <- function(...){
 
   lapply(list(...), function(x){
@@ -283,6 +246,7 @@ are_numbers <- function(...){
 #' are_null_or_numbers
 #' @description Checks if objects are either \code{NULL} or numbers
 #' @param ... Ellipsis
+#' @noRd
 are_null_or_numbers <- function(...){
 
   lapply(list(...), function(x){
@@ -298,6 +262,7 @@ are_null_or_numbers <- function(...){
 #' are_numeric
 #' @description Checks if objects are numeric
 #' @param ... Ellipsis
+#' @noRd
 are_numeric <- function(...){
 
   lapply(list(...), function(x){
@@ -311,6 +276,7 @@ are_numeric <- function(...){
 #' are_null_or_numeric
 #' @description Checks if objects are either \code{NULL} or numeric
 #' @param ... Ellipsis
+#' @noRd
 are_null_or_numeric <- function(...){
 
   lapply(list(...), function(x){
@@ -326,6 +292,7 @@ are_null_or_numeric <- function(...){
 #' are_strings
 #' @description Checks if objects are strings
 #' @param ... Ellipsis
+#' @noRd
 are_strings <- function(...){
 
   lapply(list(...), function(x){
@@ -339,6 +306,7 @@ are_strings <- function(...){
 #' are_null_or_strings
 #' @description Checks if objects are either \code{NULL} or strings
 #' @param ... Ellipsis
+#' @noRd
 are_null_or_strings <- function(...){
 
   lapply(list(...), function(x){
@@ -354,6 +322,7 @@ are_null_or_strings <- function(...){
 #' are_string_flags
 #' @description Checks if objects are strings reading either "true" or "false"
 #' @param ... Ellipsis
+#' @noRd
 are_string_flags <- function(...){
 
   lapply(list(...), function(x){
@@ -369,6 +338,7 @@ are_string_flags <- function(...){
 #' @description Checks if objects are either \code{NULL} or strings reading
 #' either "true" or "false"
 #' @param ... Ellipsis
+#' @noRd
 are_null_or_string_flags <- function(...){
 
   lapply(list(...), function(x){
@@ -386,6 +356,7 @@ are_null_or_string_flags <- function(...){
 #' \code{element_class}
 #' @param list list: List to check
 #' @param element_class string: Class each element of \code{list} should have
+#' @noRd
 is_wrapper_list <- function(list, element_class) {
 
   assertthat::assert_that(is.list(list))
@@ -403,6 +374,7 @@ is_wrapper_list <- function(list, element_class) {
 #' of class \code{element_class}
 #' @param obj list | NULL: Object to check
 #' @param element_class string: Class each element of \code{obj} should have
+#' @noRd
 is_null_or_wrapper_list <- function(obj, element_class) {
 
   if(!is.null(obj)){
@@ -422,6 +394,7 @@ is_null_or_wrapper_list <- function(obj, element_class) {
 #' class \code{class_name}
 #' @param obj The object to check
 #' @param class_name The name of the expected class
+#' @noRd
 is_null_or_has_class <- function(obj, class_name){
 
   if(!is.null(obj)){

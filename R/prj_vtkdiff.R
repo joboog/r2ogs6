@@ -13,28 +13,28 @@
 #' @example man/examples/ex_prj_vtkdiff.R
 #' @export
 prj_vtkdiff <- function(field,
-                           absolute_tolerance,
-                           relative_tolerance,
-                           file = NULL,
-                           regex = NULL) {
+                        absolute_tolerance,
+                        relative_tolerance,
+                        file = NULL,
+                        regex = NULL) {
 
     #Coerce input
     absolute_tolerance <- coerce_string_to_numeric(absolute_tolerance)
     relative_tolerance <- coerce_string_to_numeric(relative_tolerance)
 
     new_prj_vtkdiff(field,
-                       absolute_tolerance,
-                       relative_tolerance,
-                       file,
-                       regex)
+                    absolute_tolerance,
+                    relative_tolerance,
+                    file,
+                    regex)
 }
 
 
 new_prj_vtkdiff <- function(field,
-                               absolute_tolerance,
-                               relative_tolerance,
-                               file = NULL,
-                               regex = NULL) {
+                            absolute_tolerance,
+                            relative_tolerance,
+                            file = NULL,
+                            regex = NULL) {
 
     assertthat::assert_that(assertthat::is.string(field))
 

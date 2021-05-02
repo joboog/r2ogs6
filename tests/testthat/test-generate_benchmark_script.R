@@ -70,13 +70,3 @@ test_that("construct_add_call handles Ellipsis correctly", {
                       "list(index = 1,\nvalues = c(1, 2)),\n",
                       "index_values = list(index = 2,\nvalues = c(2, 3))))\n"))
 })
-
-
-test_that("delete_keywords_from_str works", {
-
-  test_str <- "prj_object(a = \"foo\", repeat = \"bar\")"
-
-  test_str <- delete_keywords_from_str(test_str)
-  expect_equal(test_str, "prj_object(a = \"foo\", \"bar\")")
-
-})
