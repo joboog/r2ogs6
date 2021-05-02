@@ -210,13 +210,15 @@ ogs6_obj$add_gml("this_works.gml")
 Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, axisym = FALSE, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{path}}{string: A path}
+
+\item{\code{axisym}}{flag: Is the mesh axially symmetrical?}
 
 \item{\code{read_in_vtu}}{flag: Optional: Should \code{.vtu} file just be
 copied or read in too?}
