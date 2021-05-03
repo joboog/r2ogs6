@@ -4,13 +4,13 @@
 \alias{ogs6_generate_structured_mesh}
 \title{ogs6_generate_structured_mesh}
 \usage{
-ogs6_generate_structured_mesh(args_str, ogs6_bin_path)
+ogs6_generate_structured_mesh(args_str, ogs6_utils_path)
 }
 \arguments{
 \item{args_str}{string: The arguments the script will be called with}
 
-\item{ogs6_bin_path}{string: Optional: Path to OpenGeoSys6 bin folder.
-Defaults to options("r2ogs6.default_ogs6_bin_path")}
+\item{ogs6_utils_path}{string: Optional: Path to OpenGeoSys6 utils folder.
+Defaults to options("r2ogs6.default_ogs6_utils_path")}
 }
 \value{
 string: .vtu file path

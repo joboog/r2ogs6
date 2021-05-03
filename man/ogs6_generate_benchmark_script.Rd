@@ -18,7 +18,8 @@ ogs6_generate_benchmark_script(
 
 \item{sim_path}{string: Path where all simulation files will be saved}
 
-\item{ogs6_bin_path}{string: OpenGeoSys bin folder path}
+\item{ogs6_bin_path}{string: Path to OpenGeoSys executable. Defaults to
+options("r2ogs6.default_ogs6_bin_path").}
 
 \item{script_path}{string: Path where benchmark script will be saved}
 

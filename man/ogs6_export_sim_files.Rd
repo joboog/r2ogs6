@@ -4,10 +4,12 @@
 \alias{ogs6_export_sim_files}
 \title{ogs6_export_sim_files}
 \usage{
-ogs6_export_sim_files(ogs6_obj, test_mode = FALSE)
+ogs6_export_sim_files(ogs6_obj, overwrite = T, test_mode = FALSE)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
+
+\item{overwrite}{flag: Should existing files be overwritten?}
 
 \item{test_mode}{flag: If \code{TRUE}, Will not check status of
 \code{ogs6_obj} before exporting files. Defaults to \code{FALSE}}

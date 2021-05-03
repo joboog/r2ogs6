@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-
+config.yml
 packrat/lib*/
 inst/doc
 inst/extdata/test_tempdirs

@@ -19,135 +19,142 @@ devtools::load_all(".")
 
 ```{r setup}
 library(r2ogs6)
+library(ggplot2)
 ```
 
 ## Prerequisites
 
-After loading `r2ogs6`, we can set the package options so it knows where to look for OpenGeoSys 6 and Python.
+This guide assumes you have `r2ogs6` and its dependencies installed. If that's not the case, please take a look at the installation instructions provided in the `README.md` file of the repository.
+ 
+After loading `r2ogs6`, we first need to set the package options so it knows where to look for OpenGeoSys 6.
 
 ```r
 # Set path for OpenGeoSys 6
 options("r2ogs6.default_ogs6_bin_path" = "your_ogs6_bin_path")
-
-# Set path for Python
-options("r2ogs6.use_python" = "your_python_path")
 ```
 
-
 ## Creating your simulation object
-...
 To represent a simulation object, `r2ogs6` uses an `R6` class called `OGS6`. If you're new to `R6` objects, don't worry. Creating a simulation object is easy. We call the class constructor and provide it with some parameters:
 
 * `sim_name` The name of your simulation
 
-* `sim_id` A simulation ID (defaults to 1, this is used for chaining simulations)
-
 * `sim_path` All relevant files for your simulation will be in here
 
-Usually, you will only ever define `sim_name`, `sim_path`.
-
 ```{r}
+# Change this to fit your system
+sim_path <- system.file("extdata/benchmarks/flow_no_strain",
+                        package = "r2ogs6")
+
 ogs6_obj <- OGS6$new(sim_name = "my_simulation",
-                     sim_path = "my_sim_path")
+                     sim_path = sim_path)
 ```
 
 And that's it, we now have a simulation object. 
 
 
-## Loading an OpenGeoSys 6 simulation from a project file
-The quickest and easiest way to load a simulation is by using an already existing benchmark. If you take a look at the [OpenGeoSys documentation](https://www.opengeosys.org/docs/benchmarks/elliptic/elliptic-dirichlet/), you'll find plenty of benchmarks to choose from along with a link to their project file on GitLab at the top of the respective page.
+## Defining the simulation parameters
 
-For demonstration purposes, I will use a project from the `HydroMechanics` benchmarks, which can be found [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/HydroMechanics/IdealGas/flow_free_expansion).
+From here on there's two ways you can define the simulation parameters. Either you load a benchmark file or you define your simulation manually.
+
+### Loading a benchmark file
+
+The quickest and easiest way to define a simulation is by using an already existing benchmark. If you take a look at the [OpenGeoSys documentation](https://www.opengeosys.org/docs/benchmarks/elliptic/elliptic-dirichlet/), you'll find plenty of benchmarks to choose from along with a link to their project file on GitLab at the top of the respective page.
+
+For demonstration purposes, I will use a project from the `HydroMechanics` benchmarks, which can be found [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/HydroMechanics/IdealGas/flow_no_strain).
+
+
+```{r}
+# Change this to fit your system
+prj_path <- paste0(sim_path, "/flow_no_strain.prj")
+
+read_in_prj(ogs6_obj, prj_path = prj_path)
+```
+
 
 NOTE: `r2ogs6` has not been tested with every existing benchmark. Due to the large number of input parameters, you might encounter cases where the import fails.
 
 
-## Setting up your own OpenGeoSys 6 simulation
-(...)
+### Setting up your own OpenGeoSys 6 simulation
+Setting up your own simulation is possible too. 
 
-
-### Check the status of your OGS6 simulation object
-Since there's plenty of required and optional input parameters, you might get lost while setting up your simulation. To get a brief overview of your simulation, you can use the `OGS6` function `get_status()`. This tells you which input parameters are missing before you can run a simulation.
+Since there's plenty of required and optional input parameters, you might want to call `get_status()` occasionally to get a brief overview of your simulation. This tells you which input parameters are missing before you can run a simulation.
 
 ```{r}
 # Call on the OGS6 object (note the R6 style)
 ogs6_obj$get_status()
 ```
 
-Since we haven't defined anything so far, you'll see a lot of red there. 
-
-### Knowing what kind of data to add to your OGS6 simulation object
-
-The results of `get_status()` already gave us a hint what we can add. We'll go from there and try to find out more about the possible input data. Say we want to find out more about `process` objects.
+Since we haven't defined anything so far, you'll see a lot of red there. But the results gave us a hint what we can add. We'll go from there and try to find out more about the possible input data. Say we want to find out more about `process` objects.
 
 ```r
 # To take a look at the documentation, use ? followed by the name of a class
 ?prj_process
 ```
 
-As a rule of thumb, classes are named with the prefix `prj_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `prj_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `prj_tl_process`.
+As a rule of thumb, classes are named with the prefix `prj_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `prj_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `prj_tl_process`. Let's try adding something now.
 
-(...)
+To add data to our simulation object, we use `OGS6$add()`. We can use this method with any top level `.prj` element, which means we're not limited to `prj_parameter` objects. 
+
+```{r eval = F}
+# Add a parameter
+ogs6_obj$add(prj_parameter(name = "E",
+                           type = "Constant",
+                           value = 1e+10))
 
 
-
-Let's try adding something now.
-
-### Adding input data via OGS6$add()
-
-To add data to our simulation object, we use `OGS6$add()`. 
-
-```{r}
-    ogs6_obj$add(prj_parameter(
-        name = "pressure0",
-        type = "Constant",
-        value = 1
-    ))
+# Add a process variable
+ogs6_obj$add(
+    prj_process_variable(
+        name = "pressure",
+        components = 1,
+        order = 1,
+        initial_condition = "pressure0",
+        boundary_conditions = list(
+            boundary_condition = prj_boundary_condition(
+                type = "Neumann",
+                parameter = "flux_in",
+                geometrical_set = "cube_1x1x1_geometry",
+                geometry = "left",
+                component = 0
+            )
+        )
+    )
+)
 ```
 
+Since I already read in a `.prj` file earlier, I won't run the above snippet. If you'd like a complete example of manually defining simulation parameters, there's a script `flow_free_expansion.R` in the `examples/workflow_demos` folder.
 
 ## Running the simulation
 
-As soon as we've added all necessary parameters, we can try starting our simulation by calling `ogs6_run_simulation(ogs6_obj, write_logfile = TRUE)`. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console. 
+As soon as we've added all necessary parameters, we can try starting our simulation. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console.
+
+```{r eval = FALSE}
+ogs6_run_simulation(ogs6_obj, write_logfile = TRUE)
+```
+
+
+```{r include = FALSE}
+ogs6_read_output_files(ogs6_obj)
+```
+
+
+## Retrieve the results
+After our simulation is finished, we might want to plot some results. But how do we retrieve them? If all went as expected, we don't need to call an extra function for that because `ogs6_run_simulation()` already calls `ogs6_read_output_files()` internally. We only need to decide what information we want to extract. Say we're interested in the `pressure` Parameter from the last timestep. For this easy example, only one `.pvd` file was produced.
+
+```{r}
+# Extract relevant info into dataframe
+result_df <- ogs6_obj$pvds[[1]]$get_point_data(keys = c("pressure"))
+  
+# Plot results
+ggplot(result_df,
+       aes(x = x,
+           y = pressure)) +
+    geom_point() +
+    xlab("x coordinate") +
+    ylab("pressure")
+```
+
 
 ## Running multiple simulations
 
-If we want to run not one but multiple simulations, we can use the simulation object we just created as a blueprint for an ensemble or chain run.
-
-### Ensemble runs
-
-To set up an ensemble run, we first need a base simulation object. Conveniently, we already have `ogs6_obj`, so we can go from there. We will pass this object to another one, namely an object of class `OGS6_Ensemble`. Additionally, we have to define which parameters should vary between the different simulations and provide their respective values. The syntax for this is as follows:
-
-```{r}
-    ogs6_ens <- OGS6_Ensemble$new(
-        ogs6_obj = ogs6_obj,
-        parameters = list(list(ogs6_obj$parameters[[1]]$value, c(2, 3, 4)))
-    )
-```
-
-Internally, the `OGS6_Ensemble` object clones the `OGS6` object provided to it and for these clones, it overwrites the parameters we defined with the values we provided. The parameters we define must belong to the same `OGS6` object we passed to the ensemble object as a blueprint via the `ogs6_obj` argument. 
-
-Note that for our example, I'm altering the first object in `ogs6_obj$parameters` because so far, one `prj_parameter` is the only thing we have added to our simulation. Don't let the `parameters` argument of the `OGS6_Ensemble` constructor confuse you though - you can define all kinds of parameters here and aren't limited to variables of `prj_parameter`. If we had defined a `prj_process` already, we could have passed the variable `ogs6_obj$processes[[1]]$reference_temperature` along with the value vector `c(20, 30, 40)` to the `OGS6_Ensemble` constructor.
-
-We can check if the initialization of our ensemble object worked like this:
-
-```{r}
-    ogs6_ens$ensemble[[2]]$parameters[[1]]$value
-```
-
-`ensemble` returns the list of all `OGS6` objects we want to run the simulation on. Since we provided the vector `c(2, 3, 4)` when initializing the ensemble object, `ensemble` will have a length of four (since it contains the original `OGS6` object plus three almost-identical clones). So when we reference the second `OGS6` object in the list and inspect the `value` variable of its first `parameter` object, the return value is `2` because that's the value we defined for this parameter in our vector. 
-
-Note that the class variables of `OGS6_Ensemble` objects are read-only, so be sure to define all parameters during initialization.
-
-To start an ensemble run, we call `ogs6_ens$ogs6_run_simulation(parallel = FALSE)`. This calls `ogs6_run_simulation()` on each of the simulation objects in `ogs6_ens$ensemble`. Depending on the size of our ensemble and the available system resources, it might make sense to set the `parallel` parameter to `TRUE`. 
-
-NOTE: Parallelization depends on the OS: A fork cluster is used on UNIX-like Systems while on Windows systems, a socket cluster is used. Parallelization hasn't been tested on Windows yet.
-
-
-### Chain runs
-
-Chaining simulations works in a similar manner to creating ensembles. The main difference is how we define the relevant parameters. Like with an ensemble, for chains we use a special class object to pass our base simulation object to, only this time, the class we use is called `OGS6_Chain`. And while we define parameters along with their values for `OGS6_Ensemble` objects, the `parameter` argument of `OGS6_Chain` only refers to the parameter definitions, not their values (which will be calculated along the chain). 
-
-...
-
-To start a chain run, we call `ogs6_chain$ogs6_run_simulation()`. This calls `ogs6_run_simulation()` on the base object and then reads in the information required to start the next simulation from the output files produced by OpenGeoSys 6 (based on the parameters we defined). Since chain runs can't be parallelized, this might take a while.
+If we want to run not one but multiple simulations, we can use the simulation object we just created as a blueprint for an ensemble run. The workflow for this is described in detail [here](ensemble_workflow_vignette.Rmd).

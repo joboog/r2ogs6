@@ -79,7 +79,7 @@ Overrides default printing behaviour
 Runs the simulation. This calls r2ogs6::ogs6_run_simulation()
 internally. For ensembles, output will always be written to logfiles.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE, verbose = F)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6_Ensemble$run_simulation(parallel = FALSE, overwrite = T, verbose = F)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -87,6 +87,8 @@ internally. For ensembles, output will always be written to logfiles.
 \describe{
 \item{\code{parallel}}{flag: Should the function be run in parallel?
 This is implementented via the 'parallel' package.}
+
+\item{\code{overwrite}}{flag: Should existing files be overwritten?}
 
 \item{\code{verbose}}{flag}
 }
