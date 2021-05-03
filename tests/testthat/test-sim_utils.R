@@ -4,7 +4,7 @@ skip_if_ogs6_missing <- function() {
 
     ogs6_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
 
-    if(!file.exists(ogs6_path)){
+    if(is.null(ogs6_path) || !file.exists(ogs6_path)){
         skip("ogs executable not available for testing")
     }
 

@@ -4,7 +4,13 @@
 \alias{ogs6_run_simulation}
 \title{ogs6_run_simulation}
 \usage{
-ogs6_run_simulation(ogs6_obj, write_logfile = TRUE, ogs6_bin_path, verbose = F)
+ogs6_run_simulation(
+  ogs6_obj,
+  write_logfile = TRUE,
+  ogs6_bin_path,
+  overwrite = T,
+  verbose = F
+)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
@@ -13,8 +19,10 @@ ogs6_run_simulation(ogs6_obj, write_logfile = TRUE, ogs6_bin_path, verbose = F)
 \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
 directory will be created in \code{ogs6$sim_path} directory}
 
-\item{ogs6_bin_path}{string: Optional: OpenGeoSys 6 bin folder path. Defaults
+\item{ogs6_bin_path}{string: Optional: OpenGeoSys 6 executable path. Defaults
 to \code{options("r2ogs6.default_ogs6_bin_path")}}
+
+\item{overwrite}{flag: Should existing files be overwritten?}
 
 \item{verbose}{flag}
 }

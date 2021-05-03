@@ -13,7 +13,8 @@ ogs6_call_ogs6(ogs6_obj, write_logfile = TRUE, ogs6_bin_path, verbose = F)
 \code{FALSE}, output will be written to console. If \code{TRUE}, logfile
 directory will be created in \code{ogs6$sim_path} directory}
 
-\item{ogs6_bin_path}{string: Optional: OpenGeoSys 6 bin folder path. Defaults
+\item{ogs6_bin_path}{string: Optional: Path to OpenGeoSys 6 executable or
+OpenGeoSys container (singularity image) file. Defaults
 to \code{options("r2ogs6.default_ogs6_bin_path")}}
 
 \item{verbose}{flag}
