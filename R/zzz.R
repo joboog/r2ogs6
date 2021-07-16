@@ -3,6 +3,7 @@
 
 # Python vtk library reference
 vtk <- NULL
+dsa <- NULL
 
 .onLoad <- function(libname, pkgname){
 
@@ -30,6 +31,8 @@ vtk <- NULL
 
     # use superassignments to update global Python references
     vtk <<- reticulate::import("vtk", delay_load = TRUE)
+    dsa <<- reticulate::import("vtk.numpy_interface.dataset_adapter",
+                               delay_load = TRUE)
 
     return(invisible())
 }

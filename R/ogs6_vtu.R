@@ -232,8 +232,7 @@ OGS6_vtu <- R6::R6Class(
             }else{
                 # Check class
                 private$.vtkUnstructuredGrid <- value
-                private$.dsa_vtkUnstructuredGrid <-
-                    vtk$numpy_interface$dataset_adapter$WrapDataObject(value)
+                private$.dsa_vtkUnstructuredGrid <- dsa$WrapDataObject(value)
             }
         },
 
