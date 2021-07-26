@@ -133,6 +133,9 @@ ogs6_call_ogs6 <- function(ogs6_obj,
     if(missing(ogs6_bin_path)){
         ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
     }
+    else if(is.null(ogs6_bin_path)){
+        ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
+    }
 
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.flag(verbose))
