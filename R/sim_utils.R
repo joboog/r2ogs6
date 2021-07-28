@@ -247,10 +247,7 @@ ogs6_read_output_files <- function(ogs6_obj){
                             "\\.pvd$",
                             full.names = TRUE)
 
-    for(i in seq_len(length(pvd_paths))){
-        ogs6_obj$pvds <- c(ogs6_obj$pvds,
-                           list(OGS6_pvd$new(pvd_path = pvd_paths[[i]])))
-    }
+    ogs6_obj$pvds <- lapply(pvd_paths, function(x){OGS6_pvd$new(pvd_path = x)})
 
     return(invisible())
 }
