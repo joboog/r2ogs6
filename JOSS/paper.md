@@ -7,7 +7,6 @@ tags:
   - FEM
 authors:
   - name: Ruben Heinrich^[co-first author]
-    orcid: 0000-0003-0872-7098
     affiliation: 1
   - name: Johannes Boog^[co-first author]
     orcid: 0000-0003-0872-7098
