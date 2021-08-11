@@ -1,5 +1,6 @@
 ---
 title: "r2ogs6 Ensemble Guide"
+author: "Ruben Heinrich"
 #output: pdf_document
 output: rmarkdown::html_vignette
 vignette: >

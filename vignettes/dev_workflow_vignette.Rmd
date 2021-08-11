@@ -1,6 +1,6 @@
 ---
 title: "r2ogs6 Developer Guide"
-author: "Anna Heinrich"
+author: "Ruben Heinrich"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{r2ogs6 Developer Guide}
