@@ -341,34 +341,49 @@ new_prj_source_term <- function(type,
 
 #' prj_deactivated_subdomain
 #' @description tag: deactivated_subdomain
-#' @param time_interval list, numeric:
 #' @param material_ids string | double:
+#' @param time_interval Optional: list, numeric:
+#' @param time_curve Optional:
+#' @param line_segment Optional:
 #' @example man/examples/ex_prj_deactivated_subdomain.R
 #' @export
-prj_deactivated_subdomain <- function(time_interval,
-                                         material_ids){
+prj_deactivated_subdomain <- function(material_ids,
+                                      time_interval = NULL,
+                                      time_curve = NULL,
+                                      line_segment = NULL) {
 
-    #Coerce input
+    # Coerce input
     material_ids <- coerce_string_to_numeric(material_ids)
 
-    new_prj_deactivated_subdomain(time_interval,
-                                     material_ids)
+    new_prj_deactivated_subdomain(material_ids,
+                                  time_interval,
+                                  time_curve,
+                                  line_segment)
 }
 
 
-new_prj_deactivated_subdomain <- function(time_interval,
-                                             material_ids){
-
-    time_interval <- coerce_names(time_interval, c("start", "end"))
+new_prj_deactivated_subdomain <- function(material_ids,
+                                          time_interval = NULL,
+                                          time_curve = NULL,
+                                          line_segment = NULL) {
 
     assertthat::assert_that(assertthat::is.number(material_ids))
 
-    structure(list(time_interval = time_interval,
-                   material_ids = material_ids,
+    time_interval <- is_null_or_coerce_names(time_interval, c("start", "end"))
+
+    are_null_or_strings(time_curve)
+
+    line_segment <- is_null_or_coerce_names(line_segment, c("start", "end"))
+
+
+    structure(list(material_ids = material_ids,
+                   time_interval = time_interval,
+                   time_curve = time_curve,
+                   line_segment = line_segment,
                    xpath =
                        paste0("process_variables/process_variable/",
                               "deactivated_subdomains/deactivated_subdomain"),
-                   attr_names = character(),
+                   attr_names = c(),
                    flatten_on_exp = character()
     ),
     class = "prj_deactivated_subdomain"

@@ -1,3 +1,3 @@
-prj_deactivated_subdomain(time_interval = list(start = "0",
-                                                  end = "1"),
-                             material_ids = 1)
+prj_deactivated_subdomain(material_ids = 0,
+                          time_interval = list(start = "0.51",
+                                               end = "1.0"))
