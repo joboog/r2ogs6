@@ -12,14 +12,18 @@ prj_pr_property(
   exponent = NULL,
   residual_liquid_saturation = NULL,
   residual_gas_saturation = NULL,
+  initial_porosity = NULL,
+  minimal_porosity = NULL,
+  maximal_porosity = NULL,
   p_b = NULL,
   independent_variable = NULL,
   curve = NULL,
   minimum_relative_permeability_liquid = NULL,
+  cutoff_value = NULL,
+  lambda = NULL,
+  min_relative_permeability = NULL,
   initial_permeability = NULL,
   maximum_permeability = NULL,
-  lambda = NULL,
-  cutoff_value = NULL,
   intrinsic_permeability = NULL,
   initial_aperture = NULL,
   mean_frac_distance = NULL,
@@ -34,10 +38,9 @@ prj_pr_property(
   b2 = NULL,
   b3 = NULL,
   minimum_permeability = NULL,
-  initial_porosity = NULL,
   entry_pressure = NULL,
-  min_relative_permeability_liquid = NULL,
-  min_relative_permeability_gas = NULL
+  intrinsic_permeabilities = NULL,
+  exponents = NULL
 )
 }
 \arguments{
@@ -55,6 +58,12 @@ prj_pr_property(
 
 \item{residual_gas_saturation}{Optional:}
 
+\item{initial_porosity}{Optional:}
+
+\item{minimal_porosity}{Optional:}
+
+\item{maximal_porosity}{Optional:}
+
 \item{p_b}{Optional:}
 
 \item{independent_variable}{Optional:}
@@ -63,13 +72,15 @@ prj_pr_property(
 
 \item{minimum_relative_permeability_liquid}{Optional:}
 
-\item{initial_permeability}{Optional:}
-
-\item{maximum_permeability}{Optional:}
+\item{cutoff_value}{Optional:}
 
 \item{lambda}{Optional:}
 
-\item{cutoff_value}{Optional:}
+\item{min_relative_permeability}{Optional:}
+
+\item{initial_permeability}{Optional:}
+
+\item{maximum_permeability}{Optional:}
 
 \item{intrinsic_permeability}{Optional:}
 
@@ -99,19 +110,17 @@ prj_pr_property(
 
 \item{minimum_permeability}{Optional:}
 
-\item{initial_porosity}{Optional:}
-
 \item{entry_pressure}{Optional:}
 
-\item{min_relative_permeability_liquid}{Optional:}
+\item{intrinsic_permeabilities}{Optional:}
 
-\item{min_relative_permeability_gas}{Optional:}
+\item{exponents}{Optional:}
 }
 \description{
 tag: property
 }
 \examples{
 prj_pr_property(name = "reference_temperature",
-                   type = "Constant",
-                   value = 293.15)
+                type = "Constant",
+                value = 293.15)
 }
