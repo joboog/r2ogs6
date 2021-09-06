@@ -9,50 +9,38 @@ prj_ph_property(
   type,
   value = NULL,
   reference_value = NULL,
-  initial_porosity = NULL,
-  minimal_porosity = NULL,
-  maximal_porosity = NULL,
-  parameter_name = NULL,
-  exponents = NULL,
   offset = NULL,
   exponent = NULL,
+  parameter_name = NULL,
   swelling_pressures = NULL,
+  exponents = NULL,
   lower_saturation_limit = NULL,
   upper_saturation_limit = NULL,
-  intrinsic_permeabilities = NULL,
   ...
 )
 }
 \arguments{
-\item{name}{string: Property name}
+\item{name}{string:}
 
-\item{type}{string: Property type}
+\item{type}{string:}
 
-\item{value}{Optional: string | double: ...}
+\item{value}{Optional:}
 
-\item{reference_value}{Optional: string | double:}
+\item{reference_value}{Optional:}
 
-\item{initial_porosity}{Optional: string:}
+\item{offset}{Optional:}
 
-\item{minimal_porosity}{Optional: string | double:}
+\item{exponent}{Optional:}
 
-\item{maximal_porosity}{Optional: string | double:}
+\item{parameter_name}{Optional:}
 
-\item{parameter_name}{Optional: string:}
+\item{swelling_pressures}{Optional:}
 
-\item{exponents}{Optional: string | numeric:}
+\item{exponents}{Optional:}
 
-\item{offset}{Optional: string | double:}
+\item{lower_saturation_limit}{Optional:}
 
-\item{exponent}{Optional: list:}
-
-\item{swelling_pressures}{Optional: string | numeric:}
-
-\item{lower_saturation_limit}{Optional: string | double:}
-
-\item{upper_saturation_limit}{Optional: string | double:}
-
-\item{intrinsic_permeabilities}{Optional: string | numeric:}
+\item{upper_saturation_limit}{Optional:}
 
 \item{...}{independent_variable}
 }
@@ -61,6 +49,6 @@ tag: property
 }
 \examples{
 prj_ph_property(name = "porosity",
-                   type = "Constant",
-                   value = 0.3)
+                type = "Constant",
+                value = 0.3)
 }

@@ -16,11 +16,11 @@ build_redux_doc <- function(path,
                             xpath,
                             export_path){
 
-    if(missing(benchmark_path)){
-        benchmark_path <- unlist(options("r2ogs6.default_benchmark_path"))
+    if(missing(path)){
+        path <- unlist(options("r2ogs6.default_benchmark_path"))
     }
 
-    assertthat::assert_that(assertthat::is.string(benchmark_path))
+    assertthat::assert_that(assertthat::is.string(path))
 
     # Default to
     if(missing(pattern) && missing(xpath)){
@@ -32,7 +32,7 @@ build_redux_doc <- function(path,
     assertthat::assert_that(assertthat::is.string(xpath))
     assertthat::assert_that(assertthat::is.string(export_path))
 
-    redux_node <- build_redux_tree(path = benchmark_path,
+    redux_node <- build_redux_tree(path = path,
                                    pattern = pattern,
                                    xpath = xpath,
                                    required = TRUE)

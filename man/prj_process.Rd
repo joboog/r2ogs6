@@ -14,10 +14,6 @@ prj_process(
   solid_density = NULL,
   dimension = NULL,
   coupling_scheme = NULL,
-  reference_solid_density = NULL,
-  linear_thermal_expansion_coefficient = NULL,
-  specific_heat_capacity = NULL,
-  thermal_conductivity = NULL,
   darcy_gravity = NULL,
   reference_temperature = NULL,
   fracture_model = NULL,
@@ -73,6 +69,8 @@ prj_process(
   density_solid = NULL,
   latent_heat_evaporation = NULL,
   pf_irrv = NULL,
+  micro_porosity = NULL,
+  explicit_hm_coupling_in_unsaturated_zone = NULL,
   ...
 )
 }
@@ -94,14 +92,6 @@ prj_process(
 \item{dimension}{Optional:}
 
 \item{coupling_scheme}{Optional:}
-
-\item{reference_solid_density}{Optional:}
-
-\item{linear_thermal_expansion_coefficient}{Optional:}
-
-\item{specific_heat_capacity}{Optional:}
-
-\item{thermal_conductivity}{Optional:}
 
 \item{darcy_gravity}{Optional:}
 
@@ -212,6 +202,10 @@ prj_process(
 \item{latent_heat_evaporation}{Optional:}
 
 \item{pf_irrv}{Optional:}
+
+\item{micro_porosity}{Optional:}
+
+\item{explicit_hm_coupling_in_unsaturated_zone}{Optional:}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }

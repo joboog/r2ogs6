@@ -13,10 +13,6 @@
 #' @param solid_density Optional:
 #' @param dimension Optional:
 #' @param coupling_scheme Optional:
-#' @param reference_solid_density Optional:
-#' @param linear_thermal_expansion_coefficient Optional:
-#' @param specific_heat_capacity Optional:
-#' @param thermal_conductivity Optional:
 #' @param darcy_gravity Optional:
 #' @param reference_temperature Optional:
 #' @param fracture_model Optional:
@@ -72,6 +68,8 @@
 #' @param density_solid Optional:
 #' @param latent_heat_evaporation Optional:
 #' @param pf_irrv Optional:
+#' @param micro_porosity Optional:
+#' @param explicit_hm_coupling_in_unsaturated_zone Optional:
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
@@ -84,10 +82,6 @@ prj_process <- function(name,
                            solid_density = NULL,
                            dimension = NULL,
                            coupling_scheme = NULL,
-                           reference_solid_density = NULL,
-                           linear_thermal_expansion_coefficient = NULL,
-                           specific_heat_capacity = NULL,
-                           thermal_conductivity = NULL,
                            darcy_gravity = NULL,
                            reference_temperature = NULL,
                            fracture_model = NULL,
@@ -143,6 +137,8 @@ prj_process <- function(name,
                            density_solid = NULL,
                            latent_heat_evaporation = NULL,
                            pf_irrv = NULL,
+                        micro_porosity = NULL,
+                           explicit_hm_coupling_in_unsaturated_zone = NULL,
                            ...){
 
     #Coerce input
@@ -195,10 +191,6 @@ prj_process <- function(name,
         solid_density,
         dimension,
         coupling_scheme,
-        reference_solid_density,
-        linear_thermal_expansion_coefficient,
-        specific_heat_capacity,
-        thermal_conductivity,
         darcy_gravity,
         reference_temperature,
         fracture_model,
@@ -254,7 +246,9 @@ prj_process <- function(name,
         molecular_diffusion_coefficient,
         density_solid,
         latent_heat_evaporation,
-        pf_irrv
+        pf_irrv,
+        micro_porosity,
+        explicit_hm_coupling_in_unsaturated_zone
     )
 }
 
@@ -269,10 +263,6 @@ new_prj_process <- function(name,
                                solid_density = NULL,
                                dimension = NULL,
                                coupling_scheme = NULL,
-                               reference_solid_density = NULL,
-                               linear_thermal_expansion_coefficient = NULL,
-                               specific_heat_capacity = NULL,
-                               thermal_conductivity = NULL,
                                darcy_gravity = NULL,
                                reference_temperature = NULL,
                                fracture_model = NULL,
@@ -328,7 +318,9 @@ new_prj_process <- function(name,
                                molecular_diffusion_coefficient = NULL,
                                density_solid = NULL,
                                latent_heat_evaporation = NULL,
-                               pf_irrv = NULL) {
+                               pf_irrv = NULL,
+                            micro_porosity = NULL,
+                            explicit_hm_coupling_in_unsaturated_zone = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -357,6 +349,9 @@ new_prj_process <- function(name,
 
     is_null_or_has_class(phasefield_parameters,
                                   "prj_phasefield_parameters")
+
+    is_null_or_has_class(micro_porosity,
+                         "prj_micro_porosity")
 
     if(!is.null(calculatesurfaceflux)){
         if(length(calculatesurfaceflux) == 2){
@@ -398,10 +393,6 @@ new_prj_process <- function(name,
 
     are_null_or_strings(coupling_scheme,
                                solid_density,
-                               reference_solid_density,
-                               linear_thermal_expansion_coefficient,
-                               specific_heat_capacity,
-                               thermal_conductivity,
                                intrinsic_permeability,
                                specific_storage,
                                fluid_viscosity,
@@ -467,11 +458,6 @@ new_prj_process <- function(name,
             solid_density = solid_density,
             dimension = dimension,
             coupling_scheme = coupling_scheme,
-            reference_solid_density = reference_solid_density,
-            linear_thermal_expansion_coefficient =
-                linear_thermal_expansion_coefficient,
-            specific_heat_capacity = specific_heat_capacity,
-            thermal_conductivity = thermal_conductivity,
             darcy_gravity = darcy_gravity,
             reference_temperature = reference_temperature,
             fracture_model = fracture_model,
@@ -532,6 +518,9 @@ new_prj_process <- function(name,
             density_solid = density_solid,
             latent_heat_evaporation = latent_heat_evaporation,
             pf_irrv = pf_irrv,
+            micro_porosity = micro_porosity,
+            explicit_hm_coupling_in_unsaturated_zone =
+                explicit_hm_coupling_in_unsaturated_zone,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
@@ -632,6 +621,7 @@ prj_constitutive_relation <- function(type,
                                          dependency_parameter_mvm = NULL) {
 
     # Add coercing utility here
+    nonlinear_solver <- validate_process_nls(nonlinear_solver)
 
     new_prj_constitutive_relation(type,
                                      id,
@@ -838,11 +828,7 @@ new_prj_fracture_model <- function(type,
                                dilatancy_angle,
                                cohesion)
 
-    if(!is.null(nonlinear_solver)){
-        nonlinear_solver <- coerce_names(nonlinear_solver,
-                                                c("maximum_iterations",
-                                                  "error_tolerance"))
-    }
+    nonlinear_solver <- validate_process_nls(nonlinear_solver)
 
     structure(list(type = type,
                    normal_stiffness = normal_stiffness,
@@ -1057,6 +1043,38 @@ new_prj_phasefield_parameters <- function(residual_stiffness,
 #See prj_porous_medium.R
 
 
+#===== prj_micro_porosity =====
+
+
+#' prj_micro_porosity
+#' @description tag: micro_porosity
+#' @param mass_exchange_coefficient Required:
+#' @param nonlinear_solver Required:
+#' @export
+prj_micro_porosity <- function(mass_exchange_coefficient,
+                               nonlinear_solver) {
+
+    # Add coercing utility here
+    nonlinear_solver <- validate_process_nls(nonlinear_solver, nullable = F)
+
+    new_prj_micro_porosity(mass_exchange_coefficient,
+                           nonlinear_solver)
+}
+
+
+new_prj_micro_porosity <- function(mass_exchange_coefficient,
+                                   nonlinear_solver) {
+    structure(list(mass_exchange_coefficient = mass_exchange_coefficient,
+                   nonlinear_solver = nonlinear_solver,
+                   xpath = "processes/process/micro_porosity",
+                   attr_names = c(),
+                   flatten_on_exp = character()
+    ),
+    class = "prj_micro_porosity"
+    )
+}
+
+
 #===== validation utility =====
 
 
@@ -1134,4 +1152,20 @@ validate_fluid <- function(fluid){
     }
 
     return(invisible(fluid))
+}
+
+validate_process_nls <- function(nonlinear_solver, nullable = T){
+
+    nls_names <- c("maximum_iterations",
+               "residuum_tolerance",
+               "increment_tolerance")
+
+    if(nullable){
+        nonlinear_solver <-
+            is_null_or_coerce_names(nonlinear_solver, nls_names)
+    }else{
+        nonlinear_solver <- coerce_names(nonlinear_solver, nls_names)
+    }
+
+    return(invisible(nonlinear_solver))
 }

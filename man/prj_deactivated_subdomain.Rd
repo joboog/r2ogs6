@@ -4,18 +4,27 @@
 \alias{prj_deactivated_subdomain}
 \title{prj_deactivated_subdomain}
 \usage{
-prj_deactivated_subdomain(time_interval, material_ids)
+prj_deactivated_subdomain(
+  material_ids,
+  time_interval = NULL,
+  time_curve = NULL,
+  line_segment = NULL
+)
 }
 \arguments{
-\item{time_interval}{list, numeric:}
-
 \item{material_ids}{string | double:}
+
+\item{time_interval}{Optional: list, numeric:}
+
+\item{time_curve}{Optional:}
+
+\item{line_segment}{Optional:}
 }
 \description{
 tag: deactivated_subdomain
 }
 \examples{
-prj_deactivated_subdomain(time_interval = list(start = "0",
-                                                  end = "1"),
-                             material_ids = 1)
+prj_deactivated_subdomain(material_ids = 0,
+                          time_interval = list(start = "0.51",
+                                               end = "1.0"))
 }

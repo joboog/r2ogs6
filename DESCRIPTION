@@ -19,7 +19,8 @@ LazyData: true
 Suggests: 
     testthat,
     knitr,
-    devtools
+    devtools,
+    ggplot2
 Imports: 
     purrr,
     xml2,
