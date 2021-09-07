@@ -3,12 +3,12 @@
 skip_if_ogs6_missing <- function() {
 
     ogs6_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
-
+    print(ogs6_path)
     if(is.null(ogs6_path) || !file.exists(ogs6_path)){
         skip("ogs executable not available for testing")
     }
 
-    skip("Skipping tests that call ogs6_run_simulation()")
+    #skip("Skipping tests that call ogs6_run_simulation()")
 }
 
 
@@ -16,8 +16,8 @@ test_that("ogs6_run_simulation works for flow_no_strain.prj", {
 
     skip_if_ogs6_missing()
 
-    extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
-    sim_path <- paste0(extdata_path, "/run_simulation_test")
+    #extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+    sim_path <- paste0(tmp_dir, "/run_simulation_test")
     dir.create(sim_path)
 
     prj_path <- system.file("extdata/benchmarks/flow_no_strain/",
@@ -25,12 +25,10 @@ test_that("ogs6_run_simulation works for flow_no_strain.prj", {
                             package = "r2ogs6")
 
     # Define OGS6 object
-    ogs6_obj <- OGS6$new(sim_name = "sim",
-                         sim_id = 1,
-                         sim_path = sim_path)
+    ogs6_obj <- OGS6$new(sim_name = "sim", sim_path = sim_path)
 
     # Read in .prj data
-    read_in_prj(ogs6_obj, prj_path)
+    read_in_prj(ogs6_obj, prj_path, read_in_gml = T)
 
     # Run simulation
     e <- ogs6_run_simulation(ogs6_obj)
@@ -53,8 +51,7 @@ test_that("ogs6_run_simulation works for flow_no_strain.prj", {
 
 test_that("ogs6_export_sim_files works", {
 
-    extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
-    test_path <- paste0(extdata_path, "/export_all_sim_files_test")
+    test_path <- paste0(tmp_dir, "/export_all_sim_files_test")
     dir.create(test_path)
 
     prj_path <- (system.file("extdata/benchmarks/Elliptic/circle_radius_1",
@@ -64,7 +61,8 @@ test_that("ogs6_export_sim_files works", {
                          sim_path = test_path)
 
     read_in_prj(ogs6_obj,
-                prj_path)
+                prj_path,
+                read_in_gml = T)
 
     # Now export all files
     ogs6_export_sim_files(ogs6_obj)
@@ -91,8 +89,8 @@ test_that("run_benchmark works for flow_free_expansion.prj", {
 
     skip_if_ogs6_missing()
 
-    extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
-    sim_path <- paste0(extdata_path, "/run_benchmark_test")
+    #extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
+    sim_path <- paste0(tmp_dir, "/run_benchmark_test")
     dir.create(sim_path)
 
     prj_path <- system.file("extdata/benchmarks/flow_free_expansion/",

@@ -24,8 +24,9 @@ test_that("OGS6_vtu initialization works", {
 
     vtu_obj <- OGS6_vtu$new(vtu_path = vtu_path)
 
-    expect_equal("vtkmodules.vtkCommonDataModel.vtkUnstructuredGrid" %in%
-                     class(vtu_obj$vtkUnstructuredGrid), TRUE)
+    classes <- c("vtkCommonDataModelPython.vtkUnstructuredGrid",
+                 "vtkmodules.vtkCommonDataModel.vtkUnstructuredGrid")
+    expect_equal(any(classes %in% class(vtu_obj$vtkUnstructuredGrid)), TRUE)
 
     expect_equal(vtu_obj$number_of_points, 8)
     expect_equal(vtu_obj$number_of_cells, 1)
