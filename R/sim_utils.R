@@ -285,8 +285,14 @@ run_benchmark <- function(prj_path,
     ogs6_obj <- OGS6$new(sim_name = sim_name,
                          sim_path = sim_path)
 
+    # check if *.gml file is present
+    read_gml <-  ifelse(
+                    any(sapply(list.files(), function(x) grepl(".gml", x))),
+                    T, F)
+
     read_in_prj(ogs6_obj = ogs6_obj,
-                prj_path = prj_path)
+                prj_path = prj_path,
+                read_in_gml = read_gml)
 
     return(invisible(ogs6_run_simulation(ogs6_obj,
                                     ogs6_bin_path = ogs6_bin_path)))
