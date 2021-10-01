@@ -1,4 +1,4 @@
-# How to Contribute to r2ogs5
+# How to Contribute to r2ogs6
 
 We are happy about all contributions!
 
