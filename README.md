@@ -27,7 +27,7 @@ If you don't have any Python installation on your system, you can download the l
 First, open a terminal and clone the `r2ogs6` repository to your local machine.
 
 ```
-$ git clone https://gitlab.opengeosys.org/ag-hydinf/boog-group/r2ogs6.git
+$ git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
 ```
 
 After that, open R from your local (anaconda) environment.
