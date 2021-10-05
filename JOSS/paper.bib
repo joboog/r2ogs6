@@ -1,6 +1,6 @@
 %------------------ OpenGeoSys
 
-@article{rtc-steefel,
+@article{Steefel2015,
 author = {Steefel, C. I. and Appelo, C. A. J. and Arora, B. and Kalbacher, D. and Kolditz, O. and Lagneau, V. and Lichtner, P. C. and Mayer, K. U. and Meeussen, J. C. L. and Molins, S. and Moulton, D. and Shao, D. and Simunek, J. and Spycher, N. and Yabusaki, S. B. and Yeh, G. T.},
 title = {Reactive transport codes for subsurface environmental simulation},
 journal = {Computational geosciences},
@@ -14,13 +14,40 @@ publisher = {Springer International Publishing},
 address = {Cham}
 }
 
-@online{ogs,
-    author = {{OpenGeoSys Community}},
-    title = {OpenGeoSys},
-    year = {2020},
-    url = {https://www.opengeosys.org/},
-    urldate = {2021-09-29}
+@article{Bilke2019,
+  author={Bilke, Lars and Flemisch, Bernd and Kalbacher, Thomas and Kolditz, Olaf and Helmig, Rainer and Nagel, Thomas},
+  title={Development of Open-Source Porous Media Simulators: Principles and Experiences},
+  journal={Transport in Porous Media},
+  year={2019},
+  volume={130},
+  pages={337-361},
+  doi={10.1007/s11242-019-01310-1},
+  url={https://doi.org/10.1007/s11242-019-01310-1}
 }
+
+@book{Kolditz2012,
+  editor={Kolditz, Olaf and G{\"o}rke, Uwe-Jens and Shao, Hua and Wang, Wenqing},
+  title={Thermo-Hydro-Mechanical-Chemical Processes in Porous Media: Benchmarks and Examples},
+  edition={1.},
+  series={Lecture Notes in Computational Science and Engineering},
+  publisher={Springer Berlin Heidelberg},
+  year={2012},
+  address={Berlin, Heidelberg},
+  doi={10.1007/978-3-642-27177-9},
+  url={https://doi.org/10.1007/978-3-642-27177-9},
+  isbn={978-3-642-27176-2}
+}
+
+@Manual{Buchwald2021,
+  author = {Buchwald, J{o\"}rg and Fischer, Tom and Naumov, Dmitry Yu and Kolditz, Olaf},
+  title = {ogs6py: Python-API for the OpenGeoSys Software},
+  year = {2021},
+  url = {https://github.com/joergbuchwald/ogs6py},
+  doi={10.5281/zenodo.5387765}
+}
+
+
+%------------------ r
 
 @Manual{r-ggplot2,
     title = {ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics},
@@ -42,6 +69,35 @@ address = {Cham}
     urldate = {2021-09-29}
 }
 
+@Manual{mlrMBO,
+  title = {{{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}}},
+  author = {Bernd Bischl and Jakob Richter and Jakob Bossek and Daniel Horn and Janek Thomas and Michel Lang},
+  year = {2017},
+  url = {https://arxiv.org/abs/1703.03373},
+  urldate = {2021-10-04}
+}
+
+@Manual{lhs,
+  title = {lhs: Latin Hypercube Samples},
+  author = {Rob Carnell},
+  year = {2021},
+  note = {R package version 1.1.4},
+  url = {https://bertcarnell.github.io/lhs/index.html},
+  urldate = {2021-10-04}
+}
+
+@article{GPfit,
+ title={GPfit: An R Package for Fitting a Gaussian Process Model to Deterministic Simulator Outputs},
+ volume={64},
+ url={https://www.jstatsoft.org/index.php/jss/article/view/v064i12},
+ doi={10.18637/jss.v064.i12},
+ number={12},
+ journal={Journal of Statistical Software},
+ author={MacDonald, Blake and Ranjan, Pritam and Chipman, Hugh},
+ year={2015},
+ pages={1–23}
+}
+
 %------------------ Theis
 
 @online{benchmark-theis-problem,
@@ -60,12 +116,19 @@ address = {Cham}
     urldate = {2021-04-29}
 }
 
-%------------------ Theis
+%------------------ research projects
 
 @mastersthesis{heinrich:2021,
-	title={Entwicklung und Implementierung der Schnittstelle R2OpenGeoSys zur Workflow-Optimierung am Beispiel der Modellierung eines Stofftransportproblems},
-	author={Heinrich, Ruben},
-	year={2021},
-	month={5},
-	school={HTWK Leipzig}
+    title={Entwicklung und Implementierung der Schnittstelle R2OpenGeoSys zur Workflow-Optimierung am Beispiel der Modellierung eines Stofftransportproblems},
+    author={Heinrich, Ruben},
+    year={2021},
+    month={5},
+    school={HTWK Leipzig}
+}
+
+@unpublished{Boog2021,
+  author={Boog, Johannes and Sips, Mike and De Lucia, Marco and Eggert, Daniel and Kalbacher, Thomas},
+  title={DATA-driven CALibration of Large-Scale Physical Groundwater Flow Models using Meta--Modeling and Visual Analytics},
+  year={2021},
+  annote={Abstract accepted at AGU Fall Meeting 2021.}
 }
