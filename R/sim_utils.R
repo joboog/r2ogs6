@@ -133,6 +133,9 @@ ogs6_call_ogs6 <- function(ogs6_obj,
     if(missing(ogs6_bin_path)){
         ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
     }
+    else if(is.null(ogs6_bin_path)){
+        ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
+    }
 
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.flag(verbose))
@@ -244,10 +247,7 @@ ogs6_read_output_files <- function(ogs6_obj){
                             "\\.pvd$",
                             full.names = TRUE)
 
-    for(i in seq_len(length(pvd_paths))){
-        ogs6_obj$pvds <- c(ogs6_obj$pvds,
-                           list(OGS6_pvd$new(pvd_path = pvd_paths[[i]])))
-    }
+    ogs6_obj$pvds <- lapply(pvd_paths, function(x){OGS6_pvd$new(pvd_path = x)})
 
     return(invisible())
 }
@@ -285,8 +285,14 @@ run_benchmark <- function(prj_path,
     ogs6_obj <- OGS6$new(sim_name = sim_name,
                          sim_path = sim_path)
 
+    # check if *.gml file is present
+    read_gml <-  ifelse(
+                    any(sapply(list.files(), function(x) grepl(".gml", x))),
+                    T, F)
+
     read_in_prj(ogs6_obj = ogs6_obj,
-                prj_path = prj_path)
+                prj_path = prj_path,
+                read_in_gml = read_gml)
 
     return(invisible(ogs6_run_simulation(ogs6_obj,
                                     ogs6_bin_path = ogs6_bin_path)))

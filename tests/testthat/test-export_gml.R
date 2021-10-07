@@ -3,8 +3,7 @@
 test_that("export_gml works", {
 
     # Get extdata directory and create folder for the test
-    extdata_path <- system.file("extdata/test_tempdirs/", package = "r2ogs6")
-    test_path <- paste0(extdata_path, "/export_gml_test")
+    test_path <- paste0(tmp_dir, "/export_gml_test")
     dir.create(test_path)
 
     # Define gml object

@@ -8,10 +8,10 @@
 #' @noRd
 read_in_points <- function(xml_doc) {
 
-    points_tibble <- tibble::tibble(x = c(),
-                                    y = c(),
-                                    z = c(),
-                                    name = c())
+    points_tibble <- tibble::tibble(x = numeric(),
+                                    y = numeric(),
+                                    z = numeric(),
+                                    name = character())
 
     points_nodeset <- xml2::xml_find_all(xml_doc, "//points/*")
 

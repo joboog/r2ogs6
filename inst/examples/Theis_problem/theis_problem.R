@@ -15,7 +15,6 @@ library(r2ogs6)
 # Then we can create a simulation object.
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
-                     sim_id = 1,
                      sim_path = "D:/OGS_Sim/")
 
 
@@ -25,7 +24,7 @@ ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
 prj_path <- "inst/extdata/benchmarks/AxiSymTheis/axisym_theis.prj"
 
 # Read in the benchmark into our simulation object
-read_in_prj(ogs6_obj, prj_path)
+read_in_prj(ogs6_obj, prj_path, T)
 
 
 #===== Run simulation =====

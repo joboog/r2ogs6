@@ -190,7 +190,8 @@ test_that("read_in_prj works for processes/include tags", {
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
-                prj_path)
+                prj_path,
+                read_in_gml = T)
 
     expect_equal(length(ogs6_obj$processes), 1)
     expect_equal(names(ogs6_obj$processes)[[1]], "include")
@@ -207,7 +208,8 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
-                prj_path)
+                prj_path,
+                read_in_gml = T)
 
     expect_equal(ogs6_obj$processes[[1]]$name, "HM")
 })
