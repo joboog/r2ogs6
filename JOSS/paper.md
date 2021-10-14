@@ -29,20 +29,17 @@ bibliography: paper.bib
 
 <!--etwas Einleitung ist doch noetig. Ich weiss, ich hatte das vorher in den saechsten Abschnitt verschobe. Asche auf mein Haupt.-->
 Understanding the effects of climate change and extreme events on our environmental systems, especially the subsurface, is of utmost importance and requires key tools such as environmental and geoscientific physics--based simulation models.
-Our `R` package `r2ogs6` provides a file--based interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, allows `R` users to perform and analyze environmental and geo--scientific simulations in `R`.
+Our `R` package `r2ogs6` provides a file--based interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, allows `R` users to perform and analyze environmental and geoscientific simulations in `R`.
 <!--`OpenGeoSys 6` itself is a scientific open source project for the development of numerical methods to simulate (coupled) thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@ogs].-->
 `r2ogs6` allows to access the capabilities of `OpenGeoSys 6` to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media within `R`.
-In this way, it enables `R` users to model sub--surface phenomena and technologies such as groundwater flow, reactive transport, geothermal energy usage and/or nuclear waste repositories as well as to analyze and further process such models with the power a high--level data science language.
+In this way, `r2ogs6` enables `R` users to model sub--surface phenomena and technologies such as groundwater flow, reactive transport, geothermal energy usage and/or nuclear waste repositories as well as to analyze and further process simulation output with the power of a high--level data science language.
 `r2ogs6` enables users to prepare and manipulate `OpenGeoSys 6` simulation models, run the simulations and retrieve corresponding output, all within an `R` session.
 Therefore, `R` classes and functions were designed to communicate with the respective `OpenGeoSys 6` input and output files as well as executables.
-<!--Simulation parameters can be defined in `R` by either reading in existing input files or manually using dedicated class objects.
-After all parameters have been defined, simulations can be started from `R` without having to switch to the command line.
-Finally, the output files can be read in to analyse the model results.
-Furthermore, `r2ogs6` can also generate `R` scripts from existing `OpenGeoSys 6` input files.-->
 In addition to single-simulation runs, `r2ogs6` supports ensemble runs that can be used to set up uncertainty and sensitivity analyses as well as parameter studies.
 It allows conducting and documenting `OpenGeoSys 6` simulations in reproducible `R` scripts or notebooks.
 As `OpenGeoSys 6` is continuously being developed further, code generation functions for `r2ogs6` developers were included to speed up the package updating process in case of future changes to `OpenGeoSys 6`.
-`r2ogs6` aims to bridge the gap between data produced by a scientific code and data science and provides `R` users with an opportunity to analyze environmental sub--surface systems.
+
+`r2ogs6` aims to bridge the gap between data produced by a scientific simulation code and data science, and, provides `R` users with an opportunity to model environmental sub--surface systems.
 Besides increasing the usability of `OpenGeoSys 6`, `r2ogs6` also improves the reproducibility of research results.
 
 
@@ -61,10 +58,12 @@ Especially the set up of simulation ensembles as well as the calibration of simu
 
 Here is where high--level languages such as `R` and `Python` can prove useful.
 Via an interface that adds a layer on top of `OpenGeoSys 6`, the user can access preprocessing tools, the solver itself and postprocessing tools alike, thus increasing usability and accessibility.
-For instance, a `Python` API is currently under development [@Buchwald2021]. Nonetheless, we consider an `R` interface to be just as important, as `R` is a well known language in the environmental and geosciences.
+The developement and application of user interfaces from geoscientific simulators to high--level programming languages has been gaining increasing attention in recent years; examples are `FloPy` [@Bakker2016], `ogs5py` [@Mueller2021], `RedModRPhree`[@DeLucia2021],  `r2ogs5` [@Schad2021] and `toughio` [@Luu2020].
+For `OpenGeoSys 6`, a `Python` interface is currently under development [@Buchwald2021]. 
+Nonetheless, we consider an `R` interface to be just as important, as `R` is a well known language in the environmental and geosciences.
 Furthermore, since `R` is a popular language in the field of data science with many powerful packages for data analysis and visualisation, e. g. `dplyr` [@r-dplyr] and `ggplot2` [@r-ggplot2], it's a natural choice for processing data generated by simulation tools such as `OpenGeoSys 6`.
 Especially, `r2ogs6` can facilitate the calibration of `OpenGeoSys 6` models due to the implemented functions to design ensemble runs as well the available `R` functions and packages for modeling such as  `lhs` [@lhs], `mlrBO` [@mlrMBO].
-For `R` users who do not have a lot of (or any) experience with, but an interest in environmental and geo--scientific sub--surface simulations, `r2ogs6` provides a good starting point.
+For `R` users who do not have a lot of (or any) experience with, yet an interest in environmental and geoscientific sub--surface simulations, `r2ogs6` provides a good starting point.
 Utilizing `r2ogs6`, users can easily set up their first `OpenGeoSys 6` simulations by choosing one of numerous provided benchmark files.
 Moreover, with `R` scripts and `R--Markdown` or `JupyteR` notebooks, modeling workflows can easily be documented, published and shared with peers.
 
@@ -86,7 +85,7 @@ These are read in or written via `S3` class based functions (block `read_in* / e
 When reading in, the XML--based `*.prj` input file is parsed. Individual tags are represented as `S3` class objects which are available via active fields in the `OGS6` object.
 <!--`S3` classes for the `*.prj` file tags were preferred over one entire `R6 class` for reasons of simplicity.-->
 Individual `*.prj` tags may change due to ongoing development activities in `OpenGeoSys 6`, therefore, future updates of the related classes may be necessary.
-To simplify updates like this, helper functions for analyzing `*.prj` files as well as suggesting and creating classes were implemented (see [respective manual](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
+To simplify updates like this, helper functions for analyzing `*.prj` files as well as suggesting and creating classes were implemented.
 
 As the `*.gml` and the `*.vtu` files are less complex and less likely to change, these files are represented as `R6` class objects and also available as active fields inside the `OGS6` object.
 To execute simulations, functions for writing the `OpenGeoSys 6` input (`ogs6_export_simfiles()`) and call the `OpenGeoSys 6` executable (`ogs6_run_simulation()`) were implemented.
@@ -100,15 +99,16 @@ In this way, all data required for and produced by `OpenGeoSys 6` can be represe
 
 ![Schematic of the `r2ogs6` structure.\label{fig:structure}](r2ogs6_structure_schematic.png)
 
-The package comes with tutorials demonstrating how to set up and run a single simulation ([here](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)), set up simulation ensembles ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)) and further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
+The package comes with tutorials demonstrating how to set up and run a single simulation ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)), set up simulation ensembles ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)) and further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
 Furthermore, a seperate repository provides `r2ogs6` scripts to set up `OpenGeoSys 6` benchmarks ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6_benchmarks)).
 
 
 # Acknowledgements
 
-This work was funded by the Helmholtz Organization within the context of the project *Digital Earth* (Ref. XXX).
-We would like to acknowledge the *OpenGeoSys Community* for technical support and for hosting the GitLab server for our development.
-Furthermore, Johannes Boog acknowledges the Helmholtz Centre for Environmental Research--UFZ.
+Johannes Boog acknowledges the Helmholtz Organization for funding within the context of the project *Digital Earth* (Ref. XXX).
+Furthermore, Johannes Boog and Thomas Kalbacher acknowledge the Helmholtz Centre for Environmental Research--UFZ for additional funding and support.
+We would like to express our gratitude to the *OpenGeoSys Community* for technical support and for hosting the GitLab server for our development.
+Furthermore we also like to thank Philipp Schad for additional technical support.
 
 
 # References
