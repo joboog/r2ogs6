@@ -124,6 +124,39 @@ OGS6 <- R6::R6Class("OGS6",
       invisible(self)
     },
 
+    #' @description
+    #' Update a component of the \code{OGS6} object.
+    #' @param cmpts list(sublist, length(sublist) == 2): The first element
+    #' of a sublist is a character that calls an \code{OGS6} component, the
+    #' second one is the corresponding value.
+    #' @examples
+    #' \dontrun{ogs6_obj$update_component(list(
+    #'                    list("ogs6_obj$parameters[[1]]$value", 2.3),
+    #'                    list("ogs6_obj$media[[1]]$properties[[2]]$value",
+    #'                         1.0e-3)))}
+    update_component = function(cmpts){#cmpts=list(list(call_str, value))
+        assertthat::assert_that(is.list(cmpts))
+
+        for (i in seq_along(cmpts)){
+            # check sublists
+            assertthat::assert_that(is.list(cmpts[[i]]))
+            assertthat::assert_that(length(cmpts[[i]])==2)
+            assertthat::assert_that(is.character(cmpts[[i]][[1]]))
+
+            # update component via call
+            call_str <- cmpts[[i]][[1]]
+            value <- cmpts[[i]][[2]]
+            call_str <- gsub("^[A-Za-z_0-9]*\\$", "self$", call_str)
+            assertthat::assert_that(!is.null(eval(parse(text = call_str))),
+                                    msg = paste(call_str,
+                                                "not found in ogs6_obj",
+                                                self$sim_name))
+            set_call <- paste0(call_str, " <- ", value)
+            eval(parse(text = set_call))
+        }
+        invisible(self)
+    },
+
 
     #===== Utility =====
 
