@@ -38,9 +38,9 @@ Imports:
     doParallel,
     reticulate,
     config,
-    sticky
+    sticky,
+    foreach
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Depends: 
-    foreach,
     R (>= 2.10)

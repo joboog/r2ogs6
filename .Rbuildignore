@@ -6,6 +6,7 @@
 ^inst/examples/Theis_well_pumping
 ^LICENSE.md
 ^config.yml
+^.gitlab-ci.yml
 ^doc$
 ^Meta$
 ^data-raw$
