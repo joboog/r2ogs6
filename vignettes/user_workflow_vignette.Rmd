@@ -1,19 +1,24 @@
 ---
 title: "r2ogs6 User Guide"
 author: "Ruben Heinrich"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{r2ogs6 User Guide}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_document
+#output: rmarkdown::html_vignette
+#vignette: >
+#  %\VignetteIndexEntry{r2ogs6 User Guide}
+#  %\VignetteEngine{knitr::rmarkdown}
+#  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = nzchar(Sys.getenv("r2ogs6_ensemble_guide_eval")),
   collapse = TRUE,
   comment = "#>"
-)
 
+)
+# the python library vtk needs an explicit import statement for knitting
+vtk <- reticulate::import("vtk")
+dsa <- reticulate::import("vtk.numpy_interface.dataset_adapter")
 devtools::load_all(".")
 ```
 
@@ -42,9 +47,9 @@ To represent a simulation object, `r2ogs6` uses an `R6` class called `OGS6`. If 
 
 ```{r}
 # Change this to fit your system
-sim_path <- system.file("extdata/benchmarks/flow_no_strain",
-                        package = "r2ogs6")
-
+# sim_path <- system.file("extdata/benchmarks/flow_no_strain",
+#                         package = "r2ogs6")
+sim_path <- tempdir()
 ogs6_obj <- OGS6$new(sim_name = "my_simulation",
                      sim_path = sim_path)
 ```
@@ -66,8 +71,9 @@ For demonstration purposes, I will use a project from the `HydroMechanics` bench
 ```{r}
 # Change this to fit your system
 prj_path <- paste0(sim_path, "/flow_no_strain.prj")
-
-read_in_prj(ogs6_obj, prj_path = prj_path)
+prj_path <- system.file("extdata/benchmarks/flow_no_strain/flow_no_strain.prj",
+                       package = "r2ogs6")
+read_in_prj(ogs6_obj, prj_path = prj_path, read_in_gml = T)
 ```
 
 
@@ -86,7 +92,7 @@ ogs6_obj$get_status()
 
 Since we haven't defined anything so far, you'll see a lot of red there. But the results gave us a hint what we can add. We'll go from there and try to find out more about the possible input data. Say we want to find out more about `process` objects.
 
-```r
+```{r}
 # To take a look at the documentation, use ? followed by the name of a class
 ?prj_process
 ```
@@ -128,30 +134,33 @@ Since I already read in a `.prj` file earlier, I won't run the above snippet. If
 
 As soon as we've added all necessary parameters, we can try starting our simulation. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console.
 
-```{r eval = FALSE}
+```{r results='hide'}
 ogs6_run_simulation(ogs6_obj, write_logfile = TRUE)
 ```
-
-
-```{r include = FALSE}
-ogs6_read_output_files(ogs6_obj)
-```
-
 
 ## Retrieve the results
 After our simulation is finished, we might want to plot some results. But how do we retrieve them? If all went as expected, we don't need to call an extra function for that because `ogs6_run_simulation()` already calls `ogs6_read_output_files()` internally. We only need to decide what information we want to extract. Say we're interested in the `pressure` Parameter from the last timestep. For this easy example, only one `.pvd` file was produced.
 
-```{r}
+```{r include = T}
+ogs6_read_output_files(ogs6_obj)
+```
+
+```{r fig.width=5}
 # Extract relevant info into dataframe
 result_df <- ogs6_obj$pvds[[1]]$get_point_data(keys = c("pressure"))
+result_df <- result_df[(result_df$timestep!=0),]
   
 # Plot results
 ggplot(result_df,
        aes(x = x,
-           y = pressure)) +
+           y = y,
+           color = pressure)) +
     geom_point() +
+    #geom_raster(interpolate = T)+
+    #geom_contour_filled()+
     xlab("x coordinate") +
-    ylab("pressure")
+    ylab("y coordinate") +
+    theme_bw()
 ```
 
 

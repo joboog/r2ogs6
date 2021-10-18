@@ -1,7 +1,6 @@
 ---
 title: "r2ogs6 Ensemble Guide"
 author: "Ruben Heinrich"
-#output: pdf_document
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{r2ogs6 Ensemble Guide}
@@ -18,6 +17,11 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE
 )
+
+# the python library vtk needs an explicit import statement for knitting
+vtk <- reticulate::import("vtk")
+dsa <- reticulate::import("vtk.numpy_interface.dataset_adapter")
+devtools::load_all(".")
 ```
 
 ```{r setup}
@@ -60,13 +64,13 @@ testdir_path <- tempdir()
 sim_path <- paste0(testdir_path, "/axisym_theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
-                     sim_path = "D:/ogs6_theis/axisym_theis_sim")
+                     sim_path = sim_path)
 
 # Change this to fit your system
 prj_path <- system.file("extdata/benchmarks/AxiSymTheis/",
                         "axisym_theis.prj", package = "r2ogs6")
 
-read_in_prj(ogs6_obj, prj_path)
+read_in_prj(ogs6_obj, prj_path, read_in_gml = T)
 ```
 
 
@@ -89,11 +93,11 @@ ogs6_ens <-
 
 Now you can start the simulation.
 
-```{r, eval = FALSE}
+```{r results='hide'}
 ogs6_ens$run_simulation()
 ```
 
-```{r, include = FALSE}
+```{r, results='hide'}
 lapply(ogs6_ens$ensemble, ogs6_read_output_files)
 ```
 
@@ -188,11 +192,11 @@ ogs6_ens_big <-
 
 Now you can start the simulation.
 
-```{r, eval = FALSE}
+```{r results='hide'}
 ogs6_ens_big$run_simulation()
 ```
 
-```{r, include = FALSE}
+```{r results='hide'}
 lapply(ogs6_ens_big$ensemble, ogs6_read_output_files)
 ```
 
@@ -241,7 +245,7 @@ log_vals <- vapply(percentages, function(x){
 back_transf_vals <- 10^log_vals
 
 # Change sim_path to fit your system
-ogs6_obj$sim_path <- "D:/ogs6_theis/axisym_theis_sim_log_storage"
+ogs6_obj$sim_path <- paste0(testdir_path, "/axisym_theis_sim_log_storage")
 
 # Set up new ensemble
 ogs6_ens_sto <-
@@ -260,11 +264,11 @@ ogs6_ens_sto <-
 
 As before, we can run the simulation right away.
 
-```{r, eval = FALSE}
+```{r results='hide'}
 ogs6_ens_sto$run_simulation()
 ```
 
-```{r, include = FALSE}
+```{r results='hide'}
 lapply(ogs6_ens_sto$ensemble, ogs6_read_output_files)
 ```
 
@@ -311,13 +315,13 @@ First, we create a simulation object to base our ensemble on and read in the `.p
 sim_path <- paste0(testdir_path, "/theis_sim")
 
 ogs6_obj <- OGS6$new(sim_name = "theis",
-                     sim_path = "D:/ogs6_theis/theis_sim")
+                     sim_path = sim_path)
 
 # Change this to fit your system
 prj_path <- system.file("extdata/benchmarks/theis_well_pumping/",
                         "theis.prj", package = "r2ogs6")
 
-read_in_prj(ogs6_obj, prj_path)
+read_in_prj(ogs6_obj, prj_path, read_in_gml = T)
 
 # Increase each_steps
 ogs6_obj$time_loop$output$timesteps$pair$each_steps <- 200
@@ -348,11 +352,11 @@ ogs6_ens_theis_2 <-
 
 Now you can start the simulation.
 
-```{r, eval = FALSE}
+```{r results='hide'}
 ogs6_ens_theis_2$run_simulation()
 ```
 
-```{r, include = FALSE}
+```{r results='hide'}
 lapply(ogs6_ens_theis_2$ensemble, ogs6_read_output_files)
 ```
 
@@ -433,7 +437,7 @@ log_vals <- vapply(percentages, function(x){
 back_transf_vals <- 10^log_vals
 
 # Change sim_path to fit your system
-ogs6_obj$sim_path <- "D:/ogs6_theis/theis_sim_log_slope"
+ogs6_obj$sim_path <- paste0(testdir_path, "/theis_sim_log_slope")
 
 # Set up new ensemble
 ogs6_ens_slo <-
@@ -452,11 +456,11 @@ ogs6_ens_slo <-
 
 As before, we can run the simulation right away.
 
-```{r, eval = FALSE}
+```{r results='hide'}
 ogs6_ens_slo$run_simulation()
 ```
 
-```{r, include = FALSE}
+```{r results='hide'}
 lapply(ogs6_ens_slo$ensemble, ogs6_read_output_files)
 ```
 
