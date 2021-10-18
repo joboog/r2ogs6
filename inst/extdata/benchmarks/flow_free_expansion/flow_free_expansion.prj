@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version='1.0' encoding='ISO-8859-1'?>
 <OpenGeoSysProject>
     <mesh>cube_1x1x1_quad.vtu</mesh>
     <geometry>cube_1x1x1.gml</geometry>
@@ -18,14 +18,8 @@
                 <pressure>pressure</pressure>
             </process_variables>
             <secondary_variables>
-                <secondary_variable internal_name="sigma_xx" output_name="sigma_xx"/>
-                <secondary_variable internal_name="sigma_yy" output_name="sigma_yy"/>
-                <secondary_variable internal_name="sigma_zz" output_name="sigma_zz"/>
-                <secondary_variable internal_name="sigma_xy" output_name="sigma_xy"/>
-                <secondary_variable internal_name="epsilon_xx" output_name="epsilon_xx"/>
-                <secondary_variable internal_name="epsilon_yy" output_name="epsilon_yy"/>
-                <secondary_variable internal_name="epsilon_zz" output_name="epsilon_zz"/>
-                <secondary_variable internal_name="epsilon_xy" output_name="epsilon_xy"/>
+                <secondary_variable internal_name="sigma" output_name="sigma"/>
+                <secondary_variable internal_name="epsilon" output_name="epsilon"/>
                 <secondary_variable internal_name="velocity" output_name="velocity"/>
             </secondary_variables>
             <specific_body_force>0 0 0</specific_body_force>
@@ -57,24 +51,24 @@
                     <type>Solid</type>
                     <properties>
                         <property>
-                            <name>porosity</name>
-                            <type>Constant</type>
-                            <value>0.3</value>
-                        </property>
-                        <property>
                             <name>density</name>
                             <type>Constant</type>
                             <value>1.43e3</value>
-                        </property>
-                        <property>
-                            <name>biot_coefficient</name>
-                            <type>Constant</type>
-                            <value>0.6</value>
                         </property>
                     </properties>
                 </phase>
             </phases>
             <properties>
+                <property>
+                    <name>porosity</name>
+                    <type>Constant</type>
+                    <value>0.3</value>
+                </property>
+                <property>
+                    <name>biot_coefficient</name>
+                    <type>Constant</type>
+                    <value>0.6</value>
+                </property>
                 <property>
                     <name>reference_temperature</name>
                     <type>Constant</type>
@@ -125,14 +119,8 @@
             <variables>
                 <variable>displacement</variable>
                 <variable>pressure</variable>
-                <variable>sigma_xx</variable>
-                <variable>sigma_yy</variable>
-                <variable>sigma_zz</variable>
-                <variable>sigma_xy</variable>
-                <variable>epsilon_xx</variable>
-                <variable>epsilon_yy</variable>
-                <variable>epsilon_zz</variable>
-                <variable>epsilon_xy</variable>
+                <variable>sigma</variable>
+                <variable>epsilon</variable>
                 <variable>velocity</variable>
             </variables>
             <suffix>_ts_{:timestep}_t_{:time}</suffix>
