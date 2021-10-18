@@ -55,6 +55,8 @@ For tutorials on how to use the `r2ogs6` package, have a look at its vignettes:
 * [Ensemble Guide](vignettes/ensemble_workflow_vignette.Rmd)
 * [Developer Guide](vignettes/dev_workflow_vignette.Rmd)
 
+Furthermore, we compiled `R` scripts on how to create the [OpenGeoSys benchmarks](https://www.opengeosys.org/docs/benchmarks) with `r2ogs6` here: [r2ogs6 Benchmark Scripts](https://gitlab.opengeosys.org/ogs/tools/r2ogs6-benchmarks).
+
 ## Links
 
 * [OpenGeoSys Project](https://www.opengeosys.org/)
