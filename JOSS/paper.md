@@ -27,8 +27,12 @@ bibliography: paper.bib
 
 # Summary
 
-<!--etwas Einleitung ist doch noetig. Ich weiss, ich hatte das vorher in den saechsten Abschnitt verschobe. Asche auf mein Haupt.-->
-Understanding the effects of climate change and extreme events on our environmental systems, especially the subsurface, is of utmost importance and requires key tools such as environmental and geoscientific physics--based simulation models.
+<!--etwas Einleitung ist doch noetig. Ich weiss, ich hatte das vorher in den saechsten Abschnitt verschobe. Asche auf mein Haupt. 
+[TK na dann mach ich da mal einen modifizierten Aufhänger] -->
+Understanding the impacts of climate change and hydrologic extreme events on our subsurface Earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies,together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services. Of course, the needs of the population and the needs of nature are often in conflict and this increases the size and complexity of the scenarios tremendously. The core of such studies is most often the system and scenario analysis based on numerical process simulations of individual or coupled earth systems compartments. One such tool is OpenGeoSys (OGS) (https://www.opengeosys.org/) which is capable of simulating thermo-hydro-mechanical-chemical (THMC) processes in porous and fractured media. OGS has applications ranging from small-scale geotechnical investigations,  (Reference) to reservoir studies and even groundwater management of entire landscapes (Reference).  
+Since the model setups get more and more complex and larger, faster and more efficient setup and parametrization procedures are needed to create meaningful ensembles which allow to identify the right action needs and to derive further decision support for the above described problems.
+<!-- TK: Bin mir über die Struktur eines solchen Papers noch nicht ganz im klaren --> 
+
 Our `R` package `r2ogs6` provides a file--based interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, allows `R` users to perform and analyze environmental and geoscientific simulations in `R`.
 <!--`OpenGeoSys 6` itself is a scientific open source project for the development of numerical methods to simulate (coupled) thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@ogs].-->
 `r2ogs6` allows to access the capabilities of `OpenGeoSys 6` to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media within `R`.
