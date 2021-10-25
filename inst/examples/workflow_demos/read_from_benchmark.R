@@ -9,7 +9,7 @@ library(r2ogs6)
 # You can do this by commenting out the line below and modifying the path to
 # fit your system.
 
-# options("r2ogs6.default_ogs_bin_path" = "your_path_here")
+# options("r2ogs6.default_ogs6_bin_path" = "your_path_here")
 
 
 # Then we can create a simulation object.
