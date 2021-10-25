@@ -234,10 +234,20 @@ ogs6_generate_benchmark_script <- function(prj_path,
         }
 
         for(j in seq_along(ogs6_component)){
-            script_str <-
-                paste0(script_str,
-                       paste0(construct_add_call(ogs6_component[[j]]),
-                              "\n\n"))
+            # TODO(boog): this is just an quick and dirty solution for the
+            # include tag for now
+            if(!is.null(names(ogs6_component[j])) &
+               all(names(ogs6_component[j])=="include")){
+                   script_str <-
+                       paste0(script_str,
+                              get_component_call, " <- \"", ogs6_component[[j]],
+                              "\"\n\n")
+            }else{
+                script_str <-
+                    paste0(script_str,
+                           paste0(construct_add_call(ogs6_component[[j]]),
+                                  "\n\n"))
+            }
         }
     }
 
