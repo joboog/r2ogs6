@@ -139,7 +139,7 @@ ogs6_generate_benchmark_script <- function(prj_path,
                                            sim_path,
                                            ogs6_bin_path,
                                            script_path,
-                                           read_in_gml,
+                                           read_in_gml = FALSE,
                                            read_in_vtu = FALSE) {
 
     if(missing(sim_path)){
@@ -166,8 +166,8 @@ ogs6_generate_benchmark_script <- function(prj_path,
 
     read_in_prj(ogs6_obj,
                 prj_path,
-                read_in_vtu,
-                read_in_gml = FALSE)
+                read_in_gml = FALSE,
+                read_in_vtu)
 
     prj_components = ogs6_prj_top_level_classes()
 
