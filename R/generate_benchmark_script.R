@@ -208,11 +208,12 @@ ogs6_generate_benchmark_script <- function(prj_path,
 
     # Add .vtu references and optionally, OGS6_vtu objects
     for(i in seq_len(length(ogs6_obj$meshes))){
-        script_str <- paste0(script_str,
-                             "ogs6_obj$add_vtu(",
-                             construct_add_call(ogs6_obj$meshes[[i]]), ",\n",
-                             read_in_vtu,
-                             ")\n\n")
+        script_str <-
+            paste0(script_str,
+                   "ogs6_obj$add_vtu(path = \"",
+                   ogs6_obj$meshes[[i]]$path, "\",\n",
+                   "axisym = ", ogs6_obj$meshes[[i]]$axially_symmetric, ",\n",
+                   "read_in_vtu = ", read_in_vtu, ")\n\n")
     }
 
     # Add class objects (and such in wrapper lists)
