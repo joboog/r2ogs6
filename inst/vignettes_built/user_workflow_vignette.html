@@ -320,6 +320,71 @@ ggplot(result_df,
 <h2>Running multiple simulations</h2>
 <p>If we want to run not one but multiple simulations, we can use the simulation object we just created as a blueprint for an ensemble run. The workflow for this is described in detail <a href="ensemble_workflow_vignette.Rmd">here</a>.</p>
 </div>
+<div id="benchmark-script-generation" class="section level2">
+<h2>Benchmark script generation</h2>
+<p>Another feature of <code>r2ogs6</code> is benchmark script generation. For this, there are two functions.</p>
+<ul>
+<li><p><code>ogs6_generate_benchmark_script()</code> creates an R script from a <code>.prj</code> file</p></li>
+<li><p><code>ogs6_generate_benchmark_scripts()</code> is a wrapper for the former. Instead of a single <code>.prj</code> file path, it takes a directory path as its argument.</p></li>
+</ul>
+<p>Let’s look at the parameters for <code>ogs6_generate_benchmark_script()</code> first. Say we have a project file <code>sim_file.prj</code> we want to generate a script from.</p>
+<pre class="r"><code># The path to the project file you want to generate a script from
+prj_path &lt;- &quot;your_path/sim_file.prj&quot;
+
+# The path you want to save the simulation files to
+sim_path &lt;- &quot;your_sim_directory/&quot;
+
+# The path to your `ogs.exe` (if not already specified in `r2ogs6` options)
+ogs6_bin_path &lt;- &quot;your_ogs6_bin_path/&quot;
+
+# The path you want your benchmark script to be saved to
+script_path &lt;- &quot;your_script_directory/&quot;</code></pre>
+<p>Now that we have defined our parameters, we can generate the benchmark script.</p>
+<pre class="r"><code>ogs6_generate_benchmark_script(prj_path = prj_path,
+                               sim_path = sim_path,
+                               ogs6_bin_path = ogs6_bin_path,
+                               script_path = script_path)</code></pre>
+<p>On the other hand, if we want to generate R scripts from multiple (or all) benchmarks, we can use the wrapper function <code>ogs6_generate_benchmark_scripts()</code>. Its parameters are basically the same, only this time we supply it with a directory path instead of a <code>.prj</code> path to start from.</p>
+<p>You can download the benchmarks (or the subfolder you need) from <a href="https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data">here</a> and then set <code>path</code> to their location on your system.</p>
+<pre class="r"><code># The path to the directory you want to generate R scripts from
+path &lt;- &quot;your_benchmark_path/&quot;
+
+# The path you want to save the simulation files to
+sim_path &lt;- &quot;your_sim_directory/&quot;
+
+# The path you want your benchmark scripts to be saved to
+script_path &lt;- &quot;your_script_directory/&quot;
+
+# Optional: Use if you want to start from a specific `.prj` file
+starting_from_prj_path &lt;- &quot;&quot;
+
+# Optional: Use if you want to skip specific `.prj` files
+skip_prj_paths &lt;- character()
+
+# Optional: Use if you want to skip specific `.prj` files
+skip_prj_paths &lt;- character()
+
+# Optional: Use if you want to restrict scripting to specific `.prj` files
+only_prj_files &lt;- character()</code></pre>
+<p>And we’re set! Note that <code>ogs6_generate_benchmark_scripts()</code> will reconstruct the structure of the folder your benchmarks are stored in, e. g. if there’s a file <code>path/a/file.prj</code>, you will find the corresponding R script in <code>sim_path/a/file.R</code>.</p>
+<pre class="r"><code>ogs6_generate_benchmark_scripts(path = path,
+                                sim_path = sim_path,
+                                script_path = script_path,
+                                starting_from_prj_path = starting_from_prj_path,
+                                skip_prj_paths = skip_prj_paths,
+                                only_prj_files = only_prj_files)</code></pre>
+<p>With this, we can generate scripts from all benchmarks in a single call. Of course you can modify <code>path</code> to your liking if you’re only interested in generating scripts from certain subfolders.</p>
+<p>Furthermore, you can restrict the script generation to benchmarks that used as test in OGS 6.</p>
+<pre class="r"><code># extract *.prj files that are used as tests
+rel_testbm_paths &lt;- get_benchmark_paths(&quot;path/to/ogs-source-code/ProcessLib/&quot;)
+rel_testbm_paths &lt;- sapply(rel_testbm_paths, basename)
+
+ogs6_generate_benchmark_scripts(path = path,
+                                sim_path = sim_path,
+                                script_path = script_path,
+                                only_prj_files = rel_testbm_paths)</code></pre>
+<p>NOTE: New benchmarks and <code>.prj</code> parameters are constantly being added to OGS6. If a benchmark contains parameters that have not been added to <code>r2ogs6</code> yet, the script generation functions will not work. If this is the case, they will be skipped and the original error message will be displayed in the console.</p>
+</div>
 
 
 
