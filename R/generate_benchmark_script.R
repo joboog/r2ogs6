@@ -10,6 +10,7 @@
 #' @inheritParams ogs6_generate_benchmark_script
 #' @param starting_from_prj_path string: Optional: `.prj` path to start from
 #' @param skip_prj_paths character: Optional: `.prj` paths to skip
+#' @param only_prj_files character: Optional: `.prj` files to limit to.
 #' @export
 ogs6_generate_benchmark_scripts <-
     function(path,
@@ -18,7 +19,8 @@ ogs6_generate_benchmark_scripts <-
              read_in_gml,
              read_in_vtu = FALSE,
              starting_from_prj_path = "",
-             skip_prj_paths = character()){
+             skip_prj_paths = character(),
+             only_prj_files = character()){
 
     if(missing(path)){
         path <- unlist(options("r2ogs6.default_benchmark_path"))
@@ -40,6 +42,7 @@ ogs6_generate_benchmark_scripts <-
     script_path <- as_dir_path(script_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
+    assertthat::assert_that(is.character(only_prj_files))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
@@ -76,6 +79,12 @@ ogs6_generate_benchmark_scripts <-
 
         if(prj_paths[[i]] %in% skip_prj_paths){
             next
+        }
+
+        if(!(missing(only_prj_files))){
+            if(!(basename(prj_paths[[i]]) %in% only_prj_files)){
+                next
+            }
         }
 
         # cat("\nGenerating script from path", prj_paths[[i]])
