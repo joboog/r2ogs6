@@ -24,8 +24,10 @@ dsa <- NULL
     if(file.exists("config.yml")){
         cfg <- config::get()
 
-        for(i in names(op.r2ogs6)){
-            eval(parse(text = paste0("options(", i, " = cfg$", i, ")")))
+        for(i in names(cfg)){
+            if(i %in% names(op.r2ogs6)) {
+                eval(parse(text = paste0("options(", i, " = cfg$", i, ")")))
+            }
         }
     }
 

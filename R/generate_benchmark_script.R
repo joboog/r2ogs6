@@ -10,6 +10,7 @@
 #' @inheritParams ogs6_generate_benchmark_script
 #' @param starting_from_prj_path string: Optional: `.prj` path to start from
 #' @param skip_prj_paths character: Optional: `.prj` paths to skip
+#' @param only_prj_files character: Optional: `.prj` files to limit to.
 #' @export
 ogs6_generate_benchmark_scripts <-
     function(path,
@@ -18,7 +19,8 @@ ogs6_generate_benchmark_scripts <-
              read_in_gml,
              read_in_vtu = FALSE,
              starting_from_prj_path = "",
-             skip_prj_paths = character()){
+             skip_prj_paths = character(),
+             only_prj_files = character()){
 
     if(missing(path)){
         path <- unlist(options("r2ogs6.default_benchmark_path"))
@@ -40,6 +42,7 @@ ogs6_generate_benchmark_scripts <-
     script_path <- as_dir_path(script_path)
     assertthat::assert_that(assertthat::is.string(starting_from_prj_path))
     assertthat::assert_that(is.character(skip_prj_paths))
+    assertthat::assert_that(is.character(only_prj_files))
 
     prj_paths <- list.files(path = path,
                             pattern = "\\.prj$",
@@ -76,6 +79,12 @@ ogs6_generate_benchmark_scripts <-
 
         if(prj_paths[[i]] %in% skip_prj_paths){
             next
+        }
+
+        if(!(missing(only_prj_files))){
+            if(!(basename(prj_paths[[i]]) %in% only_prj_files)){
+                next
+            }
         }
 
         # cat("\nGenerating script from path", prj_paths[[i]])
@@ -139,7 +148,7 @@ ogs6_generate_benchmark_script <- function(prj_path,
                                            sim_path,
                                            ogs6_bin_path,
                                            script_path,
-                                           read_in_gml,
+                                           read_in_gml = FALSE,
                                            read_in_vtu = FALSE) {
 
     if(missing(sim_path)){
@@ -166,8 +175,8 @@ ogs6_generate_benchmark_script <- function(prj_path,
 
     read_in_prj(ogs6_obj,
                 prj_path,
-                read_in_vtu,
-                read_in_gml = FALSE)
+                read_in_gml = FALSE,
+                read_in_vtu)
 
     prj_components = ogs6_prj_top_level_classes()
 
@@ -208,11 +217,12 @@ ogs6_generate_benchmark_script <- function(prj_path,
 
     # Add .vtu references and optionally, OGS6_vtu objects
     for(i in seq_len(length(ogs6_obj$meshes))){
-        script_str <- paste0(script_str,
-                             "ogs6_obj$add_vtu(",
-                             construct_add_call(ogs6_obj$meshes[[i]]), ",\n",
-                             read_in_vtu,
-                             ")\n\n")
+        script_str <-
+            paste0(script_str,
+                   "ogs6_obj$add_vtu(path = \"",
+                   ogs6_obj$meshes[[i]]$path, "\",\n",
+                   "axisym = ", ogs6_obj$meshes[[i]]$axially_symmetric, ",\n",
+                   "read_in_vtu = ", read_in_vtu, ")\n\n")
     }
 
     # Add class objects (and such in wrapper lists)
@@ -233,10 +243,20 @@ ogs6_generate_benchmark_script <- function(prj_path,
         }
 
         for(j in seq_along(ogs6_component)){
-            script_str <-
-                paste0(script_str,
-                       paste0(construct_add_call(ogs6_component[[j]]),
-                              "\n\n"))
+            # TODO(boog): this is just an quick and dirty solution for the
+            # include tag for now
+            if(!is.null(names(ogs6_component[j])) &
+               all(names(ogs6_component[j])=="include")){
+                   script_str <-
+                       paste0(script_str,
+                              get_component_call, " <- \"", ogs6_component[[j]],
+                              "\"\n\n")
+            }else{
+                script_str <-
+                    paste0(script_str,
+                           paste0(construct_add_call(ogs6_component[[j]]),
+                                  "\n\n"))
+            }
         }
     }
 

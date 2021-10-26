@@ -9,13 +9,13 @@ library(r2ogs6)
 # You can do this by commenting out the line below and modifying the path to
 # fit your system.
 
-# options("r2ogs6.default_ogs_bin_path" = "your_path_here")
+# options("r2ogs6.default_ogs6_bin_path" = "your_path_here")
 
 
 # Then we can create a simulation object.
-
+tmpdir <- tempdir()
 ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
-                     sim_path = "D:/OGS_Sim/")
+                     sim_path = tmpdir)
 
 
 #===== Read in benchmark file =====
@@ -24,10 +24,8 @@ ogs6_obj <- OGS6$new(sim_name = "flow_free_expansion",
 prj_path <- "inst/extdata/benchmarks/flow_free_expansion/flow_free_expansion.prj"
 
 # Read in the benchmark into our simulation object
-read_in_prj(ogs6_obj, prj_path)
+read_in_prj(ogs6_obj, prj_path, read_in_gml = T)
 
 
 #===== Run simulation =====
-
-
 e <- ogs6_run_simulation(ogs6_obj, write_logfile = FALSE)

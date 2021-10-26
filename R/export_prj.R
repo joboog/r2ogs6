@@ -36,6 +36,11 @@ export_prj <- function(ogs6_obj) {
 
     # Include file reference
     if(names(ogs6_obj$processes)[[1]] == "include"){
+        # update path to referenced file as reference has to be relative to
+        # the *.prj file location, just remove sim_path
+        new_ref_path <- gsub(ogs6_obj$sim_path, "",
+                             ogs6_obj$processes[[1]][["file"]])
+        ogs6_obj$processes <- new_ref_path
         processes_node <- to_node(ogs6_obj$processes,
                                   attribute_names = "include")
 
