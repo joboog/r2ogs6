@@ -81,6 +81,20 @@ test_that("ogs6_export_sim_files works", {
     unlink(test_path, recursive = TRUE)
 })
 
+test_that("Nonexistent *.pvd file yields an appropriate error", {
+    sim_path <- paste0(tmp_dir, "/run_simulation_test")
+    dir.create(sim_path)
+
+    # create empty ogs6 object
+    ogs6_obj <- OGS6$new(sim_name = "sim", sim_path = sim_path)
+    expect_error(ogs6_read_output_files(ogs6_obj))
+
+    unlink(sim_path, recursive = TRUE)
+})
+
+
+
+
 
 #===== Test benchmarks =====
 

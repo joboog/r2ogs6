@@ -246,12 +246,22 @@ ogs6_read_output_files <- function(ogs6_obj){
     pvd_paths <- list.files(ogs6_obj$sim_path,
                             "\\.pvd$",
                             full.names = TRUE)
-
-    ogs6_obj$pvds <- lapply(pvd_paths, function(x){OGS6_pvd$new(pvd_path = x)})
+    # Wait for eventual file writing processes to finish
+    t0 <- Sys.time()
+    while(((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)) &
+          difftime(Sys.time(), t0, units = "secs") < 2) {
+        Sys.sleep(0.01)
+        warning("waiting for pvd file ...")
+    }
+    if (((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)))  {
+        stop("Output file not written out correctly.
+                    Unable to import *.pvd")
+    } else {
+        ogs6_obj$pvds <- lapply(pvd_paths, function(x){OGS6_pvd$new(pvd_path = x)})
+    }
 
     return(invisible())
 }
-
 
 #===== Test benchmarks =====
 
