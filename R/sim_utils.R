@@ -251,7 +251,6 @@ ogs6_read_output_files <- function(ogs6_obj){
     while(((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)) &
           difftime(Sys.time(), t0, units = "secs") < 2) {
         Sys.sleep(0.01)
-        warning("waiting for pvd file ...")
     }
     if (((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)))  {
         stop("Output file not written out correctly.

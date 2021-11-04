@@ -93,7 +93,18 @@ test_that("Nonexistent *.pvd file yields an appropriate error", {
 })
 
 
+test_that("Small *.pvd file yields an appropriate error", {
+    sim_path <- paste0(tmp_dir, "/run_simulation_test")
+    dir.create(sim_path)
+    d <- NULL
+    save(d, file = paste0(sim_path, "/null.pvd"))
 
+    # create empty ogs6 object
+    ogs6_obj <- OGS6$new(sim_name = "sim", sim_path = sim_path)
+    expect_error(ogs6_read_output_files(ogs6_obj))
+
+    unlink(sim_path, recursive = TRUE)
+})
 
 
 #===== Test benchmarks =====
