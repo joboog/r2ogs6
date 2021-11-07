@@ -221,7 +221,7 @@ construct_ogs_command <- function(ogs6_bin_path){
     if (stringr::str_sub(ogs6_bin_path, -4) == ".sif"){
 
         assertthat::assert_that(file.exists(ogs6_bin_path))
-        ogs6_command <- c("singularity","exec", "--app ogs",
+        ogs6_command <- c("singularity","exec",
                           ogs6_bin_path, "ogs")
     }
     else {
