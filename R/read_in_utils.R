@@ -270,7 +270,11 @@ order_parameters <- function(parameters, class_name){
 
         for(i in seq_len(length(parameters))){
             # cat("\n", names(parameters)[[i]], "\n")
-            assertthat::assert_that(names(parameters)[[i]] %in% class_args)
+            assertthat::assert_that(names(parameters)[[i]] %in% class_args,
+                                    msg = paste0(names(parameters)[[i]],
+                                                 " not in class_args of class ",
+                                                 class_name,
+                                                 collapse = " "))
         }
     }
 
