@@ -374,7 +374,7 @@ run_all_benchmarks <- function(path,
 
 
     # Filter nonexisting files from prj_paths
-    nonexisting_prj_paths <- prj_paths[!file.exists(prj_paths)]
+    nonexisting_prj_paths <- prj_paths[!file.exists(unlist(prj_paths))]
     prj_paths <- prj_paths[!prj_paths %in% nonexisting_prj_paths]
 
 

@@ -15,6 +15,8 @@
 #' @param mesh Optional: string:
 #' @param time_series Optional: list:
 #' @param use_local_coordinate_system Optional: string, "true" | "false":
+#' @param range Optional: list
+#' @param seed Optional: number
 #' @param ... Optional: for index_values and expression tags (since there can be
 #' multiple)
 #' @example man/examples/ex_prj_parameter.R
@@ -30,6 +32,8 @@ prj_parameter <- function(name,
                              mesh = NULL,
                              time_series = NULL,
                              use_local_coordinate_system = NULL,
+                             range = NULL,
+                             seed = NULL,
                              ...) {
 
     #Coerce input
@@ -40,6 +44,9 @@ prj_parameter <- function(name,
 
     index_values <- ellipsis_list[names(ellipsis_list) == "index_values"]
     expression <- ellipsis_list[names(ellipsis_list) == "expression"]
+
+    range <- coerce_string_to_numeric(range)
+    seed <- coerce_string_to_numeric(seed)
 
     new_prj_parameter(name,
                          type,
@@ -53,7 +60,9 @@ prj_parameter <- function(name,
                          mesh,
                          expression,
                          time_series,
-                         use_local_coordinate_system)
+                         use_local_coordinate_system,
+                         range,
+                         seed)
 }
 
 
@@ -69,7 +78,9 @@ new_prj_parameter <- function(name,
                                  mesh = NULL,
                                  expression = NULL,
                                  time_series = NULL,
-                                 use_local_coordinate_system = NULL) {
+                                 use_local_coordinate_system = NULL,
+                                 range = NULL,
+                                 seed = NULL) {
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
@@ -104,6 +115,8 @@ new_prj_parameter <- function(name,
                                                       "parameter_name"))
         }
     }
+    are_null_or_numeric(range)
+    are_null_or_numbers(seed)
 
     structure(list(name = name,
                    type = type,
@@ -118,6 +131,8 @@ new_prj_parameter <- function(name,
                    expression = expression,
                    time_series = time_series,
                    use_local_coordinate_system = use_local_coordinate_system,
+                   range = range,
+                   seed = seed,
                    xpath = "parameters/parameter",
                    attr_names = character(),
                    flatten_on_exp = c("values"),

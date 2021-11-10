@@ -79,8 +79,13 @@ new_prj_medium <- function(phases = NULL,
 #' @param intrinsic_permeability Optional:
 #' @param initial_aperture Optional:
 #' @param mean_frac_distance Optional:
+#' @param mean_frac_distances Optional: numeric vector
 #' @param threshold_strain Optional:
+#' @param threshold_strains Optional: numeric vector
 #' @param fracture_normal Optional:
+#' @param fracture_normals Optional: numeric vector
+#' @param fracture_rotation_xy Optional:
+#' @param fracture_rotation_yz Optional:
 #' @param reference_permeability Optional:
 #' @param fitting_factor Optional:
 #' @param cohesion Optional:
@@ -117,8 +122,13 @@ prj_pr_property <- function(name,
                             intrinsic_permeability = NULL,
                             initial_aperture = NULL,
                             mean_frac_distance = NULL,
+                            mean_frac_distances = NULL,
                             threshold_strain = NULL,
+                            threshold_strains = NULL,
                             fracture_normal = NULL,
+                            fracture_normals = NULL,
+                            fracture_rotation_xy = NULL,
+                            fracture_rotation_yz = NULL,
                             reference_permeability = NULL,
                             fitting_factor = NULL,
                             cohesion = NULL,
@@ -174,8 +184,13 @@ prj_pr_property <- function(name,
                         intrinsic_permeability,
                         initial_aperture,
                         mean_frac_distance,
+                        mean_frac_distances,
                         threshold_strain,
+                        threshold_strains,
                         fracture_normal,
+                        fracture_normals,
+                        fracture_rotation_xy,
+                        fracture_rotation_yz,
                         reference_permeability,
                         fitting_factor,
                         cohesion,
@@ -213,8 +228,13 @@ new_prj_pr_property <- function(name,
                                 intrinsic_permeability = NULL,
                                 initial_aperture = NULL,
                                 mean_frac_distance = NULL,
+                                mean_frac_distances = NULL,
                                 threshold_strain = NULL,
+                                threshold_strains = NULL,
                                 fracture_normal = NULL,
+                                fracture_normals = NULL,
+                                fracture_rotation_xy = NULL,
+                                fracture_rotation_yz = NULL,
                                 reference_permeability = NULL,
                                 fitting_factor = NULL,
                                 cohesion = NULL,
@@ -277,8 +297,13 @@ new_prj_pr_property <- function(name,
                    intrinsic_permeability = intrinsic_permeability,
                    initial_aperture = initial_aperture,
                    mean_frac_distance = mean_frac_distance,
+                   mean_frac_distances = mean_frac_distances,
                    threshold_strain = threshold_strain,
+                   threshold_strains = threshold_strains,
                    fracture_normal = fracture_normal,
+                   fracture_normals = fracture_normals,
+                   fracture_rotation_xy = fracture_rotation_xy,
+                   fracture_rotation_yz = fracture_rotation_yz,
                    reference_permeability = reference_permeability,
                    fitting_factor = fitting_factor,
                    cohesion = cohesion,
@@ -414,7 +439,10 @@ prj_ph_property <- function(name,
                             ...) {
 
     #Coerce input
-    value <- coerce_string_to_numeric(value)
+    if (!is.list(value)) {
+        value <- coerce_string_to_numeric(value)
+    }
+
     reference_value <- coerce_string_to_numeric(reference_value)
     exponents <- coerce_string_to_numeric(exponents)
     offset <- coerce_string_to_numeric(offset)
@@ -457,7 +485,11 @@ new_prj_ph_property <- function(name,
     are_strings(name,
                 type)
 
-    are_null_or_numeric(value)
+    if (is.list(value)) {
+        are_null_or_strings(value[[1]])
+    } else {
+        are_null_or_numeric(value)
+    }
 
     are_null_or_numbers(
         reference_value,
@@ -560,34 +592,79 @@ new_prj_component <- function(name,
 #' @param type string: Property type
 #' @param value Optional: string | double: ...
 #' @param parameter_name Optional:
+#' @param reference_diffusion Optional: character
+#' @param activation_energy Optional: string | double
+#' @param reference_temperature Optional: numeric
 #' @example man/examples/ex_prj_com_property.R
 #' @export
 prj_com_property <- function(name,
-                                type,
-                                value = NULL,
-                                parameter_name = NULL) {
+                             type,
+                             value = NULL,
+                             parameter_name = NULL,
+                             reference_diffusion = NULL,
+                             activation_energy = NULL,
+                             reference_temperature = NULL,
+                             triple_temperature = NULL,
+                             triple_pressure = NULL,
+                             critical_temperature = NULL,
+                             critical_pressure = NULL,
+                             reference_pressure= NULL) {
+
+
 
     #Coerce input
     value <- coerce_string_to_numeric(value)
+    activation_energy <- coerce_string_to_numeric(activation_energy)
+    reference_temperature <- coerce_string_to_numeric(reference_temperature)
+    triple_temperature <- coerce_string_to_numeric(triple_temperature)
+    triple_pressure <- coerce_string_to_numeric(triple_pressure)
+    critical_temperature <- coerce_string_to_numeric(critical_temperature)
+    critical_pressure <- coerce_string_to_numeric(critical_pressure)
+    reference_pressure <- coerce_string_to_numeric(reference_pressure)
 
     new_prj_com_property(name,
-                            type,
-                            value,
-                            parameter_name)
+                         type,
+                         value,
+                         parameter_name,
+                         reference_diffusion,
+                         activation_energy,
+                         reference_temperature,
+                         triple_temperature,
+                         triple_pressure,
+                         critical_temperature,
+                         critical_pressure,
+                         reference_pressure
+                         )
 }
 
 
 new_prj_com_property <- function(name,
-                                    type,
-                                    value = NULL,
-                                    parameter_name = NULL) {
+                                 type,
+                                 value = NULL,
+                                 parameter_name = NULL,
+                                 reference_diffusion = NULL,
+                                 activation_energy = NULL,
+                                 reference_temperature = NULL,
+                                 triple_temperature = NULL,
+                                 triple_pressure = NULL,
+                                 critical_temperature = NULL,
+                                 critical_pressure = NULL,
+                                 reference_pressure= NULL) {
 
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
     are_null_or_numbers(value)
+    are_null_or_numeric(activation_energy)
+    are_null_or_numeric(reference_temperature)
+    are_null_or_numeric(triple_temperature)
+    are_null_or_numeric(triple_pressure)
+    are_null_or_numeric(critical_temperature)
+    are_null_or_numeric(critical_pressure)
+    are_null_or_numeric(reference_pressure)
     are_null_or_strings(parameter_name)
+    are_null_or_strings(reference_diffusion)
 
     structure(
         list(
@@ -595,6 +672,14 @@ new_prj_com_property <- function(name,
             type = type,
             value = value,
             parameter_name = parameter_name,
+            reference_diffusion = reference_diffusion,
+            activation_energy = activation_energy,
+            reference_temperature = reference_temperature,
+            triple_temperature = triple_temperature,
+            triple_pressure = triple_pressure,
+            critical_temperature = critical_temperature,
+            critical_pressure = critical_pressure,
+            reference_pressure = reference_pressure,
             xpath = paste0("media/medium/phases/phase/components/component/",
                            "properties/property"),
             attr_names = character(),

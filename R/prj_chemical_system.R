@@ -14,6 +14,8 @@
 #' @param equilibrium_reactants Optional: list, prj_phase_component:
 #' @param surface Optional:
 #' @param user_punch Optional:
+#' @param linear_solver Optional:
+#' @param exchangers Optional: prj_exchangers
 #' @example man/examples/ex_prj_chemical_system.R
 #' @export
 prj_chemical_system <- function(chemical_solver,
@@ -25,7 +27,9 @@ prj_chemical_system <- function(chemical_solver,
                                    rates = NULL,
                                    equilibrium_reactants = NULL,
                                    surface = NULL,
-                                   user_punch = NULL) {
+                                   user_punch = NULL,
+                                   linear_solver = NULL,
+                                   exchangers = NULL) {
 
     # Add coercing utility here
 
@@ -38,7 +42,9 @@ prj_chemical_system <- function(chemical_solver,
                                rates,
                                equilibrium_reactants,
                                surface,
-                               user_punch)
+                               user_punch,
+                               linear_solver,
+                               exchangers)
 }
 
 
@@ -51,13 +57,17 @@ new_prj_chemical_system <- function(chemical_solver,
                                        rates = NULL,
                                        equilibrium_reactants = NULL,
                                        surface = NULL,
-                                       user_punch = NULL) {
+                                       user_punch = NULL,
+                                       linear_solver = NULL,
+                                       exchangers = NULL) {
 
 
     are_strings(chemical_solver,
                 database)
 
     assertthat::assert_that(class(solution) == "prj_solution")
+    assertthat::assert_that(is.null(exchangers) |
+                                class(exchangers) == "prj_exchangers")
 
     are_null_or_strings(mesh)
 
@@ -95,6 +105,8 @@ new_prj_chemical_system <- function(chemical_solver,
                    equilibrium_reactants = equilibrium_reactants,
                    surface = surface,
                    user_punch = user_punch,
+                   linear_solver = linear_solver,
+                   exchangers = exchangers,
                    xpath = "chemical_system",
                    attr_names = c("chemical_solver"),
                    flatten_on_exp = character()
@@ -141,7 +153,6 @@ new_prj_solution <- function(temperature,
                                 pe,
                                 components,
                                 charge_balance = NULL) {
-
     are_numbers(temperature,
                 pressure,
                 pe)
@@ -299,5 +310,29 @@ new_prj_rate <- function(kinetic_reactant,
             flatten_on_exp = character()
         ),
         class = "prj_rate"
+    )
+}
+
+#'prj_exchangers
+#'@description tag: exchangers
+#'@param exchange_site list
+#'@export
+prj_exchangers <- function(exchange_site) {
+
+    # Add coercing utility here
+
+    new_prj_exchangers(exchange_site)
+}
+
+new_prj_exchangers <- function(exchange_site) {
+
+    assertthat::assert_that(is.list(exchange_site))
+
+    structure(list(exchange_site = exchange_site,
+                   xpath = "chemical_system/exchangers",
+                   attr_names = character(),
+                   flatten_on_exp = character()
+    ),
+    class = "prj_exchangers"
     )
 }

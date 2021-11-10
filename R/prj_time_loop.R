@@ -141,6 +141,7 @@ new_prj_tl_process <- function(ref,
 #' @param output_iteration_results Optional: string: Either "true" or "false"
 #' @param meshes Optional: character: A vector of mesh names
 #' @param fixed_output_times Optional: string | numeric:
+#' @param hdf Optional: numeric
 #' @example man/examples/ex_prj_output.R
 #' @export
 prj_output <- function(type,
@@ -152,7 +153,8 @@ prj_output <- function(type,
                           data_mode = NULL,
                           output_iteration_results = NULL,
                           meshes = NULL,
-                          fixed_output_times = NULL) {
+                          fixed_output_times = NULL,
+                          hdf = NULL) {
 
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
@@ -170,7 +172,8 @@ prj_output <- function(type,
                          data_mode,
                          output_iteration_results,
                          meshes,
-                         fixed_output_times)
+                         fixed_output_times,
+                         hdf)
 }
 
 
@@ -183,7 +186,8 @@ new_prj_output <- function(type,
                                  data_mode = NULL,
                                  output_iteration_results = NULL,
                                  meshes = NULL,
-                                 fixed_output_times = NULL) {
+                                 fixed_output_times = NULL,
+                                 hdf = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(prefix))
@@ -218,6 +222,7 @@ new_prj_output <- function(type,
              output_iteration_results = output_iteration_results,
              meshes = meshes,
              fixed_output_times = fixed_output_times,
+             hdf = hdf,
              xpath = "time_loop/output",
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
