@@ -27,8 +27,13 @@ prj_pr_property(
   intrinsic_permeability = NULL,
   initial_aperture = NULL,
   mean_frac_distance = NULL,
+  mean_frac_distances = NULL,
   threshold_strain = NULL,
+  threshold_strains = NULL,
   fracture_normal = NULL,
+  fracture_normals = NULL,
+  fracture_rotation_xy = NULL,
+  fracture_rotation_yz = NULL,
   reference_permeability = NULL,
   fitting_factor = NULL,
   cohesion = NULL,
@@ -88,9 +93,19 @@ prj_pr_property(
 
 \item{mean_frac_distance}{Optional:}
 
+\item{mean_frac_distances}{Optional: numeric vector}
+
 \item{threshold_strain}{Optional:}
 
+\item{threshold_strains}{Optional: numeric vector}
+
 \item{fracture_normal}{Optional:}
+
+\item{fracture_normals}{Optional: numeric vector}
+
+\item{fracture_rotation_xy}{Optional:}
+
+\item{fracture_rotation_yz}{Optional:}
 
 \item{reference_permeability}{Optional:}
 

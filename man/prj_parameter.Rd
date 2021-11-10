@@ -16,6 +16,8 @@ prj_parameter(
   mesh = NULL,
   time_series = NULL,
   use_local_coordinate_system = NULL,
+  range = NULL,
+  seed = NULL,
   ...
 )
 }
@@ -41,6 +43,10 @@ prj_parameter(
 \item{time_series}{Optional: list:}
 
 \item{use_local_coordinate_system}{Optional: string, "true" | "false":}
+
+\item{range}{Optional: list}
+
+\item{seed}{Optional: number}
 
 \item{...}{Optional: for index_values and expression tags (since there can be
 multiple)}

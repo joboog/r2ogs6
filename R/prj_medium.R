@@ -595,6 +595,11 @@ new_prj_component <- function(name,
 #' @param reference_diffusion Optional: character
 #' @param activation_energy Optional: string | double
 #' @param reference_temperature Optional: numeric
+#' @param triple_temperature Optional: numeric
+#' @param triple_pressure Optional: numeric
+#' @param critical_temperature Optional: numeric
+#' @param critical_pressure Optional: numeric
+#' @param reference_pressure Optional: numeric
 #' @example man/examples/ex_prj_com_property.R
 #' @export
 prj_com_property <- function(name,

@@ -4,7 +4,20 @@
 \alias{prj_com_property}
 \title{prj_com_property}
 \usage{
-prj_com_property(name, type, value = NULL, parameter_name = NULL)
+prj_com_property(
+  name,
+  type,
+  value = NULL,
+  parameter_name = NULL,
+  reference_diffusion = NULL,
+  activation_energy = NULL,
+  reference_temperature = NULL,
+  triple_temperature = NULL,
+  triple_pressure = NULL,
+  critical_temperature = NULL,
+  critical_pressure = NULL,
+  reference_pressure = NULL
+)
 }
 \arguments{
 \item{name}{string: Property name}
@@ -14,6 +27,22 @@ prj_com_property(name, type, value = NULL, parameter_name = NULL)
 \item{value}{Optional: string | double: ...}
 
 \item{parameter_name}{Optional:}
+
+\item{reference_diffusion}{Optional: character}
+
+\item{activation_energy}{Optional: string | double}
+
+\item{reference_temperature}{Optional: numeric}
+
+\item{triple_temperature}{Optional: numeric}
+
+\item{triple_pressure}{Optional: numeric}
+
+\item{critical_temperature}{Optional: numeric}
+
+\item{critical_pressure}{Optional: numeric}
+
+\item{reference_pressure}{Optional: numeric}
 }
 \description{
 tag: property

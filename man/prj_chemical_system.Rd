@@ -14,7 +14,9 @@ prj_chemical_system(
   rates = NULL,
   equilibrium_reactants = NULL,
   surface = NULL,
-  user_punch = NULL
+  user_punch = NULL,
+  linear_solver = NULL,
+  exchangers = NULL
 )
 }
 \arguments{
@@ -37,6 +39,10 @@ prj_chemical_system(
 \item{surface}{Optional:}
 
 \item{user_punch}{Optional:}
+
+\item{linear_solver}{Optional:}
+
+\item{exchangers}{Optional: prj_exchangers}
 }
 \description{
 tag: chemical_system

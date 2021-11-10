@@ -14,7 +14,8 @@ prj_output(
   data_mode = NULL,
   output_iteration_results = NULL,
   meshes = NULL,
-  fixed_output_times = NULL
+  fixed_output_times = NULL,
+  hdf = NULL
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ Either "true" or "false"}
 \item{meshes}{Optional: character: A vector of mesh names}
 
 \item{fixed_output_times}{Optional: string | numeric:}
+
+\item{hdf}{Optional: numeric}
 }
 \description{
 tag: output

@@ -71,6 +71,14 @@ prj_process(
   pf_irrv = NULL,
   micro_porosity = NULL,
   explicit_hm_coupling_in_unsaturated_zone = NULL,
+  simplified_elasticity = NULL,
+  chemically_induced_porosity_change = NULL,
+  use_server_communication = NULL,
+  phasefield_model = NULL,
+  irreversible_threshold = NULL,
+  tabular_file = NULL,
+  temperature_field = NULL,
+  use_stokes_brinkman_form = NULL,
   ...
 )
 }
@@ -206,6 +214,22 @@ prj_process(
 \item{micro_porosity}{Optional:}
 
 \item{explicit_hm_coupling_in_unsaturated_zone}{Optional:}
+
+\item{simplified_elasticity}{Optional: character}
+
+\item{chemically_induced_porosity_change}{Optional: character}
+
+\item{use_server_communication}{Optional:}
+
+\item{phasefield_model}{Optional:}
+
+\item{irreversible_threshold}{Optional: numeric}
+
+\item{tabular_file}{Optional: character}
+
+\item{temperature_field}{Optional: character}
+
+\item{use_stokes_brinkman_form}{Optional: character}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }
