@@ -285,6 +285,11 @@ run_benchmark <- function(prj_path,
         sim_path <- unlist(options("r2ogs6.default_sim_path"))
     }
 
+    if(grepl("\\.xml$", prj_path)) {
+        # some *.prj files are indicated as *.xml in their Tests.cmake file
+        prj_path <- sub("\\.xml$", replacement = ".prj", x =  prj_path)
+    }
+
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
