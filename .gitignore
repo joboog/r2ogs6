@@ -6,7 +6,6 @@ config.yml
 packrat/lib*/
 inst/doc
 inst/extdata/test_tempdirs
-doc
 Meta
 tmp
 packrat/src/
