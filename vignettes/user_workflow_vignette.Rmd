@@ -181,6 +181,7 @@ single `.prj` file path, it takes a directory path as its argument.
 
 Let's look at the parameters for `ogs6_generate_benchmark_script()` first. Say
 we have a project file `sim_file.prj` we want to generate a script from.
+Please, make sure that all the directories your are referencing exist.
 
 ```{r}
 # The path to the project file you want to generate a script from
@@ -216,13 +217,13 @@ set `path` to their location on your system.
 
 ```{r}
 # The path to the directory you want to generate R scripts from
-path <- "your_benchmark_path/"
+path <- "path/to/ogs/Tests/Data/Elliptic/"
 
 # The path you want to save the simulation files to
 sim_path <- "your_sim_directory/"
 
 # The path you want your benchmark scripts to be saved to
-script_path <- "your_script_directory/"
+script_path <- sim_path
 
 # Optional: Use if you want to start from a specific `.prj` file
 starting_from_prj_path <- ""
