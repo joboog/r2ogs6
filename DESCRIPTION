@@ -1,19 +1,29 @@
 Package: r2ogs6
 Type: Package
 Title: An API to the multi-physics simulator OpenGeoSys-v6
-Version: 0.1.0
-Authors@R: c(person(given = "Anna",
+Version: 0.2.0
+Authors@R: c(person(given = "Ruben",
                     family = "Heinrich",
                     role = c("aut"),
-                    email = "aheinri5@web.de"),
+                    email = "ruben-heinrich@web.de",
+                    comment = structure("https://orcid.org/0000-0001-7439-5349",
+                                        .Names = "ORCID")),
              person(given = "Johannes",
                     family = "Boog",
                     role = c("aut", "cre"),
                     email = "johannesboog@yahoo.de",
                     comment = structure("https://orcid.org/0000-0003-1094-9255",
-                                        .Names = "ORCID")))
-Description: Define and manage simulations using OpenGeoSys-v6.
-License: file LICENSE
+                                        .Names = "ORCID")),
+            person(given = "Philipp",
+                    family = "Schad",
+                    role = c("aut"),
+                    email = "Philippschad93@hotmail.de",
+                    comment = structure("https://orcid.org/0000-0003-3332-5867",
+                                        .Names = "ORCID")),
+            person(given = "Helmholtz Centre for Environmental Research - UFZ",
+                    role = c("cph", "fnd")))
+Description: An R-API to the OpenGeoSys-v6 multi-physics simulator.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Suggests: 
