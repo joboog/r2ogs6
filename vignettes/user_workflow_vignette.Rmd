@@ -1,21 +1,22 @@
 ---
 title: "r2ogs6 User Guide"
 author: "Ruben Heinrich"
-output: html_document
-#output: rmarkdown::html_vignette
-#vignette: >
-#  %\VignetteIndexEntry{r2ogs6 User Guide}
-#  %\VignetteEngine{knitr::rmarkdown}
-#  %\VignetteEncoding{UTF-8}
+#output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{r2ogs6 User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  eval = nzchar(Sys.getenv("r2ogs6_ensemble_guide_eval")),
+  #eval = nzchar(Sys.getenv("r2ogs6_ensemble_guide_eval")),
+    eval = TRUE,
   collapse = TRUE,
   comment = "#>"
-
 )
+options("r2ogs6.default_ogs6_bin_path" = "/usr/local/bin/ogs6.4.1.sif")
 # the python library vtk needs an explicit import statement for knitting
 vtk <- reticulate::import("vtk")
 dsa <- reticulate::import("vtk.numpy_interface.dataset_adapter")
@@ -135,7 +136,8 @@ Since I already read in a `.prj` file earlier, I won't run the above snippet. If
 As soon as we've added all necessary parameters, we can try starting our simulation. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console.
 
 ```{r results='hide'}
-ogs6_run_simulation(ogs6_obj, write_logfile = TRUE)
+
+ogs6_run_simulation(ogs6_obj)
 ```
 
 ## Retrieve the results
@@ -162,6 +164,32 @@ ggplot(result_df,
     ylab("y coordinate") +
     theme_bw()
 ```
+
+```{r, echo=FALSE, results='hide'}
+ogs6_obj$h5s <- list(OGS6_h5$new(system.file("/extdata/benchmarks/EllipticPETSc",
+                                        "cube_1e3_np3.h5",
+                                        package = "r2ogs6")))
+
+```
+
+Similar to the idea with `.pvd` output, `hdf5` files are automatically referenced under `$h5s` if returned by the simulation. Here, we have added a file artificially from the benchmark library for demonstration.
+
+```{r}
+ogs6_obj$h5s
+```
+As can be seen, hdf5 files have a very particular structure. To work with the data, a simple method `get_h5()` allows to access the different data elements as a very raw starting point for post processing the data. 
+
+```{r}
+h5_list <- ogs6_obj$h5s[[1]]$get_h5("/")
+```
+
+If the file has a reasonably "clean" structure, a more convenient way of importing the data is using the method `get_df` that returns a *tibble* table. 
+
+```{r}
+df <- ogs6_obj$h5s[[1]]$get_df(group = "/t_0", names = "pressure")
+df
+```
+
 
 
 ## Running multiple simulations
