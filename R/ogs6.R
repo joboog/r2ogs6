@@ -603,9 +603,9 @@ OGS6 <- R6::R6Class("OGS6",
         }
       },
 
-      #' @field h5
-      #' \code{h5} \code{vaue} must be of class \code{H5IdComponent} as returned
-      #' by \code{rhdf5::H5Fopen()}
+      #' @field h5s
+      #' \code{h5s} \code{value} must be of class \code{H5IdComponent}
+      #' as returned by \code{rhdf5::h5read()}.
       h5s = function(value) {
           if(missing(value)) {
               private$.h5s

@@ -50,7 +50,8 @@ Imports:
     reticulate,
     config,
     sticky,
-    foreach
+    foreach,
+    rhdf5
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Depends: 
