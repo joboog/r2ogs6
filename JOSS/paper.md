@@ -1,5 +1,5 @@
 ---
-title: 'r2ogs6: An interface to the OpenGeoSys 6 Multiphysics Simulator'
+title: 'r2ogs6: An R wrapper of the OpenGeoSys 6 Multiphysics Simulator'
 tags:
   - R
   - OpenGeoSys
@@ -12,6 +12,9 @@ authors:
   - name: Johannes Boog^[co-first author]
     orcid: 0000-0003-0872-7098
     affiliation: 2
+  - name: Philipp Schad^[co-first author]  
+    orcid: 0000-0003-3332-5867  
+    affiliation: 2  
   - name: Thomas Kalbacher^[co-first author]
     orcid: 0000-0002-7866-5702
     affiliation: 2
@@ -20,47 +23,45 @@ affiliations:
    index: 1
  - name: Helmholtz Centre for Environmental Research, Department Environmental Informatics, Permoser Str. 15, 04318 Leipzig, Germany
    index: 2
-date: 04 October 2021
+date: 19 December 2022
 bibliography: paper.bib
 
 ---
 
 # Summary
 
-<!--etwas Einleitung ist doch noetig. Ich weiss, ich hatte das vorher in den saechsten Abschnitt verschobe. Asche auf mein Haupt. 
-[TK na dann mach ich da mal einen modifizierten Aufhänger] -->
-Understanding the impacts of climate change and hydrologic extreme events on our subsurface Earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies,together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services. Of course, the needs of the population and the needs of nature are often in conflict and this increases the size and complexity of the scenarios tremendously. The core of such studies is most often the system and scenario analysis based on numerical process simulations of individual or coupled earth systems compartments. One such tool is OpenGeoSys (OGS) (https://www.opengeosys.org/) which is capable of simulating thermo-hydro-mechanical-chemical (THMC) processes in porous and fractured media. OGS has applications ranging from small-scale geotechnical investigations,  (Reference) to reservoir studies and even groundwater management of entire landscapes (Reference).  
-Since the model setups get more and more complex and larger, faster and more efficient setup and parametrization procedures are needed to create meaningful ensembles which allow to identify the right action needs and to derive further decision support for the above described problems.
-<!-- TK: Bin mir über die Struktur eines solchen Papers noch nicht ganz im klaren --> 
+Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance.
+Key tools to develop such understanding are physics--based simulation models that describe the manifold interactions of involved natural phenomena across time and space.
 
-Our `R` package `r2ogs6` provides a file--based interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, allows `R` users to perform and analyze environmental and geoscientific simulations in `R`.
-<!--`OpenGeoSys 6` itself is a scientific open source project for the development of numerical methods to simulate (coupled) thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@ogs].-->
+Our `R` package `r2ogs6` provides a file--based `R` interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, enables `R` users to perform and analyze simulation models of the sub--surface earth system in `R`.
 `r2ogs6` allows to access the capabilities of `OpenGeoSys 6` to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media within `R`.
-In this way, `r2ogs6` enables `R` users to model sub--surface phenomena and technologies such as groundwater flow, reactive transport, geothermal energy usage and/or nuclear waste repositories as well as to analyze and further process simulation output with the power of a high--level data science language.
-`r2ogs6` enables users to prepare and manipulate `OpenGeoSys 6` simulation models, run the simulations and retrieve corresponding output, all within an `R` session.
+In this way, `r2ogs6` enables `R` users to model sub--surface phenomena and technologies such as groundwater flow, reactive transport, geothermal energy usage and/or nuclear waste repositories as well as to analyze and further process simulation output.
+`r2ogs6` enables users to prepare and manipulate `OpenGeoSys 6` simulation models, run the simulations and retrieve corresponding output, all within an `R` session or simple `R` scripts.
 Therefore, `R` classes and functions were designed to communicate with the respective `OpenGeoSys 6` input and output files as well as executables.
 In addition to single-simulation runs, `r2ogs6` supports ensemble runs that can be used to set up uncertainty and sensitivity analyses as well as parameter studies.
-It allows conducting and documenting `OpenGeoSys 6` simulations in reproducible `R` scripts or notebooks.
+Furthermore, `r2ogs6` allows conducting and documenting `OpenGeoSys 6` simulations in reproducible `R` scripts or notebooks.
 As `OpenGeoSys 6` is continuously being developed further, code generation functions for `r2ogs6` developers were included to speed up the package updating process in case of future changes to `OpenGeoSys 6`.
 
-`r2ogs6` aims to bridge the gap between data produced by a scientific simulation code and data science, and, provides `R` users with an opportunity to model environmental sub--surface systems.
-Besides increasing the usability of `OpenGeoSys 6`, `r2ogs6` also improves the reproducibility of research results.
-
+`r2ogs6` was designed to be used by domain researchers, data scientists and students working with `OpenGeoSys 6`.
+Moreover, `r2ogs6` was intended to include `OpenGeoSys 6` into `R` based scientific workflows and aims to bridge the gap between data produced by a scientific simulation code and data science.
 
 
 # Statement of need
 
-Major challenges humanity has to face in the coming decades are climate change and environmental extremes.
-Understanding their effects on our environmental systems, especially the sub--surface is, therefore, of utmost importance.
-Key tools to develop this understanding are environmental and geoscientific physics--based simulation models that describe the manifold interacting natural phenomena across time and space.
-The multiple coupled natural processes implemented in environmental and geoscientific physics--based simulation models are usually described with partial differential equations.
+Major challenges humanity has to face in the coming decades are climate change and hydrologic extremes.
+Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies, together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services. 
+Of course, the needs of the population and the needs of nature are often in conflict, which increases the necessity to study the complex interaction of both within different scenarios.
+The core of such studies is most often the system and scenario analysis based on physics simulations of individual or coupled earth systems compartments. 
+The multiple coupled natural processes implemented in physics simulation models are usually described with partial differential equations.
 Solving these equations requires appropriate numerical methods such as the finite element method (FEM).
-Implementations of FEM have become integral tools in a lot of research areas today [@Steefel2015].
-One of these tools is `OpenGeoSys 6`, a scientific open source project for the development of numerical methods to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@Kolditz2012; @Bilke2019].
-But while `OpenGeoSys 6` is a powerful FEM code, setting up, running and evaluating simulations can prove complicated.
-Especially the set up of simulation ensembles as well as the calibration of simulation models can be a tedious process.
+For reasons of performance, (multi) physics simulators are mostly implemented in languages such as `FORTRAN`, `C` or `C++`.
 
-Here is where high--level languages such as `R` and `Python` can prove useful.
+One of these tools is `OpenGeoSys` (OGS) (https://www.opengeosys.org/), a scientific open source project for the development of numerical methods to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@Kolditz2012; @Bilke2019].
+OGS has applications ranging from small-scale geotechnical investigations, to reservoir studies and even groundwater management of entire landscapes.  
+Since the model setups get more and more complex and larger, faster and more efficient setup and parametrization procedures are needed to create meaningful ensembles that allow to identify the right action needs and to derive further decision support for the above described problems.
+But while `OpenGeoSys` is a powerful FEM code, setting up, running and evaluating multiple simulations can prove complicated.
+
+Here is where languages such as `R` and `Python` can prove useful.
 Via an interface that adds a layer on top of `OpenGeoSys 6`, the user can access preprocessing tools, the solver itself and postprocessing tools alike, thus increasing usability and accessibility.
 The developement and application of user interfaces from geoscientific simulators to high--level programming languages has been gaining increasing attention in recent years; examples are `FloPy` [@Bakker2016], `ogs5py` [@Mueller2021], `RedModRPhree`[@DeLucia2021],  `r2ogs5` [@Schad2021] and `toughio` [@Luu2020].
 For `OpenGeoSys 6`, a `Python` interface is currently under development [@Buchwald2021]. 
@@ -68,12 +69,11 @@ Nonetheless, we consider an `R` interface to be just as important, as `R` is a w
 Furthermore, since `R` is a popular language in the field of data science with many powerful packages for data analysis and visualisation, e. g. `dplyr` [@r-dplyr] and `ggplot2` [@r-ggplot2], it's a natural choice for processing data generated by simulation tools such as `OpenGeoSys 6`.
 Especially, `r2ogs6` can facilitate the calibration of `OpenGeoSys 6` models due to the implemented functions to design ensemble runs as well the available `R` functions and packages for modeling such as  `lhs` [@lhs], `mlrBO` [@mlrMBO].
 For `R` users who do not have a lot of (or any) experience with, yet an interest in environmental and geoscientific sub--surface simulations, `r2ogs6` provides a good starting point.
-Utilizing `r2ogs6`, users can easily set up their first `OpenGeoSys 6` simulations by choosing one of numerous provided benchmark files.
+Utilizing `r2ogs6`, users can easily set up their first `OpenGeoSys 6` simulations by choosing one of the provided benchmark files.
 Moreover, with `R` scripts and `R--Markdown` or `JupyteR` notebooks, modeling workflows can easily be documented, published and shared with peers.
 
-`r2ogs6` was designed to be used by domain researchers, data scientists and students working with `OpenGeoSys 6`.
-It has already been applied in [@heinrich:2021], where its ensemble functionality was tested utilizing the `OpenGeoSys 6` Theis' problem benchmark files [@benchmark-theis-problem; @benchmark-theis-solution].
-In an ongoing research project, `r2ogs6` is used to enable the calibration of large-scale groundwater flow models [@Boog2021].
+`r2ogs6` has already been applied in [@heinrich:2021], where its ensemble functionality was tested utilizing the `OpenGeoSys 6` Theis' problem benchmark files [@benchmark-theis-problem; @benchmark-theis-solution]; or 
+to calibrate groundwater flow models [@Boog2021].
 
 
 # Package Structure
@@ -87,7 +87,6 @@ An `OGS6` object contains several child objects that represent the simulation in
 The main `OpenGeoSys 6` input files are the project file `*.prj`, geometry file `*.gml` and input FEM mesh file(s) `*.vtu`.
 These are read in or written via `S3` class based functions (block `read_in* / export*` in  \autoref{fig:structure}).
 When reading in, the XML--based `*.prj` input file is parsed. Individual tags are represented as `S3` class objects which are available via active fields in the `OGS6` object.
-<!--`S3` classes for the `*.prj` file tags were preferred over one entire `R6 class` for reasons of simplicity.-->
 Individual `*.prj` tags may change due to ongoing development activities in `OpenGeoSys 6`, therefore, future updates of the related classes may be necessary.
 To simplify updates like this, helper functions for analyzing `*.prj` files as well as suggesting and creating classes were implemented.
 
@@ -104,15 +103,16 @@ In this way, all data required for and produced by `OpenGeoSys 6` can be represe
 ![Schematic of the `r2ogs6` structure.\label{fig:structure}](r2ogs6_structure_schematic.png)
 
 The package comes with tutorials demonstrating how to set up and run a single simulation ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)), set up simulation ensembles ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)) and further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
-Furthermore, a seperate repository provides `r2ogs6` scripts to set up `OpenGeoSys 6` benchmarks ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6_benchmarks)).
+Moreover, `r2ogs6` includes functions to create `R` scripts from existing `OpenGeoSys 6` benchmarks that will allow a quick start for new users.
 
 
 # Acknowledgements
 
-Johannes Boog acknowledges the Helmholtz Organization for funding within the context of the project *Digital Earth* (Ref. XXX).
-Furthermore, Johannes Boog and Thomas Kalbacher acknowledge the Helmholtz Centre for Environmental Research--UFZ for additional funding and support.
-We would like to express our gratitude to the *OpenGeoSys Community* for technical support and for hosting the GitLab server for our development.
-Furthermore we also like to thank Philipp Schad for additional technical support.
+We acknowledge funding from the Initiative and Networking Fund of the Helmholtz Association through the project *Digital Earth* (funding code ZT-0025).
+Furthermore, we acknowledge the Helmholtz Centre for Environmental Research--UFZ for additional funding and support.
+We would like to express our gratitude to the *OpenGeoSys Community* for technical support and for hosting the GitLab server (https://gitlab.opengeosys.org) for our development.
+The package has in part been developed on the High-Performance Computing (HPC) Cluster EVE, a joint effort of both the Helmholtz Centre for Environmental Research - UFZ (http://www.ufz.de/) and the German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig (http://www.idiv-biodiversity.de/).
+We would like to thank the administration and support staff of EVE who keep the system running and support us with our scientific computing needs: Thomas Schnicke, Ben Langenberg, Guido Schramm, Toni Harzendorf and Tom Strempel from the UFZ, and Christian Krause from iDiv.
 
 
 # References
