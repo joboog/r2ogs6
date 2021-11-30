@@ -31,7 +31,9 @@ Suggests:
     testthat,
     knitr,
     devtools,
-    ggplot2
+    ggplot2,
+    BiocManager,
+    rhdf5
 Imports: 
     purrr,
     xml2,
@@ -50,8 +52,7 @@ Imports:
     reticulate,
     config,
     sticky,
-    foreach,
-    rhdf5
+    foreach
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Depends: 
