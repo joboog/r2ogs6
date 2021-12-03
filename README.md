@@ -43,9 +43,18 @@ With `devtools`, you can now install `r2ogs6`.
 ```r
 # Install r2ogs6. Change the path to that of the cloned repository!
 devtools::install("path/to/r2ogs6")
+
+# Alternatively, install directly from the Gitlab repo:
+devtools::install_git("https://gitlab.opengeosys.org/ogs/tools/r2ogs6")
 ```
 
-This will install all necessary R dependencies.
+This will install all necessary R dependencies except `rhdf5`.  
+This package is needed to handle *hdf5* output files and can be installed via:
+```r
+install.packages("BiocManager") # install BiocManager from CRAN
+BiocManager::install("rhdf5")   # install rhdf5 from bioconductor.org
+```  
+If `r2ogs6` is installed or loaded via `library()`in interactive sessions e.g. in RStudio, the package will check if `rhdf5` is available in the library and if not, ask the user to install it automatically. If installing `r2ogs6` in a script e.g. via `R -e devtools::install_git("https://gitlab.opengeosys.org/ogs/tools/r2ogs6")` make sure to include the manual installation of `rhdf5` as above in your script. 
 
 ## Usage
 
