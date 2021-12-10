@@ -30,3 +30,4 @@ test:
   # script will only run then attempting to merge/push to master
   only:
     - merge_requests
+    - master
