@@ -271,11 +271,11 @@ get_required <- function(names, occurence_probabilities){
 
     for(i in seq_len(length(names))) {
         if(occurence_probabilities[[i]] < 1) {
-            required[[names[[i]]]] <- FALSE
+            required[[paste0(names[[i]])]] <- FALSE
         }else{
-            required[[names[[i]]]] <- TRUE
+            required[[paste0(names[[i]])]] <- TRUE
         }
     }
 
-    return(invisible(required))
+    return(required)
 }

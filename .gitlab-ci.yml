@@ -1,3 +1,6 @@
+# helpful Links:
+# https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+# https://www.youtube.com/watch?v=7I6tHw68DMQ
 
 stages:
   - test
