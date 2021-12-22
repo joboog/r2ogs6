@@ -39,7 +39,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
 
     ogs_repo <- "/root/ogs/"
     prjs <- r2ogs6:::get_benchmark_paths(paste0(ogs_repo, "ProcessLib"))
-    prjs <- prjs[c(6, 45, 46, 47, 249, 250, 251, 252)] # for testing
+    # prjs <- prjs[c(6, 45, 46, 47, 249, 250, 251, 252)] # for testing
 
     #### Exceptions #####
     # exclude some prj files
@@ -87,6 +87,8 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
     }
 
     save(ref_exit, file = "ref_exit.rda")
+    dir.create("out_ref")
+    file.copy("/root/out_ref/logfiles", to = "out_ref", recursive = TRUE)
 }
 
 # test run with r2ogs6 ----------------------------------------------------
@@ -117,6 +119,9 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
     }
     test_exit$test[which(is.na(test_exit$test))] <- 99
     save(test_exit, file = "test_exit.rda")
+
+    dir.create("out_test")
+    file.copy("/root/out_test/logfiles", to = "out_test", recursive = TRUE)
 }
 
 if (commandArgs(trailingOnly=TRUE)[2] == "test") {
@@ -132,7 +137,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "test") {
     r2ogs6_passed <- test_exit$test[which(test_exit$ref == 0)] == 0
 
     if(!all(r2ogs6_passed)) {
-        print(paste0(test_exit$benchmark[!r2ogs6_passed],
+        cat(paste0(test_exit$benchmark[!r2ogs6_passed],
                      collapse = "\n"))
         stop("Exit codes for r2ogs6 were nonzero for above benchmarks!")
     }
