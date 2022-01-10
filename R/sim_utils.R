@@ -18,12 +18,14 @@ ogs6_run_simulation <- function(ogs6_obj,
                                write_logfile = TRUE,
                                ogs6_bin_path,
                                overwrite = T,
+                               copy_ext_files = F,
                                verbose = F) {
 
     # Export (and / or copy referenced) simulation files
     ogs6_export_sim_files(ogs6_obj = ogs6_obj,
                           overwrite = overwrite,
-                         test_mode = FALSE)
+                          copy_ext_files = copy_ext_files,
+                          test_mode = FALSE)
 
     exit_code <- ogs6_call_ogs6(ogs6_obj = ogs6_obj,
                                write_logfile = write_logfile,
@@ -49,10 +51,12 @@ ogs6_run_simulation <- function(ogs6_obj,
 #' @export
 ogs6_export_sim_files <- function(ogs6_obj,
                                   overwrite = T,
-                                 test_mode = FALSE){
+                                  copy_ext_files = F,
+                                  test_mode = F){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(assertthat::is.flag(test_mode))
+    assertthat::assert_that(assertthat::is.flag(copy_ext_files))
 
     # Call all validators
     if(!test_mode &&
@@ -64,46 +68,21 @@ ogs6_export_sim_files <- function(ogs6_obj,
     # Create the simulation folder
     if (!dir.exists(ogs6_obj$sim_path)) {
         dir.create(ogs6_obj$sim_path)
-    } else{
+    }
+    else{
         if(!overwrite){
             assertthat::assert_that(length(list.files(ogs6_obj$sim_path)) == 0)
         }
     }
 
+    # handle gml
     if(!is.null(ogs6_obj$gml)){
         export_gml(ogs6_obj$gml,
                    paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
-    }else if(!is.null(ogs6_obj$geometry)){
-        file.copy(ogs6_obj$geometry, ogs6_obj$sim_path)
     }
 
-    # If processes tag only contains reference, copy referenced file
-    if(names(ogs6_obj$processes)[[1]] == "include"){
-
-        include_dir <- paste0(ogs6_obj$sim_path, "include/")
-
-        if(!dir.exists(include_dir)){
-            dir.create(include_dir)
-        }
-
-        file.copy(ogs6_obj$processes[[1]][["file"]], include_dir)
-
-        new_ref_path <- paste0(include_dir,
-                               basename(ogs6_obj$processes[[1]][["file"]]))
-
-        ogs6_obj$processes <- new_ref_path
-    }
-
-    # Copy all referenced .vtu files to ogs6_obj$sim_path
-    lapply(ogs6_obj$meshes, function(x){
-        file.copy(x[["path"]], ogs6_obj$sim_path)
-    })
-
-    if(!is.null(ogs6_obj$python_script)){
-        file.copy(ogs6_obj$python_script, ogs6_obj$sim_path)
-    }
-
-    export_prj(ogs6_obj)
+    # handle prj
+    export_prj(ogs6_obj, copy_ext_files)
 
     return(invisible())
 }
@@ -291,7 +270,8 @@ ogs6_read_output_files <- function(ogs6_obj){
 #' @noRd
 run_benchmark <- function(prj_path,
                           ogs6_bin_path,
-                          sim_path){
+                          sim_path,
+                          copy_ext_files = F){
 
     if(missing(ogs6_bin_path)){
         ogs6_bin_path <- unlist(options("r2ogs6.default_ogs6_bin_path"))
@@ -309,6 +289,7 @@ run_benchmark <- function(prj_path,
     assertthat::assert_that(assertthat::is.string(prj_path))
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.string(sim_path))
+    assertthat::assert_that(assertthat::is.flag(copy_ext_files))
 
     sim_name <- tools::file_path_sans_ext(basename(prj_path))
 
@@ -324,8 +305,9 @@ run_benchmark <- function(prj_path,
                 prj_path = prj_path,
                 read_in_gml = read_gml)
 
-    return(invisible(ogs6_run_simulation(ogs6_obj,
-                                    ogs6_bin_path = ogs6_bin_path)))
+    return(invisible(ogs6_run_simulation(
+                        ogs6_obj, ogs6_bin_path = ogs6_bin_path,
+                        copy_ext_files = copy_ext_files)))
 }
 
 
