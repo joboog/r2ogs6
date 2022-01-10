@@ -82,6 +82,10 @@ export_prj <- function(ogs6_obj, copy_ext_files = F) {
                 file.copy(param$database, ogs6_obj$sim_path)
                 param$database <- basename(param$database)
             }
+            if(param_name=="python_script"){
+                file.copy(param, ogs6_obj$sim_path)
+                param$database <- basename(param)
+            }
         }
 
         # create xml node
