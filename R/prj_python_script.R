@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' prj_python_script(scripts = "bcs_laplace_eq.py")
+#' prj_python_script(file_path = "bcs_laplace_eq.py")
 #'
 prj_python_script <- function(file_path) {
 
