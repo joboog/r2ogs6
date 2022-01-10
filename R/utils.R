@@ -190,6 +190,19 @@ as_dir_path <- function(path){
   return(invisible(path))
 }
 
+#' as_dir_path2
+#' @description Removes leading \code{./} from a given path
+#' @param file_path string: A path
+#' @noRd
+as_dir_path2 <- function(file_path){
+
+  assertthat::assert_that(assertthat::is.string(file_path))
+
+  if(substr(file_path,1,2) %>% stringr::str_detect("./")){
+    file_path <- sub("\\./", "", file_path)
+  }
+  return(invisible(file_path))
+}
 
 #' filter_invalid_xml
 #' @description Filters invalid XML paths out of a vector
@@ -402,4 +415,68 @@ is_null_or_has_class <- function(obj, class_name){
   }
 
   return(invisible(TRUE))
+}
+
+
+#--- File utility ------------------------------------------------------------
+
+#' make_abs_path
+#' @description Creates an absolute file path based on a given file name or path
+#'  and a reference path. The reference path will be adjusted if the file path
+#'  is relative (e.g.  \code{../foo/bar.baz}). A file with the created absolute
+#'  path should exist.
+#' @param file_path string: Name or path to file.
+#' @param ref_path string: Reference path whre file_path will be combined with.
+#' Will be made absolute if relative path is given.
+#' @noRd
+make_abs_path <- function(file_path, ref_path, force=F){
+
+  assertthat::assert_that(assertthat::is.string(file_path))
+  assertthat::assert_that(assertthat::is.string(ref_path))
+
+  # make shure that ref_path is absolute and ends with "/"
+  ref_path <- normalizePath(ref_path, mustWork = T)
+  ref_path <- as_dir_path(ref_path)
+  file_path <- as_dir_path2(file_path)
+
+  # case1: if file_path is absolute
+  if((substr(file_path,1,1)=="/")| # abspath on unix
+     (substr(file_path,1,3) %>% stringr::str_detect("[:alpha:]:\\\\"))){ # windows?
+
+    message(paste("file_path", file_path, "is already asolute."))
+    if(isTRUE(force)){
+      file_path <- paste0(ref_path, basename(file_path))
+      message(paste0("Forced to convert to: ", ref_path, file_path))
+    }
+  }
+  # case2: if file_path consist of filename only
+  else if(basename(file_path)==file_path){
+    file_path <- paste0(ref_path,file_path)
+  }
+  # case3: if file_path is in parent dir(s) (contains "../")
+  else if(stringr::str_detect(file_path, "\\.\\./")){
+    cds <- stringr::str_count(file_path, "\\.\\./")
+    file_path <- gsub("\\.\\./", "", file_path)
+    # cd.. through ref_path
+    for(i in seq(cds)){
+      ref_path <- sub("\\w+/$", "", ref_path)
+    }
+    file_path <- paste0(ref_path,file_path)
+  }
+  # case4: file is in child dir
+  else {
+
+    file_path_norm <- normalizePath(dirname(file_path), mustWork = T)
+
+    assertthat::assert_that(
+      stringr::str_detect(file_path_norm, ref_path),
+      msg = paste(file_path, "is neither an absolute path nor a reference to",
+                  "a file in", ref_path, "or in a child or parent directory."))
+
+    file_path <- paste0(ref_path,file_path)
+  }
+
+  assertthat::assert_that(file.exists(file_path))
+
+  return(file_path)
 }
