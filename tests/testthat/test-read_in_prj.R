@@ -277,4 +277,24 @@ test_that("read_in works for geometry and vtu meshes", {
     expect_equal(ogs6_obj$meshes[[3]]$path, vtu_path3)
     expect_equal(ogs6_obj$meshes[[4]]$path, vtu_path4)
 })
+
+test_that("read_in works for chemical_system objects", {
+
+    prj_base_path <- system.file("extdata/benchmarks/CationExchange/",
+                                 package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/exchange.prj")
+    dat_path <- paste0(prj_base_path, "/phreeqc.dat")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj, prj_path)
+
+    expect_equal(is.null(ogs6_obj$chemical_system$database), FALSE)
+    expect_equal(ogs6_obj$chemical_system$chemical_solver, "Phreeqc")
+    expect_equal(ogs6_obj$chemical_system$database, dat_path)
+    expect_equal(class(ogs6_obj$chemical_system$solution), "prj_solution")
+    expect_equal(length(ogs6_obj$chemical_system$solution), 8)
+    expect_equal(ogs6_obj$chemical_system$solution$temperature, 25)
+    expect_equal(length(ogs6_obj$chemical_system$knobs), 5)
 })
