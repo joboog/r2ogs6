@@ -65,7 +65,7 @@ test_that("ogs6_export_sim_files works", {
                 read_in_gml = T)
 
     # Now export all files
-    ogs6_export_sim_files(ogs6_obj)
+    ogs6_export_sim_files(ogs6_obj, copy_ext_files = T)
 
     # Trying to overwrite should yield an error
     expect_error(ogs6_export_sim_files(ogs6_obj, overwrite = F))
@@ -74,7 +74,7 @@ test_that("ogs6_export_sim_files works", {
                  TRUE)
 
     expect_equal(file.exists(paste0(test_path,
-                                    "/include/SteadyStateDiffusion.xml")),
+                                    "/SteadyStateDiffusion.xml")),
                  TRUE)
 
     # Tidy up by deleting the folder we created
