@@ -213,3 +213,22 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
 
     expect_equal(ogs6_obj$processes[[1]]$name, "HM")
 })
+
+test_that("read_in works for python_script objects", {
+
+    prj_base_path <- system.file(
+        "extdata/benchmarks/Elliptic/square_1x1_SteadyStateDiffusion_Python",
+        package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/square_1e3_laplace_eq.prj")
+    py_path <- paste0(prj_base_path, "/bcs_laplace_eq.py")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj,
+                prj_path)
+
+    expect_equal(length(ogs6_obj$python_script), 1)
+    expect_equal(ogs6_obj$python_script, py_path)
+
+})
