@@ -318,7 +318,7 @@ new_prj_pr_property <- function(name,
                    exponents = exponents,
                    xpath = "media/medium/properties/property",
                    attr_names = character(),
-                   flatten_on_exp = character()
+                   flatten_on_exp = c("value")
     ),
     class = "prj_pr_property"
     )
