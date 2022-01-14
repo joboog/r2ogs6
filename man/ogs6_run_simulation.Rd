@@ -9,6 +9,7 @@ ogs6_run_simulation(
   write_logfile = TRUE,
   ogs6_bin_path,
   overwrite = T,
+  copy_ext_files = F,
   verbose = F
 )
 }
@@ -23,6 +24,9 @@ directory will be created in \code{ogs6$sim_path} directory}
 to \code{options("r2ogs6.default_ogs6_bin_path")}}
 
 \item{overwrite}{flag: Should existing files be overwritten?}
+
+\item{copy_ext_files}{flag: Should external files that are references in the
+\code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?}
 
 \item{verbose}{flag}
 }
