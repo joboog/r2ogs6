@@ -2,6 +2,15 @@
 # git clone --depth 1 --branch 6.4.1 https://gitlab.opengeosys.org/ogs/ogs
 # wget https://ogsstorage.blob.core.windows.net/binaries/ogs6/6.4.1/ogs-6.4.1-serial.sif
 
+# utils
+dir_make_overwrite <- function(path) {
+
+    if (dir.exists(path)) {
+    unlink(path, recursive = TRUE)
+    }
+    dir.create(path, recursive = TRUE)
+}
+
 # Setup -------------------------------------------------------------------
 if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
     commandArgs(trailingOnly=TRUE)[2 ]== "r2ogs6") {
@@ -39,15 +48,16 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
 
     ogs_repo <- "/root/ogs/"
     prjs <- r2ogs6:::get_benchmark_paths(paste0(ogs_repo, "ProcessLib"))
-    # prjs <- prjs[c(6, 45, 46, 47, 249, 250, 251, 252)] # for testing
+    #prjs <- prjs[1:15] # for testing
+
 
     #### Exceptions #####
     # exclude some prj files
-    prjs <- prjs[-grep("\\.xml$", prjs)]
-    prjs <- prjs[-grep("TH2M/THM/slab/THM_1d_dirichlet.prj", prjs)]
-    prjs <- prjs[-grep("InvalidProjectFiles/", prjs)]
+    prjs <- prjs[!grepl("\\.xml$", prjs)]
+    prjs <- prjs[!grepl("TH2M/THM/slab/THM_1d_dirichlet.prj", prjs)]
+    prjs <- prjs[!grepl("InvalidProjectFiles/", prjs)]
     #####################
-
+    # print(prjs)
     ogs6_container <- paste0("/root/ogs-", ogs_version, "-serial.sif")
 
     # include call with --app ogs flag for ogs < 6.4.1
@@ -64,12 +74,11 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
 if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
 
     out_ref <- "-o /root/out_ref"
-    dir.create("/root/out_ref")
-    dir.create("/root/out_ref/logfiles/")
+
+    dir_make_overwrite("/root/out_ref/logfiles")
 
     ref_exit <- tibble(benchmark = character(),
                        ref = numeric())
-
     for (prj in prjs) {
 
         print(paste0("Running benchmark ", prj))
@@ -87,7 +96,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
     }
 
     save(ref_exit, file = "ref_exit.rda")
-    dir.create("out_ref")
+    dir_make_overwrite("out_ref")
     file.copy("/root/out_ref/logfiles", to = "out_ref", recursive = TRUE)
 }
 
@@ -97,7 +106,8 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
     test_exit <- tibble(benchmark = character(),
                         test = numeric())
     out_test <- "/root/out_test"
-    dir.create(out_test)
+    dir_make_overwrite(paste0(out_test, "/logfiles"))
+
     for (prj in prjs) {
         print(paste0("Attempting to run benchmark ", prj))
         prj_path <- paste0(ogs_repo, "Tests/Data/", prj)
@@ -119,9 +129,8 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
     }
     test_exit$test[which(is.na(test_exit$test))] <- 99
     save(test_exit, file = "test_exit.rda")
-
-    dir.create("out_test")
-    file.copy("/root/out_test/logfiles", to = "out_test", recursive = TRUE)
+    dir_make_overwrite("out-test")
+    file.copy("/root/out_test/logfiles", to = "out-test", recursive = TRUE)
 }
 
 if (commandArgs(trailingOnly=TRUE)[2] == "test") {
@@ -132,13 +141,14 @@ if (commandArgs(trailingOnly=TRUE)[2] == "test") {
     test_exit <- dplyr::full_join(ref_exit, test_exit, by = "benchmark")
 
     print(test_exit, n = nrow(test_exit))
-
+    cat("\n\n Failed benchmarks:\n")
     # benchmarks that passed with & without r2ogs6
     r2ogs6_passed <- test_exit$test[which(test_exit$ref == 0)] == 0
 
     if(!all(r2ogs6_passed)) {
-        cat(paste0(test_exit$benchmark[!r2ogs6_passed],
+        cat(paste0(test_exit$benchmark[which(test_exit$ref == 0)][!r2ogs6_passed],
                      collapse = "\n"))
+        cat("\n\n")
         stop("Exit codes for r2ogs6 were nonzero for above benchmarks!")
     }
 }

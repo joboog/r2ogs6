@@ -88,7 +88,7 @@ benchmark:r2ogs6:
     expire_in: 4 hrs
     paths:
       - test_exit.rda
-      - out_test/logfiles/
+      - out-test/logfiles/
 
 compare-benchmarks:
   needs: ["benchmark:ref", "benchmark:r2ogs6"]
