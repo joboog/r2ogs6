@@ -9,7 +9,7 @@ ogs6_generate_benchmark_script(
   sim_path,
   ogs6_bin_path,
   script_path,
-  read_in_gml,
+  read_in_gml = FALSE,
   read_in_vtu = FALSE
 )
 }

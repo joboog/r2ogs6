@@ -221,7 +221,7 @@ construct_ogs_command <- function(ogs6_bin_path){
     if (stringr::str_sub(ogs6_bin_path, -4) == ".sif"){
 
         assertthat::assert_that(file.exists(ogs6_bin_path))
-        ogs6_command <- c("singularity","exec", "--app ogs",
+        ogs6_command <- c("singularity","exec",
                           ogs6_bin_path, "ogs")
     }
     else {
@@ -374,7 +374,7 @@ run_all_benchmarks <- function(path,
 
 
     # Filter nonexisting files from prj_paths
-    nonexisting_prj_paths <- prj_paths[!file.exists(prj_paths)]
+    nonexisting_prj_paths <- prj_paths[!file.exists(unlist(prj_paths))]
     prj_paths <- prj_paths[!prj_paths %in% nonexisting_prj_paths]
 
 

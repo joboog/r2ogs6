@@ -8,7 +8,7 @@ prj_phasefield_parameters(
   residual_stiffness,
   crack_resistance,
   crack_length_scale,
-  kinetic_coefficient,
+  kinetic_coefficient = NULL,
   history_field = NULL
 )
 }

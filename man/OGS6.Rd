@@ -38,6 +38,15 @@ ogs6_obj$add_vtu("this_works.vtu")
 \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
 
 ## ------------------------------------------------
+## Method `OGS6$update_component`
+## ------------------------------------------------
+
+\dontrun{ogs6_obj$update_component(list(
+                   list("ogs6_obj$parameters[[1]]$value", 2.3),
+                   list("ogs6_obj$media[[1]]$properties[[2]]$value",
+                        1.0e-3)))}
+
+## ------------------------------------------------
 ## Method `OGS6$get_status`
 ## ------------------------------------------------
 
@@ -113,6 +122,7 @@ ogs6_obj$get_status()
 \item \href{#method-add}{\code{OGS6$add()}}
 \item \href{#method-add_gml}{\code{OGS6$add_gml()}}
 \item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
+\item \href{#method-update_component}{\code{OGS6$update_component()}}
 \item \href{#method-get_status}{\code{OGS6$get_status()}}
 \item \href{#method-print}{\code{OGS6$print()}}
 \item \href{#method-print_log}{\code{OGS6$print_log()}}
@@ -230,6 +240,36 @@ copied or read in too?}
 \preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
 ogs6_obj$add_vtu("this_works.vtu")
 \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-update_component"></a>}}
+\if{latex}{\out{\hypertarget{method-update_component}{}}}
+\subsection{Method \code{update_component()}}{
+Update a component of the \code{OGS6} object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$update_component(cmpts)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cmpts}}{list(sublist, length(sublist) == 2): The first element
+of a sublist is a character that calls an \code{OGS6} component, the
+second one is the corresponding value.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{ogs6_obj$update_component(list(
+                   list("ogs6_obj$parameters[[1]]$value", 2.3),
+                   list("ogs6_obj$media[[1]]$properties[[2]]$value",
+                        1.0e-3)))}
 }
 \if{html}{\out{</div>}}
 

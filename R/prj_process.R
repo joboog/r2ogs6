@@ -13,7 +13,6 @@
 #' @param solid_density Optional:
 #' @param dimension Optional:
 #' @param coupling_scheme Optional:
-#' @param darcy_gravity Optional:
 #' @param reference_temperature Optional:
 #' @param fracture_model Optional:
 #' @param jacobian_assembler Optional:
@@ -50,26 +49,21 @@
 #' @param material_property Optional:
 #' @param diffusion_coeff_component_b Optional:
 #' @param diffusion_coeff_component_a Optional:
-#' @param hydro_crack_scheme Optional:
-#' @param at_num Optional:
 #' @param initial_stress Optional:
-#' @param split_method Optional:
-#' @param reg_param Optional:
 #' @param thermal_parameters Optional:
 #' @param non_advective_form Optional:
-#' @param fluid Optional:
-#' @param porous_medium Optional:
-#' @param decay_rate Optional:
-#' @param fluid_reference_density Optional:
-#' @param retardation_factor Optional:
-#' @param solute_dispersivity_longitudinal Optional:
-#' @param solute_dispersivity_transverse Optional:
-#' @param molecular_diffusion_coefficient Optional:
 #' @param density_solid Optional:
 #' @param latent_heat_evaporation Optional:
-#' @param pf_irrv Optional:
 #' @param micro_porosity Optional:
 #' @param explicit_hm_coupling_in_unsaturated_zone Optional:
+#' @param simplified_elasticity Optional: character
+#' @param chemically_induced_porosity_change Optional: character
+#' @param use_server_communication Optional:
+#' @param phasefield_model Optional:
+#' @param irreversible_threshold Optional: numeric
+#' @param tabular_file Optional: character
+#' @param temperature_field Optional: character
+#' @param use_stokes_brinkman_form Optional: character
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
@@ -82,7 +76,6 @@ prj_process <- function(name,
                            solid_density = NULL,
                            dimension = NULL,
                            coupling_scheme = NULL,
-                           darcy_gravity = NULL,
                            reference_temperature = NULL,
                            fracture_model = NULL,
                            jacobian_assembler = NULL,
@@ -119,26 +112,21 @@ prj_process <- function(name,
                            material_property = NULL,
                            diffusion_coeff_component_b = NULL,
                            diffusion_coeff_component_a = NULL,
-                           hydro_crack_scheme = NULL,
-                           at_num = NULL,
                            initial_stress = NULL,
-                           split_method = NULL,
-                           reg_param = NULL,
                            thermal_parameters = NULL,
                            non_advective_form = NULL,
-                           fluid = NULL,
-                           porous_medium = NULL,
-                           decay_rate = NULL,
-                           fluid_reference_density = NULL,
-                           retardation_factor = NULL,
-                           solute_dispersivity_longitudinal = NULL,
-                           solute_dispersivity_transverse = NULL,
-                           molecular_diffusion_coefficient = NULL,
                            density_solid = NULL,
                            latent_heat_evaporation = NULL,
-                           pf_irrv = NULL,
-                        micro_porosity = NULL,
+                           micro_porosity = NULL,
                            explicit_hm_coupling_in_unsaturated_zone = NULL,
+                           simplified_elasticity = NULL,
+                           chemically_induced_porosity_change = NULL,
+                           use_server_communication = NULL,
+                           phasefield_model = NULL,
+                           irreversible_threshold = NULL,
+                           tabular_file = NULL,
+                           temperature_field = NULL,
+                           use_stokes_brinkman_form = NULL,
                            ...){
 
     #Coerce input
@@ -167,10 +155,7 @@ prj_process <- function(name,
         coerce_string_to_numeric(characteristic_temperature)
     characteristic_vapour_mass_fraction <-
         coerce_string_to_numeric(characteristic_vapour_mass_fraction)
-    at_num <- coerce_string_to_numeric(at_num)
-    split_method <- coerce_string_to_numeric(split_method)
-    reg_param <- coerce_string_to_numeric(reg_param)
-    pf_irrv <- coerce_string_to_numeric(pf_irrv)
+    irreversible_threshold <- coerce_string_to_numeric(irreversible_threshold)
 
     ellipsis_list <- list(...)
 
@@ -191,7 +176,6 @@ prj_process <- function(name,
         solid_density,
         dimension,
         coupling_scheme,
-        darcy_gravity,
         reference_temperature,
         fracture_model,
         fracture_properties,
@@ -229,98 +213,87 @@ prj_process <- function(name,
         material_property,
         diffusion_coeff_component_b,
         diffusion_coeff_component_a,
-        hydro_crack_scheme,
-        at_num,
         initial_stress,
-        split_method,
-        reg_param,
         thermal_parameters,
         non_advective_form,
-        fluid,
-        porous_medium,
-        decay_rate,
-        fluid_reference_density,
-        retardation_factor,
-        solute_dispersivity_longitudinal,
-        solute_dispersivity_transverse,
-        molecular_diffusion_coefficient,
         density_solid,
         latent_heat_evaporation,
-        pf_irrv,
         micro_porosity,
-        explicit_hm_coupling_in_unsaturated_zone
+        explicit_hm_coupling_in_unsaturated_zone,
+        simplified_elasticity,
+        chemically_induced_porosity_change,
+        use_server_communication,
+        phasefield_model,
+        irreversible_threshold,
+        tabular_file,
+        temperature_field,
+        use_stokes_brinkman_form
     )
 }
 
 
 new_prj_process <- function(name,
-                               type,
-                               integration_order,
-                               process_variables,
-                               secondary_variables = NULL,
-                               specific_body_force = NULL,
-                               constitutive_relation = NULL,
-                               solid_density = NULL,
-                               dimension = NULL,
-                               coupling_scheme = NULL,
-                               darcy_gravity = NULL,
-                               reference_temperature = NULL,
-                               fracture_model = NULL,
-                               fracture_properties = NULL,
-                               jacobian_assembler = NULL,
-                               internal_length = NULL,
-                               mass_lumping = NULL,
-                               porosity = NULL,
-                               calculatesurfaceflux = NULL,
-                               intrinsic_permeability = NULL,
-                               specific_storage = NULL,
-                               fluid_viscosity = NULL,
-                               biot_coefficient = NULL,
-                               fluid_density = NULL,
-                               initial_effective_stress = NULL,
-                               initial_fracture_effective_stress = NULL,
-                               phasefield_parameters = NULL,
-                               deactivate_matrix_in_flow = NULL,
-                               borehole_heat_exchangers = NULL,
-                               temperature = NULL,
-                               reactive_system = NULL,
-                               fluid_specific_heat_source = NULL,
-                               fluid_specific_isobaric_heat_capacity = NULL,
-                               solid_hydraulic_permeability = NULL,
-                               solid_specific_heat_source = NULL,
-                               solid_heat_conductivity = NULL,
-                               solid_specific_isobaric_heat_capacity = NULL,
-                               tortuosity = NULL,
-                               diffusion_coefficient = NULL,
-                               solid_density_dry = NULL,
-                               solid_density_initial = NULL,
-                               characteristic_pressure = NULL,
-                               characteristic_temperature = NULL,
-                               characteristic_vapour_mass_fraction = NULL,
-                               output_element_matrices = NULL,
-                               material_property = NULL,
-                               diffusion_coeff_component_b = NULL,
-                               diffusion_coeff_component_a = NULL,
-                               hydro_crack_scheme = NULL,
-                               at_num = NULL,
-                               initial_stress = NULL,
-                               split_method = NULL,
-                               reg_param = NULL,
-                               thermal_parameters = NULL,
-                               non_advective_form = NULL,
-                               fluid = NULL,
-                               porous_medium = NULL,
-                               decay_rate = NULL,
-                               fluid_reference_density = NULL,
-                               retardation_factor = NULL,
-                               solute_dispersivity_longitudinal = NULL,
-                               solute_dispersivity_transverse = NULL,
-                               molecular_diffusion_coefficient = NULL,
-                               density_solid = NULL,
-                               latent_heat_evaporation = NULL,
-                               pf_irrv = NULL,
+                            type,
+                            integration_order,
+                            process_variables,
+                            secondary_variables = NULL,
+                            specific_body_force = NULL,
+                            constitutive_relation = NULL,
+                            solid_density = NULL,
+                            dimension = NULL,
+                            coupling_scheme = NULL,
+                            reference_temperature = NULL,
+                            fracture_model = NULL,
+                            fracture_properties = NULL,
+                            jacobian_assembler = NULL,
+                            internal_length = NULL,
+                            mass_lumping = NULL,
+                            porosity = NULL,
+                            calculatesurfaceflux = NULL,
+                            intrinsic_permeability = NULL,
+                            specific_storage = NULL,
+                            fluid_viscosity = NULL,
+                            biot_coefficient = NULL,
+                            fluid_density = NULL,
+                            initial_effective_stress = NULL,
+                            initial_fracture_effective_stress = NULL,
+                            phasefield_parameters = NULL,
+                            deactivate_matrix_in_flow = NULL,
+                            borehole_heat_exchangers = NULL,
+                            temperature = NULL,
+                            reactive_system = NULL,
+                            fluid_specific_heat_source = NULL,
+                            fluid_specific_isobaric_heat_capacity = NULL,
+                            solid_hydraulic_permeability = NULL,
+                            solid_specific_heat_source = NULL,
+                            solid_heat_conductivity = NULL,
+                            solid_specific_isobaric_heat_capacity = NULL,
+                            tortuosity = NULL,
+                            diffusion_coefficient = NULL,
+                            solid_density_dry = NULL,
+                            solid_density_initial = NULL,
+                            characteristic_pressure = NULL,
+                            characteristic_temperature = NULL,
+                            characteristic_vapour_mass_fraction = NULL,
+                            output_element_matrices = NULL,
+                            material_property = NULL,
+                            diffusion_coeff_component_b = NULL,
+                            diffusion_coeff_component_a = NULL,
+                            initial_stress = NULL,
+                            thermal_parameters = NULL,
+                            non_advective_form = NULL,
+                            density_solid = NULL,
+                            latent_heat_evaporation = NULL,
                             micro_porosity = NULL,
-                            explicit_hm_coupling_in_unsaturated_zone = NULL) {
+                            explicit_hm_coupling_in_unsaturated_zone = NULL,
+                            simplified_elasticity = NULL,
+                            chemically_induced_porosity_change = NULL,
+                            use_server_communication = NULL,
+                            phasefield_model = NULL,
+                            irreversible_threshold = NULL,
+                            tabular_file = NULL,
+                            temperature_field = NULL,
+                            use_stokes_brinkman_form = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -340,10 +313,6 @@ new_prj_process <- function(name,
                         "prj_constitutive_relation")
     }
 
-    if(!is.null(darcy_gravity)){
-        darcy_gravity <- coerce_names(darcy_gravity,
-                                             c("axis_id", "g"))
-    }
 
     is_null_or_has_class(fracture_model, "prj_fracture_model")
 
@@ -384,12 +353,7 @@ new_prj_process <- function(name,
                                   "residual_thermal_conductivity"))
     }
 
-    if(!is.null(porous_medium)){
-        is_wrapper_list(porous_medium,
-                        "prj_porous_medium")
-    }
 
-    fluid <- validate_fluid(fluid)
 
     are_null_or_strings(coupling_scheme,
                                solid_density,
@@ -403,20 +367,19 @@ new_prj_process <- function(name,
                                temperature,
                                diffusion_coeff_component_b,
                                diffusion_coeff_component_a,
-                               hydro_crack_scheme,
                                initial_stress,
-                               decay_rate,
-                               fluid_reference_density,
-                               retardation_factor,
-                               solute_dispersivity_longitudinal,
-                               solute_dispersivity_transverse,
-                               molecular_diffusion_coefficient,
                                density_solid,
                                latent_heat_evaporation,
                                porosity,
                                deactivate_matrix_in_flow,
                                output_element_matrices,
-                               reference_temperature)
+                               reference_temperature,
+                               simplified_elasticity,
+                               chemically_induced_porosity_change,
+                               use_server_communication,
+                               tabular_file,
+                               temperature_field,
+                               use_stokes_brinkman_form)
 
 
     are_null_or_numbers(dimension,
@@ -434,10 +397,7 @@ new_prj_process <- function(name,
                                characteristic_pressure,
                                characteristic_temperature,
                                characteristic_vapour_mass_fraction,
-                               at_num,
-                               split_method,
-                               reg_param,
-                               pf_irrv)
+                               irreversible_threshold)
 
     if(!is.null(mass_lumping)){
         mass_lumping <- stringr::str_remove_all(mass_lumping, "[:space:]*")
@@ -458,7 +418,6 @@ new_prj_process <- function(name,
             solid_density = solid_density,
             dimension = dimension,
             coupling_scheme = coupling_scheme,
-            darcy_gravity = darcy_gravity,
             reference_temperature = reference_temperature,
             fracture_model = fracture_model,
             fracture_properties = fracture_properties,
@@ -500,27 +459,23 @@ new_prj_process <- function(name,
             material_property = material_property,
             diffusion_coeff_component_b = diffusion_coeff_component_b,
             diffusion_coeff_component_a = diffusion_coeff_component_a,
-            hydro_crack_scheme = hydro_crack_scheme,
-            at_num = at_num,
             initial_stress = initial_stress,
-            split_method = split_method,
-            reg_param = reg_param,
             thermal_parameters = thermal_parameters,
             non_advective_form = non_advective_form,
-            fluid = fluid,
-            porous_medium = porous_medium,
-            decay_rate = decay_rate,
-            fluid_reference_density = fluid_reference_density,
-            retardation_factor = retardation_factor,
-            solute_dispersivity_longitudinal = solute_dispersivity_longitudinal,
-            solute_dispersivity_transverse = solute_dispersivity_transverse,
-            molecular_diffusion_coefficient = molecular_diffusion_coefficient,
             density_solid = density_solid,
             latent_heat_evaporation = latent_heat_evaporation,
-            pf_irrv = pf_irrv,
             micro_porosity = micro_porosity,
             explicit_hm_coupling_in_unsaturated_zone =
                 explicit_hm_coupling_in_unsaturated_zone,
+            simplified_elasticity = simplified_elasticity,
+            chemically_induced_porosity_change =
+                chemically_induced_porosity_change,
+            use_server_communication = use_server_communication,
+            phasefield_model = phasefield_model,
+            irreversible_threshold = irreversible_threshold,
+            tabular_file = tabular_file,
+            temperature_field = temperature_field,
+            use_stokes_brinkman_form = use_stokes_brinkman_form,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
@@ -985,7 +940,7 @@ new_prj_jacobian_assembler <- function(type,
 prj_phasefield_parameters <- function(residual_stiffness,
                                          crack_resistance,
                                          crack_length_scale,
-                                         kinetic_coefficient,
+                                         kinetic_coefficient = NULL,
                                          history_field = NULL) {
 
     # Add coercing utility here
@@ -1001,15 +956,15 @@ prj_phasefield_parameters <- function(residual_stiffness,
 new_prj_phasefield_parameters <- function(residual_stiffness,
                                              crack_resistance,
                                              crack_length_scale,
-                                             kinetic_coefficient,
+                                             kinetic_coefficient = NULL,
                                              history_field = NULL) {
 
     are_strings(residual_stiffness,
                        crack_resistance,
-                       crack_length_scale,
-                       kinetic_coefficient)
+                       crack_length_scale)
 
-    are_null_or_strings(history_field)
+    are_null_or_strings(kinetic_coefficient,
+                        history_field)
 
     structure(list(residual_stiffness = residual_stiffness,
                    crack_resistance = crack_resistance,
@@ -1037,7 +992,6 @@ new_prj_phasefield_parameters <- function(residual_stiffness,
 #See prj_material_property.R
 
 
-#===== prj_porous_medium =====
 
 
 #See prj_porous_medium.R
@@ -1094,6 +1048,7 @@ validate_process_variables <- function(process_variables){
                         "gas_pressure",
                         "capillary_pressure",
                         "liquid_pressure",
+                        "liquid_velocity",
                         "overall_mass_density")
 
     for(i in seq_len(length(process_variables))){
@@ -1141,18 +1096,6 @@ validate_secondary_variables <- function(secondary_variables){
 }
 
 
-validate_fluid <- function(fluid){
-
-    if(!is.null(fluid)){
-
-        fluid <- coerce_names(fluid, c("density", "viscosity"))
-
-        fluid[[1]] <- coerce_names(fluid[[1]], c("type", "value"))
-        fluid[[2]] <- coerce_names(fluid[[2]], c("type", "value"))
-    }
-
-    return(invisible(fluid))
-}
 
 validate_process_nls <- function(nonlinear_solver, nullable = T){
 

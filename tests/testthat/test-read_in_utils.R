@@ -66,4 +66,19 @@ test_that("order_parameters works for classes with Ellipsis argument", {
                                           index_values = list("1", "1 2")))
 })
 
+test_that("order_parameters throws a helpful error message for missing
+          class arguments", {
+    # e.g. a new process node in a *.prj file is found and the corresponding
+    # class in prj_process is missing
+
+    ogs6_process <- prj_pr_property(name = "test", # use a class that does not have "..."
+                                type = "LIQUID_FLOW")
+    # replace one parameter
+    names(ogs6_process)[4] <- "Frodos_Ring"
+    expect_error(
+        order_parameters(parameters = ogs6_process,
+                         class_name = "prj_pr_property"),
+        regexp = "Frodos_Ring not in class_args of class prj_pr_property")
+          }
+)
 

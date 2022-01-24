@@ -14,7 +14,6 @@ prj_process(
   solid_density = NULL,
   dimension = NULL,
   coupling_scheme = NULL,
-  darcy_gravity = NULL,
   reference_temperature = NULL,
   fracture_model = NULL,
   jacobian_assembler = NULL,
@@ -51,26 +50,21 @@ prj_process(
   material_property = NULL,
   diffusion_coeff_component_b = NULL,
   diffusion_coeff_component_a = NULL,
-  hydro_crack_scheme = NULL,
-  at_num = NULL,
   initial_stress = NULL,
-  split_method = NULL,
-  reg_param = NULL,
   thermal_parameters = NULL,
   non_advective_form = NULL,
-  fluid = NULL,
-  porous_medium = NULL,
-  decay_rate = NULL,
-  fluid_reference_density = NULL,
-  retardation_factor = NULL,
-  solute_dispersivity_longitudinal = NULL,
-  solute_dispersivity_transverse = NULL,
-  molecular_diffusion_coefficient = NULL,
   density_solid = NULL,
   latent_heat_evaporation = NULL,
-  pf_irrv = NULL,
   micro_porosity = NULL,
   explicit_hm_coupling_in_unsaturated_zone = NULL,
+  simplified_elasticity = NULL,
+  chemically_induced_porosity_change = NULL,
+  use_server_communication = NULL,
+  phasefield_model = NULL,
+  irreversible_threshold = NULL,
+  tabular_file = NULL,
+  temperature_field = NULL,
+  use_stokes_brinkman_form = NULL,
   ...
 )
 }
@@ -92,8 +86,6 @@ prj_process(
 \item{dimension}{Optional:}
 
 \item{coupling_scheme}{Optional:}
-
-\item{darcy_gravity}{Optional:}
 
 \item{reference_temperature}{Optional:}
 
@@ -167,45 +159,35 @@ prj_process(
 
 \item{diffusion_coeff_component_a}{Optional:}
 
-\item{hydro_crack_scheme}{Optional:}
-
-\item{at_num}{Optional:}
-
 \item{initial_stress}{Optional:}
-
-\item{split_method}{Optional:}
-
-\item{reg_param}{Optional:}
 
 \item{thermal_parameters}{Optional:}
 
 \item{non_advective_form}{Optional:}
 
-\item{fluid}{Optional:}
-
-\item{porous_medium}{Optional:}
-
-\item{decay_rate}{Optional:}
-
-\item{fluid_reference_density}{Optional:}
-
-\item{retardation_factor}{Optional:}
-
-\item{solute_dispersivity_longitudinal}{Optional:}
-
-\item{solute_dispersivity_transverse}{Optional:}
-
-\item{molecular_diffusion_coefficient}{Optional:}
-
 \item{density_solid}{Optional:}
 
 \item{latent_heat_evaporation}{Optional:}
 
-\item{pf_irrv}{Optional:}
-
 \item{micro_porosity}{Optional:}
 
 \item{explicit_hm_coupling_in_unsaturated_zone}{Optional:}
+
+\item{simplified_elasticity}{Optional: character}
+
+\item{chemically_induced_porosity_change}{Optional: character}
+
+\item{use_server_communication}{Optional:}
+
+\item{phasefield_model}{Optional:}
+
+\item{irreversible_threshold}{Optional: numeric}
+
+\item{tabular_file}{Optional: character}
+
+\item{temperature_field}{Optional: character}
+
+\item{use_stokes_brinkman_form}{Optional: character}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }

@@ -261,16 +261,23 @@ order_parameters <- function(parameters, class_name){
 
     class_args <- get_class_args(class_name)
 
-    # cat("\nParameter names not in", class_name, "class arguments:")
-    # print(names(parameters)[!names(parameters) %in% class_args])
+    # logical vector of length(parameters) to exclude r2ogs6 specific parameters
+    standard_parameters <-
+        names(parameters) %in%
+                  c("xpath", "attr_names", "flatten_on_exp", "unwrap_on_exp")
 
     #Check for length and value mismatches if class does not have Ellipsis
     if(!"..." %in% class_args){
-        assertthat::assert_that(length(parameters) <= length(class_args))
+        assertthat::assert_that(length(parameters[!standard_parameters]) <=
+                                    length(class_args))
 
         for(i in seq_len(length(parameters))){
             # cat("\n", names(parameters)[[i]], "\n")
-            assertthat::assert_that(names(parameters)[[i]] %in% class_args)
+            assertthat::assert_that(names(parameters)[[i]] %in% class_args,
+                                    msg = paste0(names(parameters)[[i]],
+                                                 " not in class_args of class ",
+                                                 class_name,
+                                                 collapse = " "))
         }
     }
 

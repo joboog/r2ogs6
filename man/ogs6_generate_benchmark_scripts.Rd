@@ -11,7 +11,8 @@ ogs6_generate_benchmark_scripts(
   read_in_gml,
   read_in_vtu = FALSE,
   starting_from_prj_path = "",
-  skip_prj_paths = character()
+  skip_prj_paths = character(),
+  only_prj_files = character()
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ or read in too?}
 \item{starting_from_prj_path}{string: Optional: `.prj` path to start from}
 
 \item{skip_prj_paths}{character: Optional: `.prj` paths to skip}
+
+\item{only_prj_files}{character: Optional: `.prj` files to limit to.}
 }
 \description{
 This is a wrapper function for `ogs6_generate_benchmark_script()`.

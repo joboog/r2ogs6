@@ -1,6 +1,13 @@
-image: rocker/tidyverse
+# helpful Links:
+# https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+# https://www.youtube.com/watch?v=7I6tHw68DMQ
+
+stages:
+  - test
+  - test-benchmarks
 
 test:
+  image: $CI_REGISTRY_IMAGE
   stage: test
   tags:
     - envinf2
@@ -8,16 +15,13 @@ test:
     R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib/"
     RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/" #default path
     RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
-    # RETICULATE_PYTHON: "$CI_PROJECT_DIR/ci/r-miniconda/envs/r-reticulate/bin/python3"
   script:
     - if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi
     - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), devtools::install_deps(dependencies = T))'
     # checks if the packages from the Imports, Suggests, LinkinTo field
     # are already installed in the cache
     - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
-    # python dependencies
-    - if [ ! -d "$RETICULATE_MINICONDA_PATH" ]; then R -e 'reticulate::install_miniconda()'; fi
-    - R -e 'if(tryCatch(reticulate::import("vtk"), error = function(e) return(TRUE))) reticulate::py_install("vtk")'
+    # Build and Check r2ogs6
     - R CMD build . --no-build-vignettes --no-manual
     - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-build-vignettes --no-manual
   cache:
@@ -25,9 +29,79 @@ test:
     untracked: true
     paths:
       - "$R_LIBS_USER"
-      - "$RETICULATE_MINICONDA_PATH"
-      - "$RETICULATE_PYTHON_ENV"
-  # script will only run then attempting to merge/push to master
-  only:
-    - merge_requests
-    - master
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+benchmark:ref:
+  stage: test-benchmarks
+  tags:
+    - envinf1
+  image: "$CI_REGISTRY_IMAGE"
+  variables:
+    R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib/"
+    # change this as needed
+    OGS_VERSION: "6.4.1"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: on_success
+  script:
+    - if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi
+    - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), devtools::install_deps(dependencies = T))'
+    - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
+    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "ref"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+      - "$R_LIBS_USER"
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    expire_in: 4 hrs
+    paths:
+      - ref_exit.rda
+      - out_ref/logfiles/
+
+benchmark:r2ogs6:
+  stage: test-benchmarks
+  tags:
+    - envinf1
+  image: "$CI_REGISTRY_IMAGE"
+  variables:
+    R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib/"
+    # change this as needed
+    OGS_VERSION: "6.4.1"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: on_success
+  script:
+    - if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi
+    - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), devtools::install_deps(dependencies = T))'
+    - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
+    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "r2ogs6"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+      - "$R_LIBS_USER"
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    expire_in: 4 hrs
+    paths:
+      - test_exit.rda
+      - out-test/logfiles/
+
+compare-benchmarks:
+  needs: ["benchmark:ref", "benchmark:r2ogs6"]
+  stage: test-benchmarks
+  tags:
+    - envinf1
+  image: "$CI_REGISTRY_IMAGE"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: on_success
+  dependencies:
+    - benchmark:ref
+    - benchmark:r2ogs6
+  script:
+    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "test"
+
