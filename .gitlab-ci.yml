@@ -24,6 +24,9 @@ test:
     # Build and Check r2ogs6
     - R CMD build . --no-build-vignettes --no-manual
     - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-build-vignettes --no-manual
+  after_script:
+    - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
+  coverage: '/Coverage: \d+\.\d+\%/'
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     untracked: true
