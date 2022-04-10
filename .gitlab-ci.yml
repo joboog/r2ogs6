@@ -21,6 +21,7 @@ test:
     # checks if the packages from the Imports, Suggests, LinkinTo field
     # are already installed in the cache
     - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
+    - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), {install.packages("BiocManager"); BiocManager::install("rhdf5")})'
     # Build and Check r2ogs6
     - R CMD build . --no-build-vignettes --no-manual
     - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-build-vignettes --no-manual

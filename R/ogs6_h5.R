@@ -18,7 +18,7 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
             assertthat::is.string(h5_path)
             assertthat::assert_that(file.exists(h5_path))
             private$h5_info <- rhdf5::h5ls(h5_path)
-            private$h5_path <- h5_path
+            private$.h5_path <- h5_path
             private$valid_names <-
                 c("/",
                   apply(private$h5_info[, 1:2], 1,
@@ -39,7 +39,7 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
         print = function(){
             cat("OGS6_h5\n")
             cat("h5 path:\n")
-            cat(private$h5_path, "\n\n")
+            cat(private$.h5_path, "\n\n")
             cat("# h5 file structure",
                 paste0(rep("-", cli::console_width() - 20), collapse = ""),
                 "\n")
@@ -58,10 +58,9 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
         #' \dontrun{h5_list <- ogs6_obj$h5s[[1]]$get_h5("/times")}
         get_h5 = function(name = "/", ...) {
             assertthat::assert_that(name %in% private$valid_names)
-            return(rhdf5::h5read(file = private$h5_path, name, ...))
+            return(rhdf5::h5read(file = private$.h5_path, name, ...))
         },
 
-        #' @title Extract a *tibble* from a *.h5 file
         #' @description Method to retrieve \code{HDF5} output as a \code{tibble}
         #' assuming a standardized structure of \code{OGS6 HDF5} output.
         #' times and geometry are added by default.
@@ -96,7 +95,7 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
                             names[which(!name_paths %in%
                                             private$valid_names)],
                             " not found in file ",
-                            basename(private$h5_path)
+                            basename(private$.h5_path)
                                            ))
 
             lst <- private$add_geo_time(group) # adds geometry and time
@@ -119,9 +118,23 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
             return(dplyr::bind_cols(lst))
         }
     ),
+    # === active fields
+
+    active = list(
+        #' @field h5_path
+        #' Getter/setter for private parameter `.h5_path`
+        h5_path = function(value) {
+            if (missing(value)) {
+                private$.h5_path
+            } else {
+                assertthat::assert_that(assertthat::is.string(value))
+                private$.h5_path <- value
+            }
+        }
+    ),
     private = list(
         h5_info = NULL,
-        h5_path = NULL,
+        .h5_path = NULL,
         valid_names = NULL,
 
         add_geo_time = function(group) {

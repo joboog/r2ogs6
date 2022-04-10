@@ -1,8 +1,8 @@
 ---
 title: "r2ogs6 User Guide"
 author: "Ruben Heinrich"
-#output: html_document
-output: rmarkdown::html_vignette
+output: html_document
+#output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{r2ogs6 User Guide}
   %\VignetteEngine{knitr::rmarkdown}
@@ -182,7 +182,16 @@ As can be seen, hdf5 files have a very particular structure. To work with the da
 ```{r}
 h5_list <- ogs6_obj$h5s[[1]]$get_h5("/")
 ```
-
+  
+Other functions such as HDF5 handles for dataset processing can be used directly from the *rhdf5* package, of course. The path to the hd5 file is available as an active field `h5_path` that can be accessed or changed in the *OGS6* object.
+```{r}
+example_h5 <- rhdf5::H5Fopen(ogs6_obj$h5s[[1]]$h5_path)
+example_h5
+str(example_h5$t_0)
+rhdf5::h5closeAll()
+```
+  
+  
 If the file has a reasonably "clean" structure, a more convenient way of importing the data is using the method `get_df` that returns a *tibble* table. 
 
 ```{r}
