@@ -7,7 +7,7 @@ stages:
   - test-benchmarks
 
 test:
-  image: $CI_REGISTRY_IMAGE
+  image: $CI_REGISTRY_IMAGE:latest
   stage: test
   tags:
     - envinf2
