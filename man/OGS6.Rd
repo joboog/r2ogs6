@@ -112,6 +112,9 @@ ogs6_obj$get_status()
 \code{prj_insitu} object}
 
 \item{\code{pvds}}{\code{.pvd}s. \code{value} must be list of \code{OGS6_pvd} objects}
+
+\item{\code{h5s}}{\code{h5s} \code{value} must be of class \code{H5IdComponent}
+as returned by \code{rhdf5::h5read()}.}
 }
 \if{html}{\out{</div>}}
 }

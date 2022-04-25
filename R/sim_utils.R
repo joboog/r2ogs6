@@ -243,21 +243,37 @@ ogs6_read_output_files <- function(ogs6_obj){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
 
-    pvd_paths <- list.files(ogs6_obj$sim_path,
-                            "\\.pvd$",
+    output_paths <- list.files(ogs6_obj$sim_path,
+                            "\\.pvd$|\\.h5$",
                             full.names = TRUE)
     # Wait for eventual file writing processes to finish
     t0 <- Sys.time()
-    while(((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)) &
+    while(((length(output_paths) == 0) | any(file.size(output_paths) <= 64)) &
           difftime(Sys.time(), t0, units = "secs") < 2) {
+
+        output_paths <- list.files(ogs6_obj$sim_path,
+                                   "\\.pvd$|\\.h5$",
+                                   full.names = TRUE)
         Sys.sleep(0.01)
     }
-    if (((length(pvd_paths) == 0) | any(file.size(pvd_paths) <= 64)))  {
+    if (((length(output_paths) == 0) | any(file.size(output_paths) <= 64)))  {
         stop("Output file not written out correctly.
                     Unable to import *.pvd")
     } else {
-        ogs6_obj$pvds <- lapply(pvd_paths, function(x){OGS6_pvd$new(pvd_path = x)})
+        pvds_exist <- grepl("\\.pvd$", output_paths)
+        h5s_exist <- grepl("\\.h5$", output_paths)
+        if (any(pvds_exist)) {
+            ogs6_obj$pvds <- lapply(output_paths[which(pvds_exist)],
+                                    function(x) {OGS6_pvd$new(pvd_path = x)})
     }
+        if (any(h5s_exist)) {
+            ogs6_obj$h5s <- lapply(output_paths[which(h5s_exist)],
+                                   function(x) {OGS6_h5$new(h5_path = x)})
+        }
+    }
+
+
+
 
     return(invisible())
 }
@@ -283,6 +299,11 @@ run_benchmark <- function(prj_path,
 
     if(missing(sim_path)){
         sim_path <- unlist(options("r2ogs6.default_sim_path"))
+    }
+
+    if(grepl("\\.xml$", prj_path)) {
+        # some *.prj files are indicated as *.xml in their Tests.cmake file
+        prj_path <- sub("\\.xml$", replacement = ".prj", x =  prj_path)
     }
 
     assertthat::assert_that(assertthat::is.string(prj_path))

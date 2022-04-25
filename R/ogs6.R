@@ -601,6 +601,19 @@ OGS6 <- R6::R6Class("OGS6",
           is_wrapper_list(value, "OGS6_pvd")
           private$.pvds <- value
         }
+      },
+
+      #' @field h5s
+      #' \code{h5s} \code{value} must be of class \code{H5IdComponent}
+      #' as returned by \code{rhdf5::h5read()}.
+      h5s = function(value) {
+          if(missing(value)) {
+              private$.h5s
+          }else{
+              is_wrapper_list(value, element_class = "OGS6_h5")
+              private$.h5s <- value
+          }
+
       }
   ),
 
@@ -643,7 +656,8 @@ OGS6 <- R6::R6Class("OGS6",
       .insitu = NULL,
 
       # .pvd objects (output)
-      .pvds = NULL
+      .pvds = NULL,
+      .h5s = NULL
   )
 )
 

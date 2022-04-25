@@ -31,7 +31,9 @@ Suggests:
     testthat,
     knitr,
     devtools,
-    ggplot2
+    ggplot2,
+    BiocManager,
+    rhdf5
 Imports: 
     purrr,
     xml2,
