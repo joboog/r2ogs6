@@ -4,7 +4,13 @@
 \alias{ogs6_call_ogs6}
 \title{ogs6_call_ogs6}
 \usage{
-ogs6_call_ogs6(ogs6_obj, write_logfile = TRUE, ogs6_bin_path, verbose = F)
+ogs6_call_ogs6(
+  ogs6_obj,
+  write_logfile = TRUE,
+  ogs6_bin_path,
+  verbose = F,
+  singularity_opts
+)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
@@ -18,6 +24,9 @@ OpenGeoSys container (singularity image) file. Defaults
 to \code{options("r2ogs6.default_ogs6_bin_path")}}
 
 \item{verbose}{flag}
+
+\item{singularity_opts}{string: Optional: Options to singularity exec
+command. Defaults to \code{options("r2ogs6.singularity_opts")}}
 }
 \description{
 Makes system call to OpenGeoSys 6 and retrieves exit code.

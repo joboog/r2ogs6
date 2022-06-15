@@ -4,12 +4,15 @@
 \alias{construct_ogs_command}
 \title{construct_ogs_command}
 \usage{
-construct_ogs_command(ogs6_bin_path)
+construct_ogs_command(ogs6_bin_path, singularity_opts)
 }
 \arguments{
 \item{ogs6_bin_path}{string: Optional: Path to OpenGeoSys 6 executable or
 OpenGeoSys container (singularity image) file. Defaults
 to \code{options("r2ogs6.default_ogs6_bin_path")}}
+
+\item{singularity_opts}{string: Optional: Options to singularity exec
+command. Defaults to \code{options("r2ogs6.singularity_opts")}}
 }
 \value{
 string: Call object.

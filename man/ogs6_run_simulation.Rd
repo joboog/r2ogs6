@@ -10,7 +10,8 @@ ogs6_run_simulation(
   ogs6_bin_path,
   overwrite = T,
   copy_ext_files = F,
-  verbose = F
+  verbose = F,
+  singularity_opts
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ to \code{options("r2ogs6.default_ogs6_bin_path")}}
 \code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?}
 
 \item{verbose}{flag}
+
+\item{singularity_opts}{string: Optional: Options to singularity exec
+command. Defaults to \code{options("r2ogs6.singularity_opts")}}
 }
 \description{
 Wrapper function that calls \code{ogs6_export_sim_files()},
