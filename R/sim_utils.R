@@ -15,13 +15,16 @@
 #' @param copy_ext_files flag: Should external files that are references in the
 #' \code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?
 #' @param verbose flag
+#' @param singularity_opts string: Optional: Options to singularity exec
+#' command. Defaults to \code{options("r2ogs6.singularity_opts")}
 #' @export
 ogs6_run_simulation <- function(ogs6_obj,
                                write_logfile = TRUE,
                                ogs6_bin_path,
                                overwrite = T,
                                copy_ext_files = F,
-                               verbose = F) {
+                               verbose = F,
+                               singularity_opts) {
 
     # Export (and / or copy referenced) simulation files
     ogs6_export_sim_files(ogs6_obj = ogs6_obj,
@@ -32,7 +35,8 @@ ogs6_run_simulation <- function(ogs6_obj,
     exit_code <- ogs6_call_ogs6(ogs6_obj = ogs6_obj,
                                write_logfile = write_logfile,
                                ogs6_bin_path = ogs6_bin_path,
-                               verbose = verbose)
+                               verbose = verbose,
+                               singularity_opts = singularity_opts)
 
     ogs6_read_output_files(ogs6_obj = ogs6_obj)
 
@@ -98,11 +102,14 @@ ogs6_export_sim_files <- function(ogs6_obj,
 #'   OpenGeoSys container (singularity image) file. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
 #' @param verbose flag
+#' @param singularity_opts string: Optional: Options to singularity exec
+#' command. Defaults to \code{options("r2ogs6.singularity_opts")}
 #' @export
 ogs6_call_ogs6 <- function(ogs6_obj,
                           write_logfile = TRUE,
                           ogs6_bin_path,
-                          verbose = F){
+                          verbose = F,
+                          singularity_opts){
 
     assertthat::assert_that(inherits(ogs6_obj, "OGS6"))
     assertthat::assert_that(assertthat::is.flag(write_logfile))
@@ -117,12 +124,20 @@ ogs6_call_ogs6 <- function(ogs6_obj,
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
     assertthat::assert_that(assertthat::is.flag(verbose))
 
+    if(missing(singularity_opts)){
+        singularity_opts <- unlist(options("r2ogs6.default_singularity_opts"))
+    }
+    if(is.null(singularity_opts)){
+        singularity_opts <- ""
+    }
+    assertthat::assert_that(assertthat::is.string(singularity_opts))
+
     # construt call to os
     prj_path_full <- paste0(ogs6_obj$sim_path,
                             ogs6_obj$sim_name,
                             ".prj")
     ogs6_args <- c(prj_path_full, "-o", ogs6_obj$sim_path)
-    ogs6_command <- construct_ogs_command(ogs6_bin_path)
+    ogs6_command <- construct_ogs_command(ogs6_bin_path, singularity_opts)
 
     #  reorder for using 'system2()'
     if (length(ogs6_command)>1) {
@@ -177,11 +192,14 @@ ogs6_call_ogs6 <- function(ogs6_obj,
 #' @param ogs6_bin_path string: Optional: Path to OpenGeoSys 6 executable or
 #'   OpenGeoSys container (singularity image) file. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
+#' @param singularity_opts string: Optional: Options to singularity exec
+#' command. Defaults to \code{options("r2ogs6.singularity_opts")}
 #'
 #' @return string: Call object.
-construct_ogs_command <- function(ogs6_bin_path){
+construct_ogs_command <- function(ogs6_bin_path, singularity_opts){
 
     assertthat::assert_that(assertthat::is.string(ogs6_bin_path))
+    assertthat::assert_that(assertthat::is.string(singularity_opts))
 
     # check if existent
     if (dir.exists(ogs6_bin_path)) {
@@ -198,7 +216,7 @@ construct_ogs_command <- function(ogs6_bin_path){
     if (stringr::str_sub(ogs6_bin_path, -4) == ".sif"){
 
         assertthat::assert_that(file.exists(ogs6_bin_path))
-        ogs6_command <- c("singularity","exec",
+        ogs6_command <- c("singularity","exec", singularity_opts,
                           ogs6_bin_path, "ogs")
     }
     else {
