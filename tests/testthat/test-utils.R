@@ -106,7 +106,7 @@ test_that("make_abs_path() works", {
 
     path2_ref <- system.file("extdata/benchmarks/Elliptic/circle_radius_1",
                              "circle_1_axi.gml", package = "r2ogs6")
-    path3_ref <- system.file("extdata/benchmarks/Elliptic/other_dir/",
+    path3_ref <- system.file("extdata/benchmarks/Elliptic/other_dir",
                              "SteadyStateDiffusion.xml", package = "r2ogs6")
 
     expect_equal(make_abs_path(path1, ref_path), path1)
