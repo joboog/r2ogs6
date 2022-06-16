@@ -12,6 +12,8 @@
 #' @param ogs6_bin_path string: Optional: OpenGeoSys 6 executable path. Defaults
 #'   to \code{options("r2ogs6.default_ogs6_bin_path")}
 #' @param overwrite flag: Should existing files be overwritten?
+#' @param copy_ext_files flag: Should external files that are references in the
+#' \code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?
 #' @param verbose flag
 #' @export
 ogs6_run_simulation <- function(ogs6_obj,
@@ -46,6 +48,8 @@ ogs6_run_simulation <- function(ogs6_obj,
 #'   and exports and / or copies all simulation files to it.
 #' @param ogs6_obj OGS6: Simulation object
 #' @param overwrite flag: Should existing files be overwritten?
+#' @param copy_ext_files flag: Should external files that are references in the
+#' \code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?
 #' @param test_mode flag: If \code{TRUE}, Will not check status of
 #'   \code{ogs6_obj} before exporting files. Defaults to \code{FALSE}
 #' @export
@@ -75,13 +79,7 @@ ogs6_export_sim_files <- function(ogs6_obj,
         }
     }
 
-    # handle gml
-    if(!is.null(ogs6_obj$gml)){
-        export_gml(ogs6_obj$gml,
-                   paste0(ogs6_obj$sim_path, basename(ogs6_obj$geometry)))
-    }
-
-    # handle prj
+    # handle prj and referenced files
     export_prj(ogs6_obj, copy_ext_files)
 
     return(invisible())
@@ -266,6 +264,8 @@ ogs6_read_output_files <- function(ogs6_obj){
 #'
 #' @param prj_path string:
 #' @param ogs6_bin_path string:
+#' @param copy_ext_files flag: Should external files that are references in the
+#' \code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?
 #' @param sim_path string: Path where simulation files will be saved
 #' @noRd
 run_benchmark <- function(prj_path,
