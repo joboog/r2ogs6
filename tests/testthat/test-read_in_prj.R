@@ -185,17 +185,18 @@ test_that("read_in_prj works for processes/include tags", {
 
     prj_path <- (system.file("extdata/benchmarks/Elliptic/circle_radius_1",
                              "circle_1e1_axi.prj", package = "r2ogs6"))
+    incl_path <- (system.file("extdata/benchmarks/Elliptic/other_dir",
+                             "SteadyStateDiffusion.xml", package = "r2ogs6"))
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_path = "sim_path")
 
     read_in_prj(ogs6_obj,
-                prj_path,
-                read_in_gml = T)
+                prj_path)
 
     expect_equal(length(ogs6_obj$processes), 1)
     expect_equal(names(ogs6_obj$processes)[[1]], "include")
-
+    expect_equal(ogs6_obj$processes$include[["file"]], incl_path)
 })
 
 
@@ -212,4 +213,88 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
                 read_in_gml = T)
 
     expect_equal(ogs6_obj$processes[[1]]$name, "HM")
+})
+
+test_that("read_in works for python_script objects", {
+
+    prj_base_path <- system.file(
+        "extdata/benchmarks/square_1x1_SteadyStateDiffusion_Python",
+        package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/square_1e3_laplace_eq.prj")
+    py_path <- paste0(prj_base_path, "/bcs_laplace_eq.py")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj,
+                prj_path)
+
+    expect_equal(length(ogs6_obj$python_script), 1)
+    expect_equal(ogs6_obj$python_script, py_path)
+
+})
+
+test_that("read_in works for geometry and vtu meshes", {
+
+    # read gml, vtu
+    prj_base_path <- system.file(
+        "extdata/benchmarks/square_1x1_SteadyStateDiffusion_Python",
+        package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/square_1e3_laplace_eq.prj")
+    gml_path <- paste0(prj_base_path, "/square_1x1.gml")
+    vtu_path <- paste0(prj_base_path, "/square_1x1_quad_1e3.vtu")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj,
+                prj_path,
+                read_in_gml = F)
+
+    expect_equal(ogs6_obj$geometry, gml_path)
+    expect_equal(ogs6_obj$meshes$mesh$path, vtu_path)
+
+    rm(ogs6_obj)
+
+    # read vtus
+    prj_base_path <- system.file("extdata/benchmarks/CationExchange",
+                                package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/exchange.prj")
+    vtu_path1 <- paste0(prj_base_path, "/exchange.vtu")
+    vtu_path2 <- paste0(prj_base_path, "/exchange_upstream.vtu")
+    vtu_path3 <- paste0(prj_base_path, "/exchange_downstream.vtu")
+    vtu_path4 <- paste0(prj_base_path, "/ReactiveDomain_exchange.vtu")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj,
+                prj_path,
+                read_in_gml = F)
+
+    expect_equal(ogs6_obj$meshes[[1]]$path, vtu_path1)
+    expect_equal(ogs6_obj$meshes[[2]]$path, vtu_path2)
+    expect_equal(ogs6_obj$meshes[[3]]$path, vtu_path3)
+    expect_equal(ogs6_obj$meshes[[4]]$path, vtu_path4)
+})
+
+test_that("read_in works for chemical_system objects", {
+
+    prj_base_path <- system.file("extdata/benchmarks/CationExchange",
+                                 package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/exchange.prj")
+    dat_path <- paste0(prj_base_path, "/phreeqc.dat")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in_prj(ogs6_obj, prj_path)
+
+    expect_equal(is.null(ogs6_obj$chemical_system$database), FALSE)
+    expect_equal(ogs6_obj$chemical_system$chemical_solver, "Phreeqc")
+    expect_equal(ogs6_obj$chemical_system$database, dat_path)
+    expect_equal(class(ogs6_obj$chemical_system$solution), "prj_solution")
+    expect_equal(length(ogs6_obj$chemical_system$solution), 8)
+    expect_equal(ogs6_obj$chemical_system$solution$temperature, 25)
+    expect_equal(length(ogs6_obj$chemical_system$knobs), 5)
 })

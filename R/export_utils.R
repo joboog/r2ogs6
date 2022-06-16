@@ -191,11 +191,11 @@ meshes_to_xml <- function(meshes){
     xml_children <- lapply(meshes, function(x){
         if(x[["axially_symmetric"]]){
             xml2::as_xml_document(
-                list(mesh = structure(list(basename(x[["path"]])),
+                list(mesh = structure(list(x[["path"]]),
                                       axially_symmetric = "true")))
         }else{
             xml2::as_xml_document(
-                list(mesh = list(basename(x[["path"]]))))
+                list(mesh = list(x[["path"]])))
         }
     })
 

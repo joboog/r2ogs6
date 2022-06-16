@@ -9,7 +9,9 @@ ogs6_run_simulation(
   write_logfile = TRUE,
   ogs6_bin_path,
   overwrite = T,
-  verbose = F
+  copy_ext_files = F,
+  verbose = F,
+  singularity_opts
 )
 }
 \arguments{
@@ -24,7 +26,13 @@ to \code{options("r2ogs6.default_ogs6_bin_path")}}
 
 \item{overwrite}{flag: Should existing files be overwritten?}
 
+\item{copy_ext_files}{flag: Should external files that are references in the
+\code{ogs6_obj} be  be copied to \code{ogs6_obj$sim_path}?}
+
 \item{verbose}{flag}
+
+\item{singularity_opts}{string: Optional: Options to singularity exec
+command. Defaults to \code{options("r2ogs6.singularity_opts")}}
 }
 \description{
 Wrapper function that calls \code{ogs6_export_sim_files()},

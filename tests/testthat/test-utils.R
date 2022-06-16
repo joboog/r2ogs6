@@ -79,3 +79,39 @@ test_that("as_dir_path works", {
 
 #...
 
+#--- File utility ------------------------------------------------------------
+
+test_that("as_dir_path2() works", {
+
+    path1 <- "./test/path"
+    path2 <- "../test/path"
+    path3 <- "test/path/"
+
+    expect_equal(as_dir_path2(path1), "test/path")
+    expect_equal(as_dir_path2(path2), "../test/path")
+    expect_equal(as_dir_path2(path3), "test/path/")
+})
+
+test_that("make_abs_path() works", {
+
+    ref_path <- system.file("extdata/benchmarks/Elliptic/circle_radius_1",
+                             "circle_1e1_axi.prj", package = "r2ogs6") %>%
+                dirname()
+
+    path1 <- system.file("extdata/benchmarks/AxiSymTheis", "axisym_theis.gml",
+                         package = "r2ogs6")
+    path2 <- "circle_1_axi.gml"
+    path3 <- "../other_dir/SteadyStateDiffusion.xml"
+    path4 <- "test/path/"
+
+    path2_ref <- system.file("extdata/benchmarks/Elliptic/circle_radius_1",
+                             "circle_1_axi.gml", package = "r2ogs6")
+    path3_ref <- system.file("extdata/benchmarks/Elliptic/other_dir",
+                             "SteadyStateDiffusion.xml", package = "r2ogs6")
+
+    expect_equal(make_abs_path(path1, ref_path), path1)
+    expect_equal(make_abs_path(path2, ref_path), path2_ref)
+    expect_equal(make_abs_path(path3, ref_path), path3_ref)
+    expect_error(make_abs_path(path4, ref_path))
+
+})

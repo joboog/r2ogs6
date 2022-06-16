@@ -15,6 +15,7 @@ dsa <- NULL
         r2ogs6.default_benchmark_path = NULL,
         r2ogs6.default_ogs6_processlib_path = NULL,
         r2ogs6.default_ogs6_bin_path = NULL,
+        r2ogs6.default_singularity_opts = NULL,
         r2ogs6.max_lines_gml = 300
     )
 
