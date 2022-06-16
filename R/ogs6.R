@@ -88,7 +88,7 @@ OGS6 <- R6::R6Class("OGS6",
       }else{
         assertthat::assert_that(inherits(gml, "OGS6_gml"))
         private$.gml <- gml
-        private$.geometry <- paste0(self$sim_name, ".gml")
+        #private$.geometry <- paste0(self$sim_name, ".gml")
       }
 
       invisible(self)

@@ -21,26 +21,33 @@ export_prj <- function(ogs6_obj, copy_ext_files = F) {
     meshes <- ogs6_obj$meshes
     geometry <- ogs6_obj$geometry
 
+    # copy meshes if required
     if(isTRUE(copy_ext_files)){
         for(i in seq(meshes)){
             vtu_path <- meshes[[i]][["path"]]
             file.copy(vtu_path, ogs6_obj$sim_path)
             meshes[[i]][["path"]] <- basename(vtu_path)
-    }}
-    #If there is a .gml defined, add "mesh" node, else add "meshes" node
-    if(is.null(geometry)) {
-        meshes_node <- meshes_to_xml(meshes)
+        }}
+
+    # handle gml
+    if(!is.null(ogs6_obj$gml)){
+        gml_path <- paste0(ogs6_obj$sim_path, ogs6_obj$sim_name, ".gml")
+        export_gml(ogs6_obj$gml, gml_path)
+        geometry <- basename(gml_path)
+        xml2::xml_add_child(prj_xml,
+                            xml2::as_xml_document(to_node(geometry)))
     }
-    else{
+    else if(!is.null(geometry)){
         if(isTRUE(copy_ext_files)){
             file.copy(geometry, ogs6_obj$sim_path)
             geometry <- basename(geometry)
         }
         xml2::xml_add_child(prj_xml,
                             xml2::as_xml_document(to_node(geometry)))
-
-        meshes_node <- meshes_to_xml(meshes)
     }
+
+    # export vtu
+    meshes_node <- meshes_to_xml(meshes)
     xml2::xml_add_child(prj_xml,
                         meshes_node)
 
@@ -84,7 +91,7 @@ export_prj <- function(ogs6_obj, copy_ext_files = F) {
             }
             if(param_name=="python_script"){
                 file.copy(param, ogs6_obj$sim_path)
-                param$database <- basename(param)
+                param <- basename(param)
             }
         }
 
