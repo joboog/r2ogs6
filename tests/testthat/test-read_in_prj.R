@@ -218,7 +218,7 @@ test_that("read_in_prj works for EmbeddedFracturePermeability/cube.prj", {
 test_that("read_in works for python_script objects", {
 
     prj_base_path <- system.file(
-        "extdata/benchmarks/Elliptic/square_1x1_SteadyStateDiffusion_Python",
+        "extdata/benchmarks/square_1x1_SteadyStateDiffusion_Python",
         package = "r2ogs6")
     prj_path <- paste0(prj_base_path, "/square_1e3_laplace_eq.prj")
     py_path <- paste0(prj_base_path, "/bcs_laplace_eq.py")
@@ -238,7 +238,7 @@ test_that("read_in works for geometry and vtu meshes", {
 
     # read gml, vtu
     prj_base_path <- system.file(
-        "extdata/benchmarks/Elliptic/square_1x1_SteadyStateDiffusion_Python",
+        "extdata/benchmarks/square_1x1_SteadyStateDiffusion_Python",
         package = "r2ogs6")
     prj_path <- paste0(prj_base_path, "/square_1e3_laplace_eq.prj")
     gml_path <- paste0(prj_base_path, "/square_1x1.gml")
@@ -257,7 +257,7 @@ test_that("read_in works for geometry and vtu meshes", {
     rm(ogs6_obj)
 
     # read vtus
-    prj_base_path <- system.file("extdata/benchmarks/CationExchange/",
+    prj_base_path <- system.file("extdata/benchmarks/CationExchange",
                                 package = "r2ogs6")
     prj_path <- paste0(prj_base_path, "/exchange.prj")
     vtu_path1 <- paste0(prj_base_path, "/exchange.vtu")
@@ -280,7 +280,7 @@ test_that("read_in works for geometry and vtu meshes", {
 
 test_that("read_in works for chemical_system objects", {
 
-    prj_base_path <- system.file("extdata/benchmarks/CationExchange/",
+    prj_base_path <- system.file("extdata/benchmarks/CationExchange",
                                  package = "r2ogs6")
     prj_path <- paste0(prj_base_path, "/exchange.prj")
     dat_path <- paste0(prj_base_path, "/phreeqc.dat")
