@@ -198,7 +198,7 @@ as_dir_path2 <- function(file_path){
 
   assertthat::assert_that(assertthat::is.string(file_path))
 
-  if(substr(file_path,1,2) %>% stringr::str_detect("./")){
+  if(stringr::str_detect(substr(file_path,1,2), "./")){
     file_path <- sub("\\./", "", file_path)
   }
   return(invisible(file_path))
@@ -441,7 +441,7 @@ make_abs_path <- function(file_path, ref_path, force=F){
 
   # case1: if file_path is absolute
   if((substr(file_path,1,1)=="/")| # abspath on unix
-     (substr(file_path,1,3) %>% stringr::str_detect("[:alpha:]:\\\\"))){ # windows?
+     (stringr::str_detect(substr(file_path,1,3), "[:alpha:]:\\\\"))){# windows?
 
     message(paste("file_path", file_path, "is already asolute."))
     if(isTRUE(force)){
