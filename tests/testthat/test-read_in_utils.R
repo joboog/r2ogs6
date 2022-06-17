@@ -45,6 +45,12 @@ test_that("node_to_object works for simple lists", {
     expect_equal(my_list, list(b = "1", b = "2"))
 })
 
+test_that("node_to_object prints warning for empty tags", {
+
+    test_node <- xml2::read_xml("<test> </test>")
+
+    expect_warning(node_to_object(test_node, xpath = "/test"))
+})
 
 test_that("order_parameters works for classes with Ellipsis argument", {
 
