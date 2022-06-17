@@ -7,7 +7,6 @@
     </processes>
     <media>
         <medium id="0">
-            <phases/>
             <properties>
                 <property>
                     <name>diffusion</name>
