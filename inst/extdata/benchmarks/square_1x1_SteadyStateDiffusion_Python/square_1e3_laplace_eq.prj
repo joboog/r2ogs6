@@ -5,7 +5,7 @@
     <python_script>bcs_laplace_eq.py</python_script>
     <media>
         <medium id="0">
-            <phases/>
+            <!--phases/-->
             <properties>
                 <property>
                     <name>diffusion</name>

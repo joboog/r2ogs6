@@ -170,24 +170,34 @@ node_to_object <- function(xml_node,
 
     node_name <- xml2::xml_name(xml_node)
 
+    # joboog: I think this if statements should be combined to if-else
+    # statements to be more explicit and to catch errors easier.
     #Node is leaf
     if(length(xml2::xml_children(xml_node)) == 0){
 
+        xml_attrs <- xml2::xml_attrs(xml_node)
+        xml_text <- xml2::xml_text(xml_node)
+
         xml_text_clean <-
-            stringr::str_remove_all(xml2::xml_text(xml_node),
-                                    "[\n|[:space:]]")
+            stringr::str_remove_all(xml_text, "[\n|[:space:]]")
 
-        if(xml_text_clean != "" &&
-           length(xml2::xml_attrs(xml_node)) != 0){
-            return(invisible(c(xml2::xml_attrs(xml_node),
-                               xml_text = xml2::xml_text(xml_node))))
+        if(xml_text_clean != "" && length(xml_attrs) != 0){
+            return(invisible(c(xml_attrs, xml_text = xml_text)))
         }
-
-        if(xml_text_clean != ""){
-            return(invisible(xml2::xml_text(xml_node)))
+        else if(xml_text_clean != ""){
+            return(invisible(xml_text))
         }
-
-        return(invisible(xml2::xml_attrs(xml_node)))
+        else if(length(xml_attrs) != 0){
+            return(invisible(xml_attrs))
+        }
+        else if(xml_text_clean == "" && length(xml_attrs) == 0){
+            warning(paste(c("Tag '", xpath, "' was found empty.")))
+            return(NULL)
+        }
+        else{
+            stop(paste0("Unusual case for importing tag: '", xpath, "'."),
+                 call. = F)
+        }
     }
 
     #Node is represented by subclass
