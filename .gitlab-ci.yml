@@ -7,7 +7,7 @@ stages:
   - test-benchmarks
 
 test:
-  image: $CI_REGISTRY_IMAGE:latest
+  image: $CI_REGISTRY_IMAGE:09092022
   stage: test
   tags:
     - envinf2
@@ -36,76 +36,32 @@ test:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
+
 benchmark:ref:
   stage: test-benchmarks
   tags:
-    - envinf1
-  image: "$CI_REGISTRY_IMAGE"
+    - envinf3-shell
   variables:
-    R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib/"
-    # change this as needed
+    DOCKER_TAG: "$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-ref-$OGS_VERSION"
     OGS_VERSION: "6.4.1"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
-      when: on_success
+    - when: on_success
   script:
-    - if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi
-    - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), devtools::install_deps(dependencies = T))'
-    - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
-    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "ref"
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-      - "$R_LIBS_USER"
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    expire_in: 4 hrs
-    paths:
-      - ref_exit.rda
-      - out_ref/logfiles/
-
-benchmark:r2ogs6:
-  stage: test-benchmarks
-  tags:
-    - envinf1
-  image: "$CI_REGISTRY_IMAGE"
-  variables:
-    R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib/"
-    # change this as needed
-    OGS_VERSION: "6.4.1"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-      when: on_success
-  script:
-    - if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi
-    - R -e 'withr::with_libpaths(new = Sys.getenv("R_LIBS_USER"), devtools::install_deps(dependencies = T))'
-    - R -e '.libPaths(new = Sys.getenv("R_LIBS_USER"))'
-    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "r2ogs6"
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-      - "$R_LIBS_USER"
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    expire_in: 4 hrs
-    paths:
-      - test_exit.rda
-      - out-test/logfiles/
-
-compare-benchmarks:
-  needs: ["benchmark:ref", "benchmark:r2ogs6"]
-  stage: test-benchmarks
-  tags:
-    - envinf1
-  image: "$CI_REGISTRY_IMAGE"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-      when: on_success
-  dependencies:
-    - benchmark:ref
-    - benchmark:r2ogs6
-  script:
-    - Rscript ./ci/test_bm_script.R "$OGS_VERSION" "test"
-
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # in case remove old container
+    - docker ps -q --filter name=$DOCKER_TAG | grep -q . && docker rm $DOCKER_TAG -f
+    # create and start container
+    - docker container create --privileged -e OGS_VERSION=$OGS_VERSION --env-file $CI_PROJECT_DIR/ci/env.list --name $DOCKER_TAG $CI_REGISTRY_IMAGE:09092022
+    - docker container start $DOCKER_TAG
+    # configure R and start bm-script
+    - docker cp $CI_PROJECT_DIR $DOCKER_TAG:/root/r2ogs6
+    - docker exec $DOCKER_TAG bash -c 'if [ ! -d "$R_LIBS_USER" ]; then mkdir -p "$R_LIBS_USER"; fi'
+    - docker exec $DOCKER_TAG bash -c 'echo $R_LIBS_USER && ls $R_LIBS_USER'
+    - docker exec $DOCKER_TAG bash -c 'cd /root/r2ogs6 && R -e "devtools::install_deps(dependencies = T)"'
+    - docker exec $DOCKER_TAG bash -c 'cd /root/r2ogs6 && R -e "install.packages(\"BiocManager\"); BiocManager::install(\"rhdf5\")"'
+    - docker exec $DOCKER_TAG bash -c 'cd /root/r2ogs6 && Rscript ci/test_bm_script.R "$OGS_VERSION" "ref"'
+    - docker exec $DOCKER_TAG bash -c 'cd /root/r2ogs6 && Rscript ci/test_bm_script.R "$OGS_VERSION" "r2ogs6"'
+    - docker exec $DOCKER_TAG bash -c 'cd /root/r2ogs6 && Rscript ci/test_bm_script.R "$OGS_VERSION" "test"'
+  after_script:
+    - docker container rm $DOCKER_TAG -f
