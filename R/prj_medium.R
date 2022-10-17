@@ -422,7 +422,7 @@ get_valid_phase_types <- function(){
 #' @param exponents Optional:
 #' @param lower_saturation_limit Optional:
 #' @param upper_saturation_limit Optional:
-#' @param ... independent_variable
+#' @param ... independent_variable, dvalue
 #' @example man/examples/ex_prj_ph_property.R
 #' @export
 prj_ph_property <- function(name,
@@ -453,10 +453,12 @@ prj_ph_property <- function(name,
     ellipsis_list <- list(...)
     independent_variable <-
         ellipsis_list[names(ellipsis_list) == "independent_variable"]
+    dvalue <- ellipsis_list[names(ellipsis_list) == "dvalue"]
 
     new_prj_ph_property(name,
                         type,
                         value,
+                        dvalue,
                         reference_value,
                         independent_variable,
                         offset,
@@ -472,6 +474,7 @@ prj_ph_property <- function(name,
 new_prj_ph_property <- function(name,
                                 type,
                                 value = NULL,
+                                dvalue = NULL,
                                 reference_value = NULL,
                                 independent_variable = NULL,
                                 offset = NULL,
@@ -489,6 +492,14 @@ new_prj_ph_property <- function(name,
         are_null_or_strings(value[[1]])
     } else {
         are_null_or_numeric(value)
+    }
+
+    if (!is.null(dvalue)) {
+        dvalue <- lapply(dvalue, function(x){
+            are_null_or_strings(x[[1]])
+            x[[2]] <- coerce_string_to_numeric(x[[2]])
+            return(x)
+        })
     }
 
     are_null_or_numbers(
@@ -522,6 +533,7 @@ new_prj_ph_property <- function(name,
     structure(list(name = name,
                    type = type,
                    value = value,
+                   dvalue = dvalue,
                    reference_value = reference_value,
                    independent_variable = independent_variable,
                    offset = offset,
@@ -535,7 +547,7 @@ new_prj_ph_property <- function(name,
                    attr_names = character(),
                    flatten_on_exp = c("exponents",
                                       "swelling_pressures"),
-                   unwrap_on_exp = c("independent_variable")
+                   unwrap_on_exp = c("independent_variable", "dvalue")
     ),
     class = "prj_ph_property"
     )
