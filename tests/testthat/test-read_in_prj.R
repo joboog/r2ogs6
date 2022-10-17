@@ -65,6 +65,47 @@ test_that("read_in works for class objects with ellipsis", {
                      properties[[1]]$
                      independent_variable[[2]][["variable_name"]],
                  "phase_pressure")
+
+
+    prj_path <- (system.file("extdata/benchmarks/SimpleSynthetics",
+                             "DiffusionAndStorageAndAdvection.prj",
+                             package = "r2ogs6"))
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    read_in(ogs6_obj,
+            prj_path,
+            "/OpenGeoSysProject/media/medium")
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     dvalue[[1]][["variable_name"]],
+                 "concentration")
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     dvalue[[1]][["expression"]],
+                 0.026)
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     dvalue[[2]][["variable_name"]],
+                 "phase_pressure")
+
+    expect_equal(ogs6_obj$
+                     media[[1]]$
+                     phases[[1]]$
+                     properties[[1]]$
+                     dvalue[[2]][["expression"]],
+                 5e-5)
+
 })
 
 
