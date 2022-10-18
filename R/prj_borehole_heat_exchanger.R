@@ -47,7 +47,7 @@ new_prj_borehole_heat_exchanger <- function(type,
     borehole <- coerce_names(borehole, c("length", "diameter"))
     grout <- coerce_names(grout, c("density",
                                    "porosity",
-                                   "heat_capacity",
+                                   "specific_heat_capacity",
                                    "thermal_conductivity"))
 
     assertthat::assert_that(class(pipes) == "prj_pipes")
