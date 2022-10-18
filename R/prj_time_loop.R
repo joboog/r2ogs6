@@ -495,18 +495,21 @@ validate_timesteps <- function(timesteps, in_output = FALSE){
 
         #Coerce input
         if(assertthat::is.string(timesteps[[i]][[1]])){
-            timesteps[[i]][[1]] <- as.double(timesteps[[i]][[1]])
-        }
-
-        if(assertthat::is.string(timesteps[[i]][[2]])){
-            timesteps[[i]][[2]] <- as.double(timesteps[[i]][[2]])
+            timesteps[[i]][[1]] <- as.integer(timesteps[[i]][[1]])
         }
 
         if(!in_output){
             names(timesteps[[i]])[[2]] <- "delta_t"
+            if(assertthat::is.string(timesteps[[i]][[2]])){
+                timesteps[[i]][[2]] <- as.double(timesteps[[i]][[2]])
+            }
         }else{
             names(timesteps[[i]])[[2]] <- "each_steps"
+            if(assertthat::is.string(timesteps[[i]][[2]])){
+                timesteps[[i]][[2]] <- as.integer(timesteps[[i]][[2]])
+            }
         }
+
     }
 
     names(timesteps) <- rep("pair", length(timesteps))
