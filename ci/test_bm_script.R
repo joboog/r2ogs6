@@ -1,3 +1,4 @@
+# runs and comparen_passed <- length(r2ogs6_passed[which(r2ogs6_passed == T)]) ogs6 benchmarks run with ogs6 as reference and r2ogs6
 
 # git clone --depth 1 --branch 6.4.1 https://gitlab.opengeosys.org/ogs/ogs
 # wget https://ogsstorage.blob.core.windows.net/binaries/ogs6/6.4.1/ogs-6.4.1-serial.sif
@@ -148,9 +149,13 @@ if (commandArgs(trailingOnly=TRUE)[2] == "test") {
     if(!all(r2ogs6_passed)) {
         cat(paste0(test_exit$benchmark[which(test_exit$ref == 0)][!r2ogs6_passed],
                      collapse = "\n"))
-        cat("\n\n")
-        stop("Exit codes for r2ogs6 were nonzero for above benchmarks!")
+        cat("\n\n Exit codes for r2ogs6 were nonzero for above benchmarks!\n")
     }
+
+    n_passed <- length(r2ogs6_passed[which(r2ogs6_passed == T)])
+    percent_passed <- n_passed/length(r2ogs6_passed)*100
+    cat(paste("\n\n Share of passed benchmarks: ", percent_passed, " %."))
+
 }
 
-
+print("job done")
