@@ -135,7 +135,7 @@ new_prj_parameter <- function(name,
                    seed = seed,
                    xpath = "parameters/parameter",
                    attr_names = character(),
-                   flatten_on_exp = c("values"),
+                   flatten_on_exp = c("values", "range"),
                    unwrap_on_exp = c("index_values", "expression")
     ),
     class = "prj_parameter"
