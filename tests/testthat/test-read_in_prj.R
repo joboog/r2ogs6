@@ -275,7 +275,7 @@ test_that("read_in works for python_script objects", {
 
 })
 
-test_that("read_in works for geometry and vtu meshes", {
+test_that("read_in works for geometry and meshes", {
 
     # read gml, vtu
     prj_base_path <- system.file(
@@ -317,6 +317,23 @@ test_that("read_in works for geometry and vtu meshes", {
     expect_equal(ogs6_obj$meshes[[2]]$path, vtu_path2)
     expect_equal(ogs6_obj$meshes[[3]]$path, vtu_path3)
     expect_equal(ogs6_obj$meshes[[4]]$path, vtu_path4)
+
+    # read msh
+    prj_base_path <- system.file("extdata/benchmarks/t1_1Dsource",
+                                 package = "r2ogs6")
+    prj_path <- paste0(prj_base_path, "/t1_1Dsource.prj")
+    gml_path <- paste0(prj_base_path, "/t1_1Dsource.gml")
+    msh_path <- paste0(prj_base_path, "/t1_1Dsource.msh")
+
+    ogs6_obj <- OGS6$new(sim_name = "sim",
+                         sim_path = "sim_path")
+
+    suppressWarnings(read_in_prj(ogs6_obj, prj_path, read_in_gml = F))
+
+    expect_equal(ogs6_obj$geometry, gml_path)
+    expect_equal(ogs6_obj$meshes$mesh$path, msh_path)
+
+    rm(ogs6_obj)
 })
 
 test_that("read_in works for chemical_system objects", {
