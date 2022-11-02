@@ -103,13 +103,13 @@ OGS6 <- R6::R6Class("OGS6",
     #' copied or read in too?
     #' @examples
     #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-    #' ogs6_obj$add_vtu("this_works.vtu")
-    #' \dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
-    add_vtu = function(path,
+    #' ogs6_obj$add_mesh("this_works.vtu")
+    #' \dontrun{ogs6_obj$add_mesh("this_doesnt.oops")}
+    add_mesh = function(path,
                        axisym = FALSE,
                        read_in_vtu = FALSE){
       assertthat::assert_that(assertthat::is.string(path))
-      assertthat::assert_that(grepl("\\.vtu$", path))
+      assertthat::assert_that(grepl("\\.vtu$|\\.msh$", path))
       assertthat::assert_that(assertthat::is.flag(axisym))
       assertthat::assert_that(assertthat::is.flag(read_in_vtu))
 
@@ -117,8 +117,11 @@ OGS6 <- R6::R6Class("OGS6",
                        list(mesh = list(path = path,
                                         axially_symmetric = axisym)))
 
-      if(read_in_vtu){
+      if(grepl("\\.vtu$", path) & read_in_vtu){
         private$.vtus <- c(private$.vtus, list(OGS6_vtu$new(path)))
+      }
+      if(grepl("\\.msh", path)){
+        private$.mshs <- c(private$.mshs, list(OGS6_msh$new(path)))
       }
 
       invisible(self)
@@ -368,6 +371,7 @@ OGS6 <- R6::R6Class("OGS6",
           lapply(value, function(x){
             assertthat::assert_that(is.list(x), length(x) == 2)
             assertthat::assert_that(assertthat::is.string(x[[1]]))
+            assertthat::assert_that(grepl("\\.vtu$|\\.msh$", x[[1]]))
             assertthat::assert_that(assertthat::is.flag(x[[2]]))
           })
           private$.meshes <- value
@@ -614,6 +618,18 @@ OGS6 <- R6::R6Class("OGS6",
               private$.h5s <- value
           }
 
+      },
+
+      #' @field mshs
+      #' \code{mshs} \code{value} must be an object of class \code{OGS6_msh}.
+      mshs = function(value) {
+        if(missing(value)) {
+          private$.mshs
+        }else{
+          is_wrapper_list(value, element_class = "OGS6_msh")
+          private$.mshs <- value
+        }
+
       }
   ),
 
@@ -657,7 +673,8 @@ OGS6 <- R6::R6Class("OGS6",
 
       # .pvd objects (output)
       .pvds = NULL,
-      .h5s = NULL
+      .h5s = NULL,
+      .mshs = NULL
   )
 )
 
