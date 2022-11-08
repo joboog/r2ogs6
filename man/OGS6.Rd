@@ -30,12 +30,12 @@ ogs6_obj$add_gml("this_works.gml")
 \dontrun{ogs6_obj$add_gml("this_doesnt.oops")}
 
 ## ------------------------------------------------
-## Method `OGS6$add_vtu`
+## Method `OGS6$add_mesh`
 ## ------------------------------------------------
 
 ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add_vtu("this_works.vtu")
-\dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
+ogs6_obj$add_mesh("this_works.vtu")
+\dontrun{ogs6_obj$add_mesh("this_doesnt.oops")}
 
 ## ------------------------------------------------
 ## Method `OGS6$update_component`
@@ -115,27 +115,29 @@ ogs6_obj$get_status()
 
 \item{\code{h5s}}{\code{h5s} \code{value} must be of class \code{H5IdComponent}
 as returned by \code{rhdf5::h5read()}.}
+
+\item{\code{mshs}}{\code{mshs} \code{value} must be an object of class \code{OGS6_msh}.}
 }
 \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6$new()}}
-\item \href{#method-add}{\code{OGS6$add()}}
-\item \href{#method-add_gml}{\code{OGS6$add_gml()}}
-\item \href{#method-add_vtu}{\code{OGS6$add_vtu()}}
-\item \href{#method-update_component}{\code{OGS6$update_component()}}
-\item \href{#method-get_status}{\code{OGS6$get_status()}}
-\item \href{#method-print}{\code{OGS6$print()}}
-\item \href{#method-print_log}{\code{OGS6$print_log()}}
-\item \href{#method-clear}{\code{OGS6$clear()}}
-\item \href{#method-clone}{\code{OGS6$clone()}}
+\item \href{#method-OGS6-new}{\code{OGS6$new()}}
+\item \href{#method-OGS6-add}{\code{OGS6$add()}}
+\item \href{#method-OGS6-add_gml}{\code{OGS6$add_gml()}}
+\item \href{#method-OGS6-add_mesh}{\code{OGS6$add_mesh()}}
+\item \href{#method-OGS6-update_component}{\code{OGS6$update_component()}}
+\item \href{#method-OGS6-get_status}{\code{OGS6$get_status()}}
+\item \href{#method-OGS6-print}{\code{OGS6$print()}}
+\item \href{#method-OGS6-print_log}{\code{OGS6$print_log()}}
+\item \href{#method-OGS6-clear}{\code{OGS6$clear()}}
+\item \href{#method-OGS6-clone}{\code{OGS6$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6 object
 \subsection{Usage}{
@@ -162,8 +164,8 @@ saved}
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add"></a>}}
-\if{latex}{\out{\hypertarget{method-add}{}}}
+\if{html}{\out{<a id="method-OGS6-add"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-add}{}}}
 \subsection{Method \code{add()}}{
 Adds a .prj simulation component
 \subsection{Usage}{
@@ -188,8 +190,8 @@ ogs6_obj$add(prj_parameter(name = "foo", type = "bar"))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_gml"></a>}}
-\if{latex}{\out{\hypertarget{method-add_gml}{}}}
+\if{html}{\out{<a id="method-OGS6-add_gml"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-add_gml}{}}}
 \subsection{Method \code{add_gml()}}{
 Adds a reference to a file with ending .gml and optionally, a
 \code{OGS6_gml} object
@@ -217,13 +219,13 @@ ogs6_obj$add_gml("this_works.gml")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_vtu"></a>}}
-\if{latex}{\out{\hypertarget{method-add_vtu}{}}}
-\subsection{Method \code{add_vtu()}}{
+\if{html}{\out{<a id="method-OGS6-add_mesh"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-add_mesh}{}}}
+\subsection{Method \code{add_mesh()}}{
 Adds a reference to a \code{.vtu} file and optionally, a \code{OGS6_vtu}
 object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_vtu(path, axisym = FALSE, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{OGS6$add_mesh(path, axisym = FALSE, read_in_vtu = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -241,8 +243,8 @@ copied or read in too?}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
-ogs6_obj$add_vtu("this_works.vtu")
-\dontrun{ogs6_obj$add_vtu("this_doesnt.oops")}
+ogs6_obj$add_mesh("this_works.vtu")
+\dontrun{ogs6_obj$add_mesh("this_doesnt.oops")}
 }
 \if{html}{\out{</div>}}
 
@@ -250,8 +252,8 @@ ogs6_obj$add_vtu("this_works.vtu")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_component"></a>}}
-\if{latex}{\out{\hypertarget{method-update_component}{}}}
+\if{html}{\out{<a id="method-OGS6-update_component"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-update_component}{}}}
 \subsection{Method \code{update_component()}}{
 Update a component of the \code{OGS6} object.
 \subsection{Usage}{
@@ -280,8 +282,8 @@ second one is the corresponding value.}
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_status"></a>}}
-\if{latex}{\out{\hypertarget{method-get_status}{}}}
+\if{html}{\out{<a id="method-OGS6-get_status"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-get_status}{}}}
 \subsection{Method \code{get_status()}}{
 Checks if the \code{OGS6} object has all necessary parameters for
 starting a simulation
@@ -307,8 +309,8 @@ ogs6_obj$get_status()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides default printing behaviour
 print_log
@@ -318,8 +320,8 @@ print_log
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print_log"></a>}}
-\if{latex}{\out{\hypertarget{method-print_log}{}}}
+\if{html}{\out{<a id="method-OGS6-print_log"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-print_log}{}}}
 \subsection{Method \code{print_log()}}{
 Prints logfile to console (if it exists)
 \subsection{Usage}{
@@ -328,8 +330,8 @@ Prints logfile to console (if it exists)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear"></a>}}
-\if{latex}{\out{\hypertarget{method-clear}{}}}
+\if{html}{\out{<a id="method-OGS6-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-clear}{}}}
 \subsection{Method \code{clear()}}{
 Clears components from the \code{OGS6} object
 \subsection{Usage}{
@@ -347,8 +349,8 @@ If you want to delete only some components, run
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

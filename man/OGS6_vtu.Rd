@@ -36,19 +36,19 @@ Constructor for the `OGS6_vtu` base class
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_vtu$new()}}
-\item \href{#method-print}{\code{OGS6_vtu$print()}}
-\item \href{#method-get_field_data}{\code{OGS6_vtu$get_field_data()}}
-\item \href{#method-get_point_coords}{\code{OGS6_vtu$get_point_coords()}}
-\item \href{#method-get_point_data_at}{\code{OGS6_vtu$get_point_data_at()}}
-\item \href{#method-get_point_data}{\code{OGS6_vtu$get_point_data()}}
-\item \href{#method-get_cell_data}{\code{OGS6_vtu$get_cell_data()}}
-\item \href{#method-clone}{\code{OGS6_vtu$clone()}}
+\item \href{#method-OGS6_vtu-new}{\code{OGS6_vtu$new()}}
+\item \href{#method-OGS6_vtu-print}{\code{OGS6_vtu$print()}}
+\item \href{#method-OGS6_vtu-get_field_data}{\code{OGS6_vtu$get_field_data()}}
+\item \href{#method-OGS6_vtu-get_point_coords}{\code{OGS6_vtu$get_point_coords()}}
+\item \href{#method-OGS6_vtu-get_point_data_at}{\code{OGS6_vtu$get_point_data_at()}}
+\item \href{#method-OGS6_vtu-get_point_data}{\code{OGS6_vtu$get_point_data()}}
+\item \href{#method-OGS6_vtu-get_cell_data}{\code{OGS6_vtu$get_cell_data()}}
+\item \href{#method-OGS6_vtu-clone}{\code{OGS6_vtu$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6_vtu object.
 \subsection{Usage}{
@@ -64,8 +64,8 @@ Creates new OGS6_vtu object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides default printing behaviour.
 \subsection{Usage}{
@@ -74,8 +74,8 @@ Overrides default printing behaviour.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_field_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_field_data}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-get_field_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-get_field_data}{}}}
 \subsection{Method \code{get_field_data()}}{
 Gets FieldData.
 \subsection{Usage}{
@@ -97,8 +97,8 @@ elements.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_coords"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_coords}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-get_point_coords"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-get_point_coords}{}}}
 \subsection{Method \code{get_point_coords()}}{
 Gets coordinates of specific points by their IDs.
 \subsection{Usage}{
@@ -119,8 +119,8 @@ arrays.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data_at"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data_at}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-get_point_data_at"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-get_point_data_at}{}}}
 \subsection{Method \code{get_point_data_at()}}{
 Gets PointData at specified coordinates.
 \subsection{Usage}{
@@ -140,8 +140,8 @@ elements, defaults to all in `PointData`}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-get_point_data}{}}}
 \subsection{Method \code{get_point_data()}}{
 Gets PointData for points with IDs in `point_ids`.
 \subsection{Usage}{
@@ -163,8 +163,8 @@ A tibble::tibble where each row represents a point.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_cell_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_cell_data}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-get_cell_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-get_cell_data}{}}}
 \subsection{Method \code{get_cell_data()}}{
 Gets CellData for cells with IDs in `cell_ids`.
 \subsection{Usage}{
@@ -186,8 +186,8 @@ A tibble::tibble where each row represents a cell.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_vtu-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_vtu-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
