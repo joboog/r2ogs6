@@ -97,6 +97,32 @@ test_that("export_prj works for referenced *.dat files", {
     unlink(test_path, recursive = TRUE)
 })
 
+test_that("export_prj works for referenced *.msh files", {
+
+    # Get extdata directory and create folder for the test
+    extdata_path <- system.file("extdata/", package = "r2ogs6")
+    test_path <- paste0(extdata_path, "/export_prj_test")
+    dir.create(test_path)
+
+    # Define prj_path and OGS6 object, then read in .prj file
+    ogs6_obj <- OGS6$new(sim_name = "t1_1Dsource",
+                         sim_path = test_path)
+
+    prj_path <- system.file("extdata/benchmarks/t1_1Dsource",
+                            "t1_1Dsource.prj", package = "r2ogs6")
+
+    suppressWarnings(read_in_prj(ogs6_obj, prj_path, read_in_gml = F))
+
+    # test with copying referenced files
+    export_prj(ogs6_obj, copy_ext_files = T)
+    expect_equal(sort(list.files(ogs6_obj$sim_path)),
+                 sort(c("t1_1Dsource.gml", "t1_1Dsource.msh",
+                        "t1_1Dsource.prj")))
+
+    # Tidy up by deleting the folder we created
+    unlink(test_path, recursive = TRUE)
+})
+
 
 
 test_that("export_prj works for process$include", {

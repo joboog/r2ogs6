@@ -90,7 +90,7 @@ ogs6_obj$add_gml(
     )
 )
 
-ogs6_obj$add_vtu("inst/extdata/benchmarks/flow_free_expansion/cube_1x1x1_quad.vtu",
+ogs6_obj$add_mesh("inst/extdata/benchmarks/flow_free_expansion/cube_1x1x1_quad.vtu",
                  FALSE)
 
 ogs6_obj$add(

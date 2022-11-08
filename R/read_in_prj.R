@@ -71,7 +71,7 @@ read_in_prj <- function(ogs6_obj,
         }
 
         # Read in .vtu file(s) or just save their path
-        ogs6_obj$add_vtu(path = vtu_path,
+        ogs6_obj$add_mesh(path = vtu_path,
                          axisym = axisym_val,
                          read_in_vtu = read_in_vtu)
     }

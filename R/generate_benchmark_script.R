@@ -219,7 +219,7 @@ ogs6_generate_benchmark_script <- function(prj_path,
     for(i in seq_len(length(ogs6_obj$meshes))){
         script_str <-
             paste0(script_str,
-                   "ogs6_obj$add_vtu(path = \"",
+                   "ogs6_obj$add_mesh(path = \"",
                    ogs6_obj$meshes[[i]]$path, "\",\n",
                    "axisym = ", ogs6_obj$meshes[[i]]$axially_symmetric, ",\n",
                    "read_in_vtu = ", read_in_vtu, ")\n\n")
