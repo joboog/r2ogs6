@@ -1012,7 +1012,8 @@ new_prj_jacobian_assembler <- function(type,
                    relative_epsilons = relative_epsilons,
                    xpath = "processes/process/jacobian_assembler",
                    attr_names = character(),
-                   flatten_on_exp = character()
+                   flatten_on_exp = c("component_magnitudes",
+                                      "relative_epsilons")
     ),
     class = "prj_jacobian_assembler"
     )
