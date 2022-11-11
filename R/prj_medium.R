@@ -545,7 +545,7 @@ new_prj_ph_property <- function(name,
                    upper_saturation_limit = upper_saturation_limit,
                    xpath = "media/medium/phases/phase/properties/property",
                    attr_names = character(),
-                   flatten_on_exp = c("exponents",
+                   flatten_on_exp = c("value", "exponents",
                                       "swelling_pressures"),
                    unwrap_on_exp = c("independent_variable", "dvalue")
     ),
