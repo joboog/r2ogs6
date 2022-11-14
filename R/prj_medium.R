@@ -522,14 +522,14 @@ new_prj_ph_property <- function(name,
 
     are_null_or_strings(parameter_name, curve)
 
-    if (!is.null(independent_variable)) {
-        independent_variable <- lapply(independent_variable, function(x){
-            x <- coerce_names(x,
-                              c("variable_name",
-                                "reference_condition",
-                                "slope"))
-        })
-    }
+    # if (!is.null(independent_variable)) {
+    #     independent_variable <- lapply(independent_variable, function(x){
+    #         x <- coerce_names(x,
+    #                           c("variable_name",
+    #                             "reference_condition",
+    #                             "slope"))
+    #     })
+    # }
 
     if (!is.null(exponent)) {
         exponent <- coerce_names(exponent,
