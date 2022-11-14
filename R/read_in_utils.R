@@ -177,15 +177,15 @@ node_to_object <- function(xml_node,
 
         xml_attrs <- xml2::xml_attrs(xml_node)
         xml_text <- xml2::xml_text(xml_node)
-
+        xml_text_clean <- stringr::str_trim(xml_text)
         xml_text_clean <-
-            stringr::str_remove_all(xml_text, "[\n|[:space:]]")
+            stringr::str_remove_all(xml_text_clean, "[\n]")
 
         if(xml_text_clean != "" && length(xml_attrs) != 0){
-            return(invisible(c(xml_attrs, xml_text = xml_text)))
+            return(invisible(c(xml_attrs, xml_text = xml_text_clean)))
         }
         else if(xml_text_clean != ""){
-            return(invisible(xml_text))
+            return(invisible(xml_text_clean))
         }
         else if(length(xml_attrs) != 0){
             return(invisible(xml_attrs))
