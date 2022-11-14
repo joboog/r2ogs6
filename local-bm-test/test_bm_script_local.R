@@ -1,7 +1,13 @@
-# runs and comparen_passed <- length(r2ogs6_passed[which(r2ogs6_passed == T)]) ogs6 benchmarks run with ogs6 as reference and r2ogs6
+# runs and compares ogs6 benchmarks run with ogs6 as reference and r2ogs6
+# a call from the cli requires to give arguments
+# 1st arg: ogs version e.g. "6.4.1"
+# 2nd arg: "ref" or "r2ogs" or "compare"
+# 3rd arg: the date of the test runs in "yyyy-mm-dd"
 
-# git clone --depth 1 --branch 6.4.1 https://gitlab.opengeosys.org/ogs/ogs
-# wget https://ogsstorage.blob.core.windows.net/binaries/ogs6/6.4.1/ogs-6.4.1-serial.sif
+
+packrat::packrat_mode(on=T)
+devtools::load_all(".")
+library(dplyr)
 
 # utils
 dir_make_overwrite <- function(path) {
@@ -13,12 +19,17 @@ dir_make_overwrite <- function(path) {
 }
 
 # Setup -------------------------------------------------------------------
+basedir <- "tmp/benchmarks-test"
+resultsdir <- "local-bm-test"
+test_date <- commandArgs(trailingOnly=TRUE)[3]
+
 if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
     commandArgs(trailingOnly=TRUE)[2 ]== "r2ogs6") {
 
     ogs_version <- commandArgs(trailingOnly=TRUE)[1]
+    ogs_repo <- paste0(basedir,"/ogs")
 
-    if (!dir.exists("/root/ogs")) {
+    if (!dir.exists(ogs_repo)) {
         system2(
             command = c(
                 "git",
@@ -28,30 +39,25 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
                 "--branch",
                 ogs_version,
                 "https://gitlab.opengeosys.org/ogs/ogs.git/",
-                "/root/ogs"
+                ogs_repo
             )
         )
     }
-    if (!file.exists(paste0("/root/ogs-", ogs_version, "-serial.sif"))) {
+    if (!file.exists(paste0(ogs_repo, "-", ogs_version, "-serial.sif"))) {
         system2(
             command = c(
                 "wget",
                 "-nv", # no verbose
                 "-P",
-                "/root",
+                basedir,
                 paste0("https://ogsstorage.blob.core.windows.net/binaries/ogs6/",
                        ogs_version, "/ogs-", ogs_version, "-serial.sif")
             )
         )
     }
-    devtools::load_all(".")
-    library(dplyr)
 
-    ogs_repo <- "/root/ogs/"
-    prjs <- r2ogs6:::get_benchmark_paths(paste0(ogs_repo, "ProcessLib"))
+    prjs <- r2ogs6:::get_benchmark_paths(paste0(ogs_repo, "/ProcessLib"))
     #prjs <- prjs[1:15] # for testing
-
-
     #### Exceptions #####
     # exclude some prj files
     prjs <- prjs[!grepl("\\.xml$", prjs)]
@@ -59,14 +65,27 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
     prjs <- prjs[!grepl("InvalidProjectFiles/", prjs)]
     #####################
     # print(prjs)
-    ogs6_container <- paste0("/root/ogs-", ogs_version, "-serial.sif")
 
+    # make ogs call
+    ogs6_container <- paste0(basedir, "/ogs-", ogs_version, "-serial.sif")
+    singularity_opts <- unlist(options("r2ogs6.default_singularity_opts"))
+    if(is.null(singularity_opts)){
+        singularity_opts <- ""
+    }
     # include call with --app ogs flag for ogs < 6.4.1
     if (as.numeric(gsub("[.]", "", ogs_version)) <= 640) {
-        ogs6_command_str <- c("singularity", "exec", "--app", "ogs",
-                              ogs6_container, "ogs")
+        ogs6_command_str <- c("singularity", "exec", singularity_opts,
+                              "--app", "ogs", ogs6_container, "ogs")
     } else {
-        ogs6_command_str <- c("singularity", "exec", ogs6_container, "ogs")
+        ogs6_command_str <- c("singularity", "exec", singularity_opts,
+                              ogs6_container, "ogs")
+    }
+    #  reorder for using 'system2()'
+    if (length(ogs6_command_str)>1) {
+        ogs6_sing_args <- ogs6_command_str[-1]
+        ogs6_command_str <- ogs6_command_str[1]
+    } else {
+        ogs6_command_str <- ogs6_command
     }
 
 }
@@ -74,31 +93,31 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref" |
 # reference run -----------------------------------------------------------
 if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
 
-    out_ref <- "-o /root/out_ref"
-
-    dir_make_overwrite("/root/out_ref/logfiles")
-
+    out_ref <- paste0("-o ", basedir, "/out_ref")
+    dir_make_overwrite(paste0(basedir, "/out_ref"))
+    dir_make_overwrite(paste0(basedir, "/out_ref/logfiles"))
     ref_exit <- tibble(benchmark = character(),
                        ref = numeric())
-    for (prj in prjs) {
+    for (prj in prjs[1:5]) {
 
         print(paste0("Running benchmark ", prj))
-        prj_path <- paste0(ogs_repo, "Tests/Data/", prj)
+        prj_path <- paste0(ogs_repo, "/Tests/Data/", prj)
 
-        log_ref <- paste0("> /root/out_ref/logfiles/",
+        log_ref <- paste0("> ", basedir, "/out_ref/logfiles/",
                           sub(".prj",".txt", basename(prj)))
 
+
         out <- system2(command = ogs6_command_str,
-                       args = c(prj_path, out_ref, log_ref))
+                       args = c(ogs6_sing_args, prj_path, out_ref, log_ref))
 
         ref_exit <- add_row(ref_exit,
                             benchmark = prj,
                             ref = out)
     }
 
-    save(ref_exit, file = "ref_exit.rda")
-    dir_make_overwrite("out_ref")
-    file.copy("/root/out_ref/logfiles", to = "out_ref", recursive = TRUE)
+    ref_exit$ogs <- ogs_version
+    ref_exit$date <- test_date
+    save(ref_exit, file = paste0(basedir, "/ref_exit_", test_date,".rda"))
 }
 
 # test run with r2ogs6 ----------------------------------------------------
@@ -106,12 +125,13 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
 
     test_exit <- tibble(benchmark = character(),
                         test = numeric())
-    out_test <- "/root/out_test"
+    out_test <- paste0(basedir, "/out_test")
+    dir_make_overwrite(out_test)
     dir_make_overwrite(paste0(out_test, "/logfiles"))
 
-    for (prj in prjs) {
+    for (prj in prjs[1:5]) {
         print(paste0("Attempting to run benchmark ", prj))
-        prj_path <- paste0(ogs_repo, "Tests/Data/", prj)
+        prj_path <- paste0(ogs_repo, "/Tests/Data/", prj)
         out <- tryCatch({
             r2ogs6:::run_benchmark(
                 prj_path = prj_path,
@@ -129,33 +149,35 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
                             test = out)
     }
     test_exit$test[which(is.na(test_exit$test))] <- 99
-    save(test_exit, file = "test_exit.rda")
-    dir_make_overwrite("out-test")
-    file.copy("/root/out_test/logfiles", to = "out-test", recursive = TRUE)
+    test_exit$ogs <- ogs_version
+    test_exit$date <- test_date
+    save(test_exit, file = paste0(basedir, "/test_exit_", test_date,".rda"))
 }
 
-if (commandArgs(trailingOnly=TRUE)[2] == "test") {
+# compare exit codes -----------------------------------------------------
+if (commandArgs(trailingOnly=TRUE)[2] == "compare") {
 
-    install.packages("dplyr")
-    load("ref_exit.rda")
-    load("test_exit.rda")
-    test_exit <- dplyr::full_join(ref_exit, test_exit, by = "benchmark")
+    load(paste0(basedir, "/ref_exit_", test_date,".rda"))
+    load(paste0(basedir, "/test_exit_", test_date,".rda"))
+    compare_exit <- dplyr::full_join(ref_exit, test_exit, by = "benchmark")
 
-    print(test_exit, n = nrow(test_exit))
+    print(compare_exit, n = nrow(compare_exit))
     cat("\n\n Failed benchmarks:\n")
     # benchmarks that passed with & without r2ogs6
-    r2ogs6_passed <- test_exit$test[which(test_exit$ref == 0)] == 0
+    r2ogs6_passed <- compare_exit$test[which(compare_exit$ref == 0)] == 0
 
     if(!all(r2ogs6_passed)) {
-        cat(paste0(test_exit$benchmark[which(test_exit$ref == 0)][!r2ogs6_passed],
+        cat(paste0(compare_exit$benchmark[which(compare_exit$ref == 0)][!r2ogs6_passed],
                      collapse = "\n"))
         cat("\n\n Exit codes for r2ogs6 were nonzero for above benchmarks!\n")
     }
 
     n_passed <- length(r2ogs6_passed[which(r2ogs6_passed == T)])
     percent_passed <- n_passed/length(r2ogs6_passed)*100
-    cat(paste("\n\n Share of passed benchmarks: ", percent_passed, " %."))
+    cat(paste("\n\n Share of passed benchmarks: ", percent_passed, " %.\n"))
 
+    save(compare_exit,
+         file = paste0(resultsdir, "/compare_exit_", test_date,".rda"))
 }
 
 print("job done")
