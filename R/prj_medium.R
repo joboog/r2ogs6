@@ -436,6 +436,8 @@ prj_ph_property <- function(name,
                             exponents = NULL,
                             lower_saturation_limit = NULL,
                             upper_saturation_limit = NULL,
+                            tortuosity = NULL,
+                            curve = NULL,
                             ...) {
 
     #Coerce input
@@ -449,6 +451,7 @@ prj_ph_property <- function(name,
     swelling_pressures <- coerce_string_to_numeric(swelling_pressures)
     lower_saturation_limit <- coerce_string_to_numeric(lower_saturation_limit)
     upper_saturation_limit <- coerce_string_to_numeric(upper_saturation_limit)
+    tortuosity <- (coerce_string_to_numeric(tortuosity))
 
     ellipsis_list <- list(...)
     independent_variable <-
@@ -467,7 +470,9 @@ prj_ph_property <- function(name,
                         swelling_pressures,
                         exponents,
                         lower_saturation_limit,
-                        upper_saturation_limit)
+                        upper_saturation_limit,
+                        tortuosity,
+                        curve)
 }
 
 
@@ -483,7 +488,9 @@ new_prj_ph_property <- function(name,
                                 swelling_pressures = NULL,
                                 exponents = NULL,
                                 lower_saturation_limit = NULL,
-                                upper_saturation_limit = NULL) {
+                                upper_saturation_limit = NULL,
+                                tortuosity = NULL,
+                                curve = NULL) {
 
     are_strings(name,
                 type)
@@ -506,13 +513,14 @@ new_prj_ph_property <- function(name,
         reference_value,
         offset,
         lower_saturation_limit,
-        upper_saturation_limit
+        upper_saturation_limit,
+        tortuosity
     )
 
     are_null_or_numeric(swelling_pressures,
                         exponents)
 
-    are_null_or_strings(parameter_name)
+    are_null_or_strings(parameter_name, curve)
 
     if (!is.null(independent_variable)) {
         independent_variable <- lapply(independent_variable, function(x){
