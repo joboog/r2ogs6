@@ -8,11 +8,11 @@
 #' requires string parsing.
 get_xpaths_for_classes <- function(){
 
-    ns_exports <- getNamespaceExports("r2ogs6")
+    all_objects <- ls("package:r2ogs6")
     prj_class_constructor_names <-
-        sort(ns_exports[grepl("^new_prj_", ns_exports)])
+        sort(all_objects[grepl("^new_prj_", all_objects)])
     prj_class_helper_names <-
-        sort(ns_exports[grepl("^prj_", ns_exports)])
+        sort(all_objects[grepl("^prj_", all_objects)])
 
     xfc_list <- list()
 
