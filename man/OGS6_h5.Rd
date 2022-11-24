@@ -63,16 +63,16 @@ df <- ogs6_h5$get_df("/t_0", "pressure")
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_h5$new()}}
-\item \href{#method-print}{\code{OGS6_h5$print()}}
-\item \href{#method-get_h5}{\code{OGS6_h5$get_h5()}}
-\item \href{#method-get_df}{\code{OGS6_h5$get_df()}}
-\item \href{#method-clone}{\code{OGS6_h5$clone()}}
+\item \href{#method-OGS6_h5-new}{\code{OGS6_h5$new()}}
+\item \href{#method-OGS6_h5-print}{\code{OGS6_h5$print()}}
+\item \href{#method-OGS6_h5-get_h5}{\code{OGS6_h5$get_h5()}}
+\item \href{#method-OGS6_h5-get_df}{\code{OGS6_h5$get_df()}}
+\item \href{#method-OGS6_h5-clone}{\code{OGS6_h5$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_h5-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_h5-new}{}}}
 \subsection{Method \code{new()}}{
 This function will be called automatically after a
 simulation is run to give an overview of the \code{h5} output data.
@@ -100,8 +100,8 @@ ogs6_h5 <- OGS6_h5$new(h5_path)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6_h5-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_h5-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides the default print method
 \subsection{Usage}{
@@ -123,8 +123,8 @@ ogs6_h5
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_h5"></a>}}
-\if{latex}{\out{\hypertarget{method-get_h5}{}}}
+\if{html}{\out{<a id="method-OGS6_h5-get_h5"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_h5-get_h5}{}}}
 \subsection{Method \code{get_h5()}}{
 return a h5 object for further processing with the
 \code{rhdf5} package.
@@ -157,8 +157,8 @@ A list of data elements or the element accessed with
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_df"></a>}}
-\if{latex}{\out{\hypertarget{method-get_df}{}}}
+\if{html}{\out{<a id="method-OGS6_h5-get_df"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_h5-get_df}{}}}
 \subsection{Method \code{get_df()}}{
 Method to retrieve \code{HDF5} output as a \code{tibble}
 assuming a standardized structure of \code{OGS6 HDF5} output.
@@ -192,8 +192,8 @@ df <- ogs6_h5$get_df("/t_0", "pressure")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_h5-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_h5-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

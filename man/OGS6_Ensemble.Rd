@@ -24,16 +24,16 @@ Constructor for the OGS6_Ensemble base class
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_Ensemble$new()}}
-\item \href{#method-print}{\code{OGS6_Ensemble$print()}}
-\item \href{#method-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
-\item \href{#method-get_point_data}{\code{OGS6_Ensemble$get_point_data()}}
-\item \href{#method-clone}{\code{OGS6_Ensemble$clone()}}
+\item \href{#method-OGS6_Ensemble-new}{\code{OGS6_Ensemble$new()}}
+\item \href{#method-OGS6_Ensemble-print}{\code{OGS6_Ensemble$print()}}
+\item \href{#method-OGS6_Ensemble-run_simulation}{\code{OGS6_Ensemble$run_simulation()}}
+\item \href{#method-OGS6_Ensemble-get_point_data}{\code{OGS6_Ensemble$get_point_data()}}
+\item \href{#method-OGS6_Ensemble-clone}{\code{OGS6_Ensemble$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_Ensemble-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Ensemble-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6_Ensemble object
 \subsection{Usage}{
@@ -63,8 +63,8 @@ have the same length.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6_Ensemble-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Ensemble-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides default printing behaviour
 \subsection{Usage}{
@@ -73,8 +73,8 @@ Overrides default printing behaviour
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run_simulation"></a>}}
-\if{latex}{\out{\hypertarget{method-run_simulation}{}}}
+\if{html}{\out{<a id="method-OGS6_Ensemble-run_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Ensemble-run_simulation}{}}}
 \subsection{Method \code{run_simulation()}}{
 Runs the simulation. This calls r2ogs6::ogs6_run_simulation()
 internally. For ensembles, output will always be written to logfiles.
@@ -96,8 +96,8 @@ This is implementented via the 'parallel' package.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\if{html}{\out{<a id="method-OGS6_Ensemble-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Ensemble-get_point_data}{}}}
 \subsection{Method \code{get_point_data()}}{
 Wrapper for `OGS6_pvd$get_point_data()` Returns combined dataframe
 with extra `name` and / or `perc` column depending on if
@@ -133,8 +133,8 @@ to last timestep.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_Ensemble-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Ensemble-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

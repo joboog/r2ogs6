@@ -48,14 +48,14 @@ OGS6_gml$new(
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_gml$new()}}
-\item \href{#method-print}{\code{OGS6_gml$print()}}
-\item \href{#method-clone}{\code{OGS6_gml$clone()}}
+\item \href{#method-OGS6_gml-new}{\code{OGS6_gml$new()}}
+\item \href{#method-OGS6_gml-print}{\code{OGS6_gml$print()}}
+\item \href{#method-OGS6_gml-clone}{\code{OGS6_gml$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_gml-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_gml-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6_gml object
 \subsection{Usage}{
@@ -86,8 +86,8 @@ have optional 'name' vector}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6_gml-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_gml-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides default printing behaviour
 \subsection{Usage}{
@@ -96,8 +96,8 @@ Overrides default printing behaviour
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_gml-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_gml-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

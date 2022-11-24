@@ -29,19 +29,19 @@ Constructor for the OGS6_pvd base class
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_pvd$new()}}
-\item \href{#method-print}{\code{OGS6_pvd$print()}}
-\item \href{#method-vtu_by_timestep}{\code{OGS6_pvd$vtu_by_timestep()}}
-\item \href{#method-timestep_by_vtu}{\code{OGS6_pvd$timestep_by_vtu()}}
-\item \href{#method-get_point_data_at}{\code{OGS6_pvd$get_point_data_at()}}
-\item \href{#method-get_point_data}{\code{OGS6_pvd$get_point_data()}}
-\item \href{#method-get_cell_data}{\code{OGS6_pvd$get_cell_data()}}
-\item \href{#method-clone}{\code{OGS6_pvd$clone()}}
+\item \href{#method-OGS6_pvd-new}{\code{OGS6_pvd$new()}}
+\item \href{#method-OGS6_pvd-print}{\code{OGS6_pvd$print()}}
+\item \href{#method-OGS6_pvd-vtu_by_timestep}{\code{OGS6_pvd$vtu_by_timestep()}}
+\item \href{#method-OGS6_pvd-timestep_by_vtu}{\code{OGS6_pvd$timestep_by_vtu()}}
+\item \href{#method-OGS6_pvd-get_point_data_at}{\code{OGS6_pvd$get_point_data_at()}}
+\item \href{#method-OGS6_pvd-get_point_data}{\code{OGS6_pvd$get_point_data()}}
+\item \href{#method-OGS6_pvd-get_cell_data}{\code{OGS6_pvd$get_cell_data()}}
+\item \href{#method-OGS6_pvd-clone}{\code{OGS6_pvd$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6_pvd object
 \subsection{Usage}{
@@ -57,8 +57,8 @@ Creates new OGS6_pvd object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-print"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-print}{}}}
 \subsection{Method \code{print()}}{
 Overrides default printing behaviour
 \subsection{Usage}{
@@ -67,8 +67,8 @@ Overrides default printing behaviour
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-vtu_by_timestep"></a>}}
-\if{latex}{\out{\hypertarget{method-vtu_by_timestep}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-vtu_by_timestep"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-vtu_by_timestep}{}}}
 \subsection{Method \code{vtu_by_timestep()}}{
 Returns .vtu path for specified timestep
 \subsection{Usage}{
@@ -84,8 +84,8 @@ Returns .vtu path for specified timestep
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-timestep_by_vtu"></a>}}
-\if{latex}{\out{\hypertarget{method-timestep_by_vtu}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-timestep_by_vtu"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-timestep_by_vtu}{}}}
 \subsection{Method \code{timestep_by_vtu()}}{
 Returns timestep for specified .vtu path
 \subsection{Usage}{
@@ -101,8 +101,8 @@ Returns timestep for specified .vtu path
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data_at"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data_at}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-get_point_data_at"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-get_point_data_at}{}}}
 \subsection{Method \code{get_point_data_at()}}{
 Returns a tibble containing point data
 \subsection{Usage}{
@@ -133,8 +133,8 @@ to last timestep.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_point_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_point_data}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-get_point_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-get_point_data}{}}}
 \subsection{Method \code{get_point_data()}}{
 Returns a tibble containing point data
 \subsection{Usage}{
@@ -159,8 +159,8 @@ to last timestep.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_cell_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_cell_data}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-get_cell_data"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-get_cell_data}{}}}
 \subsection{Method \code{get_cell_data()}}{
 Returns a tibble containing cell data
 \subsection{Usage}{
@@ -185,8 +185,8 @@ to last timestep.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_pvd-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_pvd-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

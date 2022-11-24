@@ -9,15 +9,15 @@ Constructor for the OGS6_Chain base class
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{OGS6_Chain$new()}}
-\item \href{#method-ogs6_run_simulation}{\code{OGS6_Chain$ogs6_run_simulation()}}
-\item \href{#method-print_log}{\code{OGS6_Chain$print_log()}}
-\item \href{#method-clone}{\code{OGS6_Chain$clone()}}
+\item \href{#method-OGS6_Chain-new}{\code{OGS6_Chain$new()}}
+\item \href{#method-OGS6_Chain-ogs6_run_simulation}{\code{OGS6_Chain$ogs6_run_simulation()}}
+\item \href{#method-OGS6_Chain-print_log}{\code{OGS6_Chain$print_log()}}
+\item \href{#method-OGS6_Chain-clone}{\code{OGS6_Chain$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-OGS6_Chain-new"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Chain-new}{}}}
 \subsection{Method \code{new()}}{
 Creates new OGS6_Chain object
 \subsection{Usage}{
@@ -35,8 +35,8 @@ Creates new OGS6_Chain object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ogs6_run_simulation"></a>}}
-\if{latex}{\out{\hypertarget{method-ogs6_run_simulation}{}}}
+\if{html}{\out{<a id="method-OGS6_Chain-ogs6_run_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Chain-ogs6_run_simulation}{}}}
 \subsection{Method \code{ogs6_run_simulation()}}{
 Runs the simulation. This calls r2ogs6::ogs6_run_simulation() internally.
 For chains, output will be written to logfiles.
@@ -46,8 +46,8 @@ For chains, output will be written to logfiles.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print_log"></a>}}
-\if{latex}{\out{\hypertarget{method-print_log}{}}}
+\if{html}{\out{<a id="method-OGS6_Chain-print_log"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Chain-print_log}{}}}
 \subsection{Method \code{print_log()}}{
 Reads in logfile of simulation and prints it to the console.
 This calls print_log internally. If no index is specified, this will
@@ -65,8 +65,8 @@ print the logfile of the last object in the chain.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-OGS6_Chain-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-OGS6_Chain-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -16,6 +16,8 @@ prj_ph_property(
   exponents = NULL,
   lower_saturation_limit = NULL,
   upper_saturation_limit = NULL,
+  tortuosity = NULL,
+  curve = NULL,
   ...
 )
 }
@@ -42,7 +44,11 @@ prj_ph_property(
 
 \item{upper_saturation_limit}{Optional:}
 
-\item{...}{independent_variable}
+\item{tortuosity}{Optional:}
+
+\item{curve}{Optional:}
+
+\item{...}{independent_variable, dvalue}
 }
 \description{
 tag: property
