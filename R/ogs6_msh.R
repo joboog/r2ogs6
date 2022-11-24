@@ -3,6 +3,7 @@
 #' MSH files are a legacy format from OGS5. It is recommended to switch to VTU
 #'  files.
 #' @export
+#' @importFrom R6 R6Class
 OGS6_msh <- R6::R6Class("OGS6_msh",
     public = list(
         #' @description reates new OGS6_vtu object..

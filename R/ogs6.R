@@ -5,6 +5,7 @@
 #' OGS6
 #' @description Constructor for the \code{OGS6} base class
 #' @export
+#' @importFrom R6 R6Class
 OGS6 <- R6::R6Class("OGS6",
   public = list(
 
@@ -171,6 +172,9 @@ OGS6 <- R6::R6Class("OGS6",
     #' @examples
     #' ogs6_obj <- OGS6$new(sim_name = "my_sim", sim_path = "my/path")
     #' ogs6_obj$get_status()
+    #' @importFrom crayon red
+    #' @importFrom crayon yellow
+    #' @importFrom crayon green
     get_status = function(print_status = TRUE){
 
       assertthat::assert_that(assertthat::is.flag(print_status))

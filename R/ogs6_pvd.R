@@ -5,6 +5,7 @@
 #' OGS6_pvd
 #' @description Constructor for the OGS6_pvd base class
 #' @export
+#' @importFrom R6 R6Class
 OGS6_pvd <- R6::R6Class(
     "OGS6_pvd",
     public = list(
@@ -260,6 +261,7 @@ OGS6_pvd <- R6::R6Class(
         },
 
         # Returns a dataframe with all of the CellData
+        #' @importFrom dplyr bind_rows
         get_data = function(data_type,
                             ids,
                             keys,

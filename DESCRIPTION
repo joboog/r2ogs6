@@ -1,7 +1,7 @@
 Package: r2ogs6
 Type: Package
 Title: An API to the multi-physics simulator OpenGeoSys-v6
-Version: 0.2.0
+Version: 0.6.41
 Authors@R: c(person(given = "Ruben",
                     family = "Heinrich",
                     role = c("aut"),
@@ -33,27 +33,22 @@ Suggests:
     devtools,
     ggplot2,
     BiocManager,
-    rhdf5
+    rhdf5,
+    rmarkdown
 Imports: 
-    purrr,
     xml2,
     tibble,
     R6,
     stringr,
-    readr,
     assertthat,
     crayon,
     utils,
-    rmarkdown,
-    curl,
     dplyr,
-    rlang,
     doParallel,
     reticulate,
     config,
-    sticky,
     foreach
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

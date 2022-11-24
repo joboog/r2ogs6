@@ -399,7 +399,7 @@ construct_add_call <- function(object, nested_call = FALSE) {
     }
 
     #For lists we need to use recursion
-    if(class(object) == "list"){
+    if(inherits(object, "list")){
 
         element_strs <- lapply(object, function(x){construct_add_call(x, TRUE)})
 
