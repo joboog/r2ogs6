@@ -422,6 +422,8 @@ get_valid_phase_types <- function(){
 #' @param exponents Optional:
 #' @param lower_saturation_limit Optional:
 #' @param upper_saturation_limit Optional:
+#' @param tortuosity Optional:
+#' @param curve Optional:
 #' @param ... independent_variable, dvalue
 #' @example man/examples/ex_prj_ph_property.R
 #' @export
