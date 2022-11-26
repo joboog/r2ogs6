@@ -59,8 +59,9 @@ read_in_prj <- function(ogs6_obj,
 
     for(i in seq_along(vtu_ref_nodes)){
         vtu_ref <- xml2::xml_text(vtu_ref_nodes[[i]])
+        vtu_ref <- stringr::str_trim(vtu_ref)
+        vtu_ref <- stringr::str_remove_all(vtu_ref, "[\n]")
         vtu_path <- make_abs_path(vtu_ref, prj_base_path)
-        # vtu_path <- paste0(dirname(prj_path), "/", vtu_ref)
 
         axisym_val <- xml2::xml_attr(vtu_ref_nodes[[i]], "axially_symmetric")
 
