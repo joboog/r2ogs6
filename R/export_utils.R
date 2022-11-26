@@ -42,9 +42,16 @@ to_node <- function(object, object_name = "",
         object_name %in% attribute_names))){
 
         if(object_name %in% flatten_on_exp){
+            if(is.list(object)){
+                ret_list <- list(list(list(paste(object, collapse = " "))))
+                names(ret_list)[[1]] <- object_name
+                names(ret_list[[1]])[[1]] <- names(object)[[1]]
+            }else{
                 ret_list <- list(list(paste(object, collapse = " ")))
                 names(ret_list)[[1]] <- object_name
-                return(invisible(ret_list))
+            }
+
+            return(invisible(ret_list))
         }
 
         if(object_name %in% attribute_names){
@@ -153,6 +160,10 @@ to_node <- function(object, object_name = "",
         names(object_node)[[1]] <- object_name
 
         for(i in seq_len(length(object))){
+
+            if(is.null(object[[i]])){
+                next
+            }
 
             element_name <- names(object)[[i]]
 
