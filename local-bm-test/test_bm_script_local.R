@@ -98,7 +98,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
     dir_make_overwrite(paste0(basedir, "/out_ref/logfiles"))
     ref_exit <- tibble(benchmark = character(),
                        ref = numeric())
-    for (prj in prjs[1:5]) {
+    for (prj in prjs) {
 
         print(paste0("Running benchmark ", prj))
         prj_path <- paste0(ogs_repo, "/Tests/Data/", prj)
@@ -117,7 +117,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "ref") {
 
     ref_exit$ogs <- ogs_version
     ref_exit$date <- test_date
-    save(ref_exit, file = paste0(basedir, "/ref_exit_", test_date,".rda"))
+    save(ref_exit, file = paste0(resultsdir, "/ref_exit_", test_date,".rda"))
 }
 
 # test run with r2ogs6 ----------------------------------------------------
@@ -129,7 +129,7 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
     dir_make_overwrite(out_test)
     dir_make_overwrite(paste0(out_test, "/logfiles"))
 
-    for (prj in prjs[1:5]) {
+    for (prj in prjs) {
         print(paste0("Attempting to run benchmark ", prj))
         prj_path <- paste0(ogs_repo, "/Tests/Data/", prj)
         out <- tryCatch({
@@ -151,14 +151,14 @@ if (commandArgs(trailingOnly=TRUE)[2] == "r2ogs6") {
     test_exit$test[which(is.na(test_exit$test))] <- 99
     test_exit$ogs <- ogs_version
     test_exit$date <- test_date
-    save(test_exit, file = paste0(basedir, "/test_exit_", test_date,".rda"))
+    save(test_exit, file = paste0(resultsdir, "/test_exit_", test_date,".rda"))
 }
 
 # compare exit codes -----------------------------------------------------
 if (commandArgs(trailingOnly=TRUE)[2] == "compare") {
 
-    load(paste0(basedir, "/ref_exit_", test_date,".rda"))
-    load(paste0(basedir, "/test_exit_", test_date,".rda"))
+    load(paste0(resultsdir, "/ref_exit_", test_date,".rda"))
+    load(paste0(resultsdir, "/test_exit_", test_date,".rda"))
     compare_exit <- dplyr::full_join(ref_exit, test_exit, by = "benchmark")
 
     print(compare_exit, n = nrow(compare_exit))
@@ -178,6 +178,84 @@ if (commandArgs(trailingOnly=TRUE)[2] == "compare") {
 
     save(compare_exit,
          file = paste0(resultsdir, "/compare_exit_", test_date,".rda"))
+}
+
+
+if (commandArgs(trailingOnly=TRUE)[2] == "compare_all") {
+
+    # load exit code data of runs with ogs6 only (reference)
+    ref_exits <- lapply(list.files(resultsdir), function(x){
+        if(grepl("ref_exit", x)){
+            load(paste0(resultsdir, "/", x))
+            return(ref_exit)
+        }
+    })
+    ref_exit <- dplyr::bind_rows(ref_exits)
+
+    # load exit code data of runs with rogs6 (test)
+    test_exits <- lapply(list.files(resultsdir), function(x){
+        if(grepl("test_exit", x)){
+            load(paste0(resultsdir, "/", x))
+            return(test_exit)
+        }
+    })
+    test_exit <- dplyr::bind_rows(test_exits)
+    rm(test_exits, ref_exits)
+
+    # compare ref and test exit codes
+    compare_exit_wide <- full_join(ref_exit, test_exit,
+                                   by = c("benchmark", "ogs", "date")) %>%
+        tidyr::pivot_wider(names_from = c("ogs", "date"),
+                           values_from = c("ref", "test"))
+    print(compare_exit_wide, n = nrow(compare_exit_wide))
+
+    cat(paste0("\n\n The following benchmarks failed with OGS6 and will ",
+               "be excluded from further comparison.\n"))
+    ref_exit %>% filter(ref != 0) %>% .[,1] %>% .[[1]] %>% print()
+
+    ref_zero_exit <- ref_exit %>% filter(ref == 0) %>% .[,1] %>% .[[1]]
+    count_zero <- function(x) length(x[which(x == 0)])
+
+    compare_exit_long <- full_join(ref_exit, test_exit,
+                                     by = c("benchmark", "ogs", "date")) %>%
+                         tidyr::pivot_longer(cols = c("ref", "test"),
+                                            names_to = "type",
+                                            values_to = "exit_codes",
+                                            values_drop_na = T)
+
+    n_valid_benchmarks <- compare_exit_long %>%
+                            filter(benchmark %in% ref_zero_exit) %>%
+                            select(-benchmark) %>%
+                            group_by(ogs, date, type) %>%
+                            summarise(n = count_zero(exit_codes))
+
+    cat("\n\n Number of benchmarks with zero exit codes: ")
+    print(n_valid_benchmarks)
+
+    # failed benchmarks individual runs
+    for (i in unique(compare_exit_long$ogs)){
+        for (j in unique(compare_exit_long$date)){
+            for (k in unique(compare_exit_long$type)){
+                cat(paste("\n\n Failed benchmarks for:", k, "with OGS =", i,
+                          "from", j,":\n"))
+                compare_exit_long %>%
+                    filter(benchmark %in% ref_zero_exit) %>%
+                    filter(ogs==i, date == j, type == k, exit_codes != 0) %>%
+                    print()
+            }}}
+
+    # Succeeded benchmarks of individual runs
+    for (i in unique(compare_exit_long$ogs)){
+        for (j in unique(compare_exit_long$date)){
+            for (k in unique(compare_exit_long$type)){
+                cat(paste("\n\n Succeeded benchmarks for:", k, "with OGS =", i,
+                          "from", j,":\n"))
+                compare_exit_long %>%
+                    filter(benchmark %in% ref_zero_exit) %>%
+                    filter(ogs==i, date == j, type == k, exit_codes == 0) %>%
+                    print(n = nrow(compare_exit_long))
+            }}}
+
 }
 
 print("job done")
