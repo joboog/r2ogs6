@@ -144,16 +144,6 @@ new_prj_capillary_pressure <- function(type,
 
     are_null_or_string_flags(has_regularized)
 
-    is_null_or_coerce_names(curve, c("coords", "values"))
-
-    if(!is.null(curve)){
-        curve[[1]] <- coerce_string_to_numeric(curve[[1]])
-        curve[[2]] <- coerce_string_to_numeric(curve[[2]])
-
-        assertthat::assert_that(is.numeric(curve[[1]]))
-        assertthat::assert_that(is.numeric(curve[[2]]))
-    }
-
     structure(list(type = type,
                    pd = pd,
                    sr = sr,

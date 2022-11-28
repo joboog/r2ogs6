@@ -422,6 +422,8 @@ get_valid_phase_types <- function(){
 #' @param exponents Optional:
 #' @param lower_saturation_limit Optional:
 #' @param upper_saturation_limit Optional:
+#' @param tortuosity Optional:
+#' @param curve Optional:
 #' @param ... independent_variable, dvalue
 #' @example man/examples/ex_prj_ph_property.R
 #' @export
@@ -436,6 +438,8 @@ prj_ph_property <- function(name,
                             exponents = NULL,
                             lower_saturation_limit = NULL,
                             upper_saturation_limit = NULL,
+                            tortuosity = NULL,
+                            curve = NULL,
                             ...) {
 
     #Coerce input
@@ -449,6 +453,7 @@ prj_ph_property <- function(name,
     swelling_pressures <- coerce_string_to_numeric(swelling_pressures)
     lower_saturation_limit <- coerce_string_to_numeric(lower_saturation_limit)
     upper_saturation_limit <- coerce_string_to_numeric(upper_saturation_limit)
+    tortuosity <- (coerce_string_to_numeric(tortuosity))
 
     ellipsis_list <- list(...)
     independent_variable <-
@@ -467,7 +472,9 @@ prj_ph_property <- function(name,
                         swelling_pressures,
                         exponents,
                         lower_saturation_limit,
-                        upper_saturation_limit)
+                        upper_saturation_limit,
+                        tortuosity,
+                        curve)
 }
 
 
@@ -483,7 +490,9 @@ new_prj_ph_property <- function(name,
                                 swelling_pressures = NULL,
                                 exponents = NULL,
                                 lower_saturation_limit = NULL,
-                                upper_saturation_limit = NULL) {
+                                upper_saturation_limit = NULL,
+                                tortuosity = NULL,
+                                curve = NULL) {
 
     are_strings(name,
                 type)
@@ -506,22 +515,23 @@ new_prj_ph_property <- function(name,
         reference_value,
         offset,
         lower_saturation_limit,
-        upper_saturation_limit
+        upper_saturation_limit,
+        tortuosity
     )
 
     are_null_or_numeric(swelling_pressures,
                         exponents)
 
-    are_null_or_strings(parameter_name)
+    are_null_or_strings(parameter_name, curve)
 
-    if (!is.null(independent_variable)) {
-        independent_variable <- lapply(independent_variable, function(x){
-            x <- coerce_names(x,
-                              c("variable_name",
-                                "reference_condition",
-                                "slope"))
-        })
-    }
+    # if (!is.null(independent_variable)) {
+    #     independent_variable <- lapply(independent_variable, function(x){
+    #         x <- coerce_names(x,
+    #                           c("variable_name",
+    #                             "reference_condition",
+    #                             "slope"))
+    #     })
+    # }
 
     if (!is.null(exponent)) {
         exponent <- coerce_names(exponent,
@@ -543,9 +553,11 @@ new_prj_ph_property <- function(name,
                    exponents = exponents,
                    lower_saturation_limit = lower_saturation_limit,
                    upper_saturation_limit = upper_saturation_limit,
+                   tortuosity = tortuosity,
+                   curve = curve,
                    xpath = "media/medium/phases/phase/properties/property",
                    attr_names = character(),
-                   flatten_on_exp = c("exponents",
+                   flatten_on_exp = c("value", "exponents",
                                       "swelling_pressures"),
                    unwrap_on_exp = c("independent_variable", "dvalue")
     ),

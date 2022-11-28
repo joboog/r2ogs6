@@ -5,6 +5,7 @@
 #' OGS6_vtu
 #' @description Constructor for the `OGS6_vtu` base class
 #' @export
+#' @importFrom R6 R6Class
 OGS6_vtu <- R6::R6Class(
     "OGS6_vtu",
     public = list(
@@ -244,7 +245,7 @@ OGS6_vtu <- R6::R6Class(
     ),
 
     private = list(
-
+        #' @importFrom dplyr bind_rows
         get_data = function(data_type,
                             ids,
                             keys){

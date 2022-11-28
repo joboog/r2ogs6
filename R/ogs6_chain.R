@@ -5,6 +5,7 @@
 #'OGS6_Chain
 #'@description Constructor for the OGS6_Chain base class
 #'@export
+#' @importFrom R6 R6Class
 OGS6_Chain <- R6::R6Class(
     "OGS6_Chain",
 

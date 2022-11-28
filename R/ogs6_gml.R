@@ -24,6 +24,7 @@
 #'     ))
 #' )
 #' @export
+#' @importFrom R6 R6Class
 OGS6_gml <- R6::R6Class(
     "OGS6_gml",
     public = list(

@@ -100,6 +100,7 @@ OGS6_Ensemble <- R6::R6Class(
         #' This is implementented via the 'parallel' package.
         #' @param overwrite flag: Should existing files be overwritten?
         #'@param verbose flag
+        #'@importFrom doParallel registerDoParallel
         run_simulation = function(parallel = FALSE,
                                   overwrite = T,
                                   verbose = F){
@@ -186,6 +187,7 @@ OGS6_Ensemble <- R6::R6Class(
         #' Defaults to first timestep.
         #'@param end_at_timestep number: Optional: Timestep to end at. Defaults
         #' to last timestep.
+        #'@importFrom dplyr bind_rows
         get_point_data = function(pvd_id = 1,
                                   point_ids,
                                   keys,

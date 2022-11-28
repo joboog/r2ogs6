@@ -3,6 +3,7 @@
 #' OGS6_h5
 #' @description Small class to wrap \code{h5} data into the \code{r2ogs6} workflow.
 #' @export
+#' @importFrom R6 R6Class
 OGS6_h5 <- R6::R6Class("OGS6_h5",
     public = list(
         #' @description This function will be called automatically after a
@@ -78,6 +79,7 @@ OGS6_h5 <- R6::R6Class("OGS6_h5",
         #' ogs6_h5 <- OGS6_h5$new(h5_path)
         #' df <- ogs6_h5$get_df("/t_0", "pressure")
         #' \dontrun{df <- ogs6_obj$h5s[[1]]$get_df("/t_0", "pressure")}
+        #' @importFrom dplyr bind_cols
         get_df = function(group, names = "geometry") {
 
             assertthat::is.string(group)
