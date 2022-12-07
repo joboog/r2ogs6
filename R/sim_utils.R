@@ -68,7 +68,8 @@ ogs6_export_sim_files <- function(ogs6_obj,
 
     # Call all validators
     if(!test_mode &&
-       !ogs6_obj$get_status(print_status = FALSE)){
+       !ogs6_obj$get_status(print_status = FALSE) &&
+       is.null(ogs6_obj$include)){ # joboog: this is a workaround for now
         stop("There are some components missing from your OGS6 object.",
              call. = FALSE)
     }
