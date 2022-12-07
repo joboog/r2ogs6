@@ -4,11 +4,12 @@ test_that("node_to_object works for simple r2ogs6 classes", {
 
     prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
+    xml_doc <- validate_read_in_xml(prj_path)
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_path = "sim_path")
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
+    read_in(ogs6_obj, xml_doc, "/OpenGeoSysProject/parameters/parameter")
 
     expect_equal(length(ogs6_obj$parameters), 7)
     expect_equal(ogs6_obj$parameters[[1]]$name, "E")
