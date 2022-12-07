@@ -4,7 +4,13 @@
 \alias{read_in_prj}
 \title{read_in_prj}
 \usage{
-read_in_prj(ogs6_obj, prj_path, read_in_gml, read_in_vtu = FALSE)
+read_in_prj(
+  ogs6_obj,
+  prj_path,
+  read_in_gml,
+  read_in_vtu = FALSE,
+  read_includes = FALSE
+)
 }
 \arguments{
 \item{ogs6_obj}{OGS6: Simulation object}
@@ -16,8 +22,10 @@ read in too? If this parameter is missing and the \code{.gml} file contains
 <= \code{options("r2ogs6.max_lines_gml")}, the \code{.gml} will be read in.
 Else, only the geometry reference will be saved.}
 
-\item{read_in_vtu}{flag: Should \code{.vtu} file just be copied or read in
-too?}
+\item{read_in_vtu}{flag: Should \code{.vtu} file just be copied or read in}
+
+\item{read_in_includes}{flag: Should files referenced in \code{include}
+tages be read in?}
 }
 \description{
 Wrapper function to read in a whole \code{.prj} file
