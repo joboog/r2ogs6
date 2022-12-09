@@ -98,6 +98,10 @@ new_prj_medium <- function(phases = NULL,
 #' @param entry_pressure Optional:
 #' @param intrinsic_permeabilities Optional:
 #' @param exponents Optional:
+#' @param jacobian_factor Optional:
+#' @param dry_thermal_conductivity Optional:
+#' @param wet_thermal_conductivity Optional:
+#' @param ... dvalue
 #' @example man/examples/ex_prj_pr_property.R
 #' @export
 prj_pr_property <- function(name,
@@ -140,7 +144,11 @@ prj_pr_property <- function(name,
                             minimum_permeability = NULL,
                             entry_pressure = NULL,
                             intrinsic_permeabilities = NULL,
-                            exponents = NULL) {
+                            exponents = NULL,
+                            jacobian_factor = NULL,
+                            dry_thermal_conductivity = NULL,
+                            wet_thermal_conductivity = NULL,
+                            ...) {
 
     #Coerce input
     value <- coerce_string_to_numeric(value)
@@ -161,6 +169,10 @@ prj_pr_property <- function(name,
     tensile_strength_parameter <-
         coerce_string_to_numeric(tensile_strength_parameter)
     entry_pressure <- coerce_string_to_numeric(entry_pressure)
+    jacobian_factor <- coerce_string_to_numeric(jacobian_factor)
+
+    ellipsis_list <- list(...)
+    dvalue <- ellipsis_list[names(ellipsis_list) == "dvalue"]
 
     new_prj_pr_property(name,
                         type,
@@ -202,7 +214,11 @@ prj_pr_property <- function(name,
                         minimum_permeability,
                         entry_pressure,
                         intrinsic_permeabilities,
-                        exponents)
+                        exponents,
+                        jacobian_factor,
+                        dry_thermal_conductivity,
+                        wet_thermal_conductivity,
+                        dvalue)
 }
 
 
@@ -246,13 +262,26 @@ new_prj_pr_property <- function(name,
                                 minimum_permeability = NULL,
                                 entry_pressure = NULL,
                                 intrinsic_permeabilities = NULL,
-                                exponents = NULL) {
+                                exponents = NULL,
+                                jacobian_factor = NULL,
+                                dry_thermal_conductivity = NULL,
+                                wet_thermal_conductivity = NULL,
+                                dvalue = NULL) {
 
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    are_null_or_numeric(value)
+    if (!is.null(value)) {
+        if(is.list(value)){
+            assertthat::assert_that(names(value[1]) == "expression")
+            are_null_or_strings(value[[1]])
+        }else{
+            are_null_or_numeric(value)
+        }
+    }
+
+    are_null_or_numeric(jacobian_factor)
 
     are_null_or_numbers(exponent,
                         residual_liquid_saturation,
@@ -272,7 +301,20 @@ new_prj_pr_property <- function(name,
     are_null_or_strings(parameter_name,
                         independent_variable,
                         curve,
-                        initial_permeability)
+                        initial_permeability,
+                        dry_thermal_conductivity,
+                        wet_thermal_conductivity)
+
+    if (!is.null(dvalue)) {
+        is_wrapper_list(dvalue, "list")
+        dvalue <- lapply(dvalue, function(x){
+            assertthat::assert_that(
+                all(names(x) %in% c("variable_name", "expression")))
+            are_null_or_strings(x[["variable_name"]])
+            x[["expression"]] <- coerce_string_to_numeric(x[["expression"]])
+            return(x)
+        })
+    }
 
     structure(list(name = name,
                    type = type,
@@ -316,9 +358,14 @@ new_prj_pr_property <- function(name,
                    entry_pressure = entry_pressure,
                    intrinsic_permeabilities = intrinsic_permeabilities,
                    exponents = exponents,
+                   jacobian_factor = jacobian_factor,
+                   dry_thermal_conductivity = dry_thermal_conductivity,
+                   wet_thermal_conductivity = wet_thermal_conductivity,
+                   dvalue = dvalue,
                    xpath = "media/medium/properties/property",
                    attr_names = character(),
-                   flatten_on_exp = c("value")
+                   flatten_on_exp = c("value"),
+                   unwrap_on_exp = c("dvalue")
     ),
     class = "prj_pr_property"
     )
