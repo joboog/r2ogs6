@@ -544,16 +544,22 @@ new_prj_ph_property <- function(name,
     are_strings(name,
                 type)
 
-    if (is.list(value)) {
-        are_null_or_strings(value[[1]])
-    } else {
-        are_null_or_numeric(value)
+    if (!is.null(value)) {
+        if(is.list(value)){
+            assertthat::assert_that(names(value[1]) == "expression")
+            are_null_or_strings(value[[1]])
+        }else{
+            are_null_or_numeric(value)
+        }
     }
 
     if (!is.null(dvalue)) {
+        is_wrapper_list(dvalue, "list")
         dvalue <- lapply(dvalue, function(x){
-            are_null_or_strings(x[[1]])
-            x[[2]] <- coerce_string_to_numeric(x[[2]])
+            assertthat::assert_that(
+                all(names(x) %in% c("variable_name", "expression")))
+            are_null_or_strings(x[["variable_name"]])
+            x[["expression"]] <- coerce_string_to_numeric(x[["expression"]])
             return(x)
         })
     }
@@ -570,15 +576,6 @@ new_prj_ph_property <- function(name,
                         exponents)
 
     are_null_or_strings(parameter_name, curve)
-
-    # if (!is.null(independent_variable)) {
-    #     independent_variable <- lapply(independent_variable, function(x){
-    #         x <- coerce_names(x,
-    #                           c("variable_name",
-    #                             "reference_condition",
-    #                             "slope"))
-    #     })
-    # }
 
     if (!is.null(exponent)) {
         exponent <- coerce_names(exponent,
