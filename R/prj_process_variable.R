@@ -285,6 +285,7 @@ new_prj_boundary_condition <- function(type,
 #' @param geometry Optional: string:
 #' @param mesh Optional: string:
 #' @param source_term_object Optional: string:
+#' @param flush_stdout Optional: string:
 #' @example man/examples/ex_prj_source_term.R
 #' @export
 prj_source_term <- function(type,
@@ -292,7 +293,8 @@ prj_source_term <- function(type,
                                geometrical_set = NULL,
                                geometry = NULL,
                                mesh = NULL,
-                               source_term_object = NULL){
+                               source_term_object = NULL,
+                               flush_stdout = NULL){
 
     #Coerce input
 
@@ -301,7 +303,8 @@ prj_source_term <- function(type,
                            geometrical_set,
                            geometry,
                            mesh,
-                           source_term_object)
+                           source_term_object,
+                           flush_stdout)
 }
 
 
@@ -310,7 +313,8 @@ new_prj_source_term <- function(type,
                                    geometrical_set = NULL,
                                    geometry = NULL,
                                    mesh = NULL,
-                                   source_term_object = NULL){
+                                   source_term_object = NULL,
+                                   flush_stdout = NULL){
 
     assertthat::assert_that(assertthat::is.string(type))
 
@@ -318,7 +322,8 @@ new_prj_source_term <- function(type,
                         geometrical_set,
                         geometry,
                         mesh,
-                        source_term_object)
+                        source_term_object,
+                        flush_stdout)
 
     structure(list(type = type,
                    parameter = parameter,
@@ -326,11 +331,11 @@ new_prj_source_term <- function(type,
                    geometry = geometry,
                    mesh = mesh,
                    source_term_object = source_term_object,
+                   flush_stdout = flush_stdout,
                    xpath = paste0("process_variables/process_variable/",
                                   "source_terms/source_term"),
                    attr_names = character(),
-                   flatten_on_exp = character()
-    ),
+                   flatten_on_exp = character()),
     class = "prj_source_term"
     )
 }
