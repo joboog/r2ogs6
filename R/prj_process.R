@@ -65,8 +65,6 @@
 #' @param solute_dispersivity_longitudinal Optional:
 #' @param solute_dispersivity_transverse Optional:
 #' @param molecular_diffusion_coefficient Optional:
-#' @param density_solid Optional:
-#' @param latent_heat_evaporation Optional:
 #' @param pf_irrv Optional:
 #' @param micro_porosity Optional:
 #' @param explicit_hm_coupling_in_unsaturated_zone Optional:
@@ -146,8 +144,6 @@ prj_process <- function(name,
                            solute_dispersivity_longitudinal = NULL,
                            solute_dispersivity_transverse = NULL,
                            molecular_diffusion_coefficient = NULL,
-                           density_solid = NULL,
-                           latent_heat_evaporation = NULL,
                            pf_irrv = NULL,
                            micro_porosity = NULL,
                            explicit_hm_coupling_in_unsaturated_zone = NULL,
@@ -272,8 +268,6 @@ prj_process <- function(name,
         solute_dispersivity_longitudinal,
         solute_dispersivity_transverse,
         molecular_diffusion_coefficient,
-        density_solid,
-        latent_heat_evaporation,
         pf_irrv,
         micro_porosity,
         explicit_hm_coupling_in_unsaturated_zone,
@@ -356,8 +350,6 @@ new_prj_process <- function(name,
                             solute_dispersivity_longitudinal = NULL,
                             solute_dispersivity_transverse = NULL,
                             molecular_diffusion_coefficient = NULL,
-                            density_solid = NULL,
-                            latent_heat_evaporation = NULL,
                             pf_irrv = NULL,
                             micro_porosity = NULL,
                             explicit_hm_coupling_in_unsaturated_zone = NULL,
@@ -463,8 +455,6 @@ new_prj_process <- function(name,
                        solute_dispersivity_longitudinal,
                        solute_dispersivity_transverse,
                        molecular_diffusion_coefficient,
-                       density_solid,
-                       latent_heat_evaporation,
                        porosity,
                        deactivate_matrix_in_flow,
                        output_element_matrices,
@@ -578,8 +568,6 @@ new_prj_process <- function(name,
             solute_dispersivity_longitudinal = solute_dispersivity_longitudinal,
             solute_dispersivity_transverse = solute_dispersivity_transverse,
             molecular_diffusion_coefficient = molecular_diffusion_coefficient,
-            density_solid = density_solid,
-            latent_heat_evaporation = latent_heat_evaporation,
             pf_irrv = pf_irrv,
             micro_porosity = micro_porosity,
             explicit_hm_coupling_in_unsaturated_zone =
