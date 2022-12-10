@@ -78,6 +78,10 @@
 #' @param tabular_file Optional: character
 #' @param temperature_field Optional: character
 #' @param use_stokes_brinkman_form Optional: character
+#' @param energy_split_model Optional: string
+#' @param softening_curve Optional: string
+#' @param characteristic_length Optional: double
+#' @param coupling_scheme_parameter Optional: double
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
@@ -155,6 +159,10 @@ prj_process <- function(name,
                            tabular_file = NULL,
                            temperature_field = NULL,
                            use_stokes_brinkman_form = NULL,
+                           energy_split_model = NULL,
+                           softening_curve = NULL,
+                           characteristic_length = NULL,
+                           coupling_scheme_parameter = NULL,
                            ...){
 
     #Coerce input
@@ -188,6 +196,9 @@ prj_process <- function(name,
     reg_param <- coerce_string_to_numeric(reg_param)
     pf_irrv <- coerce_string_to_numeric(pf_irrv)
     irreversible_threshold <- coerce_string_to_numeric(irreversible_threshold)
+    characteristic_length <- coerce_string_to_numeric(characteristic_length)
+    coupling_scheme_parameter <-
+        coerce_string_to_numeric(coupling_scheme_parameter)
 
     ellipsis_list <- list(...)
 
@@ -273,7 +284,11 @@ prj_process <- function(name,
         irreversible_threshold,
         tabular_file,
         temperature_field,
-        use_stokes_brinkman_form
+        use_stokes_brinkman_form,
+        energy_split_model,
+        softening_curve,
+        characteristic_length,
+        coupling_scheme_parameter
     )
 }
 
@@ -353,7 +368,11 @@ new_prj_process <- function(name,
                             irreversible_threshold = NULL,
                             tabular_file = NULL,
                             temperature_field = NULL,
-                            use_stokes_brinkman_form = NULL) {
+                            use_stokes_brinkman_form = NULL,
+                            energy_split_model = NULL,
+                            softening_curve = NULL,
+                            characteristic_length = NULL,
+                            coupling_scheme_parameter = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -425,59 +444,63 @@ new_prj_process <- function(name,
     fluid <- validate_fluid(fluid)
 
     are_null_or_strings(coupling_scheme,
-                               solid_density,
-                               intrinsic_permeability,
-                               specific_storage,
-                               fluid_viscosity,
-                               biot_coefficient,
-                               fluid_density,
-                               initial_effective_stress,
-                               initial_fracture_effective_stress,
-                               temperature,
-                               diffusion_coeff_component_b,
-                               diffusion_coeff_component_a,
-                               hydro_crack_scheme,
-                               initial_stress,
-                               decay_rate,
-                               fluid_reference_density,
-                               retardation_factor,
-                               solute_dispersivity_longitudinal,
-                               solute_dispersivity_transverse,
-                               molecular_diffusion_coefficient,
-                               density_solid,
-                               latent_heat_evaporation,
-                               porosity,
-                               deactivate_matrix_in_flow,
-                               output_element_matrices,
-                               reference_temperature,
-                               simplified_elasticity,
-                               chemically_induced_porosity_change,
-                               use_server_communication,
-                               tabular_file,
-                               temperature_field,
-                               use_stokes_brinkman_form)
+                       solid_density,
+                       intrinsic_permeability,
+                       specific_storage,
+                       fluid_viscosity,
+                       biot_coefficient,
+                       fluid_density,
+                       initial_effective_stress,
+                       initial_fracture_effective_stress,
+                       temperature,
+                       diffusion_coeff_component_b,
+                       diffusion_coeff_component_a,
+                       hydro_crack_scheme,
+                       initial_stress,
+                       decay_rate,
+                       fluid_reference_density,
+                       retardation_factor,
+                       solute_dispersivity_longitudinal,
+                       solute_dispersivity_transverse,
+                       molecular_diffusion_coefficient,
+                       density_solid,
+                       latent_heat_evaporation,
+                       porosity,
+                       deactivate_matrix_in_flow,
+                       output_element_matrices,
+                       reference_temperature,
+                       simplified_elasticity,
+                       chemically_induced_porosity_change,
+                       use_server_communication,
+                       tabular_file,
+                       temperature_field,
+                       use_stokes_brinkman_form,
+                       energy_split_model,
+                       softening_curve)
 
 
     are_null_or_numbers(dimension,
-                               internal_length,
-                               fluid_specific_heat_source,
-                               fluid_specific_isobaric_heat_capacity,
-                               solid_hydraulic_permeability,
-                               solid_specific_heat_source,
-                               solid_heat_conductivity,
-                               solid_specific_isobaric_heat_capacity,
-                               tortuosity,
-                               diffusion_coefficient,
-                               solid_density_dry,
-                               solid_density_initial,
-                               characteristic_pressure,
-                               characteristic_temperature,
-                               characteristic_vapour_mass_fraction,
-                               at_num,
-                               split_method,
-                               reg_param,
-                               pf_irrv,
-                               irreversible_threshold)
+                       internal_length,
+                       fluid_specific_heat_source,
+                       fluid_specific_isobaric_heat_capacity,
+                       solid_hydraulic_permeability,
+                       solid_specific_heat_source,
+                       solid_heat_conductivity,
+                       solid_specific_isobaric_heat_capacity,
+                       tortuosity,
+                       diffusion_coefficient,
+                       solid_density_dry,
+                       solid_density_initial,
+                       characteristic_pressure,
+                       characteristic_temperature,
+                       characteristic_vapour_mass_fraction,
+                       at_num,
+                       split_method,
+                       reg_param,
+                       pf_irrv,
+                       irreversible_threshold,
+                       characteristic_length,
+                       coupling_scheme_parameter)
 
     if(!is.null(mass_lumping)){
         mass_lumping <- stringr::str_remove_all(mass_lumping, "[:space:]*")
@@ -570,6 +593,10 @@ new_prj_process <- function(name,
             tabular_file = tabular_file,
             temperature_field = temperature_field,
             use_stokes_brinkman_form = use_stokes_brinkman_form,
+            energy_split_model = energy_split_model,
+            softening_curve = softening_curve,
+            characteristic_length = characteristic_length,
+            coupling_scheme_parameter = coupling_scheme_parameter,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
