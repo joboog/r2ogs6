@@ -24,7 +24,7 @@ Else, only the geometry reference will be saved.}
 
 \item{read_in_vtu}{flag: Should \code{.vtu} file just be copied or read in}
 
-\item{read_in_includes}{flag: Should files referenced in \code{include}
+\item{read_includes}{flag: Should files referenced in \code{include}
 tages be read in?}
 }
 \description{
