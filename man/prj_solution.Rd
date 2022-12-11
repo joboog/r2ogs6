@@ -4,7 +4,14 @@
 \alias{prj_solution}
 \title{prj_solution}
 \usage{
-prj_solution(temperature, pressure, pe, components, charge_balance = NULL)
+prj_solution(
+  temperature,
+  pressure,
+  pe,
+  components,
+  charge_balance = NULL,
+  fixing_pe = NULL
+)
 }
 \arguments{
 \item{temperature}{string | double: Temperature}
@@ -16,6 +23,8 @@ prj_solution(temperature, pressure, pe, components, charge_balance = NULL)
 \item{components}{list: Components}
 
 \item{charge_balance}{Optional: string: Charge balance}
+
+\item{fixing_pe}{Optional: string}
 }
 \description{
 tag: solution
