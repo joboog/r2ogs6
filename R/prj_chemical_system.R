@@ -126,13 +126,15 @@ new_prj_chemical_system <- function(chemical_solver,
 #' @param pe string | double: pe
 #' @param components list: Components
 #' @param charge_balance Optional: string: Charge balance
+#' @param fixing_pe Optional: string
 #' @example man/examples/ex_prj_solution.R
 #' @export
 prj_solution <- function(temperature,
-                            pressure,
-                            pe,
-                            components,
-                            charge_balance = NULL) {
+                         pressure,
+                         pe,
+                         components,
+                         charge_balance = NULL,
+                         fixing_pe = NULL) {
 
     #Coerce input
     temperature <- coerce_string_to_numeric(temperature)
@@ -141,18 +143,20 @@ prj_solution <- function(temperature,
 
 
     new_prj_solution(temperature,
-                        pressure,
-                        pe,
-                        components,
-                        charge_balance)
+                    pressure,
+                    pe,
+                    components,
+                    charge_balance,
+                    fixing_pe)
 }
 
 
 new_prj_solution <- function(temperature,
-                                pressure,
-                                pe,
-                                components,
-                                charge_balance = NULL) {
+                            pressure,
+                            pe,
+                            components,
+                            charge_balance = NULL,
+                            fixing_pe = NULL) {
     are_numbers(temperature,
                 pressure,
                 pe)
@@ -161,6 +165,7 @@ new_prj_solution <- function(temperature,
     names(components) <- rep("component", length(components))
 
     are_null_or_strings(charge_balance)
+    are_null_or_string_flags(fixing_pe)
 
     structure(
         list(
@@ -169,8 +174,9 @@ new_prj_solution <- function(temperature,
             pe = pe,
             components = components,
             charge_balance = charge_balance,
+            fixing_pe = fixing_pe,
             xpath = "chemical_system/solution",
-            attr_names = character(),
+            attr_names = c("fixing_pe"),
             flatten_on_exp = character()
         ),
         class = "prj_solution"
