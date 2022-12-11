@@ -12,7 +12,8 @@ prj_process_variable(
   boundary_conditions = NULL,
   source_terms = NULL,
   mesh = NULL,
-  deactivated_subdomains = NULL
+  deactivated_subdomains = NULL,
+  compensate_non_equilibrium_initial_residuum = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ prj_process_variable(
 \item{mesh}{Optional: string: list:}
 
 \item{deactivated_subdomains}{Optional: list, prj_deactivated_subdomain:}
+
+\item{compensate_non_equilibrium_initial_residuum}{Optional: string}
 }
 \description{
 tag: process_variable

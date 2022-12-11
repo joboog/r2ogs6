@@ -10,7 +10,8 @@ prj_source_term(
   geometrical_set = NULL,
   geometry = NULL,
   mesh = NULL,
-  source_term_object = NULL
+  source_term_object = NULL,
+  flush_stdout = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ prj_source_term(
 \item{mesh}{Optional: string:}
 
 \item{source_term_object}{Optional: string:}
+
+\item{flush_stdout}{Optional: string:}
 }
 \description{
 tag: source_term
