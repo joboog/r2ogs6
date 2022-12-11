@@ -66,15 +66,8 @@ new_prj_chemical_system <- function(chemical_solver,
                 database)
 
     assertthat::assert_that(class(solution) == "prj_solution")
-    assertthat::assert_that(is.null(exchangers) |
-                                class(exchangers) == "prj_exchangers")
 
     are_null_or_strings(mesh)
-
-    if(!is.null(equilibrium_reactants)){
-        is_wrapper_list(equilibrium_reactants,
-                        "prj_phase_component")
-    }
 
     knobs <- is_null_or_coerce_names(
         knobs,
@@ -95,6 +88,17 @@ new_prj_chemical_system <- function(chemical_solver,
                         "prj_rate")
     }
 
+    if(!is.null(equilibrium_reactants)){
+        is_wrapper_list(equilibrium_reactants,
+                        "prj_phase_component")
+    }
+
+    assertthat::assert_that(is.null(surface) |
+                                class(surface) == "prj_surface")
+
+    assertthat::assert_that(is.null(exchangers) |
+                                class(exchangers) == "prj_exchangers")
+
     structure(list(chemical_solver = chemical_solver,
                    database = database,
                    solution = solution,
@@ -108,7 +112,7 @@ new_prj_chemical_system <- function(chemical_solver,
                    linear_solver = linear_solver,
                    exchangers = exchangers,
                    xpath = "chemical_system",
-                   attr_names = c("chemical_solver"),
+                   attr_names = c("chemical_solver", "site_unit"),
                    flatten_on_exp = character()
     ),
     class = "prj_chemical_system"
@@ -284,7 +288,6 @@ new_prj_kinetic_reactant <- function(name,
 
 #===== prj_rate =====
 
-
 #' prj_rate
 #' @description S3 class describing .prj rate
 #' @param kinetic_reactant string: References a kinetic_reactant object
@@ -319,6 +322,9 @@ new_prj_rate <- function(kinetic_reactant,
     )
 }
 
+
+#=== prj_exchangers ====
+
 #'prj_exchangers
 #'@description tag: exchangers
 #'@param exchange_site list
@@ -340,5 +346,43 @@ new_prj_exchangers <- function(exchange_site) {
                    flatten_on_exp = character()
     ),
     class = "prj_exchangers"
+    )
+}
+
+
+#=== prj_surface ====
+
+#'prj_surface
+#'@description tag: surface
+#'@param site_unit Optional: string
+#'@param ... site
+#'@export
+prj_surface <- function(site_unit = NULL,
+                        ...) {
+
+    ellipsis_list <- list(...)
+    site <- ellipsis_list[names(ellipsis_list) == "site"]
+
+    new_prj_surface(site_unit,
+                    site)
+}
+
+new_prj_surface <- function(site_unit,
+                            site) {
+
+    are_null_or_strings(site_unit)
+    assertthat::assert_that(is.list(site))
+    for (each in site){
+        assertthat::assert_that(is.list(each))
+    }
+
+    structure(list(site_unit = site_unit,
+                   site = site,
+                   xpath = "chemical_system/surface",
+                   attr_names = c("site_unit"),
+                   unwrap_on_exp = c("site"),
+                   flatten_on_exp = character()
+    ),
+    class = "prj_surface"
     )
 }

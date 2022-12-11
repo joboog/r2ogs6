@@ -433,7 +433,7 @@ test_that("read_in works for chemical_system objects", {
     expect_equal(ogs6_obj$chemical_system$chemical_solver, "Phreeqc")
     expect_equal(ogs6_obj$chemical_system$database, dat_path)
     expect_equal(class(ogs6_obj$chemical_system$solution), "prj_solution")
-    expect_equal(length(ogs6_obj$chemical_system$solution), 8)
+    expect_equal(length(ogs6_obj$chemical_system$solution), 9)
     expect_equal(ogs6_obj$chemical_system$solution$temperature, 25)
     expect_equal(length(ogs6_obj$chemical_system$knobs), 5)
 })
