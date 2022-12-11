@@ -47,7 +47,9 @@ analyse_xml <- function(path,
     child_flags <- list()
 
     if(length(xml_files) == 0) {
-        stop(paste("No files found for pattern ", pattern), call. = FALSE)
+        #stop(paste("No files found for pattern ", pattern), call. = FALSE)
+        warning("No files found for pattern ", pattern)
+        return(invisible(NULL))
     }
 
     for(i in seq_len(length(xml_files))){
