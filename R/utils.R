@@ -480,3 +480,18 @@ make_abs_path <- function(file_path, ref_path, force=F){
 
   return(file_path)
 }
+
+
+#' dir_make_overwrite
+#' @description Creates a directory or cleans existing one at given path.
+#' @param path String
+#' @noRd
+dir_make_overwrite <- function(path) {
+
+  if (dir.exists(path)) {
+    unlink(path, recursive = TRUE)
+  }
+  dir.create(path, recursive = TRUE)
+
+  return(invisible(TRUE))
+}

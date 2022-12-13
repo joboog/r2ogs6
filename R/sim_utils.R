@@ -68,7 +68,8 @@ ogs6_export_sim_files <- function(ogs6_obj,
 
     # Call all validators
     if(!test_mode &&
-       !ogs6_obj$get_status(print_status = FALSE)){
+       !ogs6_obj$get_status(print_status = FALSE) &&
+       is.null(ogs6_obj$include)){ # joboog: this is a workaround for now
         stop("There are some components missing from your OGS6 object.",
              call. = FALSE)
     }
@@ -321,7 +322,8 @@ run_benchmark <- function(prj_path,
 
     read_in_prj(ogs6_obj = ogs6_obj,
                 prj_path = prj_path,
-                read_in_gml = read_gml)
+                read_in_gml = read_gml,
+                read_includes = T)
 
     return(invisible(ogs6_run_simulation(
                         ogs6_obj, ogs6_bin_path = ogs6_bin_path,

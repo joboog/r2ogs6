@@ -117,6 +117,8 @@ ogs6_obj$get_status()
 as returned by \code{rhdf5::h5read()}.}
 
 \item{\code{mshs}}{\code{mshs} \code{value} must be an object of class \code{OGS6_msh}.}
+
+\item{\code{include}}{\code{include} \code{value} must be a string.}
 }
 \if{html}{\out{</div>}}
 }

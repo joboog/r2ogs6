@@ -4,11 +4,12 @@ test_that("node_to_object works for simple r2ogs6 classes", {
 
     prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
                              "flow_free_expansion.prj", package = "r2ogs6"))
+    xml_doc <- validate_read_in_xml(prj_path)
 
     ogs6_obj <- OGS6$new(sim_name = "sim",
                          sim_path = "sim_path")
 
-    read_in(ogs6_obj, prj_path, "/OpenGeoSysProject/parameters/parameter")
+    read_in(ogs6_obj, xml_doc, "/OpenGeoSysProject/parameters/parameter")
 
     expect_equal(length(ogs6_obj$parameters), 7)
     expect_equal(ogs6_obj$parameters[[1]]$name, "E")
@@ -77,14 +78,15 @@ test_that("order_parameters throws a helpful error message for missing
     # e.g. a new process node in a *.prj file is found and the corresponding
     # class in prj_process is missing
 
-    ogs6_process <- prj_pr_property(name = "test", # use a class that does not have "..."
-                                type = "LIQUID_FLOW")
+    # use a class that does not have "..."
+    ogs6_class <- prj_constitutive_relation(type = "test")
     # replace one parameter
-    names(ogs6_process)[4] <- "Frodos_Ring"
+    names(ogs6_class)[4] <- "Frodos_Ring"
     expect_error(
-        order_parameters(parameters = ogs6_process,
-                         class_name = "prj_pr_property"),
-        regexp = "Frodos_Ring not in class_args of class prj_pr_property")
+        order_parameters(parameters = ogs6_class,
+                         class_name = "prj_constitutive_relation"),
+        regexp = paste("Frodos_Ring not in class_args of class",
+                        "prj_constitutive_relation"))
           }
 )
 

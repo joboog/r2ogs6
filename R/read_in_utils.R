@@ -27,21 +27,51 @@ validate_read_in_xml <- function(path){
 }
 
 
+#' validate_read_include
+#' @description Utility function, tries to parse the provided file as XML or
+#' reads in as string and converts to XML.
+#' @param path string: A file to be parsed.
+#' @param parent_name string: Name of the parent node that has to be added
+#' in case \code{path} is read in as string and converted to XML.
+#' @return The parsed file as class object of type \code{xml2::xml_document}).
+#' @noRd
+validate_read_include <- function(path, parent_name){
+
+    assertthat::assert_that(assertthat::is.string(path))
+
+    incld_xml <- tryCatch(
+        {
+            return(invisible(xml2::read_xml(path, encoding="ISO-8859-1")))
+        },
+        error = function(e){
+
+            incld_str <- suppressWarnings(readLines(path))
+            incld_str <- paste(c(paste0("<", parent_name, ">"), incld_str,
+                                 paste0("</", parent_name, ">")),
+                               collapse = " ")
+            incld_xml <- xml2::read_xml(incld_str)
+            incld_xml <- xml2::xml_children(incld_xml)
+            return(invisible(incld_xml))
+        }
+    )
+}
+
 #===== General read_in utility =====
 
 
 #' read_in
 #' @description Reads in elements from a file
 #' @param ogs6_obj A OGS6 class object
-#' @param path string: Path to file XML elements should be read from
+#' @param xml_doc A xml_document class object.
 #' @param xpath string: An XPath expression (should be absolute!)
 #' @noRd
 read_in <- function(ogs6_obj,
-                    path,
+                    xml_doc,
                     xpath){
 
     assertthat::assert_that("OGS6" %in% class(ogs6_obj))
-    xml_doc <- validate_read_in_xml(path)
+    assertthat::assert_that("xml_document" %in% class(xml_doc))
+    #xml_doc <- validate_read_in_xml(path)
 
     assertthat::assert_that(assertthat::is.string(xpath))
 

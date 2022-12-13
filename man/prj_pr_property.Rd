@@ -45,7 +45,11 @@ prj_pr_property(
   minimum_permeability = NULL,
   entry_pressure = NULL,
   intrinsic_permeabilities = NULL,
-  exponents = NULL
+  exponents = NULL,
+  jacobian_factor = NULL,
+  dry_thermal_conductivity = NULL,
+  wet_thermal_conductivity = NULL,
+  ...
 )
 }
 \arguments{
@@ -130,6 +134,14 @@ prj_pr_property(
 \item{intrinsic_permeabilities}{Optional:}
 
 \item{exponents}{Optional:}
+
+\item{jacobian_factor}{Optional:}
+
+\item{dry_thermal_conductivity}{Optional:}
+
+\item{wet_thermal_conductivity}{Optional:}
+
+\item{...}{dvalue}
 }
 \description{
 tag: property

@@ -413,9 +413,13 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.search_length_algorithm
         }else{
-          assertthat::assert_that(
-            ogs6_prj_top_level_classes()[["search_length_algorithm"]] %in%
-              class(value))
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            assertthat::assert_that(
+              ogs6_prj_top_level_classes()[["search_length_algorithm"]] %in%
+                class(value))
+          }
           private$.search_length_algorithm <- value
         }
       },
@@ -458,9 +462,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.time_loop
         }else{
-          assertthat::assert_that(
-            ogs6_prj_top_level_classes()[["time_loop"]] %in%
-              class(value))
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            assertthat::assert_that(
+              ogs6_prj_top_level_classes()[["time_loop"]] %in% class(value))
+          }
           private$.time_loop <- value
         }
       },
@@ -472,9 +479,13 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.local_coordinate_system
         }else{
-          assertthat::assert_that(
-            ogs6_prj_top_level_classes()[["local_coordinate_system"]] %in%
-              class(value))
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            assertthat::assert_that(
+              ogs6_prj_top_level_classes()[["local_coordinate_system"]] %in%
+                class(value))
+          }
           private$.local_coordinate_system <- value
         }
       },
@@ -486,8 +497,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.media
         }else{
-          is_wrapper_list(value,
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
                           ogs6_prj_top_level_classes()[["media"]])
+          }
           private$.media <- value
         }
       },
@@ -499,8 +514,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.parameters
         }else{
-          is_wrapper_list(value,
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
                           ogs6_prj_top_level_classes()[["parameters"]])
+          }
           private$.parameters <- value
         }
       },
@@ -512,9 +531,13 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.chemical_system
         }else{
-          assertthat::assert_that(
-            ogs6_prj_top_level_classes()[["chemical_system"]] %in%
-              class(value))
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            assertthat::assert_that(
+              ogs6_prj_top_level_classes()[["chemical_system"]] %in%
+                class(value))
+          }
           private$.chemical_system <- value
         }
       },
@@ -526,8 +549,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.curves
         }else{
-          is_wrapper_list(value,
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
                           ogs6_prj_top_level_classes()[["curves"]])
+          }
           private$.curves <- value
         }
       },
@@ -539,9 +566,13 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.process_variables
         }else{
-          is_wrapper_list(
-            value,
-            ogs6_prj_top_level_classes()[["process_variables"]])
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(
+              value,
+              ogs6_prj_top_level_classes()[["process_variables"]])
+          }
           private$.process_variables <- value
         }
       },
@@ -553,9 +584,13 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.nonlinear_solvers
         }else{
-          is_wrapper_list(
-            value,
-            ogs6_prj_top_level_classes()[["nonlinear_solvers"]])
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(
+              value,
+              ogs6_prj_top_level_classes()[["nonlinear_solvers"]])
+          }
           private$.nonlinear_solvers <- value
         }
       },
@@ -567,8 +602,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.linear_solvers
         }else{
-          is_wrapper_list(value,
-                          ogs6_prj_top_level_classes()[["linear_solvers"]])
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
+                           ogs6_prj_top_level_classes()[["linear_solvers"]])
+          }
           private$.linear_solvers <- value
         }
       },
@@ -580,8 +619,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.test_definition
         }else{
-          is_wrapper_list(value,
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
                           ogs6_prj_top_level_classes()[["test_definition"]])
+          }
           private$.test_definition <- value
         }
       },
@@ -593,9 +636,12 @@ OGS6 <- R6::R6Class("OGS6",
         if(missing(value)) {
           private$.insitu
         }else{
-          assertthat::assert_that(
-            ogs6_prj_top_level_classes()[["insitu"]] %in%
-              class(value))
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            assertthat::assert_that(
+            ogs6_prj_top_level_classes()[["insitu"]] %in%  class(value))
+          }
           private$.insitu <- value
         }
       },
@@ -634,6 +680,18 @@ OGS6 <- R6::R6Class("OGS6",
           private$.mshs <- value
         }
 
+      },
+
+      #' @field include
+      #' \code{include} \code{value} must be a string.
+      include = function(value) {
+        if(missing(value)) {
+          private$.include
+        }else{
+          assertthat::assert_that(assertthat::is.string(value))
+          private$.include <- value
+          names(private$.include) <- "file"
+        }
       }
   ),
 
@@ -678,7 +736,8 @@ OGS6 <- R6::R6Class("OGS6",
       # .pvd objects (output)
       .pvds = NULL,
       .h5s = NULL,
-      .mshs = NULL
+      .mshs = NULL,
+      .include = NULL
   )
 )
 

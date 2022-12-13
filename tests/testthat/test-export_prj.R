@@ -125,7 +125,7 @@ test_that("export_prj works for referenced *.msh files", {
 
 
 
-test_that("export_prj works for process$include", {
+test_that("export_prj works for /*$include", {
 
     # Get extdata directory and create folder for the test
     extdata_path <- system.file("extdata/", package = "r2ogs6")
@@ -154,6 +154,73 @@ test_that("export_prj works for process$include", {
     expect_equal(sort(list.files(ogs6_obj$sim_path)),
                  sort(c("circle_1_axi.gml", "circle_1e1_axi.prj",
                    "line_1_lines_1e1.vtu", "SteadyStateDiffusion.xml")))
+
+    # Tidy up by deleting the folder we created
+    unlink(test_path, recursive = TRUE)
+})
+
+test_that("export_prj works for top-level include", {
+
+    # Get extdata directory and create folder for the test
+    extdata_path <- system.file("extdata/", package = "r2ogs6")
+    test_path <- paste0(extdata_path, "/export_prj_test")
+    dir.create(test_path)
+
+    # Define prj_path and OGS6 object, then read in .prj file
+    ogs6_obj <- OGS6$new(sim_name = "x_strain_y_flow",
+                         sim_path = test_path)
+    prj_path <-
+        system.file(
+            "extdata/benchmarks/OrthotropicEmbeddedFracturePermeability",
+            "x_strain_y_flow.prj", package = "r2ogs6")
+    incl_path <-
+        system.file(
+            "extdata/benchmarks/OrthotropicEmbeddedFracturePermeability",
+            "cube_strain_flow_data.include", package = "r2ogs6")
+
+    # tests without reading the include
+    read_in_prj(ogs6_obj, prj_path, read_in_gml = F)
+    # export of prj only
+    export_prj(ogs6_obj, copy_ext_files = F)
+    expect_equal(list.files(ogs6_obj$sim_path), "x_strain_y_flow.prj")
+    file.remove(paste0(ogs6_obj$sim_path, "x_strain_y_flow.prj"))
+    # export with copying referenced files
+    export_prj(ogs6_obj, copy_ext_files = T)
+    expect_equal(sort(list.files(ogs6_obj$sim_path)),
+                 sort(c("x_strain_y_flow.prj","cube_strain_flow_data.include")))
+    file.remove(paste0(ogs6_obj$sim_path, "x_strain_y_flow.prj"))
+    file.remove(paste0(ogs6_obj$sim_path, "cube_strain_flow_data.include"))
+
+
+    # tests with reading include
+    rm(ogs6_obj)
+    ref_path <-
+        system.file(
+            "extdata/benchmarks/OrthotropicEmbeddedFracturePermeability",
+            "ref_x_strain_y_flow.prj", package = "r2ogs6")
+
+    ogs6_obj <- OGS6$new(sim_name = "x_strain_y_flow", sim_path = test_path)
+    read_in_prj(ogs6_obj, prj_path, read_in_gml = F, read_includes = T)
+    # export of prj only
+    export_prj(ogs6_obj, copy_ext_files = F)
+    ref_xml <- xml2::read_xml(ref_path)
+    test_xml <- xml2::read_xml(paste0(ogs6_obj$sim_path,
+                                     "x_strain_y_flow.prj"))
+    ref <- xml2::as_list(ref_xml)
+    test <- xml2::as_list(test_xml)
+    test$OpenGeoSysProject$mesh[[1]] <-
+        basename(test$OpenGeoSysProject$mesh[[1]])
+    test$OpenGeoSysProject$geometry[[1]] <-
+        basename(test$OpenGeoSysProject$geometry[[1]])
+    expect_equal(ref, test)
+    expect_equal(list.files(ogs6_obj$sim_path), "x_strain_y_flow.prj")
+    file.remove(paste0(ogs6_obj$sim_path, "x_strain_y_flow.prj"))
+
+    # export with copying referenced files
+    export_prj(ogs6_obj, copy_ext_files = T)
+    expect_equal(sort(list.files(ogs6_obj$sim_path)),
+                 sort(c("cube_1x1x1.gml", "x_strain_y_flow.prj",
+                        "cube_1x1x1_quad.vtu")))
 
     # Tidy up by deleting the folder we created
     unlink(test_path, recursive = TRUE)

@@ -66,8 +66,6 @@ prj_process(
   solute_dispersivity_longitudinal = NULL,
   solute_dispersivity_transverse = NULL,
   molecular_diffusion_coefficient = NULL,
-  density_solid = NULL,
-  latent_heat_evaporation = NULL,
   pf_irrv = NULL,
   micro_porosity = NULL,
   explicit_hm_coupling_in_unsaturated_zone = NULL,
@@ -79,6 +77,10 @@ prj_process(
   tabular_file = NULL,
   temperature_field = NULL,
   use_stokes_brinkman_form = NULL,
+  energy_split_model = NULL,
+  softening_curve = NULL,
+  characteristic_length = NULL,
+  coupling_scheme_parameter = NULL,
   ...
 )
 }
@@ -205,10 +207,6 @@ prj_process(
 
 \item{molecular_diffusion_coefficient}{Optional:}
 
-\item{density_solid}{Optional:}
-
-\item{latent_heat_evaporation}{Optional:}
-
 \item{pf_irrv}{Optional:}
 
 \item{micro_porosity}{Optional:}
@@ -230,6 +228,14 @@ prj_process(
 \item{temperature_field}{Optional: character}
 
 \item{use_stokes_brinkman_form}{Optional: character}
+
+\item{energy_split_model}{Optional: string}
+
+\item{softening_curve}{Optional: string}
+
+\item{characteristic_length}{Optional: double}
+
+\item{coupling_scheme_parameter}{Optional: double}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }

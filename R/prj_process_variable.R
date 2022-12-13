@@ -12,16 +12,18 @@
 #' @param source_terms Optional: list, prj_source_term:
 #' @param mesh Optional: string: list:
 #' @param deactivated_subdomains Optional: list, prj_deactivated_subdomain:
+#' @param compensate_non_equilibrium_initial_residuum Optional: string
 #' @example man/examples/ex_prj_process_variable.R
 #' @export
 prj_process_variable <- function(name,
-                                    components,
-                                    order,
-                                    initial_condition,
-                                    boundary_conditions = NULL,
-                                    source_terms = NULL,
-                                    mesh = NULL,
-                                    deactivated_subdomains = NULL){
+                            components,
+                            order,
+                            initial_condition,
+                            boundary_conditions = NULL,
+                            source_terms = NULL,
+                            mesh = NULL,
+                            deactivated_subdomains = NULL,
+                            compensate_non_equilibrium_initial_residuum = NULL){
 
     #Coerce input
     components <- coerce_string_to_numeric(components)
@@ -34,18 +36,20 @@ prj_process_variable <- function(name,
                                 boundary_conditions,
                                 source_terms,
                                 mesh,
-                                deactivated_subdomains)
+                                deactivated_subdomains,
+                                compensate_non_equilibrium_initial_residuum)
 }
 
 
 new_prj_process_variable <- function(name,
-                                        components,
-                                        order,
-                                        initial_condition,
-                                        boundary_conditions = NULL,
-                                        source_terms = NULL,
-                                        mesh = NULL,
-                                        deactivated_subdomains = NULL){
+                            components,
+                            order,
+                            initial_condition,
+                            boundary_conditions = NULL,
+                            source_terms = NULL,
+                            mesh = NULL,
+                            deactivated_subdomains = NULL,
+                            compensate_non_equilibrium_initial_residuum = NULL){
 
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.number(components))
@@ -66,7 +70,7 @@ new_prj_process_variable <- function(name,
                               "prj_source_term")
     }
 
-    are_null_or_strings(mesh)
+    are_null_or_strings(mesh, compensate_non_equilibrium_initial_residuum)
 
     if(!is.null(deactivated_subdomains)){
         is_wrapper_list(deactivated_subdomains,
@@ -81,6 +85,8 @@ new_prj_process_variable <- function(name,
                    source_terms = source_terms,
                    mesh = mesh,
                    deactivated_subdomains = deactivated_subdomains,
+                    compensate_non_equilibrium_initial_residuum =
+                       compensate_non_equilibrium_initial_residuum,
                    xpath = "process_variables/process_variable",
                    attr_names = character(),
                    flatten_on_exp = character()
@@ -285,6 +291,7 @@ new_prj_boundary_condition <- function(type,
 #' @param geometry Optional: string:
 #' @param mesh Optional: string:
 #' @param source_term_object Optional: string:
+#' @param flush_stdout Optional: string:
 #' @example man/examples/ex_prj_source_term.R
 #' @export
 prj_source_term <- function(type,
@@ -292,7 +299,8 @@ prj_source_term <- function(type,
                                geometrical_set = NULL,
                                geometry = NULL,
                                mesh = NULL,
-                               source_term_object = NULL){
+                               source_term_object = NULL,
+                               flush_stdout = NULL){
 
     #Coerce input
 
@@ -301,7 +309,8 @@ prj_source_term <- function(type,
                            geometrical_set,
                            geometry,
                            mesh,
-                           source_term_object)
+                           source_term_object,
+                           flush_stdout)
 }
 
 
@@ -310,7 +319,8 @@ new_prj_source_term <- function(type,
                                    geometrical_set = NULL,
                                    geometry = NULL,
                                    mesh = NULL,
-                                   source_term_object = NULL){
+                                   source_term_object = NULL,
+                                   flush_stdout = NULL){
 
     assertthat::assert_that(assertthat::is.string(type))
 
@@ -318,7 +328,8 @@ new_prj_source_term <- function(type,
                         geometrical_set,
                         geometry,
                         mesh,
-                        source_term_object)
+                        source_term_object,
+                        flush_stdout)
 
     structure(list(type = type,
                    parameter = parameter,
@@ -326,11 +337,11 @@ new_prj_source_term <- function(type,
                    geometry = geometry,
                    mesh = mesh,
                    source_term_object = source_term_object,
+                   flush_stdout = flush_stdout,
                    xpath = paste0("process_variables/process_variable/",
                                   "source_terms/source_term"),
                    attr_names = character(),
-                   flatten_on_exp = character()
-    ),
+                   flatten_on_exp = character()),
     class = "prj_source_term"
     )
 }
