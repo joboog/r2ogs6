@@ -80,6 +80,8 @@
 #' @param softening_curve Optional: string
 #' @param characteristic_length Optional: double
 #' @param coupling_scheme_parameter Optional: double
+#' @param numerical_stabilization Optional: list
+#' @param aperture_size Optional: list
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
@@ -159,6 +161,8 @@ prj_process <- function(name,
                            softening_curve = NULL,
                            characteristic_length = NULL,
                            coupling_scheme_parameter = NULL,
+                           numerical_stabilization = NULL,
+                           aperture_size = NULL,
                            ...){
 
     #Coerce input
@@ -282,7 +286,9 @@ prj_process <- function(name,
         energy_split_model,
         softening_curve,
         characteristic_length,
-        coupling_scheme_parameter
+        coupling_scheme_parameter,
+        numerical_stabilization,
+        aperture_size
     )
 }
 
@@ -364,7 +370,9 @@ new_prj_process <- function(name,
                             energy_split_model = NULL,
                             softening_curve = NULL,
                             characteristic_length = NULL,
-                            coupling_scheme_parameter = NULL) {
+                            coupling_scheme_parameter = NULL,
+                            numerical_stabilization = NULL,
+                            aperture_size = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -435,6 +443,7 @@ new_prj_process <- function(name,
 
     fluid <- validate_fluid(fluid)
 
+
     are_null_or_strings(coupling_scheme,
                        solid_density,
                        intrinsic_permeability,
@@ -498,6 +507,12 @@ new_prj_process <- function(name,
 
     are_null_or_string_flags(mass_lumping,
                                  non_advective_form)
+
+    assertthat::assert_that(is.null(numerical_stabilization) |
+                                is.list(numerical_stabilization))
+
+    assertthat::assert_that(is.null(aperture_size) |
+                                is.list(aperture_size))
 
     structure(
         list(
@@ -585,6 +600,8 @@ new_prj_process <- function(name,
             softening_curve = softening_curve,
             characteristic_length = characteristic_length,
             coupling_scheme_parameter = coupling_scheme_parameter,
+            numerical_stabilization = numerical_stabilization,
+            aperture_size = aperture_size,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
