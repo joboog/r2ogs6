@@ -126,6 +126,7 @@ new_prj_chemical_system <- function(chemical_solver,
 
     assertthat::assert_that(is.null(number_of_components) |
                                 is.numeric(number_of_components))
+
     structure(list(chemical_solver = chemical_solver,
                    mesh = mesh,
                    linear_solver = linear_solver,
