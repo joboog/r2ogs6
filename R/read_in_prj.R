@@ -162,9 +162,11 @@ read_in_prj <- function(ogs6_obj,
 
     # update file references in wrapper lists of created ogs6_obj
     if(!is.null(ogs6_obj$chemical_system)){
-        dbase_path <- ogs6_obj$chemical_system$database
-        ogs6_obj$chemical_system$database <- make_abs_path(dbase_path,
-                                                           prj_base_path)
+        if(!is.null(ogs6_obj$chemical_system$database)){
+            dbase_path <- ogs6_obj$chemical_system$database
+            ogs6_obj$chemical_system$database <- make_abs_path(dbase_path,
+                                                               prj_base_path)
+        }
     }
 
 }
