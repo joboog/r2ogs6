@@ -1177,7 +1177,8 @@ validate_process_variables <- function(process_variables){
                         "capillary_pressure",
                         "liquid_pressure",
                         "liquid_velocity",
-                        "overall_mass_density")
+                        "overall_mass_density",
+                        "total_molar_fraction_contaminant")
 
     for(i in seq_len(length(process_variables))){
         assertthat::assert_that(names(process_variables)[[i]] %in%
