@@ -6,27 +6,32 @@
 \usage{
 prj_chemical_system(
   chemical_solver,
-  database,
-  solution,
-  mesh = NULL,
+  mesh,
+  linear_solver = NULL,
+  database = NULL,
+  solution = NULL,
   knobs = NULL,
   kinetic_reactants = NULL,
   rates = NULL,
   equilibrium_reactants = NULL,
   surface = NULL,
   user_punch = NULL,
-  linear_solver = NULL,
-  exchangers = NULL
+  use_high_precision = NULL,
+  exchangers = NULL,
+  chemical_reactions = NULL,
+  number_of_components = NULL
 )
 }
 \arguments{
-\item{chemical_solver}{string:}
+\item{chemical_solver}{string: Either "Phreeqc" or "SelfContained".}
 
-\item{database}{string:}
+\item{mesh}{string:}
 
-\item{solution}{prj_solution:}
+\item{linear_solver}{Optional: string:}
 
-\item{mesh}{Optional: string:}
+\item{database}{string: Required if chemical_solver == "Phreeqc" .}
+
+\item{solution}{prj_solution: Required if chemical_solver == "Phreeqc".}
 
 \item{knobs}{Optional: list:}
 
@@ -40,9 +45,15 @@ prj_chemical_system(
 
 \item{user_punch}{Optional:}
 
-\item{linear_solver}{Optional:}
+\item{use_high_precision}{Optional:}
 
 \item{exchangers}{Optional: prj_exchangers}
+
+\item{chemical_reactions}{list: Required if
+chemical_solver == "SelfContained".}
+
+\item{number_of_components}{integer: Required if
+chemical_solver == "SelfContained".}
 }
 \description{
 tag: chemical_system
@@ -50,6 +61,7 @@ tag: chemical_system
 \examples{
 prj_chemical_system(
     chemical_solver = "Phreeqc",
+    linear_solver = "general_linear_solver",
     database = "PSINA_12_07_110615_DAV_s.dat",
     solution = prj_solution(
         temperature = 25,

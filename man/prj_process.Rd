@@ -81,6 +81,8 @@ prj_process(
   softening_curve = NULL,
   characteristic_length = NULL,
   coupling_scheme_parameter = NULL,
+  numerical_stabilization = NULL,
+  aperture_size = NULL,
   ...
 )
 }
@@ -236,6 +238,10 @@ prj_process(
 \item{characteristic_length}{Optional: double}
 
 \item{coupling_scheme_parameter}{Optional: double}
+
+\item{numerical_stabilization}{Optional: list}
+
+\item{aperture_size}{Optional: list}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }
