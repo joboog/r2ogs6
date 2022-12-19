@@ -94,7 +94,7 @@ test_that("read_in works for class objects with ellipsis", {
                      phases[[1]]$
                      properties[[1]]$
                      dvalue[[1]][["expression"]],
-                 0.026)
+                 "0.026")
 
     expect_equal(ogs6_obj$
                      media[[1]]$
@@ -108,7 +108,7 @@ test_that("read_in works for class objects with ellipsis", {
                      phases[[1]]$
                      properties[[1]]$
                      dvalue[[2]][["expression"]],
-                 5e-5)
+                 "5e-5")
 
 })
 

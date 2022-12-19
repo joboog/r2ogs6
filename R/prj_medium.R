@@ -311,7 +311,7 @@ new_prj_pr_property <- function(name,
             assertthat::assert_that(
                 all(names(x) %in% c("variable_name", "expression")))
             are_null_or_strings(x[["variable_name"]])
-            x[["expression"]] <- coerce_string_to_numeric(x[["expression"]])
+            are_null_or_strings(x[["expression"]])
             return(x)
         })
     }
@@ -559,7 +559,7 @@ new_prj_ph_property <- function(name,
             assertthat::assert_that(
                 all(names(x) %in% c("variable_name", "expression")))
             are_null_or_strings(x[["variable_name"]])
-            x[["expression"]] <- coerce_string_to_numeric(x[["expression"]])
+            are_null_or_strings(x[["expression"]])
             return(x)
         })
     }
@@ -728,7 +728,15 @@ new_prj_com_property <- function(name,
     assertthat::assert_that(assertthat::is.string(name))
     assertthat::assert_that(assertthat::is.string(type))
 
-    are_null_or_numbers(value)
+    if (!is.null(value)) {
+        if(is.list(value)){
+            assertthat::assert_that(names(value[1]) == "expression")
+            are_null_or_strings(value[[1]])
+        }else{
+            are_null_or_numeric(value)
+        }
+    }
+
     are_null_or_numeric(activation_energy)
     are_null_or_numeric(reference_temperature)
     are_null_or_numeric(triple_temperature)
