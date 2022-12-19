@@ -4,70 +4,85 @@
 
 #' prj_chemical_system
 #' @description tag: chemical_system
-#' @param chemical_solver string:
-#' @param database string:
-#' @param solution prj_solution:
-#' @param mesh Optional: string:
+#' @param chemical_solver string: Either "Phreeqc" or "SelfContained".
+#' @param database string: Required if chemical_solver == "Phreeqc" .
+#' @param solution prj_solution: Required if chemical_solver == "Phreeqc".
+#' @param mesh string:
 #' @param knobs Optional: list:
 #' @param kinetic_reactants Optional: list, prj_kinetic_reactant:
 #' @param rates Optional: list, prj_rate:
 #' @param equilibrium_reactants Optional: list, prj_phase_component:
 #' @param surface Optional:
 #' @param user_punch Optional:
-#' @param linear_solver Optional:
+#' @param use_high_precision Optional:
+#' @param linear_solver Optional: string:
 #' @param exchangers Optional: prj_exchangers
+#' @param chemical_reactions list: Required if
+#' chemical_solver == "SelfContained".
+#' @param number_of_components integer: Required if
+#' chemical_solver == "SelfContained".
 #' @example man/examples/ex_prj_chemical_system.R
 #' @export
 prj_chemical_system <- function(chemical_solver,
-                                   database,
-                                   solution,
-                                   mesh = NULL,
-                                   knobs = NULL,
-                                   kinetic_reactants = NULL,
-                                   rates = NULL,
-                                   equilibrium_reactants = NULL,
-                                   surface = NULL,
-                                   user_punch = NULL,
-                                   linear_solver = NULL,
-                                   exchangers = NULL) {
+                               mesh,
+                               linear_solver = NULL,
+                               database = NULL,
+                               solution = NULL,
+                               knobs = NULL,
+                               kinetic_reactants = NULL,
+                               rates = NULL,
+                               equilibrium_reactants = NULL,
+                               surface = NULL,
+                               user_punch = NULL,
+                               use_high_precision = NULL,
+                               exchangers = NULL,
+                               chemical_reactions = NULL,
+                               number_of_components = NULL) {
 
     # Add coercing utility here
+    number_of_components <- coerce_string_to_numeric(number_of_components)
 
     new_prj_chemical_system(chemical_solver,
-                               database,
-                               solution,
-                               mesh,
-                               knobs,
-                               kinetic_reactants,
-                               rates,
-                               equilibrium_reactants,
-                               surface,
-                               user_punch,
-                               linear_solver,
-                               exchangers)
+                            mesh,
+                            linear_solver,
+                            database,
+                            solution,
+                            knobs,
+                            kinetic_reactants,
+                            rates,
+                            equilibrium_reactants,
+                            surface,
+                            user_punch,
+                            use_high_precision,
+                            exchangers,
+                            chemical_reactions,
+                            number_of_components)
 }
 
 
 new_prj_chemical_system <- function(chemical_solver,
-                                       database,
-                                       solution,
-                                       mesh = NULL,
-                                       knobs = NULL,
-                                       kinetic_reactants = NULL,
-                                       rates = NULL,
-                                       equilibrium_reactants = NULL,
-                                       surface = NULL,
-                                       user_punch = NULL,
-                                       linear_solver = NULL,
-                                       exchangers = NULL) {
+                                    mesh,
+                                    linear_solver = NULL,
+                                    database = NULL,
+                                    solution = NULL,
+                                    knobs = NULL,
+                                    kinetic_reactants = NULL,
+                                    rates = NULL,
+                                    equilibrium_reactants = NULL,
+                                    surface = NULL,
+                                    user_punch = NULL,
+                                    use_high_precision = NULL,
+                                    exchangers = NULL,
+                                    chemical_reactions = NULL,
+                                    number_of_components = NULL) {
 
 
-    are_strings(chemical_solver,
-                database)
+    are_strings(chemical_solver, mesh)
 
-    assertthat::assert_that(class(solution) == "prj_solution")
+    are_null_or_strings(linear_solver, database)
 
-    are_null_or_strings(mesh)
+    assertthat::assert_that(is.null(solution) |
+                                class(solution) == "prj_solution")
 
     knobs <- is_null_or_coerce_names(
         knobs,
@@ -96,21 +111,37 @@ new_prj_chemical_system <- function(chemical_solver,
     assertthat::assert_that(is.null(surface) |
                                 class(surface) == "prj_surface")
 
+    assertthat::assert_that(is.null(user_punch) |
+                                is.list(user_punch))
+
+    are_null_or_string_flags(use_high_precision)
+
     assertthat::assert_that(is.null(exchangers) |
                                 class(exchangers) == "prj_exchangers")
 
+    if(!is.null(chemical_reactions)){
+        is_wrapper_list(chemical_reactions,
+                        "prj_chemical_reaction")
+    }
+
+    assertthat::assert_that(is.null(number_of_components) |
+                                is.numeric(number_of_components))
+
     structure(list(chemical_solver = chemical_solver,
+                   mesh = mesh,
+                   linear_solver = linear_solver,
                    database = database,
                    solution = solution,
-                   mesh = mesh,
                    knobs = knobs,
                    kinetic_reactants = kinetic_reactants,
                    rates = rates,
                    equilibrium_reactants = equilibrium_reactants,
                    surface = surface,
                    user_punch = user_punch,
-                   linear_solver = linear_solver,
+                   use_high_precision = use_high_precision,
                    exchangers = exchangers,
+                   chemical_reactions = chemical_reactions,
+                   number_of_components = number_of_components,
                    xpath = "chemical_system",
                    attr_names = c("chemical_solver", "site_unit"),
                    flatten_on_exp = character()
@@ -384,5 +415,49 @@ new_prj_surface <- function(site_unit,
                    flatten_on_exp = character()
     ),
     class = "prj_surface"
+    )
+}
+
+
+#=== prj_chemical_reaction =============================================
+
+#'prj_chemical_reaction
+#'@description tag: chemical_reaction
+#'@param stoichiometric_coefficients numeric:
+#'@param reaction_type string:
+#'@param first_order_rate_constant double:
+#'@export
+prj_chemical_reaction <- function(stoichiometric_coefficients,
+                                  reaction_type,
+                                  first_order_rate_constant) {
+
+    # Add coercing utility here
+    stoichiometric_coefficients <-
+        coerce_string_to_numeric(stoichiometric_coefficients)
+    first_order_rate_constant <-
+        coerce_string_to_numeric(first_order_rate_constant)
+
+    new_prj_chemical_reaction(stoichiometric_coefficients,
+                              reaction_type,
+                              first_order_rate_constant)
+}
+
+new_prj_chemical_reaction <- function(stoichiometric_coefficients,
+                                      reaction_type,
+                                      first_order_rate_constant) {
+
+    are_numeric(stoichiometric_coefficients)
+    are_strings(reaction_type)
+    assertthat::assert_that(is.double(first_order_rate_constant))
+
+    structure(list(stoichiometric_coefficients = stoichiometric_coefficients,
+                   reaction_type = reaction_type,
+                   first_order_rate_constant = first_order_rate_constant,
+                   xpath = paste0("chemical_system/chemical_reactions/",
+                                  "chemical_reaction"),
+                   attr_names = character(),
+                   flatten_on_exp = c("stoichiometric_coefficients")
+    ),
+    class = "prj_chemical_reaction"
     )
 }

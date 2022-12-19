@@ -94,7 +94,7 @@ test_that("read_in works for class objects with ellipsis", {
                      phases[[1]]$
                      properties[[1]]$
                      dvalue[[1]][["expression"]],
-                 0.026)
+                 "0.026")
 
     expect_equal(ogs6_obj$
                      media[[1]]$
@@ -108,7 +108,7 @@ test_that("read_in works for class objects with ellipsis", {
                      phases[[1]]$
                      properties[[1]]$
                      dvalue[[2]][["expression"]],
-                 5e-5)
+                 "5e-5")
 
 })
 
@@ -436,4 +436,69 @@ test_that("read_in works for chemical_system objects", {
     expect_equal(length(ogs6_obj$chemical_system$solution), 9)
     expect_equal(ogs6_obj$chemical_system$solution$temperature, 25)
     expect_equal(length(ogs6_obj$chemical_system$knobs), 5)
+})
+
+
+test_that("read_in_prj works for prj_chemical_reaction",{
+
+    prj_base_path <- paste0(tmp_dir, "/read_in_chem_react")
+    prj_path <- paste0(prj_base_path, "read_in_chem_react.prj")
+
+writeLines(
+'<?xml version="1.0" encoding="ISO-8859-1"?>
+<OpenGeoSysProject>
+<chemical_system chemical_solver="SelfContained">
+    <mesh>1d_decay_chain_ReactiveDomain</mesh>
+    <linear_solver>general_linear_solver</linear_solver>
+    <number_of_components>2</number_of_components>
+    <chemical_reactions>
+    <chemical_reaction>
+    <stoichiometric_coefficients>-1 1 0 0 0 0</stoichiometric_coefficients>
+    <reaction_type>FirstOrderReaction</reaction_type>
+    <first_order_rate_constant>1.4089456993390242e-15</first_order_rate_constant>
+    </chemical_reaction>
+    <chemical_reaction>
+    <!-- 0 = -1 [Am-243] + 1 [Pu-239] -->
+    <stoichiometric_coefficients>0 -1 1 0 0 0</stoichiometric_coefficients>
+    <reaction_type>FirstOrderReaction</reaction_type>
+    <first_order_rate_constant>2.982300259116523e-12</first_order_rate_constant>
+    </chemical_reaction>
+    </chemical_reactions>
+</chemical_system>
+</OpenGeoSysProject>',
+con = prj_path
+)
+
+    test <- OGS6$new("test", sim_path = prj_base_path)
+    read_in_prj(test, prj_path)
+
+    expect_equal(length(test$chemical_system), 18)
+    expect_equal(test$chemical_system$chemical_solver, "SelfContained")
+    expect_equal(test$chemical_system$mesh, "1d_decay_chain_ReactiveDomain")
+    expect_equal(test$chemical_system$linear_solver, "general_linear_solver")
+    expect_equal(test$chemical_system$number_of_components, 2)
+
+    expect_equal(class(test$chemical_system$chemical_reactions[[1]]),
+                "prj_chemical_reaction")
+    expect_equal(length(test$chemical_system$chemical_reactions), 2)
+    expect_equal(
+        test$chemical_system$chemical_reactions[[1]]$stoichiometric_coefficients,
+        c(-1,1,0,0,0,0))
+    expect_equal(
+        test$chemical_system$chemical_reactions[[1]]$reaction_type,
+        "FirstOrderReaction")
+    expect_equal(
+        test$chemical_system$chemical_reactions[[1]]$first_order_rate_constant,
+        1.4089456993390242e-15)
+
+    expect_equal(
+        test$chemical_system$chemical_reactions[[2]]$stoichiometric_coefficients,
+        c(0,-1,1,0,0,0))
+    expect_equal(test$chemical_system$chemical_reactions[[1]]$reaction_type,
+                 "FirstOrderReaction")
+    expect_equal(
+        test$chemical_system$chemical_reactions[[1]]$first_order_rate_constant,
+        2.982300259116523e-12)
+
+    file.remove(prj_path)
 })
