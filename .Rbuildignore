@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^.gitlab-ci.yml
 ^.*\.Rproj$
 ^\.Rproj\.user$
