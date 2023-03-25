@@ -2,10 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+.vscode
 config.yml
-packrat/lib*/
+ci/local_docker_test
 inst/doc
 inst/extdata/test_tempdirs
 Meta
+renv/settings.json
 tmp
-packrat/src/

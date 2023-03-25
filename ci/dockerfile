@@ -1,0 +1,39 @@
+FROM rocker/tidyverse:4.2.3
+ENV PATH="/root/miniconda3/bin:$PATH"
+ARG PATH="/root/miniconda3/bin:$PATH"
+ARG PROJECT_DIR="/root/test-bm"
+ARG GOVERSION="1.13.9"
+ARG OGS_VERSION="6.4.4"
+ARG SING_VERSION="3.5.3"
+
+# install linux dependencies
+RUN apt-get update && apt-get install -y build-essential libssl-dev uuid-dev libgpgme11-dev squashfs-tools libseccomp-dev pkg-config cryptsetup-bin
+
+# install go
+ARG OS=linux
+ARG ARCH=amd64
+RUN wget -O /tmp/go${GOVERSION}.${OS}-${ARCH}.tar.gz https://dl.google.com/go/go$GOVERSION.$OS-$ARCH.tar.gz
+RUN tar -C /usr/local -xzvf /tmp/go$GOVERSION.$OS-$ARCH.tar.gz
+RUN rm /tmp/go$GOVERSION.$OS-$ARCH.tar.gz
+
+# configure go
+ARG GOPATH="/root/go"
+ENV GOPATH=${GOPATH}
+ENV PATH="/usr/local/go/bin:${PATH}:${GOPATH}/bin"
+
+# install singularity
+RUN mkdir -p ${GOPATH}/src/github.com/sylabs
+RUN cd ${GOPATH}/src/github.com/sylabs && git clone https://github.com/sylabs/singularity.git
+RUN cd ${GOPATH}/src/github.com/sylabs/singularity && git checkout v${SING_VERSION} && ./mconfig
+RUN cd ${GOPATH}/src/github.com/sylabs/singularity/builddir && make && make install
+RUN singularity version
+
+# get ogs
+RUN if [ ! -d "$PROJECT_DIR" ]; then mkdir -p "$PROJECT_DIR"; fi
+RUN git clone --branch ${OGS_VERSION} https://gitlab.opengeosys.org/ogs/ogs.git/ /root/ogs
+RUN wget -nv -P /root https://ogsstorage.blob.core.windows.net/binaries/ogs6/${OGS_VERSION}/ogs-${OGS_VERSION}-serial.sif
+
+# install R dependencies
+RUN R -e 'install.packages("reticulate")'
+RUN R -e 'reticulate::install_miniconda()'
+RUN R -e 'reticulate::py_install(c("numpy==1.19.1", "vtk==8.2.0"), python_version="3.7")'
