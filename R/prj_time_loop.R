@@ -139,7 +139,7 @@ new_prj_tl_process <- function(ref,
 #'   Either "true" or "false"
 #' @param data_mode Optional: string:
 #' @param output_iteration_results Optional: string: Either "true" or "false"
-#' @param meshes Optional: character: A vector of mesh names
+#' @param meshes Optional: list: A list of meshes
 #' @param fixed_output_times Optional: string | numeric:
 #' @param hdf Optional: numeric
 #' @param geometrical_sets Optional: list, prj_geometrical_set
@@ -160,10 +160,6 @@ prj_output <- function(type,
 
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
-
-    if(is.list(meshes)){
-        meshes <- unlist(meshes)
-    }
 
     new_prj_output(type,
                          prefix,
@@ -208,10 +204,7 @@ new_prj_output <- function(type,
 
     are_null_or_string_flags(compress_output)
 
-    if(!is.null(meshes)){
-        assertthat::assert_that(is.character(meshes))
-        names(meshes) <- rep("mesh", length(meshes))
-    }
+    is_null_or_wrapper_list(meshes, "character")
 
     are_null_or_numeric(fixed_output_times)
 
