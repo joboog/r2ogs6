@@ -208,7 +208,7 @@ new_prj_output <- function(type,
 
     are_null_or_numeric(fixed_output_times)
 
-    is_wrapper_list(geometrical_sets, "prj_geometrical_set")
+    is_null_or_wrapper_list(geometrical_sets, "prj_geometrical_set")
 
     structure(
         list(type = type,
