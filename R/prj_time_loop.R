@@ -7,24 +7,28 @@
 #' @param processes list, prj_tl_process:
 #' @param output prj_output:
 #' @param global_process_coupling Optional: prj_global_process_coupling:
+#' @param submesh_residuum_output Optional: prj_submesh_residuum_output:
 #' @example man/examples/ex_prj_time_loop.R
 #' @export
 prj_time_loop <- function(processes,
-                             output,
-                             global_process_coupling = NULL) {
+                          output,
+                          global_process_coupling = NULL,
+                          submesh_residuum_output = NULL) {
 
     #Make this more user friendly
     #...
 
     new_prj_time_loop(processes,
-                         output,
-                         global_process_coupling)
+                        output,
+                        global_process_coupling,
+                        submesh_residuum_output)
 }
 
 
 new_prj_time_loop <- function(processes,
-                                 output,
-                                 global_process_coupling = NULL) {
+                                output,
+                                global_process_coupling = NULL,
+                                submesh_residuum_output = NULL) {
 
     is_wrapper_list(processes, "prj_tl_process")
     assertthat::assert_that(class(output) == "prj_output")
@@ -32,11 +36,14 @@ new_prj_time_loop <- function(processes,
     is_null_or_has_class(global_process_coupling,
                                   "prj_global_process_coupling")
 
+    is_null_or_has_class(submesh_residuum_output, "prj_submesh_residuum_output")
+
     structure(
         list(
             processes = processes,
             output = output,
             global_process_coupling = global_process_coupling,
+            submesh_residuum_output = submesh_residuum_output,
             xpath = "time_loop",
             attr_names = character(),
             flatten_on_exp = character()
@@ -230,6 +237,116 @@ new_prj_output <- function(type,
         class = "prj_output"
     )
 }
+
+
+
+#===== prj_submesh_residuum_output =====
+
+
+#' prj_submesh_residuum_output
+#' @description tag: submesh_residuum_output
+#' @param type string:
+#' @param prefix string:
+#' @param variables vector:
+#' @param suffix Optional: string:
+#' @param timesteps Optional:
+#' @param compress_output Optional: string: Should the output be compressed?
+#'   Either "true" or "false"
+#' @param data_mode Optional: string:
+#' @param output_iteration_results Optional: string: Either "true" or "false"
+#' @param meshes Optional: list: A list of meshes
+#' @param fixed_output_times Optional: string | numeric:
+#' @param hdf Optional: numeric
+#' @param geometrical_sets Optional: list, prj_geometrical_set
+#' @export
+prj_submesh_residuum_output <- function(type,
+                                       prefix,
+                                       variables,
+                                       suffix = NULL,
+                                       timesteps = NULL,
+                                       compress_output = NULL,
+                                       data_mode = NULL,
+                                       output_iteration_results = NULL,
+                                       meshes = NULL,
+                                       fixed_output_times = NULL,
+                                       hdf = NULL,
+                                       geometrical_sets = NULL) {
+
+    #Coerce input
+    fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
+
+
+    new_prj_submesh_residuum_output(type,
+                   prefix,
+                   variables,
+                   suffix,
+                   timesteps,
+                   compress_output,
+                   data_mode,
+                   output_iteration_results,
+                   meshes,
+                   fixed_output_times,
+                   hdf,
+                   geometrical_sets)
+}
+
+
+new_prj_submesh_residuum_output <- function(type,
+                                           prefix,
+                                           variables,
+                                           suffix = NULL,
+                                           timesteps = NULL,
+                                           compress_output = NULL,
+                                           data_mode = NULL,
+                                           output_iteration_results = NULL,
+                                           meshes = NULL,
+                                           fixed_output_times = NULL,
+                                           hdf = NULL,
+                                           geometrical_sets = NULL) {
+
+    assertthat::assert_that(assertthat::is.string(type))
+    assertthat::assert_that(assertthat::is.string(prefix))
+    assertthat::assert_that(is.vector(variables))
+    names(variables) <- rep("variable", length(variables))
+
+    are_null_or_strings(suffix,
+                        data_mode)
+
+
+    if(!is.null(timesteps)){
+        timesteps <- validate_timesteps(timesteps, TRUE)
+    }
+
+    are_null_or_string_flags(compress_output)
+
+    is_wrapper_list(meshes, "character")
+
+    are_null_or_numeric(fixed_output_times)
+
+    is_null_or_wrapper_list(geometrical_sets, "prj_geometrical_set")
+
+    structure(
+        list(type = type,
+             prefix = prefix,
+             variables = variables,
+             suffix = suffix,
+             timesteps = timesteps,
+             compress_output = compress_output,
+             data_mode = data_mode,
+             output_iteration_results = output_iteration_results,
+             meshes = meshes,
+             fixed_output_times = fixed_output_times,
+             hdf = hdf,
+             geometrical_sets = geometrical_sets,
+             xpath = "time_loop/submesh_residuum_output",
+             attr_names = character(),
+             flatten_on_exp = c("fixed_output_times")
+        ),
+        class = "prj_submesh_residuum_output"
+    )
+}
+
+
 
 #===== prj_geometrical_set =====
 
