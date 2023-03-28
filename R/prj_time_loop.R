@@ -142,6 +142,7 @@ new_prj_tl_process <- function(ref,
 #' @param meshes Optional: character: A vector of mesh names
 #' @param fixed_output_times Optional: string | numeric:
 #' @param hdf Optional: numeric
+#' @param geometrical_sets Optional: list, prj_geometrical_set
 #' @example man/examples/ex_prj_output.R
 #' @export
 prj_output <- function(type,
@@ -154,7 +155,8 @@ prj_output <- function(type,
                           output_iteration_results = NULL,
                           meshes = NULL,
                           fixed_output_times = NULL,
-                          hdf = NULL) {
+                          hdf = NULL,
+                          geometrical_sets = NULL) {
 
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
@@ -173,7 +175,8 @@ prj_output <- function(type,
                          output_iteration_results,
                          meshes,
                          fixed_output_times,
-                         hdf)
+                         hdf,
+                         geometrical_sets)
 }
 
 
@@ -187,7 +190,8 @@ new_prj_output <- function(type,
                                  output_iteration_results = NULL,
                                  meshes = NULL,
                                  fixed_output_times = NULL,
-                                 hdf = NULL) {
+                                 hdf = NULL,
+                                 geometrical_sets = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(prefix))
@@ -211,6 +215,8 @@ new_prj_output <- function(type,
 
     are_null_or_numeric(fixed_output_times)
 
+    is_wrapper_list(geometrical_sets, "prj_geometrical_set")
+
     structure(
         list(type = type,
              prefix = prefix,
@@ -223,11 +229,42 @@ new_prj_output <- function(type,
              meshes = meshes,
              fixed_output_times = fixed_output_times,
              hdf = hdf,
+             geometrical_sets = geometrical_sets,
              xpath = "time_loop/output",
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
         ),
         class = "prj_output"
+    )
+}
+
+#===== prj_geometrical_set =====
+
+#'prj_geometrical_set
+#'@description tag: geometrical_set
+#'@param name string
+#'@param geometry string
+#'@export
+prj_geometrical_set <- function(name,
+                                geometry) {
+
+    new_prj_geometrical_set(name,
+                            geometry)
+}
+
+new_prj_geometrical_set <- function(name,
+                                    geometry) {
+
+    are_null_or_strings(name, geometry)
+
+    structure(list(
+        name = name,
+        geometry = geometry,
+        xpath = "time_loop/output/geometrical_sets/geometrical_set",
+        attr_names = character(),
+        flatten_on_exp = character()
+        ),
+        class = "prj_geometrical_set"
     )
 }
 
