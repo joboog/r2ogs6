@@ -101,6 +101,7 @@ new_prj_medium <- function(phases = NULL,
 #' @param jacobian_factor Optional:
 #' @param dry_thermal_conductivity Optional:
 #' @param wet_thermal_conductivity Optional:
+#' @param mean_type Optional: string
 #' @param ... dvalue
 #' @example man/examples/ex_prj_pr_property.R
 #' @export
@@ -148,6 +149,7 @@ prj_pr_property <- function(name,
                             jacobian_factor = NULL,
                             dry_thermal_conductivity = NULL,
                             wet_thermal_conductivity = NULL,
+                            mean_type = NULL,
                             ...) {
 
     #Coerce input
@@ -218,6 +220,7 @@ prj_pr_property <- function(name,
                         jacobian_factor,
                         dry_thermal_conductivity,
                         wet_thermal_conductivity,
+                        mean_type,
                         dvalue)
 }
 
@@ -266,6 +269,7 @@ new_prj_pr_property <- function(name,
                                 jacobian_factor = NULL,
                                 dry_thermal_conductivity = NULL,
                                 wet_thermal_conductivity = NULL,
+                                mean_type = NULL,
                                 dvalue = NULL) {
 
 
@@ -303,7 +307,8 @@ new_prj_pr_property <- function(name,
                         curve,
                         initial_permeability,
                         dry_thermal_conductivity,
-                        wet_thermal_conductivity)
+                        wet_thermal_conductivity,
+                        mean_type)
 
     if (!is.null(dvalue)) {
         is_wrapper_list(dvalue, "list")
@@ -361,6 +366,7 @@ new_prj_pr_property <- function(name,
                    jacobian_factor = jacobian_factor,
                    dry_thermal_conductivity = dry_thermal_conductivity,
                    wet_thermal_conductivity = wet_thermal_conductivity,
+                   mean_type = mean_type,
                    dvalue = dvalue,
                    xpath = "media/medium/properties/property",
                    attr_names = character(),
