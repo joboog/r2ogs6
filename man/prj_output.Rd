@@ -15,7 +15,8 @@ prj_output(
   output_iteration_results = NULL,
   meshes = NULL,
   fixed_output_times = NULL,
-  hdf = NULL
+  hdf = NULL,
+  geometrical_sets = NULL
 )
 }
 \arguments{
@@ -36,11 +37,13 @@ Either "true" or "false"}
 
 \item{output_iteration_results}{Optional: string: Either "true" or "false"}
 
-\item{meshes}{Optional: character: A vector of mesh names}
+\item{meshes}{Optional: list: A list of meshes}
 
 \item{fixed_output_times}{Optional: string | numeric:}
 
 \item{hdf}{Optional: numeric}
+
+\item{geometrical_sets}{Optional: list, prj_geometrical_set}
 }
 \description{
 tag: output

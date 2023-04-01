@@ -83,6 +83,10 @@ prj_process(
   coupling_scheme_parameter = NULL,
   numerical_stabilization = NULL,
   aperture_size = NULL,
+  linear = NULL,
+  pressurized_crack_scheme = NULL,
+  subtype = NULL,
+  apply_body_force_for_deformation = NULL,
   ...
 )
 }
@@ -242,6 +246,14 @@ prj_process(
 \item{numerical_stabilization}{Optional: list}
 
 \item{aperture_size}{Optional: list}
+
+\item{linear}{Optional:}
+
+\item{pressurized_crack_scheme}{Optional:}
+
+\item{subtype}{Optional:}
+
+\item{apply_body_force_for_deformation}{Optional:}
 
 \item{...}{Optional: fracture_properties, constitutive_relation}
 }
