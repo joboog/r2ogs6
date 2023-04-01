@@ -133,6 +133,155 @@ test_that("read_in works for time_loop objects", {
 })
 
 
+test_that("read_in works for prj_tl_process, pr_output, prj_submesh_residuum_output",{
+
+    prj_base_path <- paste0(tmp_dir, "/read_in_prj_submesh_residuum_output")
+    prj_path <- paste0(prj_base_path, "read_in_prj_submesh_residuum_output.prj")
+
+    writeLines(
+'<?xml version="1.0" encoding="ISO-8859-1"?>
+<OpenGeoSysProject>
+    <time_loop>
+        <processes>
+            <process ref="PointHeatSource">
+                <nonlinear_solver>basic_newton</nonlinear_solver>
+                <convergence_criterion>
+                    <type>PerComponentDeltaX</type>
+                    <norm_type>NORM2</norm_type>
+                    <reltols>1e-14 1e-12 1e-13 1e-13</reltols>
+                </convergence_criterion>
+                <time_discretization>
+                    <type>BackwardEuler</type>
+                </time_discretization>
+                <time_stepping>
+                    <type>FixedTimeStepping</type>
+                    <t_initial>0</t_initial>
+                    <t_end>50000</t_end>
+                    <timesteps>
+                        <pair>
+                            <repeat>10</repeat>
+                            <delta_t>5000</delta_t>
+                        </pair>
+                    </timesteps>
+                </time_stepping>
+            </process>
+        </processes>
+        <output>
+            <type>VTK</type>
+            <prefix>PointHeatSource</prefix>
+            <timesteps>
+                <pair>
+                    <repeat>1</repeat>
+                    <each_steps>10</each_steps>
+                </pair>
+            </timesteps>
+            <variables>
+                <variable>displacement</variable>
+                <variable>pressure</variable>
+            </variables>
+            <suffix>_ts_{:timestep}_t_{:time}</suffix>
+        </output>
+        <submesh_residuum_output>
+            <type>VTK</type>
+            <prefix>PointHeatSource_{:meshname}</prefix>
+            <timesteps>
+                <pair>
+                    <repeat>1</repeat>
+                    <each_steps>10</each_steps>
+                </pair>
+            </timesteps>
+            <variables>
+                <variable>displacement</variable>
+                <variable>pressure</variable>
+            </variables>
+            <suffix>_ts_{:timestep}_t_{:time}</suffix>
+            <meshes>
+                <mesh>quarter_002_2nd_r_gt_2</mesh>
+                <mesh>quarter_002_2nd_r_lt_2</mesh>
+            </meshes>
+        </submesh_residuum_output>
+    </time_loop>
+</OpenGeoSysProject>',
+    con = prj_path
+    )
+    xml_doc <- validate_read_in_xml(prj_path)
+
+    test <- OGS6$new("test", sim_path = prj_base_path)
+    read_in(test,
+            xml_doc,
+            "/OpenGeoSysProject/time_loop")
+
+    # processes
+    expect_equal(class(test$time_loop$processes[[1]]),
+                 "prj_tl_process")
+    expect_equal(length(test$time_loop$processes[[1]]), 9)
+    expect_equal(test$time_loop$processes[[1]]$ref, "PointHeatSource")
+    expect_equal(test$time_loop$processes[[1]]$nonlinear_solver, "basic_newton")
+    expect_equal(class(test$time_loop$processes[[1]]$convergence_criterion),
+                       "prj_convergence_criterion")
+    expect_equal(test$time_loop$processes[[1]]$convergence_criterion$type,
+                       "PerComponentDeltaX")
+    expect_equal(test$time_loop$processes[[1]]$convergence_criterion$norm_type,
+                 "NORM2")
+    expect_equal(test$time_loop$processes[[1]]$convergence_criterion$reltols,
+                 c(1e-14, 1e-12, 1e-13, 1e-13))
+    expect_equal(test$time_loop$processes[[1]]$time_discretization[["type"]],
+                 "BackwardEuler")
+    expect_equal(class(test$time_loop$processes[[1]]$time_stepping),
+                       "prj_time_stepping")
+    expect_equal(test$time_loop$processes[[1]]$time_stepping$type,
+                       "FixedTimeStepping")
+    expect_equal(test$time_loop$processes[[1]]$time_stepping$t_initial, 0)
+    expect_equal(test$time_loop$processes[[1]]$time_stepping$t_end, 50000)
+    expect_equal(names(test$time_loop$processes[[1]]$time_stepping$timesteps),
+                 c("pair"))
+    expect_equal(test$time_loop$processes[[1]]$time_stepping$timesteps[[1]][["repeat"]],
+                  10)
+    expect_equal(test$time_loop$processes[[1]]$time_stepping$timesteps[[1]][["delta_t"]],
+                  5000)
+
+    # output
+    expect_equal(class(test$time_loop$output), "prj_output")
+    expect_equal(length(test$time_loop$output), 15)
+    expect_equal(test$time_loop$output$type, "VTK")
+    expect_equal(test$time_loop$output$prefix, "PointHeatSource")
+    expect_equal(test$time_loop$output$suffix, "_ts_{:timestep}_t_{:time}")
+    expect_equal(names(test$time_loop$output$timesteps), c("pair"))
+    expect_equal(test$time_loop$output$timesteps[[1]][["repeat"]], 1)
+    expect_equal(test$time_loop$output$timesteps[[1]][["each_steps"]], 10)
+    expect_equal(names(test$time_loop$output$variables), c("variable", "variable"))
+    expect_equal(test$time_loop$output$variables[[1]], "displacement")
+    expect_equal(test$time_loop$output$variables[[2]], "pressure")
+
+    # submesh_residuum_output
+    expect_equal(class(test$time_loop$submesh_residuum_output),
+                 "prj_submesh_residuum_output")
+    expect_equal(length(test$time_loop$submesh_residuum_output), 15)
+    expect_equal(test$time_loop$submesh_residuum_output$type, "VTK")
+    expect_equal(test$time_loop$submesh_residuum_output$prefix,
+                 "PointHeatSource_{:meshname}")
+    expect_equal(test$time_loop$submesh_residuum_output$suffix,
+                 "_ts_{:timestep}_t_{:time}")
+    expect_equal(names(test$time_loop$submesh_residuum_output$timesteps),
+                 c("pair"))
+    expect_equal(test$time_loop$submesh_residuum_output$timesteps[[1]][["repeat"]],
+                 1)
+    expect_equal(test$time_loop$submesh_residuum_output$timesteps[[1]][["each_steps"]],
+                 10)
+    expect_equal(names(test$time_loop$submesh_residuum_output$variables),
+                 c("variable", "variable"))
+    expect_equal(test$time_loop$submesh_residuum_output$variables[[1]],
+                 "displacement")
+    expect_equal(test$time_loop$submesh_residuum_output$variables[[2]],
+                 "pressure")
+    expect_equal(names(test$time_loop$submesh_residuum_output$meshes),
+                 c("mesh", "mesh"))
+    expect_equal(test$time_loop$submesh_residuum_output$meshes[[1]],
+                 "quarter_002_2nd_r_gt_2")
+
+    file.remove(prj_path)
+})
+
 test_that("read_in works for parameter objects", {
 
     prj_path <- (system.file("extdata/benchmarks/flow_free_expansion",
