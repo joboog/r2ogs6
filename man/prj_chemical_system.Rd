@@ -61,7 +61,6 @@ tag: chemical_system
 \examples{
 prj_chemical_system(
     chemical_solver = "Phreeqc",
-    linear_solver = "general_linear_solver",
     database = "PSINA_12_07_110615_DAV_s.dat",
     solution = prj_solution(
         temperature = 25,

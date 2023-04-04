@@ -1,7 +1,7 @@
 Package: r2ogs6
 Type: Package
 Title: An API to the multi-physics simulator OpenGeoSys-v6
-Version: 0.4.643
+Version: 0.4.644
 Authors@R: c(person(given = "Ruben",
                     family = "Heinrich",
                     role = c("aut"),
@@ -48,7 +48,7 @@ Imports:
     reticulate,
     config,
     foreach
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

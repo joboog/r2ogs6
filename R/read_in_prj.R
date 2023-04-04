@@ -74,10 +74,6 @@ read_in_prj <- function(ogs6_obj,
 
     # Geometry reference
     gml_ref_node <- xml2::xml_find_first(xml_doc, "/OpenGeoSysProject/geometry")
-
-    # Meshes references
-    vtu_ref_nodes <- NULL
-
     if(!any(grepl("xml_missing", class(gml_ref_node), fixed = TRUE))){
 
         gml_path <- xml2::xml_text(gml_ref_node)
@@ -97,11 +93,14 @@ read_in_prj <- function(ogs6_obj,
         }else{
             ogs6_obj$add_gml(gml_path)
         }
+    }
 
-        vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "/OpenGeoSysProject/mesh")
-    }else{
+    # Meshes references, read mesh node if not present, read meshes nodes
+    vtu_ref_nodes <- xml2::xml_find_all(xml_doc, "/OpenGeoSysProject/mesh")
+    if(length(vtu_ref_nodes) == 0){
         vtu_ref_nodes <- xml2::xml_find_all(xml_doc,
                                             "/OpenGeoSysProject/meshes/*")
+        if(length(vtu_ref_nodes) == 0) {vtu_ref_nodes <- NULL}
     }
 
     if(!is.null(vtu_ref_nodes) & length(vtu_ref_nodes) != 0){

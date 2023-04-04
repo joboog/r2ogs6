@@ -4,7 +4,12 @@
 \alias{prj_time_loop}
 \title{prj_time_loop}
 \usage{
-prj_time_loop(processes, output, global_process_coupling = NULL)
+prj_time_loop(
+  processes,
+  output,
+  global_process_coupling = NULL,
+  submesh_residuum_output = NULL
+)
 }
 \arguments{
 \item{processes}{list, prj_tl_process:}
@@ -12,6 +17,8 @@ prj_time_loop(processes, output, global_process_coupling = NULL)
 \item{output}{prj_output:}
 
 \item{global_process_coupling}{Optional: prj_global_process_coupling:}
+
+\item{submesh_residuum_output}{Optional: prj_submesh_residuum_output:}
 }
 \description{
 tag: time_loop

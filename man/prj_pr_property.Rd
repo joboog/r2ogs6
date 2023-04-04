@@ -49,6 +49,7 @@ prj_pr_property(
   jacobian_factor = NULL,
   dry_thermal_conductivity = NULL,
   wet_thermal_conductivity = NULL,
+  mean_type = NULL,
   ...
 )
 }
@@ -140,6 +141,8 @@ prj_pr_property(
 \item{dry_thermal_conductivity}{Optional:}
 
 \item{wet_thermal_conductivity}{Optional:}
+
+\item{mean_type}{Optional: string}
 
 \item{...}{dvalue}
 }

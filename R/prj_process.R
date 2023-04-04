@@ -82,6 +82,10 @@
 #' @param coupling_scheme_parameter Optional: double
 #' @param numerical_stabilization Optional: list
 #' @param aperture_size Optional: list
+#' @param linear Optional:
+#' @param pressurized_crack_scheme Optional:
+#' @param subtype Optional:
+#' @param apply_body_force_for_deformation Optional:
 #' @param ... Optional: fracture_properties, constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
@@ -163,6 +167,10 @@ prj_process <- function(name,
                            coupling_scheme_parameter = NULL,
                            numerical_stabilization = NULL,
                            aperture_size = NULL,
+                           linear = NULL,
+                           pressurized_crack_scheme = NULL,
+                           subtype = NULL,
+                           apply_body_force_for_deformation = NULL,
                            ...){
 
     #Coerce input
@@ -288,7 +296,11 @@ prj_process <- function(name,
         characteristic_length,
         coupling_scheme_parameter,
         numerical_stabilization,
-        aperture_size
+        aperture_size,
+        linear,
+        pressurized_crack_scheme,
+        subtype,
+        apply_body_force_for_deformation
     )
 }
 
@@ -372,7 +384,11 @@ new_prj_process <- function(name,
                             characteristic_length = NULL,
                             coupling_scheme_parameter = NULL,
                             numerical_stabilization = NULL,
-                            aperture_size = NULL) {
+                            aperture_size = NULL,
+                            linear = NULL,
+                            pressurized_crack_scheme = NULL,
+                            subtype = NULL,
+                            apply_body_force_for_deformation) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -475,7 +491,9 @@ new_prj_process <- function(name,
                        temperature_field,
                        use_stokes_brinkman_form,
                        energy_split_model,
-                       softening_curve)
+                       softening_curve,
+                       pressurized_crack_scheme,
+                       subtype)
 
 
     are_null_or_numbers(dimension,
@@ -506,7 +524,9 @@ new_prj_process <- function(name,
     }
 
     are_null_or_string_flags(mass_lumping,
-                                 non_advective_form)
+                            non_advective_form,
+                            linear,
+                            apply_body_force_for_deformation)
 
     assertthat::assert_that(is.null(numerical_stabilization) |
                                 is.list(numerical_stabilization))
@@ -602,6 +622,10 @@ new_prj_process <- function(name,
             coupling_scheme_parameter = coupling_scheme_parameter,
             numerical_stabilization = numerical_stabilization,
             aperture_size = aperture_size,
+            linear = linear,
+            pressurized_crack_scheme = pressurized_crack_scheme,
+            subtype = subtype,
+            apply_body_force_for_deformation = apply_body_force_for_deformation,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
