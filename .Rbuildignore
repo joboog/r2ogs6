@@ -1,9 +1,8 @@
-^renv$
-^renv\.lock$
 ^.gitlab-ci.yml
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Rprofile$
+^cache$
 ^ci$
 ^config.yml
 ^data-raw$
@@ -16,4 +15,6 @@
 ^Meta$
 ^packrat/
 ^public$
+^renv$
+^renv\.lock$
 ^tmp$

@@ -13,17 +13,15 @@ test:
   variables:
     RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
     RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
-    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/site-library:/usr/local/lib/R/library"
+    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
     RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
     RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
   before_script:
-    # Install deps or load from renv
     - R -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
-    #- R -e 'renv::restore()'
+    #- R -e 'renv::restore()' does fail while loading Bioconductor packages
     - R -e 'renv::install()'
     - R -e 'renv::install("bioc::rhdf5")'
   script:
-    # Build and Check r2ogs6
     - R CMD build . --no-build-vignettes --no-manual
     - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-build-vignettes --no-manual
   after_script:
