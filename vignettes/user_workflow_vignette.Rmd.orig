@@ -1,17 +1,30 @@
 ---
-title: "User Guide"
-date: "2023-04-05"
-output: html_document
+title: "r2ogs6 User Guide"
+date: "`r Sys.Date()`"
+#output: html_document
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User Guide}
+  %\VignetteIndexEntry{r2ogs6 User Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  #eval = nzchar(Sys.getenv("r2ogs6_ensemble_guide_eval")),
+  fig.width = 7, fig.height = 4, dev = "png", dpi = 150,
+  fig.path = "r2ogs6-",
+  eval = TRUE, collapse = TRUE, comment = "#>",
+  message = FALSE, warning = FALSE, error = FALSE
+)
+#options("r2ogs6.default_ogs6_bin_path" = "/usr/local/bin/ogs6.4.1.sif")
+# the python library vtk needs an explicit import statement for knitting
+#vtk <- reticulate::import("vtk")
+#dsa <- reticulate::import("vtk.numpy_interface.dataset_adapter")
+devtools::load_all(".")
+```
 
-
-
-```r
+```{r setup}
 library(r2ogs6)
 library(ggplot2)
 ```
@@ -22,8 +35,7 @@ This guide assumes you have `r2ogs6` and its dependencies installed. If that's n
 
 After loading `r2ogs6`, we first need to set the package options so it knows where to look for OpenGeoSys 6.
 
-
-```r
+```{r eval=F}
 # Set path for OpenGeoSys 6
 options("r2ogs6.default_ogs6_bin_path" = "your_ogs6_bin_path")
 ```
@@ -35,8 +47,7 @@ To represent a simulation object, `r2ogs6` uses an `R6` class called `OGS6`. If 
 
 * `sim_path` All relevant files for your simulation will be in here
 
-
-```r
+```{r}
 # Change this to fit your system
 # sim_path <- system.file("extdata/benchmarks/flow_no_strain",
 #                         package = "r2ogs6")
@@ -59,8 +70,7 @@ The quickest and easiest way to define a simulation is by using an already exist
 For demonstration purposes, I will use a project from the `HydroMechanics` benchmarks, which can be found [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/HydroMechanics/IdealGas/flow_no_strain).
 
 
-
-```r
+```{r}
 # Change this to fit your system
 #prj_path <- paste0(sim_path, "/flow_no_strain.prj")
 prj_path <- system.file("extdata/benchmarks/flow_no_strain/flow_no_strain.prj",
@@ -77,34 +87,14 @@ Setting up your own simulation is possible too.
 
 Since there's plenty of required and optional input parameters, you might want to call `get_status()` occasionally to get a brief overview of your simulation. This tells you which input parameters are missing before you can run a simulation.
 
-
-```r
+```{r}
 # Call on the OGS6 object (note the R6 style)
 ogs6_obj$get_status()
-#> ✓ 'processes' has at least one element
-#> ✓ 'time_loop' is defined
-#> ✓ 'nonlinear_solvers' has at least one element
-#> ✓ 'linear_solvers' has at least one element
-#> ✓ 'parameters' has at least one element
-#> ✓ 'process_variables' has at least one element
-#> ✗ 'mesh' is defined
-#> ✗ 'geometry' is defined
-#> ✓ 'media' has at least one element
-#> ✗ 'test_definition' has at least one element
-#> ✗ 'curves' has at least one element
-#> ✓ 'meshes' has at least one element
-#> ✗ 'local_coordinate_system' is defined
-#> ✗ 'search_length_algorithm' is defined
-#> ✗ 'chemical_system' is defined
-#> ✗ 'python_script' is defined
-#> ✗ 'insitu' is definedYour OGS6 object has all necessary components.
-#> You can try calling ogs6_run_simulation().Note that this calls more validation functions, so you may not be done just yet.
 ```
 
 Since we haven't defined anything so far, you'll see a lot of red there. But the results gave us a hint what we can add. We'll go from there and try to find out more about the possible input data. Say we want to find out more about `process` objects.
 
-
-```r
+```{r}
 # To take a look at the documentation, use ? followed by the name of a class
 ?prj_process
 ```
@@ -113,8 +103,7 @@ As a rule of thumb, classes are named with the prefix `prj_` followed by their X
 
 To add data to our simulation object, we use `OGS6$add()`. We can use this method with any top level `.prj` element, which means we're not limited to `prj_parameter` objects.
 
-
-```r
+```{r eval = F}
 # Add a parameter
 ogs6_obj$add(prj_parameter(name = "E",
                            type = "Constant",
@@ -147,8 +136,7 @@ Since I already read in a `.prj` file earlier, I won't run the above snippet. If
 
 As soon as we've added all necessary parameters, we can try starting our simulation. This will run a few additional checks and then start OpenGeoSys 6. If `write_logfile` is set to `FALSE`, the output from OpenGeoSys 6 will be shown on the console.
 
-
-```r
+```{r results='hide'}
 
 ogs6_run_simulation(ogs6_obj)
 ```
@@ -156,13 +144,11 @@ ogs6_run_simulation(ogs6_obj)
 ## Retrieve the results
 After our simulation is finished, we might want to plot some results. But how do we retrieve them? If all went as expected, we don't need to call an extra function for that because `ogs6_run_simulation()` already calls `ogs6_read_output_files()` internally. We only need to decide what information we want to extract. Say we're interested in the `pressure` Parameter from the last timestep. For this easy example, only one `.pvd` file was produced.
 
-
-```r
+```{r include = T}
 ogs6_read_output_files(ogs6_obj)
 ```
 
-
-```r
+```{r user-guide-plot, fig.width=5}
 # Extract relevant info into dataframe
 result_df <- ogs6_obj$pvds[[1]]$get_point_data(keys = c("pressure"))
 result_df <- result_df[(result_df$timestep!=0),]
@@ -180,86 +166,38 @@ ggplot(result_df,
     theme_bw()
 ```
 
-![plot of chunk user-guide-plot](r2ogs6-user-guide-plot-1.png)
+```{r, echo=FALSE, results='hide'}
+ogs6_obj$h5s <- list(OGS6_h5$new(system.file("/extdata/benchmarks/EllipticPETSc",
+                                        "cube_1e3_np3.h5",
+                                        package = "r2ogs6")))
 
-
+```
 
 Similar to the idea with `.pvd` output, `hdf5` files are automatically referenced under `$h5s` if returned by the simulation. Here, we have added a file artificially from the benchmark library for demonstration.
 
-
-```r
+```{r}
 ogs6_obj$h5s
-#> [[1]]
-#> OGS6_h5
-#> h5 path:
-#> /work/ufz/r2ogs6/inst/extdata/benchmarks/EllipticPETSc/cube_1e3_np3.h5 
-#> 
-#> # h5 file structure ------------------------------------------------------ 
-#>    group                   name       otype  dclass      dim
-#> 0      /                    t_0   H5I_GROUP                 
-#> 1   /t_0 D1_left_front_N1_right H5I_DATASET   FLOAT     1895
-#> 2   /t_0     Linear_1_to_minus1 H5I_DATASET   FLOAT     1895
-#> 3   /t_0            MaterialIDs H5I_DATASET INTEGER     1233
-#> 4   /t_0               geometry H5I_DATASET   FLOAT 3 x 1895
-#> 5   /t_0               pressure H5I_DATASET   FLOAT     1895
-#> 6   /t_0               topology H5I_DATASET INTEGER    11097
-#> 7   /t_0                      v H5I_DATASET   FLOAT 3 x 1895
-#> 8      /                    t_1   H5I_GROUP                 
-#> 9   /t_1               pressure H5I_DATASET   FLOAT     1895
-#> 10  /t_1                      v H5I_DATASET   FLOAT 3 x 1895
 ```
 As can be seen, hdf5 files have a very particular structure. To work with the data, a simple method `get_h5()` allows to access the different data elements as a very raw starting point for post processing the data.
 
-
-```r
+```{r}
 h5_list <- ogs6_obj$h5s[[1]]$get_h5("/")
 ```
 
 Other functions such as HDF5 handles for dataset processing can be used directly from the *rhdf5* package, of course. The path to the hd5 file is available as an active field `h5_path` that can be accessed or changed in the *OGS6* object.
-
-```r
+```{r}
 example_h5 <- rhdf5::H5Fopen(ogs6_obj$h5s[[1]]$h5_path)
 example_h5
-#> HDF5 FILE 
-#>         name /
-#>     filename 
-#> 
-#>   name     otype dclass dim
-#> 0  t_0 H5I_GROUP           
-#> 1  t_1 H5I_GROUP
 str(example_h5$t_0)
-#> List of 7
-#>  $ D1_left_front_N1_right: num [1:1895(1d)] 1 1 1 1 1.01 ...
-#>  $ Linear_1_to_minus1    : num [1:1895(1d)] 1 0.8 0.6 1 0.8 0.6 1 0.8 0.6 1 ...
-#>  $ MaterialIDs           : int [1:1233(1d)] 0 0 0 0 0 0 0 0 0 0 ...
-#>  $ geometry              : num [1:3, 1:1895] 0 0 0 0.1 0 0 0.2 0 0 0 ...
-#>  $ pressure              : num [1:1895(1d)] 0 0 0 0 0 0 0 0 0 0 ...
-#>  $ topology              : int [1:11097(1d)] 9 0 1 4 3 49 50 53 52 9 ...
-#>  $ v                     : num [1:3, 1:1895] 0 0 0 0 0 0 0 0 0 0 ...
 rhdf5::h5closeAll()
 ```
 
 
 If the file has a reasonably "clean" structure, a more convenient way of importing the data is using the method `get_df` that returns a *tibble* table.
 
-
-```r
+```{r}
 df <- ogs6_obj$h5s[[1]]$get_df(group = "/t_0", names = "pressure")
 df
-#> # A tibble: 1,895 × 5
-#>        x     y     z  time pressure
-#>    <dbl> <dbl> <dbl> <dbl>    <dbl>
-#>  1   0     0       0     0        0
-#>  2   0.1   0       0     0        0
-#>  3   0.2   0       0     0        0
-#>  4   0     0.1     0     0        0
-#>  5   0.1   0.1     0     0        0
-#>  6   0.2   0.1     0     0        0
-#>  7   0     0.2     0     0        0
-#>  8   0.1   0.2     0     0        0
-#>  9   0.2   0.2     0     0        0
-#> 10   0     0.3     0     0        0
-#> # … with 1,885 more rows
 ```
 
 
@@ -283,8 +221,7 @@ Let's look at the parameters for `ogs6_generate_benchmark_script()` first. Say
 we have a project file `sim_file.prj` we want to generate a script from.
 Please, make sure that all the directories your are referencing exist.
 
-
-```r
+```{r}
 # The path to the project file you want to generate a script from
 prj_path <- "your_path/sim_file.prj"
 
@@ -300,8 +237,7 @@ script_path <- "your_script_directory/"
 
 Now that we have defined our parameters, we can generate the benchmark script.
 
-
-```r
+```{r eval=F}
 ogs6_generate_benchmark_script(prj_path = prj_path,
                                sim_path = sim_path,
                                ogs6_bin_path = ogs6_bin_path,
@@ -317,8 +253,7 @@ You can download the benchmarks (or the subfolder you need) from
 [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data) and then
 set `path` to their location on your system.
 
-
-```r
+```{r}
 # The path to the directory you want to generate R scripts from
 path <- "path/to/ogs/Tests/Data/Elliptic/"
 
@@ -346,8 +281,7 @@ the structure of the folder your benchmarks are stored in, e. g. if there's a
 file `path/a/file.prj`, you will find the corresponding R script in
 `sim_path/a/file.R`.
 
-
-```r
+```{r eval=F}
 ogs6_generate_benchmark_scripts(path = path,
                                 sim_path = sim_path,
                                 script_path = script_path,
@@ -364,8 +298,7 @@ generating scripts from certain subfolders.
 Furthermore, you can restrict the script generation to benchmarks that used as
 test in OGS 6.
 
-
-```r
+```{r eval=F}
 # extract *.prj files that are used as tests
 rel_testbm_paths <- get_benchmark_paths("path/to/ogs-source-code/ProcessLib/")
 rel_testbm_paths <- sapply(rel_testbm_paths, basename)
