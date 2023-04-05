@@ -22,8 +22,8 @@ test:
     - R -e 'renv::install()'
     - R -e 'renv::install("bioc::rhdf5")'
   script:
-    - R CMD build . --no-build-vignettes --no-manual
-    - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-build-vignettes --no-manual
+    - R CMD build . --no-manual
+    - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual
   after_script:
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
