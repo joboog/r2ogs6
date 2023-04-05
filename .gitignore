@@ -10,3 +10,5 @@ inst/extdata/test_tempdirs
 Meta
 renv/settings.json
 tmp
+/doc/
+/Meta/
