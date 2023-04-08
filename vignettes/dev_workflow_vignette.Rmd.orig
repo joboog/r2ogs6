@@ -1,6 +1,6 @@
 ---
 title: "r2ogs6 Developer Guide"
-date: "2023-04-05"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{r2ogs6 Developer Guide}
@@ -8,10 +8,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  eval = TRUE, collapse = TRUE, comment = "#>",
+  message = FALSE, warning = FALSE, error = FALSE
+)
+devtools::load_all(".")
+```
 
-
-
-```r
+```{r setup}
 library(r2ogs6)
 ```
 
@@ -66,253 +71,56 @@ I used this function for two things: Analysing ... . Secondly, as soon as I had 
 
 So say we have some `.prj` files stored in a folder. I will show the workflow on a small dataset (that is, on a folder with only two `.prj` files) here, the path I usually passed to `analyse_xml()` was the directory containing all of the benchmark files for OpenGeoSys 6 which can be downloaded from [here](https://gitlab.opengeosys.org/ogs/ogs/-/tree/master/Tests/Data/).
 
-
-```r
+```{r}
 test_folder <- system.file("extdata/vignettes_data/analyse_xml_demo", 
                            package = "r2ogs6")
 ```
 
 Now say we have decided we are going to make a class based on the element with tag name `nonlinear_solver`. For readability reasons, I will store the results of `analyse_xml()` in a variable and pass it to our generator function. If you want, you can skip this step and call `analyse_xml()` in the generator function directly. 
 
-
-```r
+```{r}
 analysis_results <- analyse_xml(path = test_folder,
                                 pattern = "\\.prj$",
                                 xpath = "//nonlinear_solver",
                                 print_findings = TRUE)
-#> 
-#> I parsed 2 valid XML files matching your pattern.
-#> 
-#> I found at least one element named nonlinear_solver in the following file(s):
-#> beam.prj 
-#> beam3d.prj 
-#> 
-#> In total, I found 5 element(s) named nonlinear_solver.
-#> 
-#> These are the child elements I found:
-#>                 name ex_occ p_occ total total_mean
-#> 1               name      2   0.4     2        0.4
-#> 2               type      2   0.4     2        0.4
-#> 3           max_iter      2   0.4     2        0.4
-#> 4      linear_solver      2   0.4     2        0.4
-#> 5 maximum_iterations      1   0.2     1        0.2
-#> 6    error_tolerance      1   0.2     1        0.2
-#> 7            damping      1   0.2     1        0.2
 ```
 
 First, I define my path and specify that only files with the ending `.prj` will be parsed. I'm looking for elements named `nonlinear_solver`, and I'm looking for them in the whole document. This often isn't the best option since sometimes nodes may have the same name but contain different things depending on their exact position in the document, which is also the case here. To narrow it down further, change `xpath` accordingly.
 
-
-```r
+```{r}
 analysis_results <- analyse_xml(path = test_folder,
                                 pattern = "\\.prj$",
                                 xpath = "/OpenGeoSysProject/nonlinear_solvers/nonlinear_solver",
                                 print_findings = TRUE)
-#> 
-#> I parsed 2 valid XML files matching your pattern.
-#> 
-#> I found at least one element named nonlinear_solver in the following file(s):
-#> beam.prj 
-#> beam3d.prj 
-#> 
-#> In total, I found 2 element(s) named nonlinear_solver.
-#> 
-#> These are the child elements I found:
-#>            name ex_occ p_occ total total_mean
-#> 1          name      2   1.0     2        1.0
-#> 2          type      2   1.0     2        1.0
-#> 3      max_iter      2   1.0     2        1.0
-#> 4 linear_solver      2   1.0     2        1.0
-#> 5       damping      1   0.5     1        0.5
 ```
 
 Now we can be sure our future class will be generated from the correct parameters.
 `analyse_xml()` returns a named list invisibly, let's have a short look at it.
 
-
-```r
+```{r}
 analysis_results
-#> $xpath
-#> [1] "/OpenGeoSysProject/nonlinear_solvers/nonlinear_solver"
-#> 
-#> $children
-#>          name          type      max_iter linear_solver       damping 
-#>          TRUE          TRUE          TRUE          TRUE         FALSE 
-#> 
-#> $attributes
-#> logical(0)
-#> 
-#> $both_sorted
-#>          name          type      max_iter linear_solver       damping 
-#>          TRUE          TRUE          TRUE          TRUE         FALSE
 ```
 
 You can see the list contains the `xpath` parameter passed to `analyse_xml()`, along with three named logical vectors called `children`, `attributes` and `both_sorted` respectively. They can be read like this: If an attribute or a child of the element specified by `xpath` always occurred, it is a required parameter for the new class. Else, it is an optional parameter. The logical vectors are sorted by occurrency, so the rarest children and attributes will go to the very end of their logical vector. Now, let's generate some code!
 
 For S3 classes, we generate a constructor like this:
 
-
-```r
+```{r}
 generate_constructor(params = analysis_results,
                      print_result = TRUE)
-#> new_prj_nonlinear_solver <- function(name,
-#> type,
-#> max_iter,
-#> linear_solver,
-#> damping = NULL) {
-#> structure(list(name = name,
-#> type = type,
-#> max_iter = max_iter,
-#> linear_solver = linear_solver,
-#> damping = damping,
-#> xpath = "nonlinear_solvers/nonlinear_solver",
-#> attr_names = c(),
-#> flatten_on_exp = character()
-#> ),
-#> class = "prj_nonlinear_solver"
-#> )
-#> }
-#> 
 ```
 
 For S3 classes, we generate a helper like this:
-
-```r
+```{r}
 generate_helper(params = analysis_results,
                 print_result = TRUE)
-#> #'prj_nonlinear_solver
-#> #'@description tag: nonlinear_solver
-#> #'@param name
-#> #'@param type
-#> #'@param max_iter
-#> #'@param linear_solver
-#> #'@param damping Optional: 
-#> #'@export
-#> prj_nonlinear_solver <- function(name,
-#> type,
-#> max_iter,
-#> linear_solver,
-#> damping = NULL) {
-#> 
-#> # Add coercing utility here
-#> 
-#> new_prj_nonlinear_solver(name,
-#> type,
-#> max_iter,
-#> linear_solver,
-#> damping)
-#> }
-#> 
 ```
 
 For R6 classes, we generate a constructor like this:
 
-
-```r
+```{r}
 generate_R6(params = analysis_results,
             print_result = TRUE)
-#> OGS6_nonlinear_solver <- R6::R6Class("OGS6_nonlinear_solver",
-#> public = list(
-#> #'@description
-#> #'Creates new OGS6_nonlinear_solverobject
-#> #'@param name
-#> #'@param type
-#> #'@param max_iter
-#> #'@param linear_solver
-#> #'@param damping Optional: initialize = function(name,
-#> type,
-#> max_iter,
-#> linear_solver,
-#> damping = NULL){
-#> self$name <- name
-#> self$type <- type
-#> self$max_iter <- max_iter
-#> self$linear_solver <- linear_solver
-#> self$damping <- damping
-#> }
-#> ),
-#> 
-#> active = list(
-#> #'@field name
-#> #'Access to private parameter '.name'
-#> name = function(value) {
-#> if(missing(value)) {
-#> private$.name
-#> }else{
-#> private$.name <- value
-#> }
-#> },
-#> 
-#> #'@field type
-#> #'Access to private parameter '.type'
-#> type = function(value) {
-#> if(missing(value)) {
-#> private$.type
-#> }else{
-#> private$.type <- value
-#> }
-#> },
-#> 
-#> #'@field max_iter
-#> #'Access to private parameter '.max_iter'
-#> max_iter = function(value) {
-#> if(missing(value)) {
-#> private$.max_iter
-#> }else{
-#> private$.max_iter <- value
-#> }
-#> },
-#> 
-#> #'@field linear_solver
-#> #'Access to private parameter '.linear_solver'
-#> linear_solver = function(value) {
-#> if(missing(value)) {
-#> private$.linear_solver
-#> }else{
-#> private$.linear_solver <- value
-#> }
-#> },
-#> 
-#> #'@field damping
-#> #'Access to private parameter '.damping'
-#> damping = function(value) {
-#> if(missing(value)) {
-#> private$.damping
-#> }else{
-#> private$.damping <- value
-#> }
-#> },
-#> 
-#> #'@field is_subclass
-#> #'Access to private parameter '.is_subclass'
-#> is_subclass = function() {
-#> private$.is_subclass
-#> },
-#> 
-#> #'@field subclasses_names
-#> #'Access to private parameter '.subclasses_names'
-#> subclasses_names = function() {
-#> private$.subclasses_names
-#> },
-#> 
-#> #'@field attr_names
-#> #'Access to private parameter '.attr_names'
-#> attr_names = function() {
-#> private$.attr_names
-#> }
-#> ),
-#> 
-#> private = list(
-#> .name = NULL,
-#> .type = NULL,
-#> .max_iter = NULL,
-#> .linear_solver = NULL,
-#> .damping = NULL,
-#> .is_subclass = TRUE,
-#> .subclasses_names = character(),
-#> .attr_names = c(),
-#> )
-#> )
 ```
 
 Ta-daa, you now have some nice stubs. Copy them into a script in the `R` folder of this package, add some documentation and validation to it and you're almost done.
@@ -322,8 +130,7 @@ Ta-daa, you now have some nice stubs. Copy them into a script in the `R` folder 
 
 Now that we have a class, we need to tell the package it exists. This is so when we're reading in or exporting a `.prj` file, it knows to automatically turn the content of our `nonlinear_solver` tag into an object of our new class and the other way around. To achieve this, execute the code in `data_raw/xpaths_for_classes.R`. What this will do is update the `xpaths_for_classes` parameter, adding an entry for your class. Afterwards, run `xpaths_for_classes[["your_class_name"]]`. It should return the `xpath` parameter of your class like so:
 
-
-```r
+```{r eval=F}
 xpaths_for_classes[["prj_process"]]
 
 # A class can have multiple xpaths if the represented node occurs at different positions.

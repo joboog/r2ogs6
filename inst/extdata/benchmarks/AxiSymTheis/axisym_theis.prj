@@ -7,18 +7,13 @@
             <name>LiquidFlow</name>
             <type>LIQUID_FLOW</type>
             <integration_order>2</integration_order>
-            <darcy_gravity>
-                <!-- axis_id: 0, 1, or the dimension of space minus one -->
-                <axis_id>1</axis_id>
-                <!-- g>=0. g=0: non gravity term -->
-                <g>0.</g>
-            </darcy_gravity>
             <process_variables>
                 <process_variable>pressure</process_variable>
             </process_variables>
             <secondary_variables>
                 <secondary_variable internal_name="darcy_velocity" output_name="v"/>
             </secondary_variables>
+            <specific_body_force>0.0 0.0</specific_body_force>
         </process>
     </processes>
     <media>
@@ -114,8 +109,12 @@
             <prefix>liquid_pcs</prefix>
             <timesteps>
                 <pair>
-                    <repeat> 1 </repeat>
+                    <repeat> 6 </repeat>
                     <each_steps> 10 </each_steps>
+                </pair>
+                <pair>
+                    <repeat> 1 </repeat>
+                    <each_steps> 6 </each_steps>
                 </pair>
             </timesteps>
             <variables>
@@ -167,7 +166,7 @@
                 </boundary_condition>
                 <boundary_condition>
                     <geometrical_set>theis_geo</geometrical_set>
-                    <geometry>infinit</geometry>
+                    <geometry>infinite</geometry>
                     <type>Dirichlet</type>
                     <parameter>p_dbc</parameter>
                 </boundary_condition>

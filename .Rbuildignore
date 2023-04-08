@@ -17,4 +17,7 @@
 ^public$
 ^renv$
 ^renv\.lock$
-^tmp$
+^tmp/$
+^vignettes/*.orig$
+^vignettes/prebuild_vignettes.R
+^update_protocols$
