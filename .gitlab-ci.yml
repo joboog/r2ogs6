@@ -39,7 +39,8 @@ test:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 test_win:
-  .shared_windows_runners:
+  stage: test_win
+  shared_windows_runners:
     tags:
     - shared-windows
     - windows
