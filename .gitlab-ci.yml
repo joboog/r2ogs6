@@ -4,6 +4,7 @@
 
 stages:
   - test
+  - test_win
 
 test:
   image: $CI_REGISTRY_IMAGE:24032023
@@ -36,3 +37,18 @@ test:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
+
+test_win:
+  .shared_windows_runners:
+    tags:
+    - shared-windows
+    - windows
+    - windows-1809
+  before_script:
+    - Set-Variable -Name "time" -Value (date -Format "%H:%m")
+    - echo ${time}
+    - echo "started by ${GITLAB_USER_NAME}"
+  script:
+    - echo "running scripts in the test job"
+   rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
