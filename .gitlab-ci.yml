@@ -38,13 +38,16 @@ test:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
 
-test_win:
-  stage: test_win
-  shared_windows_runners:
+.shared_windows_runners:
     tags:
     - shared-windows
     - windows
     - windows-1809
+
+test_win:
+  stage: test_win
+  extends:
+    - .shared_windows_runners
   before_script:
     - Set-Variable -Name "time" -Value (date -Format "%H:%m")
     - echo ${time}
