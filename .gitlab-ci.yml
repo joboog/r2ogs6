@@ -51,5 +51,5 @@ test_win:
     - echo "started by ${GITLAB_USER_NAME}"
   script:
     - echo "running scripts in the test job"
-   rules:
+  rules:
     - if: '$CI_PIPELINE_SOURCE == "web"'
