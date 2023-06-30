@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 .vscode
+build
 config.yml
 ci/local_docker_test
 inst/doc
