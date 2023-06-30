@@ -36,11 +36,13 @@ dsa <- NULL
     vtk <<- reticulate::import("vtk", delay_load = TRUE)
     dsa <<- reticulate::import("vtk.numpy_interface.dataset_adapter",
                                delay_load = TRUE)
-    # check for rhdf5 package
-    if (!requireNamespace("rhdf5")) {
-        if (!requireNamespace("BiocManager")) {
-            warning("Required package 'rhdf5' is missing.")
-    }}
+    # TODO: rhdf5 is now listed as dpendency in DESCRIPTION
+    # check if it causes problems, if not delete the outcommented code
+    # # check for rhdf5 package
+    # if (!requireNamespace("rhdf5")) {
+    #     if (!requireNamespace("BiocManager")) {
+    #         warning("Required package 'rhdf5' is missing.")
+    # }}
     return(invisible())
 }
 
@@ -53,41 +55,43 @@ dsa <- NULL
               "names(options()))]'\nTo set an option, use the",
               "command 'options(\"<option_name>\" = <option_value>)'\n"))
 
-    # check for rhdf5 package
-    if (!requireNamespace("rhdf5")) {
-        if (!requireNamespace("BiocManager")) {
-
-            packageStartupMessage(
-                "The packages rhdf5 and BiocManager are required for r2ogs6
-                \n but are not installed.
-                \n Do you want to install it now? (y/n)")
-            userin <- readline(" ")
-            if (tolower(userin) == "y") {
-                tryCatch({utils::install.packages("BiocManager")},
-                         error = function(e) {
-                             packageStartupMessage(
-                        paste(c("\nPackage BiocManager could not be installed",
-                                 "\n", (e))))
-                         }
-                )
-            } else {
-                packageStartupMessage("\nBiocManager installation was skipped")
-            }
-        } else {
-            packageStartupMessage(
-                "The package rhdf5 required for r2ogs6 is not installed.
-                \n Do you want to install it now? (y/n)")
-            userin <- readline(" ")
-        }
-        if (tolower(userin) == "y") {
-            tryCatch({BiocManager::install("rhdf5")},
-                     error = function(e) {
-                         packageStartupMessage(
-                             paste(c("\nPackage rhdf5 could not be installed",
-                                     "\n", (e))))
-                     })
-        } else {
-            packageStartupMessage("\nrhdf5 installation was skipped")
-        }
-    }
+    # TODO: rhdf5 is now listed as dpendency in DESCRIPTION
+    # check if it causes problems, if not delete the outcommented code
+    # # check for rhdf5 package
+    # if (!requireNamespace("rhdf5")) {
+    #     if (!requireNamespace("BiocManager")) {
+    #
+    #         packageStartupMessage(
+    #             "The packages rhdf5 and BiocManager are required for r2ogs6
+    #             \n but are not installed.
+    #             \n Do you want to install it now? (y/n)")
+    #         userin <- readline(" ")
+    #         if (tolower(userin) == "y") {
+    #             tryCatch({utils::install.packages("BiocManager")},
+    #                      error = function(e) {
+    #                          packageStartupMessage(
+    #                     paste(c("\nPackage BiocManager could not be installed",
+    #                              "\n", (e))))
+    #                      }
+    #             )
+    #         } else {
+    #             packageStartupMessage("\nBiocManager installation was skipped")
+    #         }
+    #     } else {
+    #         packageStartupMessage(
+    #             "The package rhdf5 required for r2ogs6 is not installed.
+    #             \n Do you want to install it now? (y/n)")
+    #         userin <- readline(" ")
+    #     }
+    #     if (tolower(userin) == "y") {
+    #         tryCatch({BiocManager::install("rhdf5")},
+    #                  error = function(e) {
+    #                      packageStartupMessage(
+    #                          paste(c("\nPackage rhdf5 could not be installed",
+    #                                  "\n", (e))))
+    #                  })
+    #     } else {
+    #         packageStartupMessage("\nrhdf5 installation was skipped")
+    #     }
+    # }
 }
