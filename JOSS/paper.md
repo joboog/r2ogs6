@@ -30,8 +30,8 @@ bibliography: paper.bib
 
 # Summary
 
-Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance.
-Key tools to develop such understanding are physics--based simulation models that describe the manifold interactions of involved natural phenomena across time and space.
+Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance [@Felfelani2017; @Wu2020].
+Key tools to develop such understanding are physics--based simulation models that describe the manifold interactions of involved natural phenomena across time and space [@Li2023; @Steefel2015].
 
 Our `R` package `r2ogs6` provides a file--based `R` interface to the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] and, therefore, enables `R` users to perform and analyze simulation models of the sub--surface earth system in `R`.
 `r2ogs6` allows to access the capabilities of `OpenGeoSys 6` to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media within `R`.
