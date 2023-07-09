@@ -53,8 +53,8 @@ Moreover, `r2ogs6` was intended to include `OpenGeoSys 6` into `R` based scienti
 Major challenges humanity has to face in the coming decades are climate change and hydrologic extremes [@Field2012].
 Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies, together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services [@Felfelani2017; @Wu2020]. 
 Of course, the needs of the population and the needs of nature are often in conflict, which increases the necessity to study the complex interaction of both within different scenarios.
-The core of such studies is most often the system and scenario analysis of individual or coupled earth systems compartments through physics simulations . 
-In physics simulation models multiple coupled natural processes are implemented, which  are usually described with partial differential equations.
+The core of such studies is most often the system and scenario analysis of individual or coupled earth systems compartments through physics simulations. 
+In physics simulation models, multiple coupled natural processes are implemented, which  are usually described with partial differential equations.
 Solving these equations requires appropriate numerical methods such as the finite element method (FEM).
 For reasons of performance, (multi) physics simulators are mostly implemented in languages such as `FORTRAN`, `C` or `C++`.
 
@@ -67,7 +67,7 @@ But while `OpenGeoSys` is a powerful FEM code, setting up, running and evaluatin
 
 Here is where languages such as `R` and `Python` can prove useful.
 Via an interface that adds a layer on top of `OpenGeoSys 6`, the user can access preprocessing tools, the solver itself and postprocessing tools alike, thus increasing usability and accessibility.
-The development and application of high--level programming and/or scripting languages interfaces to geoscientific simulators   has been gaining increasing attention in recent years. Examples are a) `FloPy` [@Bakker2016]: a `Python` interface to the groundwater simulator `Modflow` [@Langevin2021],  `RedModRPhree` [@DeLucia2021]: `R` utility functions to the geo-chemical solver `Phreeqc` [@Charlton2011], the `toughio` [@Luu2020] Python interface to the multi-phase flow simulator `TOUGH`  [@Pruess2004], the Python interfaces to `OpenGeoSys 5`: `ogs5py` [@Mueller2021] and `OpenGeoSys 6`: `ogs6py` [@Buchwald2021] as well as the `R` interface to `OpenGeoSys 5`: `r2ogs5` [@Schad2023]. 
+The development and application of high--level programming and/or scripting languages interfaces to geoscientific simulators   has been gaining increasing attention in recent years. Examples are `FloPy`: a `Python` interface to the groundwater simulator `Modflow` [@Bakker2016, @Langevin2021],  `RedModRPhree`: an `R` package with utility functions to the geo-chemical solver `Phreeqc` [@DeLucia2021, @Charlton2011], the `toughio` Python interface to the multi-phase flow simulator `TOUGH`  [@Luu2020, @Pruess2004], the Python interfaces to `OpenGeoSys 5`: `ogs5py` [@Mueller2021] and `OpenGeoSys 6`: `ogs6py` [@Buchwald2021] as well as the `R` interface to `OpenGeoSys 5`: `r2ogs5` [@Schad2023]. 
 `FloPy`,  `ogs5py`, `ogs6py` and `r2ogs5` provide object-oriented frameworks to set-up, call the executables and import the output of the associated simulators.
 The idea of these packages is to provide `Python` and `R` functions to pre- and process simulation data but to just run simulations via a call to  the the operating system to execute the simulators with the prepared input.
 `RedModRPhree` and `toughio` rather focus on additional pre- and post processing functions to simplify the set-up of simulations with `R` and `Python`.
@@ -119,7 +119,7 @@ In this way, all data required for and produced by `OpenGeoSys 6` can be represe
 ## Quick Start with Theis' Problem
 
 Theis’ problem examines the lowering of the water level around a pumping well. 
-Water is pumped from a well, which induces a degressive lowering of the water level and results in a water level gradient around the well.
+Water is pumped from a well, which induces a lowering of the water level over time.
 The Theis' problem is a common benchmark for sub--surface flow simulators.
 See the respective desription on the `OpenGeoSys 6` page [here](https://www.opengeosys.org/docs/benchmarks/liquid-flow/liquid-flow-theis-problem/).
 The required input files are already present in the installed `r2ogs6` package.
@@ -152,12 +152,12 @@ You can now open the generated script `axisym_theis.R` and have a all the comman
 
 ## Sensitivity Analysis of the Theis' Problem
 
-Here, we will set up an model ensemble to visualize the sensitivity of the water level lowering to changes in the material specific parameter called `storage`.
+Here, we will set up an ensemble of models to visualize the sensitivity of the water level lowering to changes in the material specific parameter called `storage`.
 
 The variable that corresponds to the water level is the `pressure` in the water, which increases with depth.
-So changes in `storage` will induce changes in the `pressure` gradient around the well.
+So changes in `storage` will induce changes in the evolution of the `pressure` gradient around the well.
 
-At first, load required libraries.
+At first, load the required libraries.
 ```r
 library(r2ogs6)
 library(ggplot2)
@@ -197,33 +197,26 @@ ogs6_ens <-
     percentages_mode = TRUE)
 ```
 
-Let's start the simulation.
+Now start the simulation, read and visualize the output.
+
 ```r
+# Start the simulation
 ogs6_ens$run_simulation()
-```
 
-And attach the output files to the ensemble object.
-```r
+# Attach the output files to the ensemble object.
 lapply(ogs6_ens$ensemble, ogs6_read_output_files)
-```
 
-Extract point data of the `pressure` variable from the output files.
-```r
-# This will get a combined dataframe
+# Extract point specific data of the `pressure` variable from the output files
 storage_tbl <- 
   ogs6_ens$get_point_data(point_ids = c(0, 1, 2),
                           keys = c("pressure"))
-```
 
-Plotting the average `pressure` for all simulations in the ensemble, will show different horizontal `pressure` gradients, which express the different lowering of the water level with increasing distance from the well.
-
-```r
-# Get average pressure for all simulations
+# Compute the spatial average of the pressure for all simulations
 avg_pr_df <- storage_tbl %>%
   group_by(sim_id, timestep) %>%
   summarise(avg_pressure = mean(pressure))
 
-# Plot pressure over time for all simulations
+# Plot the spatially averaged pressure over time for all simulations
 ggplot(avg_pr_df, aes(x = as.numeric(as.factor(timestep)),
                       y = avg_pressure,
                       group = sim_id)) +
@@ -233,12 +226,14 @@ ggplot(avg_pr_df, aes(x = as.numeric(as.factor(timestep)),
   xlab("Timestep")
 ```
 
+The plot then shows the development of the average `pressure` in each simulation of the ensemble over time.
+
 ![plot of chunk p-t-all-combined-plot](r2ogs6-p-t-all-combined-plot-1.png){ width=100% }
 
-For more information check the package vignettes, please.
-- further guide on how to create ensemble runs ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)).
-- tutorial to set up a single simulation of a hydro-mechanics benchmark with the package functions [link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)
-- a guide how to start to further develop the package [link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)
+Please, check the following package vignettes for more information:
+a) a further guide on how to create ensemble runs ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)), 
+b) a tutorial to set up a single simulation of a hydro-mechanics benchmark with the package functions ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)),
+and c) a guide how to start to further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
 
 
 # Acknowledgements
