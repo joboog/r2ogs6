@@ -114,8 +114,131 @@ In this way, all data required for and produced by `OpenGeoSys 6` can be represe
 
 ![Schematic of the `r2ogs6` structure.\label{fig:structure}](r2ogs6_structure_schematic.png)
 
-The package comes with tutorials demonstrating how to set up and run a single simulation ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)), set up simulation ensembles ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)) and further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
-Moreover, `r2ogs6` includes functions to create `R` scripts from existing `OpenGeoSys 6` benchmarks that will allow a quick start for new users.
+# Examples
+
+## Quick Start with Theis' Problem
+
+Theis’ problem examines the lowering of the water level around a pumping well. 
+Water is pumped from a well, which induces a degressive lowering of the water level and results in a water level gradient around the well.
+The Theis' problem is a common benchmark for sub--surface flow simulators.
+See the respective desription on the `OpenGeoSys 6` page [here](https://www.opengeosys.org/docs/benchmarks/liquid-flow/liquid-flow-theis-problem/).
+The required input files are already present in the installed `r2ogs6` package.
+
+
+You can just create an `.R` script with the `r2ogs6` commands to set-up a simulation from a benchmark file directly.
+Just load the package and get the path to the Theis' problem benchmark `.prj` file.
+```r
+library(r2ogs6)
+
+# Modify the prj_path depending on where you saved the benchmark file.
+prj_path <- system.file("extdata/benchmarks/AxiSymTheis/",
+                        "axisym_theis.prj", package = "r2ogs6")
+```
+
+Then define the path were the generated script is to be save (`script_path`) and were the simulation is to be run (`sim_path`).
+Note, that the folders should already exist.
+Finally, call the respective function to generate the script; the script will be named according to the name of the project file you specified but with the extension `.R` (here: `axisym_theis.R`).
+```r
+script_path <- "path/to/scripts"
+sim_path <- "path/to/sim"
+
+ogs6_generate_benchmark_script(prj_path, 
+                               sim_path = sim_path, 
+                               script_path = script_path)
+```
+
+You can now open the generated script `axisym_theis.R` and have a all the commands to generate and run a simulation object ready to explore. 
+
+
+## Sensitivity Analysis of the Theis' Problem
+
+Here, we will set up an model ensemble to visualize the sensitivity of the water level lowering to changes in the material specific parameter called `storage`.
+
+The variable that corresponds to the water level is the `pressure` in the water, which increases with depth.
+So changes in `storage` will induce changes in the `pressure` gradient around the well.
+
+At first, load required libraries.
+```r
+library(r2ogs6)
+library(ggplot2)
+library(dplyr)
+```
+
+Then, create a simulation object to base the ensemble on and read in the `.prj` file.
+```r
+# Change this to fit your system
+testdir_path <- tempdir()
+sim_path <- paste0(testdir_path, "/axisym_theis_sim")
+
+# Create the simulation object
+ogs6_obj <- OGS6$new(sim_name = "axisym_theis",
+                     sim_path = sim_path)
+
+# The input files should be present in your r2ogs6 installation directory
+prj_path <- system.file("extdata/benchmarks/AxiSymTheis/",
+                        "axisym_theis.prj", package = "r2ogs6")
+
+# Now read in the input files
+read_in_prj(ogs6_obj, prj_path, read_in_gml = T)
+```
+
+To examine the effects of `storage` we change it by 1%, 10% and 50%. 
+We can use the `percentages_mode` parameter of `OGS6_Ensemble` for this. 
+```r
+# Assign percentages
+percentages <- c(-50, -10, -1, 0, 1, 10, 50)
+
+# Define an ensemble object
+ogs6_ens <- 
+  OGS6_Ensemble$new(
+    ogs6_obj = ogs6_obj,
+    parameters = list(list(ogs6_obj$media[[1]]$properties[[4]]$value,
+                           percentages)),
+    percentages_mode = TRUE)
+```
+
+Let's start the simulation.
+```r
+ogs6_ens$run_simulation()
+```
+
+And attach the output files to the ensemble object.
+```r
+lapply(ogs6_ens$ensemble, ogs6_read_output_files)
+```
+
+Extract point data of the `pressure` variable from the output files.
+```r
+# This will get a combined dataframe
+storage_tbl <- 
+  ogs6_ens$get_point_data(point_ids = c(0, 1, 2),
+                          keys = c("pressure"))
+```
+
+Plotting the average `pressure` for all simulations in the ensemble, will show different horizontal `pressure` gradients, which express the different lowering of the water level with increasing distance from the well.
+
+```r
+# Get average pressure for all simulations
+avg_pr_df <- storage_tbl %>%
+  group_by(sim_id, timestep) %>%
+  summarise(avg_pressure = mean(pressure))
+
+# Plot pressure over time for all simulations
+ggplot(avg_pr_df, aes(x = as.numeric(as.factor(timestep)),
+                      y = avg_pressure,
+                      group = sim_id)) +
+  geom_point(aes(color = as.factor(sim_id))) +
+  geom_line(aes(color = as.factor(sim_id))) + 
+  labs(color = "sim id") +
+  xlab("Timestep")
+```
+
+![plot of chunk p-t-all-combined-plot](r2ogs6-p-t-all-combined-plot-1.png){ width=100% }
+
+For more information check the package vignettes, please.
+- further guide on how to create ensemble runs ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)).
+- tutorial to set up a single simulation of a hydro-mechanics benchmark with the package functions [link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)
+- a guide how to start to further develop the package [link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)
 
 
 # Acknowledgements
