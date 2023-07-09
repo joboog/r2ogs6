@@ -12,28 +12,29 @@ authors:
   - name: Johannes Boog^[co-first author]
     orcid: 0000-0003-0872-7098
     affiliation: 2
-  - name: Philipp Schad^[co-first author]  
-    orcid: 0000-0003-3332-5867  
-    affiliation: 2  
+  - name: Philipp Schad^[co-first author]
+    orcid: 0000-0003-3332-5867
+    affiliation: 2
   - name: Thomas Kalbacher^[co-first author]
     orcid: 0000-0002-7866-5702
     affiliation: 2
 affiliations:
- - name: Leipzig University of Applied Sciences, Karl-Liebknecht-Strasse 132, 04277 Leipzig, Germany
-   index: 1
- - name: Helmholtz Centre for Environmental Research, Department Environmental Informatics, Permoser Str. 15, 04318 Leipzig, Germany
-   index: 2
+  - name: Leipzig University of Applied Sciences, Karl-Liebknecht-Strasse 132, 04277
+      Leipzig, Germany
+    index: 1
+  - name: Helmholtz Centre for Environmental Research, Department Environmental Informatics,
+      Permoser Str. 15, 04318 Leipzig, Germany
+    index: 2
 date: 19 December 2022
 bibliography: paper.bib
-
 ---
 
 # Summary
 
-Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance [@Felfelani2017; @Wu2020].
+Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance [@Felfelani2017; @Field2012; @Wu2020].
 Key tools to develop such understanding are physics--based simulation models that describe the manifold interactions of involved natural phenomena across time and space [@Li2023; @Steefel2015].
 
-Our package `r2ogs6` provides a file--based interface of the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] to the free software environment for statistical computing `R`.
+Our package `r2ogs6` provides a file--based interface of the multi--physics simulation code `OpenGeoSys 6` [@Kolditz2012; @Bilke2019] to the [`R`](www.r-project.org) programing and statistical computing environment.
 `r2ogs6` enables `R` users to perform and analyze simulation models of the sub--surface earth system in `R`.
 It allows to access the capabilities of `OpenGeoSys 6` to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media within `R`.
 In this way, `r2ogs6` enables `R` users to model sub--surface phenomena and technologies such as groundwater flow, reactive transport, geothermal energy usage and/or nuclear waste repositories as well as to analyze and further process simulation output.
@@ -49,15 +50,15 @@ Moreover, `r2ogs6` was intended to include `OpenGeoSys 6` into `R` based scienti
 
 # Statement of need
 
-Major challenges humanity has to face in the coming decades are climate change and hydrologic extremes.
-Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies, together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services. 
+Major challenges humanity has to face in the coming decades are climate change and hydrologic extremes [@Field2012].
+Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies, together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services [@Felfelani2017; @Wu2020]. 
 Of course, the needs of the population and the needs of nature are often in conflict, which increases the necessity to study the complex interaction of both within different scenarios.
-The core of such studies is most often the system and scenario analysis based on physics simulations of individual or coupled earth systems compartments. 
-The multiple coupled natural processes implemented in physics simulation models are usually described with partial differential equations.
+The core of such studies is most often the system and scenario analysis of individual or coupled earth systems compartments through physics simulations . 
+In physics simulation models multiple coupled natural processes are implemented, which  are usually described with partial differential equations.
 Solving these equations requires appropriate numerical methods such as the finite element method (FEM).
 For reasons of performance, (multi) physics simulators are mostly implemented in languages such as `FORTRAN`, `C` or `C++`.
 
-One of these tools is `OpenGeoSys` (OGS) (https://www.opengeosys.org/), a scientific open source project for the development of numerical methods to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@Kolditz2012; @Bilke2019].
+One of these simulators is `OpenGeoSys` (OGS) (https://www.opengeosys.org/), a scientific open source project for the development of numerical methods to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@Kolditz2012; @Bilke2019].
 OGS has applications ranging from small-scale geotechnical investigations, to reservoir studies and even groundwater management of entire landscapes.  
 To identify the right action needs and to derive further decision support for the above described problems it often requires to explore several problem scenarios through meaningful model ensembles.
 This translates to more and more complex and larger model setups.
@@ -73,13 +74,13 @@ The idea of these packages is to provide `Python` and `R` functions to pre- and 
 These packages still rely on external execution of the associated simulation program.
 
 Altough there already exist the `OpenGeoSys 6` `Python` interface `ogs6py`, we consider an `R` interface to be just as important, as `R` is a well known language in the environmental and geosciences.
-Furthermore, since `R` is a popular language in the field of data science with many powerful packages for data analysis and visualisation, e. g. `dplyr` [@r-dplyr] and `ggplot2` [@r-ggplot2], it's a natural choice for processing data generated by simulation tools such as `OpenGeoSys 6`.
-`r2ogs6` follows a similar design approach compared to `FloPy`,  `ogs5py`, `ogs6py` and `r2ogs5`: it provides an object-oriented approach with `R` functions to set-up an `OpenGeoSys 6` simulation, call the respective executable and import the output of finished simulations (see section *Package Structure* for more details).
+Furthermore, since `R` is a popular language in the field of data science with many powerful packages for data analysis and vizualisation, e. g. `dplyr` [@r-dplyr] and `ggplot2` [@r-ggplot2], it's a natural choice for processing data generated by simulation tools such as `OpenGeoSys 6`.
+`r2ogs6` follows a similar design approach compared to `FloPy`,  `ogs5py`, `ogs6py` and `r2ogs5`: it provides an object-oriented approach with `R` classes and functions to set-up an `OpenGeoSys 6` simulation, call the respective executable and import the output of finished simulations (see section *Package Structure* for more details).
 
 Moreover, `r2ogs6` can facilitate the calibration of `OpenGeoSys 6` models.
 One possibility is to use implemented functions to design ensemble runs.
 A second possibility is to use available `R` packages for model calibration such as  `lhs` [@lhs], `mlrBO` [@mlrMBO].
-For `R` users who do not have a lot of (or any) experience with, yet an interest in environmental and geoscientific sub--surface simulations, `r2ogs6` provides a good starting point.
+For `R` users who do not have a lot of (or any) experience with environmental and geoscientific sub--surface simulations, yet an interest in such, `r2ogs6` provides a good starting point.
 Utilizing `r2ogs6`, users can easily set up their first `OpenGeoSys 6` simulations by choosing one of the provided benchmark files.
 Moreover, with `R` scripts and `R--Markdown` or `JupyteR` notebooks, modeling workflows can easily be documented, published and shared with peers.
 
