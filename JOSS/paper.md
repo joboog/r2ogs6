@@ -53,15 +53,15 @@ Moreover, `r2ogs6` was intended to include `OpenGeoSys 6` into `R` based scienti
 Major challenges humanity has to face in the coming decades are climate change and hydrologic extremes [@Field2012].
 Understanding the impacts of climate change and hydrologic extreme events on our sub--surface earth system is even in temperate zones of utmost importance for ensuring adequate domestic and drinking water supplies, together with functioning lake and river systems with healthy aquatic ecosystems and ecosystem services [@Felfelani2017; @Wu2020]. 
 Of course, the needs of the population and the needs of nature are often in conflict, which increases the necessity to study the complex interaction of both within different scenarios.
-The core of such studies is most often the system and scenario analysis of individual or coupled earth systems compartments through physics simulations. 
+The core of such studies is most often the system and scenario analysis of individual or coupled earth systems compartments through physics simulations [@Li2023; @Steefel2015]. 
 In physics simulation models, multiple coupled natural processes are implemented, which  are usually described with partial differential equations.
 Solving these equations requires appropriate numerical methods such as the finite element method (FEM).
-For reasons of performance, (multi) physics simulators are mostly implemented in languages such as `FORTRAN`, `C` or `C++`.
+For reasons of performance, (multi) physics simulators are mostly implemented in languages such as `FORTRAN`, `C` or `C++` [@Steefel2015].
 
 One of these simulators is `OpenGeoSys` (OGS) (https://www.opengeosys.org/), a scientific open source project for the development of numerical methods to simulate thermo-hydro-mechanical-chemical and biological (THMC/B) processes in porous and fractured media [@Kolditz2012; @Bilke2019].
-OGS has applications ranging from small-scale geotechnical investigations, to reservoir studies and even groundwater management of entire landscapes.  
+OGS has applications ranging from small-scale geotechnical investigations [@Grunwald2020], to reservoir studies [@Li2014], nuclear waste repositories [@Pitz2023] and even groundwater management of entire landscapes [@Jing2018;@Pujades2023].  
 To identify the right action needs and to derive further decision support for the above described problems it often requires to explore several problem scenarios through meaningful model ensembles.
-This translates to more and more complex and larger model setups.
+This translates to more and more complex and larger model setups [@Asher2015].
 Thus, faster and more efficient model setup and parametrization procedures are needed.
 But while `OpenGeoSys` is a powerful FEM code, setting up, running and evaluating multiple simulations can prove complicated.
 
