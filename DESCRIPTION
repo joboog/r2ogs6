@@ -32,8 +32,6 @@ Suggests:
     knitr,
     devtools,
     ggplot2,
-    BiocManager,
-    rhdf5,
     rmarkdown
 Imports: 
     xml2,
@@ -47,7 +45,9 @@ Imports:
     doParallel,
     reticulate,
     config,
-    foreach
+    foreach,
+    BiocManager,
+    rhdf5
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Depends: 
