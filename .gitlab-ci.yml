@@ -6,13 +6,14 @@ stages:
   - test
 
 test:
-  image: $CI_REGISTRY_IMAGE:24032023
+  #image: $CI_REGISTRY_IMAGE:24032023
+  image: rocker/r-ver:4.2.3
   stage: test
   tags:
     - docker
   variables:
-    RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
-    RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
+    # RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
+    # RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
     RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
     RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
     RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
