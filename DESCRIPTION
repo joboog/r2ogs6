@@ -34,6 +34,7 @@ Suggests:
     ggplot2,
     rmarkdown
 Imports: 
+    reticulate,
     xml2,
     tibble,
     R6,
@@ -43,7 +44,6 @@ Imports:
     utils,
     dplyr,
     doParallel,
-    reticulate,
     config,
     foreach,
     BiocManager,
