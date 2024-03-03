@@ -13,53 +13,82 @@ Furthermore, the package comes with functionality to define [ensemble runs](vign
 
 ### Preparing your environment
 
-Before you install and load `r2ogs6`, there are two prerequisites that need to be met so you can use `r2ogs6` to its full extent later.
+`r2ogs6` requires an installation of OpenGeoSys 6.
+Furthermore, Python including the libraries `numpy` and `vtk` is required to read in the `.vtu` and `.pvd` files produced by OpenGeoSys 6.
 
-The most important one is having OpenGeoSys 6 installed on your system. You can download the current version of OpenGeoSys 6 from [here](https://www.opengeosys.org/releases/). 
 
-Secondly, to read in the `.vtu` and `.pvd` files produced by OpenGeoSys 6, you need a Python installation including the libraries `numpy` and `vtk`. If you have an Anaconda installation on your system, setting up a Python environment with `numpy` and `vtk` will work. `r2ogs6` was tested with the following environment:
+You can install OpenGeoSys 6 and Python including `numpy` and `vtk` via a 
+convenient function after having installed `r2ogs6`.
+Just proceed with [Installation]#installation.
+Or do the manual installation.
+
+
+#### Manual Installation of Python and OpenGeoSys 6
+
+Ideally, you do this in a specific virutal python environment. 
 
 ```
-$ conda create -n r2ogs6 python=3.7
-$ conda install -c anaconda numpy, vtk==8.2.0
+# Create python environment
+python -m ogs_env ~/.ogs_env
+source ~/.ogs_env/bin/activate
+
+# Use the ogs version appropriate for the r2ogs6 version, see releases
+pip install ogs==6.4.4
+
+# Install python dependencies
+pip install numpy vtk
 ```
 
-If you don't have any Python installation on your system, you can download the latest release of Python from [here](https://www.python.org/downloads/). Instructions on how to install `numpy` and `vtk` can be found [here](https://numpy.org/install/) and  [here](https://pypi.org/project/vtk/).
+Alternatively, can download OpenGeoSys 6 executables [here](https://www.opengeosys.org/releases/) and set up the python 
+environment with `numpy` and `vtk` only.
+For more information on how to install OpenGeoSys 6 look [here](https://www.opengeosys.org/docs/userguide/basics/introduction/#install-via-pip).
+Be aware, to download or install the OpenGeoSys 6 version compatible with the `r2ogs6` version, see [releases](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/releases).
+`r2ogs6` was tested with the following environment: `python==3.10.12`, `vtk==9.3.0`, `numpy==1.26.4`
+If you don't have any Python installation on your system, you can download the latest release of Python from [here](https://www.python.org/downloads/). 
 
 
-### Installation
+### r2ogs6 Installation
 
 First, open a terminal and clone the `r2ogs6` repository to your local machine.
 
 ```
-$ git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
+git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
+cd r2ogs6
+
+# Now checkout the latest stable release
+git checkout tags/v0.4.643
 ```
 
-After that, open R from your local (anaconda) environment.
-To install `r2ogs6`, you first need the R-package `devtools`.
+To install `r2ogs6`, you first need the R-packages `remotes` and `BiocManager`.
+`remotes` is used for installing `r2ogs6` and `BiocManager` to set the URLs 
+to search dependencies on *CRAN* and *bioconductor.org*.
+For instance, the dependency `rhdf5` is only available on *bioconductor.org*.
+In your R console:
 
 ```r
-# Install devtools
-install.packages("devtools")
+install.packages(c("remotes", "BiocManager"))
 ```
 
-With `devtools`, you can now install `r2ogs6`.
+With `remotes`, you can now install `r2ogs6`.
 
 ```r
 # Install r2ogs6. Change the path to that of the cloned repository!
-devtools::install("path/to/r2ogs6")
-
-# Alternatively, install directly from the Gitlab repo:
-devtools::install_git("https://gitlab.opengeosys.org/ogs/tools/r2ogs6")
+remotes::install_local(
+    path="path/to/r2ogs6", 
+    dependencies="Imports",
+    repos=BiocManager::repositories()
+)
 ```
 
-This will install all necessary R dependencies except `rhdf5`.  
-This package is needed to handle *hdf5* output files and can be installed via:
-```r
-install.packages("BiocManager") # install BiocManager from CRAN
-BiocManager::install("rhdf5")   # install rhdf5 from bioconductor.org
-```  
-If `r2ogs6` is installed or loaded via `library()`in interactive sessions e.g. in RStudio, the package will check if `rhdf5` is available in the library and if not, ask the user to install it automatically. If installing `r2ogs6` in a script e.g. via `R -e devtools::install_git("https://gitlab.opengeosys.org/ogs/tools/r2ogs6")` make sure to include the manual installation of `rhdf5` as above in your script. 
+Now install OpenGeoSys 6 and Python including `numpy` and `vtk`.
+
+```
+library(r2ogs6)
+library(reticulate)
+
+# Create a python virtual environment "r2ogs6" and install ogs, numpy, vtk
+install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")
+```
 
 ## Usage
 
