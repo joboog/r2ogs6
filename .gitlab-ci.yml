@@ -16,6 +16,7 @@ test:
     RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
     RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
     RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
+    RUN_PYTHON_CONFIG_TESTS: $RUN_PYTHON_CONFIG_TESTS
   before_script:
     - R -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
     #- R -e 'renv::restore()' does fail while loading Bioconductor packages
