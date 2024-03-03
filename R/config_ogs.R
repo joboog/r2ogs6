@@ -14,7 +14,7 @@
 #' @return None.
 #' @examples
 #' install_ogs(
-#'  ogs_version = "6.4.0", 
+#'  ogs_version = "6.4.4", 
 #'  envname = "r2ogs6"
 #' )
 #'
