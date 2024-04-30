@@ -60,9 +60,11 @@ install_ogs <-
 
 #' Set default OpenGeoSys 6 binary path
 #'
-#' This function automatically detects and sets the path to the OpenGeoSys (OGS)
-#' binary within the active Python virtual environment. It is typically called
-#' after installing OGS using the `install_ogs` function.
+#' This function automatically detects and temporarily sets the path to the 
+#' OpenGeoSys (OGS) binary within the active Python virtual environment. It is 
+#' typically called after installing OGS using the `install_ogs()` function.
+#' For a permanent setting of the OGS binary path, consider to define
+#' `r2ogs6.default_ogs6_bin_path` in a `config.yml` file.'
 #'
 #' @return None, but it sets an option `r2ogs6.default_ogs6_bin_path` to point
 #' to the detected OGS binary path.
@@ -73,14 +75,37 @@ install_ogs <-
 set_ogs6_bin_path <-
     function() {
         cfg <- reticulate::py_config()
+
+        has_python <- reticulate::py_available(initialize = FALSE)
+        has_numpy <- reticulate::py_numpy_available(initialize = FALSE)
+        has_vtk <- reticulate::py_module_available("vtk")
+        has_ogs <- reticulate::py_module_available("ogs")
+        assertthat::assert_that(
+            isTRUE(has_python), isTRUE(has_numpy), isTRUE(has_vtk),
+            isTRUE(has_ogs)
+        )
+
         ogs_bin_dir <- file.path(cfg$virtualenv, "bin")
         files <- list.files(ogs_bin_dir, full.names = TRUE)
-
         if (Sys.info()["sysname"] == "Windows") {
             ogs_name <- "ogs.exe"
         } else {
             ogs_name <- "ogs"
         }
         ogs_bin_path <- files[grepl(paste0(ogs_name, "$"), basename(files))]
+        
+        assertthat::assert_that(file.exists(ogs_bin_path))
+        assertthat::assert_that(
+            basename(ogs_bin_path) %in% c("ogs.exe", "ogs")
+        )
         options("r2ogs6.default_ogs6_bin_path" = ogs_bin_path)
+
+        message(
+            paste0(
+                'The option "r2ogs6.default_ogs6_bin_path" was temporarily ',
+                'set to "', ogs_bin_path, '" .\n',
+                'For a permanent setting of "r2ogs6.default_ogs6_bin_path=',
+                ogs_bin_path, ' define it in a "config.yml" file, please.'
+            )
+        )
   }
