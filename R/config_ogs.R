@@ -36,8 +36,6 @@ install_ogs <-
 #'
 #' @return None, but it sets an option `r2ogs6.default_ogs6_bin_path` to point
 #' to the detected OGS binary path.
-#' @examples
-#' set_ogs_bin_path()
 #'
 #' @export
 set_ogs6_bin_path <-
@@ -73,7 +71,7 @@ set_ogs6_bin_path <-
                 'The option "r2ogs6.default_ogs6_bin_path" was temporarily ',
                 'set to "', ogs_bin_path, '" .\n',
                 'For a permanent setting of "r2ogs6.default_ogs6_bin_path=',
-                ogs_bin_path, ' define it in a "config.yml" file, please.'
+                ogs_bin_path, ' define it in a "config.yml" file.'
             )
         )
   }
