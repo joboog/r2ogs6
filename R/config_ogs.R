@@ -23,34 +23,44 @@ install_ogs <-
     function(...,
            ogs_version = "6.4.4",
            envname = "r2ogs6",
-           py_version = "3.10:latest",
-           py_exe = NULL,
            new_env = identical(envname, "r2ogs6")) {
 
-    # Check or install python
-    if (!(reticulate::py_available())) {
-        print(
-            paste0("No python installation found.\n", 
-            "Attemping to install python ", py_version)
-        )
-        reticulate::install_python(py_version)
-    } else {
+    # # Check or install python
+    # tryCatch()
+    # reticulate::use_virtualenv(envname)
 
-        if (!(is.null(py_exe))) {
-            reticulate::use_python(py_exe)
-            print(paste0("Using python: ", py_exe))
-        }
-    }
+    # if (!(is.null(py_exe))) {
+    #     reticulate::use_python(py_exe)
+    #     print(paste0("Using python: ", py_exe))
+    
+    # } else if(reticulate::py_available()) {
+    #     print(
+    #         paste0("Python installation found.\n", 
+    #         "Now using ", reticulate::py_exe())
+    #     )
 
-    py_version <- reticulate::py_version()
-    py_exe <- reticulate::py_exe()
+    # } else{
+    #     print(
+    #         paste0("No python installation found.\n", 
+    #         "Attemping to install python ", py_version)
+    #     )
+    #     reticulate::install_python(py_version)
+    # }
+        
+    # } else {
+
+    #     if 
+
+    # py_version <- reticulate::py_version()
+    # py_exe <- reticulate::py_exe()
 
     # Define packages to install
     pkgs <- c(paste0("ogs==", ogs_version), "numpy", "vtk")
 
     reticulate::py_install(
       packages = pkgs,
-      envname = envname, ...
+      envname = envname, 
+      ...
     )
 
     # Configure ogs_bin_path
