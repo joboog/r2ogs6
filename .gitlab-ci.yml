@@ -29,10 +29,11 @@ test:
     - apt-get install -y python3.10-venv python3-pip
     - R -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
     - R -e 'Sys.getenv("R_LIBS")'
-    - R -e 'renv::restore()'
-    - R -e 'renv::status()'
-    #- R -e 'renv::install()'
-    #- R -e 'renv::install("bioc::rhdf5")'
+    #- R -e 'renv::restore()'
+    #- R -e 'renv::status()'
+    - R -e 'renv::install("bioc::rhdf5")'
+    - R -e 'renv::install()'
+    
   script:
     - R CMD build . --no-manual --no-build-vignettes
     - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
