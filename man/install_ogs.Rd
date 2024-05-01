@@ -3,14 +3,12 @@
 \name{install_ogs}
 \alias{install_ogs}
 \title{Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
-packages}
+packages `vtk` and `numpy` into a specified Python virtual environment.}
 \usage{
 install_ogs(
   ...,
   ogs_version = "6.4.4",
   envname = "r2ogs6",
-  py_version = "3.10:latest",
-  py_exe = NULL,
   new_env = identical(envname, "r2ogs6")
 )
 }
@@ -25,14 +23,6 @@ install_ogs(
 None.
 }
 \description{
-This function handles the installation of a specific version of OGS and 
-ensures that related Python packages such as `vtk` and `numpy` are 
-installed in a specified Python virtual environment.
-}
-\examples{
-install_ogs(
- ogs_version = "6.4.0", 
- envname = "r2ogs6"
-)
-
+Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
+packages `vtk` and `numpy` into a specified Python virtual environment.
 }
