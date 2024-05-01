@@ -2,21 +2,12 @@
 # https://rstudio.github.io/reticulate/articles/python_dependencies.html
 
 #' Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
-#' packages
-#'
-#' This function handles the installation of a specific version of OGS and 
-#' ensures that related Python packages such as `vtk` and `numpy` are 
-#' installed in a specified Python virtual environment.
+#' packages `vtk` and `numpy` into a specified Python virtual environment.
 #'
 #' @param ogs_version The version of OGS to install (default: 6.4.4).
 #' @param envname The name of the Python virtual environment (default: r2ogs6).
 #' @param ... Rest of the arguments passed to "py_install()"
 #' @return None.
-#' @examples
-#' install_ogs(
-#'  ogs_version = "6.4.4", 
-#'  envname = "r2ogs6"
-#' )
 #'
 #' @export
 install_ogs <-
@@ -25,46 +16,13 @@ install_ogs <-
            envname = "r2ogs6",
            new_env = identical(envname, "r2ogs6")) {
 
-    # # Check or install python
-    # tryCatch()
-    # reticulate::use_virtualenv(envname)
-
-    # if (!(is.null(py_exe))) {
-    #     reticulate::use_python(py_exe)
-    #     print(paste0("Using python: ", py_exe))
-    
-    # } else if(reticulate::py_available()) {
-    #     print(
-    #         paste0("Python installation found.\n", 
-    #         "Now using ", reticulate::py_exe())
-    #     )
-
-    # } else{
-    #     print(
-    #         paste0("No python installation found.\n", 
-    #         "Attemping to install python ", py_version)
-    #     )
-    #     reticulate::install_python(py_version)
-    # }
-        
-    # } else {
-
-    #     if 
-
-    # py_version <- reticulate::py_version()
-    # py_exe <- reticulate::py_exe()
-
-    # Define packages to install
     pkgs <- c(paste0("ogs==", ogs_version), "numpy", "vtk")
 
     reticulate::py_install(
       packages = pkgs,
-      envname = envname, 
+      envname = envname,
       ...
     )
-
-    # Configure ogs_bin_path
-    set_ogs6_bin_path()
   }
 
 
