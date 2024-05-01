@@ -18,14 +18,24 @@ test:
     RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
     RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
     RUN_PYTHON_CONFIG_TESTS: $RUN_PYTHON_CONFIG_TESTS
+    R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
   before_script:
+    - apt-get update && apt-get upgrade -y
+    - apt-get install -y git
+    - |
+      apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+      libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev \
+      libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+    - apt-get install -y python3.10-venv python3-pip
     - R -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
-    #- R -e 'renv::restore()' does fail while loading Bioconductor packages
-    - R -e 'renv::install()'
-    - R -e 'renv::install("bioc::rhdf5")'
+    - R -e 'Sys.getenv("R_LIBS")'
+    - R -e 'renv::restore()'
+    - R -e 'renv::status()'
+    #- R -e 'renv::install()'
+    #- R -e 'renv::install("bioc::rhdf5")'
   script:
-    - R CMD build . --no-manual
-    - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual
+    - R CMD build . --no-manual --no-build-vignettes
+    - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
   after_script:
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
