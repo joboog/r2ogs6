@@ -13,8 +13,8 @@
 install_ogs <-
     function(...,
            ogs_version = "6.4.4",
-           envname = "r2ogs6",
-           new_env = identical(envname, "r2ogs6")) {
+           envname = "r2ogs6"
+    ) {
 
     pkgs <- c(paste0("ogs==", ogs_version), "numpy", "vtk")
 
