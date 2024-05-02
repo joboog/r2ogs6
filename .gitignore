@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Renviron
 .vscode
 config.yml
 ci/local_docker_test
