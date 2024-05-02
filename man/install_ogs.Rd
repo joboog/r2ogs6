@@ -5,12 +5,7 @@
 \title{Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
 packages `vtk` and `numpy` into a specified Python virtual environment.}
 \usage{
-install_ogs(
-  ...,
-  ogs_version = "6.4.4",
-  envname = "r2ogs6",
-  new_env = identical(envname, "r2ogs6")
-)
+install_ogs(..., ogs_version = "6.4.4", envname = "r2ogs6")
 }
 \arguments{
 \item{...}{Rest of the arguments passed to "py_install()"}
