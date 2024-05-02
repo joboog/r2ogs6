@@ -71,9 +71,10 @@ test_install:
     - mkdir ../test_r2ogs6 && cd ../test_r2ogs6 && ls . -ahl
   script:
     - R -e 'install.packages(c("remotes", "BiocManager"))'
-    - R -e 'remotes::install_local(path="$CI_PROJECT_DIR/r2ogs6", dependencies="Imports", repos=BiocManager::repositories())'
+    - R -e "remotes::install_local(path=\"$CI_PROJECT_DIR\", dependencies='Imports', repos=BiocManager::repositories())"
     - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3")'
     - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
+    - R -e 'reticulate::py_module_available("ogs")'
   #after_script:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
