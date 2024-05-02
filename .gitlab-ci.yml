@@ -10,19 +10,21 @@ variables:
     # RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
     # RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
     RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
-    RENV_PATHS_CACHE: "$CI_PROJECT_DIR/cache"
-    RENV_PATHS_LIBRARY: "$CI_PROJECT_DIR/renv/library"
+    RENV_PATHS_CACHE: "/root/.cache/R/renv/cache" #"$CI_PROJECT_DIR/cache"
+    RENV_PATHS_LIBRARY: "/root/.cache/R/renv/library" #"$CI_PROJECT_DIR/renv/library"
     RUN_PYTHON_CONFIG_TESTS: "false"
     R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
 
 .before_script_templ: &before_script_templ
   - apt-get update && apt-get upgrade -y
   - apt-get install -y git
-  # Packages to build Python and rhdf5 (zlib1g-dev)
+  # Packages to build Python and R packages
   - |
     apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev \
-    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+    libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
+    libharfbuzz-dev libfribidi-dev libcurl4-openssl-dev \
+    libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
   - apt-get install -y python3.10-venv python3-pip
 
 test:
@@ -33,15 +35,18 @@ test:
     - docker
   before_script:
     - *before_script_templ
-    - R -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
+    - R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
+    - R -e "renv::restore()"
     #- R -e 'Sys.getenv("R_LIBS")'
     #- R -e 'renv::restore()'
     #- R -e 'renv::status()'
-    - R -e 'renv::install()'
-    - R -e 'renv::install("bioc::rhdf5")'
+    # - R -e 'renv::install()'
+    # - R -e 'renv::install("bioc::rhdf5")'
   script:
-    - R CMD build . --no-manual --no-build-vignettes
-    - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
+    - R -e "devtools::test()"
+    - R -e "devtools::check(vignettes=FALSE)"
+    # - R CMD build . --no-manual --no-build-vignettes
+    # - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
   after_script:
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
@@ -70,12 +75,6 @@ test_install:
     - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3")'
     - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
   #after_script:
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-      - "$RENV_PATHS_CACHE"
-      - "$RENV_PATHS_LIBRARY"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
