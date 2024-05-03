@@ -4,6 +4,7 @@
 #' @description Small class to wrap \code{h5} data into the \code{r2ogs6} workflow.
 #' @export
 #' @importFrom R6 R6Class
+#' @importFrom rhdf5 h5ls h5read
 OGS6_h5 <- R6::R6Class("OGS6_h5",
     public = list(
         #' @description This function will be called automatically after a

@@ -32,10 +32,9 @@ Suggests:
     knitr,
     devtools,
     ggplot2,
-    BiocManager,
-    rhdf5,
     rmarkdown
 Imports: 
+    reticulate,
     xml2,
     tibble,
     R6,
@@ -45,10 +44,11 @@ Imports:
     utils,
     dplyr,
     doParallel,
-    reticulate,
     config,
-    foreach
-RoxygenNote: 7.2.3
+    foreach,
+    BiocManager,
+    rhdf5
+RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
