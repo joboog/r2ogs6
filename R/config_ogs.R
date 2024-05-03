@@ -1,7 +1,7 @@
-# Function based on: 
+# Function based on:
 # https://rstudio.github.io/reticulate/articles/python_dependencies.html
 
-#' Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
+#' Install specific version of OpenGeoSys 6 (OGS) along with necessary Python
 #' packages `vtk` and `numpy` into a specified Python virtual environment.
 #' Note, this does not work with `conda` environments.
 #'
@@ -40,8 +40,8 @@ install_ogs <-
 
 #' Set default OpenGeoSys 6 binary path
 #'
-#' This function automatically detects and temporarily sets the path to the 
-#' OpenGeoSys (OGS) binary within the active Python virtual environment. It is 
+#' This function automatically detects and temporarily sets the path to the
+#' OpenGeoSys (OGS) binary within the active Python virtual environment. It is
 #' typically called after installing OGS using the `install_ogs()` function.
 #' For a permanent setting of the OGS binary path, consider to define
 #' `r2ogs6.default_ogs6_bin_path` in a `config.yml` file.'
@@ -63,7 +63,7 @@ set_ogs6_bin_path <-
             isTRUE(has_ogs)
         )
 
-        # Search for ogs binary in potential paths        
+        # Search for ogs binary in potential paths
         if (Sys.info()["sysname"] == "Windows") {
             bin_dir <- "Scripts"
             ogs_name <- "ogs.exe"
@@ -71,10 +71,11 @@ set_ogs6_bin_path <-
             bin_dir <- "bin"
             ogs_name <- "ogs"
         }
-        ogs_bin_dir <- file.path(cfg$virtualenv, bin_dir)
+        virtualenv_path <- win_to_linux_path(cfg$virtualenv)
+        ogs_bin_dir <- file.path(virtualenv_path, bin_dir)
         files <- list.files(ogs_bin_dir, full.names = TRUE)
         ogs_bin_path <- files[grepl(paste0(ogs_name, "$"), basename(files))]
-        
+
         assertthat::assert_that(
             file.exists(ogs_bin_path),
             msg = "OGS executable not found."
