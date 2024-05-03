@@ -201,11 +201,10 @@ result_df
 
 For tutorials on how to use the `r2ogs6` package, have a look at its vignettes:
 
-* [User Guide](vignettes/user_workflow_vignette.Rmd) 
-* [Ensemble Guide](vignettes/ensemble_workflow_vignette.Rmd)
-* [Developer Guide](vignettes/dev_workflow_vignette.Rmd)
+* [User Guide](https://joboog.github.io/r2ogs6/articles/user_workflow_vignette.html)
+* [Ensemble Guide](https://joboog.github.io/r2ogs6/articles/ensemble_workflow_vignette.html)
+* [Developer Guide](https://joboog.github.io/r2ogs6/articles/dev_workflow_vignette.html)
 
-Corresponding HTML versions can be found [here](inst/vignettes_built/).
 
 ## Links
 
