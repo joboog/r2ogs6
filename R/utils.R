@@ -204,6 +204,22 @@ as_dir_path2 <- function(file_path){
   return(invisible(file_path))
 }
 
+
+#' win_to_linux_path
+#' @description In case, converts windows style path to linux style path.
+#' For instance, \code{C:\\path\\to} to \code{C:/path/to}.
+#' @param file_path string: A path
+#' @noRd
+win_to_linux_path <- function(file_path){
+
+    assertthat::assert_that(assertthat::is.string(file_path))
+    file_path <- sub("\\\\\\\\", "//", file_path)
+    file_path <- sub("\\\\", "/", file_path)
+
+    return(invisible(file_path))
+}
+
+
 #' filter_invalid_xml
 #' @description Filters invalid XML paths out of a vector
 #' @param paths character: Vector of (maybe-)XML paths
@@ -436,12 +452,14 @@ make_abs_path <- function(file_path, ref_path, force=F){
 
   # make shure that ref_path is absolute and ends with "/"
   ref_path <- normalizePath(ref_path, mustWork = T)
+  ref_path <- win_to_linux_path(ref_path)
   ref_path <- as_dir_path(ref_path)
+  file_path <- win_to_linux_path(file_path)
   file_path <- as_dir_path2(file_path)
 
   # case1: if file_path is absolute
   if((substr(file_path,1,1)=="/")| # abspath on unix
-     (stringr::str_detect(substr(file_path,1,3), "[:alpha:]:\\\\"))){# windows?
+     (stringr::str_detect(substr(file_path,1,3), "[:alpha:]:/"))){# windows
 
     message(paste("file_path", file_path, "is already asolute."))
     if(isTRUE(force)){
@@ -466,7 +484,8 @@ make_abs_path <- function(file_path, ref_path, force=F){
   # case4: file is in child dir
   else {
 
-    file_path_norm <- normalizePath(dirname(file_path), mustWork = T)
+    file_path_norm <- normalizePath(dirname(file_path), mustWork = T) %>%
+                        win_to_linux_path()
 
     assertthat::assert_that(
       stringr::str_detect(file_path_norm, ref_path),
