@@ -1,0 +1,12 @@
+pandoc: 2.9.2.1
+pkgdown: 2.0.9
+pkgdown_sha: ~
+articles:
+  dev_workflow_vignette: dev_workflow_vignette.html
+  ensemble_workflow_vignette: ensemble_workflow_vignette.html
+  user_workflow_vignette: user_workflow_vignette.html
+last_built: 2024-05-03T21:00Z
+urls:
+  reference: https://joboog.github.io/r2ogs6/reference
+  article: https://joboog.github.io/r2ogs6/articles
+
