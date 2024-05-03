@@ -484,8 +484,8 @@ make_abs_path <- function(file_path, ref_path, force=F){
   # case4: file is in child dir
   else {
 
-    file_path_norm <- normalizePath(dirname(file_path), mustWork = T) %>%
-                        win_to_linux_path()
+    file_path_norm <- normalizePath(dirname(file_path), mustWork = T)
+    file_path_norm <- win_to_linux_path(file_path_norm)
 
     assertthat::assert_that(
       stringr::str_detect(file_path_norm, ref_path),
