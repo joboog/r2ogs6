@@ -230,10 +230,10 @@ The plot then shows the development of the average `pressure` in each simulation
 
 ![plot of chunk p-t-all-combined-plot](r2ogs6-p-t-all-combined-plot-1.png){ width=100% }
 
-Please, check the following package vignettes for more information:
-a) a further guide on how to create ensemble runs ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd)), 
-b) a tutorial to set up a single simulation of a hydro-mechanics benchmark with the package functions ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd)),
-and c) a guide how to start to further develop the package ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd)).
+Check the following package vignettes for more information:
+- a guide to set up a single simulation of a hydro-mechanics benchmark ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/user_workflow_vignette.Rmd))
+- a guide to create ensemble runs ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/ensemble_workflow_vignette.Rmd))
+- a development guide ([link](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/blob/master/vignettes/dev_workflow_vignette.Rmd))
 
 
 # Acknowledgements
