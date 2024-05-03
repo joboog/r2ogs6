@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Renviron
 .vscode
 config.yml
 ci/local_docker_test
@@ -9,6 +10,7 @@ inst/doc
 inst/extdata/test_tempdirs
 Meta
 renv/settings.json
+r2ogs6.Rcheck
 tmp
 /doc/
 /Meta/
