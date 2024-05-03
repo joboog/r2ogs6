@@ -34,6 +34,7 @@ Suggests:
     ggplot2,
     rmarkdown
 Imports: 
+    reticulate,
     xml2,
     tibble,
     R6,
@@ -43,12 +44,11 @@ Imports:
     utils,
     dplyr,
     doParallel,
-    reticulate,
     config,
     foreach,
     BiocManager,
     rhdf5
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
