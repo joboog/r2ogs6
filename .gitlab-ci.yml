@@ -4,6 +4,7 @@
 
 stages:
   - test
+  - production
 
 variables:
     # RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
@@ -52,6 +53,24 @@ test:
     paths:
       - "$RENV_PATHS_CACHE"
       - "$RENV_PATHS_LIBRARY"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+test_install:
+  image: rocker/r-ver:4.2.3
+  stage: production
+  tags:
+    - docker
+  before_script:
+    - *before_script_templ
+    - mkdir ../test_r2ogs6 && cd ../test_r2ogs6 && ls . -ahl
+  script:
+    - R -e 'install.packages(c("remotes", "BiocManager"))'
+    - R -e "remotes::install_local(path=\"$CI_PROJECT_DIR\", dependencies='Imports', repos=BiocManager::repositories())"
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3")'
+    - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
+    - R -e 'reticulate::py_module_available("ogs")'
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
