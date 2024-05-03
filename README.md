@@ -7,7 +7,7 @@
 
 `r2ogs6` is an R-API to the multiphysics simulator [OpenGeoSys 6](https://gitlab.opengeosys.org/ogs/ogs).
 `r2ogs6` allows pre-processing (preparing input files), executing simulation runs, retrieving, post-processing and visualizing output data in R.
-Furthermore, the package comes with functionality to define [ensemble runs](vignettes/ensemble_workflow_vignette.Rmd).
+Furthermore, the package comes with functionality to define ensemble runs.
 
 ## Setup
 
@@ -24,9 +24,6 @@ First, open a terminal and clone the `r2ogs6` repository to your local machine.
 ```
 git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
 cd r2ogs6
-
-# Now checkout the latest stable release
-git checkout tags/v0.4.643
 ```
 
 To install `r2ogs6`, you first need the R-packages `remotes` and `BiocManager`.
@@ -158,11 +155,10 @@ environment that you configured.
 
 For tutorials on how to use the `r2ogs6` package, have a look at its vignettes:
 
-* [User Guide](vignettes/user_workflow_vignette.Rmd) 
-* [Ensemble Guide](vignettes/ensemble_workflow_vignette.Rmd)
-* [Developer Guide](vignettes/dev_workflow_vignette.Rmd)
+* [User Guide](https://joboog.github.io/r2ogs6/articles/user_workflow_vignette.html)
+* [Ensemble Guide](https://joboog.github.io/r2ogs6/articles/ensemble_workflow_vignette.html)
+* [Developer Guide](https://joboog.github.io/r2ogs6/articles/dev_workflow_vignette.html)
 
-Corresponding HTML versions can be found [here](inst/vignettes_built/).
 
 ## Links
 
