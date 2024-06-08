@@ -68,7 +68,9 @@ test_install:
   script:
     - R -e 'install.packages(c("remotes", "BiocManager"))'
     - R -e "remotes::install_local(path=\"$CI_PROJECT_DIR\", dependencies='Imports', repos=BiocManager::repositories())"
-    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3")'
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy", "vtk"))'
+    - R -e 'reticulate::use_virtualenv(virtualenv="r2ogs6")'
+    - R -e 'reticulate::py_config()'
     - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
     - R -e 'reticulate::py_module_available("ogs")'
   rules:
