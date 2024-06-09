@@ -2,8 +2,9 @@
 % Please edit documentation in R/config_ogs.R
 \name{install_ogs}
 \alias{install_ogs}
-\title{Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
-packages `vtk` and `numpy` into a specified Python virtual environment.}
+\title{Install specific version of OpenGeoSys 6 (OGS) along with necessary Python
+packages `vtk` and `numpy` into a specified Python virtual environment.
+Note, this does not work with `conda` environments.}
 \usage{
 install_ogs(..., ogs_version = "6.4.4", envname = "r2ogs6")
 }
@@ -18,6 +19,7 @@ install_ogs(..., ogs_version = "6.4.4", envname = "r2ogs6")
 None.
 }
 \description{
-Install specific version of OpenGeoSys 6 (OGS) along with necessary Python 
+Install specific version of OpenGeoSys 6 (OGS) along with necessary Python
 packages `vtk` and `numpy` into a specified Python virtual environment.
+Note, this does not work with `conda` environments.
 }
