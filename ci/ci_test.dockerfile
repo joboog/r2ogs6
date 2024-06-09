@@ -11,6 +11,7 @@ ARG RENV_PATHS_LIBRARY=/root/.cache/R/renv/library
 ENV RENV_PATHS_LIBRARY=$RENV_PATHS_LIBRARY
 ARG RENV_PATHS_CACHE=/root/.cache/R/renv/cache
 ENV RENV_PATHS_CACHE=$RENV_PATHS_CACHE
+ENV R_LIBS="/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
 
 # before script
 RUN apt-get update && apt-get upgrade -y
@@ -30,8 +31,6 @@ WORKDIR /root/r2ogs6
 RUN ls -ahl .
 RUN echo $R_LIBS
 RUN R -e "renv::restore()"
-
-ENV R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY
 
 # # script
 RUN R -e "devtools::test()"
