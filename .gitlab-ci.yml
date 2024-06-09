@@ -9,11 +9,7 @@ stages:
 variables:
     # RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
     # RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
-    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
-    RENV_PATHS_CACHE: "/root/.cache/R/renv/cache" #"$CI_PROJECT_DIR/cache"
-    RENV_PATHS_LIBRARY: "/root/.cache/R/renv/library" #"$CI_PROJECT_DIR/renv/library"
-    RUN_PYTHON_CONFIG_TESTS: "false"
-    R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
+    RUN_PYTHON_CONFIG_TESTS: "true"
 
 .before_script_templ: &before_script_templ
   - apt-get update && apt-get upgrade -y
@@ -32,6 +28,11 @@ test:
   stage: test
   tags:
     - docker
+  variables:
+    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
+    RENV_PATHS_CACHE: "/root/.cache/R/renv/cache" #"$CI_PROJECT_DIR/cache"
+    RENV_PATHS_LIBRARY: "/root/.cache/R/renv/library" #"$CI_PROJECT_DIR/renv/library"
+    R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
   before_script:
     - *before_script_templ
     - R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
