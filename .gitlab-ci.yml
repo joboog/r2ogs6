@@ -48,12 +48,13 @@ test:
   after_script:
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-      - "$RENV_PATHS_CACHE"
-      - "$RENV_PATHS_LIBRARY"
+  # Omit cache for now, ci always crashed the second time, dunno why
+  # cache:
+  #   key: "$CI_COMMIT_REF_SLUG"
+  #   untracked: true
+  #   paths:
+  #     - "$RENV_PATHS_CACHE"
+  #     - "$RENV_PATHS_LIBRARY"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
