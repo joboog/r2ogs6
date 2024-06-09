@@ -158,6 +158,43 @@ environment that you configured.
 
 ## Usage
 
+To quickly test if your set up works just run a benchmark shipped with the 
+package. 
+Remember that if you closed your R session in between you may have to reset the
+ `ogs_bin_path` by ```set_ogs6_bin_path()```.
+Now you can setup an example by:
+
+```
+sim_path <- tempdir()
+
+# Create new ogs object
+ogs6_obj <- OGS6$new(
+    sim_name = "my_simulation",
+    sim_path = sim_path
+)
+
+# Read in a project setup file
+prj_path <- system.file(
+    "extdata/benchmarks/flow_no_strain/flow_no_strain.prj",
+    package = "r2ogs6"
+)
+read_in_prj(ogs6_obj, prj_path = prj_path, read_in_gml = T)
+```
+
+Just start the simulation, check if it succeeds (returns a "0" exit status) and
+ hav a look at the output.
+
+```
+ogs6_run_simulation(ogs6_obj)
+
+ogs6_read_output_files(ogs6_obj)
+result_df <- ogs6_obj$pvds[[1]]$get_point_data(keys = c("pressure"))
+result_df
+```
+
+
+## Further Reading
+
 For tutorials on how to use the `r2ogs6` package, have a look at its vignettes:
 
 * [User Guide](vignettes/user_workflow_vignette.Rmd) 
