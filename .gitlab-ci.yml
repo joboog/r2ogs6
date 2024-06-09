@@ -9,11 +9,7 @@ stages:
 variables:
     # RETICULATE_MINICONDA_PATH: "/root/.local/share/r-miniconda/"
     # RETICULATE_PYTHON_ENV: "/root/.local/share/r-miniconda/envs/r-reticulate/"
-    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
-    RENV_PATHS_CACHE: "/root/.cache/R/renv/cache" #"$CI_PROJECT_DIR/cache"
-    RENV_PATHS_LIBRARY: "/root/.cache/R/renv/library" #"$CI_PROJECT_DIR/renv/library"
-    RUN_PYTHON_CONFIG_TESTS: "false"
-    R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
+    RUN_PYTHON_CONFIG_TESTS: "true"
 
 .before_script_templ: &before_script_templ
   - apt-get update && apt-get upgrade -y
@@ -32,6 +28,11 @@ test:
   stage: test
   tags:
     - docker
+  variables:
+    RENV_CONFIG_EXTERNAL_LIBRARIES: "/usr/local/lib/R/library"
+    RENV_PATHS_CACHE: "/root/.cache/R/renv/cache" #"$CI_PROJECT_DIR/cache"
+    RENV_PATHS_LIBRARY: "/root/.cache/R/renv/library" #"$CI_PROJECT_DIR/renv/library"
+    R_LIBS: "/usr/local/lib/R/site-library:/usr/local/lib/R/library:$RENV_PATHS_LIBRARY"
   before_script:
     - *before_script_templ
     - R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
@@ -47,12 +48,13 @@ test:
   after_script:
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    untracked: true
-    paths:
-      - "$RENV_PATHS_CACHE"
-      - "$RENV_PATHS_LIBRARY"
+  # Omit cache for now, ci always crashed the second time, dunno why
+  # cache:
+  #   key: "$CI_COMMIT_REF_SLUG"
+  #   untracked: true
+  #   paths:
+  #     - "$RENV_PATHS_CACHE"
+  #     - "$RENV_PATHS_LIBRARY"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -66,11 +68,24 @@ test_install:
     - *before_script_templ
     - mkdir ../test_r2ogs6 && cd ../test_r2ogs6 && ls . -ahl
   script:
+    # Install r2ogs6
     - R -e 'install.packages(c("remotes", "BiocManager"))'
     - R -e "remotes::install_local(path=\"$CI_PROJECT_DIR\", dependencies='Imports', repos=BiocManager::repositories())"
-    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3")'
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy", "vtk"))'
+    - R -e 'reticulate::use_virtualenv(virtualenv="r2ogs6")'
+    - R -e 'reticulate::py_config()'
     - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
     - R -e 'reticulate::py_module_available("ogs")'
+    # Run benchmark
+    - |
+      R -e '
+      library(r2ogs6)
+      set_ogs6_bin_path();
+      prj_path <- system.file("extdata/benchmarks/flow_no_strain/flow_no_strain.prj", package = "r2ogs6");
+      sim_path <- tempdir();
+      exit_code <- r2ogs6:::run_benchmark(prj_path=prj_path, sim_path=sim_path);
+      assertthat::are_equal(exit_code, 0)
+      '
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "master"'

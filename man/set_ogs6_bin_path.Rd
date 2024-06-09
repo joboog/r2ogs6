@@ -11,8 +11,8 @@ None, but it sets an option `r2ogs6.default_ogs6_bin_path` to point
 to the detected OGS binary path.
 }
 \description{
-This function automatically detects and temporarily sets the path to the 
-OpenGeoSys (OGS) binary within the active Python virtual environment. It is 
+This function automatically detects and temporarily sets the path to the
+OpenGeoSys (OGS) binary within the active Python virtual environment. It is
 typically called after installing OGS using the `install_ogs()` function.
 For a permanent setting of the OGS binary path, consider to define
 `r2ogs6.default_ogs6_bin_path` in a `config.yml` file.'

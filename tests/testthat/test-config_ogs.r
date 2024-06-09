@@ -8,9 +8,13 @@ test_that("install_ogs installs OGS correctly", {
   ogs_version <- "6.4.4"
   envname <- "r2ogs6"
   if (!(reticulate::virtualenv_exists(envname))){
-    reticulate::virtualenv_create(envname)
+    reticulate::virtualenv_create(
+      envname=envname, 
+      packages = c("numpy", "vtk")
+    )
   }
   reticulate::use_virtualenv(envname)
+  reticulate::py_config()
 
   # Run the function
   install_ogs(ogs_version = ogs_version, envname = envname)
