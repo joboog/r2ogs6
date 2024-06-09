@@ -23,10 +23,6 @@ First, open a terminal and clone the `r2ogs6` repository to your local machine.
 
 ```
 git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
-cd r2ogs6
-
-# Now checkout the latest stable release
-git checkout tags/v0.4.643
 ```
 
 To install `r2ogs6`, you first need the R-packages `remotes` and `BiocManager`.
@@ -42,7 +38,7 @@ install.packages(c("remotes", "BiocManager"))
 With `remotes`, you can now install `r2ogs6` in your preferred library.
 
 ```r
-# Install r2ogs6. Change the path to that of the cloned repository!
+# Install r2ogs6. Change "path/to/r2ogs6" to that of the cloned repository!
 remotes::install_local(
     path="path/to/r2ogs6", 
     dependencies="Imports",
@@ -83,7 +79,11 @@ Create a Python virtual environment with a specific name (e.g. "r2ogs6) and the
  path to the Python executable you just installed.
 
 ```r
-reticulate::virtualenv_create(envname="r2ogs6", python="/path/to/python")
+reticulate::virtualenv_create(
+    envname="r2ogs6", 
+    python="/path/to/python",
+    packages = c("numpy", "vtk")
+)
 ```
 
 Make sure that `reticulate::py_config()$python` points to the python executable
@@ -91,11 +91,12 @@ in the newly installed Python virtual environment.
 You can try to force `reticulate` to use the executable of your environment by:
 
 ```
-reticulate::use_virtualenv(envname="r2ogs6")
+reticulate::use_virtualenv(virtualenv="r2ogs6")
 ```
 
 If that does not work, quit your R session and create a `.Renviron` file in 
-your project folder:
+your project folder where you can set the path to the created virtual python
+environment:
 
 ```
 # .Renviron linux
@@ -103,11 +104,12 @@ RETICULATE_PYTHON=/path/to/your/virtualenv/bin/python
 ```
 
 This file is read at the start-up of R and forces `reticulate` to use your
-specific Python executable. Double check:
+specific Python executable. Double check if your python envrionment is now 
+recognized:
 
 ```r
 reticulate::py_config()
-```
+``` 
 
 Then you can install OpenGeoSys 6 (the Python dependencies `numpy` and `vtk` 
 will be installed alongside) as Python module.
