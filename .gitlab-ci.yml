@@ -37,6 +37,10 @@ test:
     - *before_script_templ
     - R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
     - R -e "renv::restore()"
+    # Setup python and fix python virtual environment
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy", "vtk"))'
+    - echo "RETICULATE_PYTHON=/root/.virtualenvs/r2ogs6/bin/python" > .Renviron
+    - R -e 'reticulate::py_config()'
     #- R -e 'renv::status()'
     # - R -e 'renv::install()'
     # - R -e 'renv::install("bioc::rhdf5")'
