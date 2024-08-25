@@ -1,6 +1,7 @@
 # How to Contribute to r2ogs6
 
-We are happy about all contributions!
+We are happy about your contributions to improve code quality and additional
+features!
 
 
 ## Bug reports?
