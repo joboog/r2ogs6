@@ -5,9 +5,13 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7389626.svg)](https://doi.org/10.5281/zenodo.7389626)
 [![JOSS Submission](https://joss.theoj.org/papers/08cb661c22ca8553e418acafeb9e7cb5/status.svg)](https://joss.theoj.org/papers/08cb661c22ca8553e418acafeb9e7cb5)
 
-`r2ogs6` is an R-API to the multiphysics simulator [OpenGeoSys 6](https://gitlab.opengeosys.org/ogs/ogs).
-`r2ogs6` allows pre-processing (preparing input files), executing simulation runs, retrieving, post-processing and visualizing output data in R.
-Furthermore, the package comes with functionality to define [ensemble runs](vignettes/ensemble_workflow_vignette.Rmd).
+`r2ogs6` provides a file--based interface of the multi--physics sub-surface process simulator [OpenGeoSys 6](https://gitlab.opengeosys.org/ogs/ogs) to the `R` programing and statistical computing environment.
+It enables geoscientist, hydrologists and engineers to perform and analyze simulation models of the sub--surface earth system with R.
+`r2ogs6` provides means to:
+- pre-process (preparing input files) simulations with OpenGeoSys 6
+- execute single and ensemble simulations
+- output post-processing and visualization
+
 
 ## Setup
 
