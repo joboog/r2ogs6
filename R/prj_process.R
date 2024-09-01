@@ -86,7 +86,9 @@
 #' @param pressurized_crack_scheme Optional:
 #' @param subtype Optional:
 #' @param apply_body_force_for_deformation Optional:
-#' @param ... Optional: fracture_properties, constitutive_relation
+#' @param use_b_bar Optional: string "true" or "false"
+#' @param ... Optional: fracture_properties, constitutive_relation, 
+#' ice_constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
 prj_process <- function(name,
@@ -171,6 +173,7 @@ prj_process <- function(name,
                            pressurized_crack_scheme = NULL,
                            subtype = NULL,
                            apply_body_force_for_deformation = NULL,
+                           use_b_bar = NULL,
                            ...){
 
     #Coerce input
@@ -215,6 +218,9 @@ prj_process <- function(name,
 
     constitutive_relation <-
         ellipsis_list[names(ellipsis_list) == "constitutive_relation"]
+
+    ice_constitutive_relation <-
+        ellipsis_list[names(ellipsis_list) == "ice_constitutive_relation"]
 
     new_prj_process(
         name,
@@ -300,7 +306,9 @@ prj_process <- function(name,
         linear,
         pressurized_crack_scheme,
         subtype,
-        apply_body_force_for_deformation
+        apply_body_force_for_deformation,
+        ice_constitutive_relation,
+        use_b_bar
     )
 }
 
@@ -388,7 +396,9 @@ new_prj_process <- function(name,
                             linear = NULL,
                             pressurized_crack_scheme = NULL,
                             subtype = NULL,
-                            apply_body_force_for_deformation) {
+                            apply_body_force_for_deformation,
+                            ice_constitutive_relation = NULL,
+                            use_b_bar = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -406,6 +416,11 @@ new_prj_process <- function(name,
     if(!is.null(constitutive_relation)){
         is_wrapper_list(constitutive_relation,
                         "prj_constitutive_relation")
+    }
+
+    if(!is.null(ice_constitutive_relation)){
+        is_wrapper_list(ice_constitutive_relation,
+                        "prj_ice_constitutive_relation")
     }
 
     if(!is.null(darcy_gravity)){
@@ -493,7 +508,8 @@ new_prj_process <- function(name,
                        energy_split_model,
                        softening_curve,
                        pressurized_crack_scheme,
-                       subtype)
+                       subtype,
+                       use_b_bar)
 
 
     are_null_or_numbers(dimension,
@@ -626,10 +642,15 @@ new_prj_process <- function(name,
             pressurized_crack_scheme = pressurized_crack_scheme,
             subtype = subtype,
             apply_body_force_for_deformation = apply_body_force_for_deformation,
+            ice_constitutive_relation = ice_constitutive_relation,
+            use_b_bar = use_b_bar,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
-            unwrap_on_exp = c("fracture_properties", "constitutive_relation")
+            unwrap_on_exp = c(
+                "fracture_properties", "constitutive_relation",
+                "ice_constitutive_relation"
+            )
         ),
 
         class = "prj_process"
@@ -856,6 +877,46 @@ new_prj_constitutive_relation <- function(type,
                    flatten_on_exp = character()
     ),
     class = "prj_constitutive_relation"
+    )
+}
+
+
+#' prj_ice_constitutive_relation
+#' @description tag: ice_constitutive_relation
+#' @param type string:
+#' @param youngs_modulus Optional:
+#' @param poissons_ratio Optional:
+#' @export
+prj_ice_constitutive_relation <- function(
+    type,
+    youngs_modulus = NULL,
+    poissons_ratio = NULL,
+    ) {
+
+
+    new_prj_ice_constitutive_relation(
+        type,
+        youngs_modulus,
+        poissons_ratio
+    )
+
+}
+
+
+new_prj_ice_constitutive_relation <- function(
+    type,
+    youngs_modulus = NULL,
+    poissons_ratio = NULL,
+    ) {
+    
+    structure(list(type = type,
+                   youngs_modulus = youngs_modulus,
+                   poissons_ratio = poissons_ratio,
+                   xpath = "processes/process/ice_constitutive_relation",
+                   attr_names = character(),
+                   flatten_on_exp = character()
+    ),
+    class = "prj_ice_constitutive_relation"
     )
 }
 
