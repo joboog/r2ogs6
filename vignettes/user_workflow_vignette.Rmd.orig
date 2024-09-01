@@ -102,6 +102,8 @@ Since we haven't defined anything so far, you'll see a lot of red there. But the
 As a rule of thumb, classes are named with the prefix `prj_` followed by their XML tag name in the `.prj` file. The only exceptions to this rule are subclasses where this would lead to duplicate class names. The class `prj_time_loop` for example contains a subclass representing a `process` child element which is not to be confused with the `process` children of the first level `processes` node directly under the root node of the `.prj` file. Because of this, that subclass is named `prj_tl_process`. Let's try adding something now.
 
 To add data to our simulation object, we use `OGS6$add()`. We can use this method with any top level `.prj` element, which means we're not limited to `prj_parameter` objects.
+Since I already read in a `.prj` file earlier, I won't run this code snippet. 
+If you'd like a complete example of manually defining simulation parameters, there's a script `flow_free_expansion.R` in the `examples/workflow_demos` folder.
 
 ```{r eval = F}
 # Add a parameter
@@ -130,7 +132,6 @@ ogs6_obj$add(
 )
 ```
 
-Since I already read in a `.prj` file earlier, I won't run the above snippet. If you'd like a complete example of manually defining simulation parameters, there's a script `flow_free_expansion.R` in the `examples/workflow_demos` folder.
 
 ## Running the simulation
 
@@ -174,6 +175,7 @@ ogs6_obj$h5s <- list(OGS6_h5$new(system.file("/extdata/benchmarks/EllipticPETSc"
 ```
 
 Similar to the idea with `.pvd` output, `hdf5` files are automatically referenced under `$h5s` if returned by the simulation. Here, we have added a file artificially from the benchmark library for demonstration.
+Example simulation with an `hdf5` outpufileextdata/benchmarks/EllipticPETSc/cube_1e3_np2.h5
 
 ```{r}
 ogs6_obj$h5s
