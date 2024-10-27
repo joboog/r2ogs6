@@ -890,7 +890,7 @@ new_prj_constitutive_relation <- function(type,
 prj_ice_constitutive_relation <- function(
     type,
     youngs_modulus = NULL,
-    poissons_ratio = NULL,
+    poissons_ratio = NULL
     ) {
 
 
@@ -906,7 +906,7 @@ prj_ice_constitutive_relation <- function(
 new_prj_ice_constitutive_relation <- function(
     type,
     youngs_modulus = NULL,
-    poissons_ratio = NULL,
+    poissons_ratio = NULL
     ) {
     
     structure(list(type = type,
