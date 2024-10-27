@@ -15,11 +15,14 @@
 #' flattened to a string in XML
 #' @param unwrap_on_exp character: Optional: This is for lists which will not
 #' be exported to XML
+#' @param remove_name_on_exp logical: Optional: If TRUE, the name of the
+#' object will be removed from the XML output
 #' @noRd
 to_node <- function(object, object_name = "",
                     attribute_names = character(),
                     flatten_on_exp = character(),
-                    unwrap_on_exp = character()){
+                    unwrap_on_exp = character(),
+                    remove_name_on_exp = FALSE){
 
     assertthat::assert_that(is.character(attribute_names))
     assertthat::assert_that(is.character(flatten_on_exp))
@@ -73,7 +76,15 @@ to_node <- function(object, object_name = "",
 
             return(invisible(ret_vect))
 
-        }else{
+        }
+        
+        if(remove_name_on_exp && object_name == "name"){
+
+            ret_list <- list(list(object))
+
+            return(invisible(ret_list))
+
+        } else{
             ret_list <- list(list(object))
             names(ret_list)[[1]] <- object_name
 
@@ -100,6 +111,12 @@ to_node <- function(object, object_name = "",
             }
         }
 
+        if("remove_name_on_exp" %in% names(object)){
+            remove_name_on_exp <- object$remove_name_on_exp
+        }else {
+            remove_name_on_exp <- FALSE
+        }
+
         object_node <- list(structure(list()))
         names(object_node)[[1]] <- get_tag_from_class(class_name)
 
@@ -116,7 +133,8 @@ to_node <- function(object, object_name = "",
                                   param_names[[i]],
                                   object$attr_names,
                                   object$flatten_on_exp,
-                                  unwrap_on_exp)
+                                  unwrap_on_exp,
+                                  remove_name_on_exp)
 
             #Handle depending on if it's a child or attribute
             if(is.list(param_node)){
