@@ -35,7 +35,6 @@ new_prj_time_loop <- function(processes,
                                 submesh_residuum_output = NULL) {
 
     is_wrapper_list(processes, "prj_tl_process")
-    
     # either output or outputs has to be given
     assertthat::assert_that((!is.null(output)) | (!is.null(outputs)))
     assertthat::assert_that(!(!is.null(output) & !is.null(outputs))) 
@@ -167,7 +166,7 @@ new_prj_tl_process <- function(ref,
 #' @export
 prj_output <- function(type,
                           prefix,
-                          variables,
+                          variables = NULL,
                           suffix = NULL,
                           timesteps = NULL,
                           compress_output = NULL,
@@ -201,7 +200,7 @@ prj_output <- function(type,
 
 new_prj_output <- function(type,
                                  prefix,
-                                 variables,
+                                 variables = NULL,
                                  suffix = NULL,
                                  timesteps = NULL,
                                  compress_output = NULL,
@@ -215,8 +214,11 @@ new_prj_output <- function(type,
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(prefix))
-    assertthat::assert_that(is.vector(variables))
-    names(variables) <- rep("variable", length(variables))
+
+    if(!is.null(variables)){
+        assertthat::assert_that(is.vector(variables))
+        names(variables) <- rep("variable", length(variables))
+    }
 
     are_null_or_strings(suffix,
                         data_mode,
@@ -229,7 +231,7 @@ new_prj_output <- function(type,
 
     are_null_or_string_flags(compress_output)
 
-    is_null_or_wrapper_list(meshes, "character")
+    is_null_or_wrapper_list(meshes, "prj_output_mesh")
 
     are_null_or_numeric(fixed_output_times)
 
