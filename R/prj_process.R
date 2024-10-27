@@ -508,8 +508,7 @@ new_prj_process <- function(name,
                        energy_split_model,
                        softening_curve,
                        pressurized_crack_scheme,
-                       subtype,
-                       use_b_bar)
+                       subtype)
 
 
     are_null_or_numbers(dimension,
@@ -542,7 +541,8 @@ new_prj_process <- function(name,
     are_null_or_string_flags(mass_lumping,
                             non_advective_form,
                             linear,
-                            apply_body_force_for_deformation)
+                            apply_body_force_for_deformation,
+                            use_b_bar)
 
     assertthat::assert_that(is.null(numerical_stabilization) |
                                 is.list(numerical_stabilization))
