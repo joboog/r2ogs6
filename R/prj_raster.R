@@ -38,6 +38,7 @@ new_prj_raster <- function(
       variable = variable,
       dimension = dimension,
       xpath = "rasters/raster",
+      attr_names = character(),
       flatten_on_exp = character()
     ),
   class = "prj_raster"
