@@ -469,7 +469,8 @@ get_valid_phase_types <- function(){
     valid_phase_types <- c("Gas",
                            "Solid",
                            "AqueousLiquid",
-                           "NonAqueousLiquid")
+                           "NonAqueousLiquid",
+                           "FrozenLiquid")
 
     return(invisible(valid_phase_types))
 }
