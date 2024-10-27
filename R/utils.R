@@ -450,6 +450,8 @@ make_abs_path <- function(file_path, ref_path, force=F){
   assertthat::assert_that(assertthat::is.string(file_path))
   assertthat::assert_that(assertthat::is.string(ref_path))
 
+  file_path <- stringr::str_trim(file_path)
+
   # make shure that ref_path is absolute and ends with "/"
   ref_path <- normalizePath(ref_path, mustWork = T)
   ref_path <- win_to_linux_path(ref_path)
