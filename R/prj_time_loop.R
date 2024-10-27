@@ -684,3 +684,35 @@ validate_timesteps <- function(timesteps, in_output = FALSE){
 
     return(invisible(timesteps))
 }
+
+
+#===== prj_output_mesh =====
+
+#'prj_output_mesh
+#'@description tag: mesh
+#'@param name: string
+#'@param material_ids Optional: string
+#'@export
+prj_output_mesh <- function(name,
+                            material_ids = NULL) {
+
+    new_prj_output_mesh(name,
+                        material_ids)
+}
+
+new_prj_output_mesh <- function(name,
+                                material_ids = NULL) {
+
+    are_null_or_strings(material_ids)
+
+    structure(list(
+        name = name,
+        material_ids = material_ids,
+        xpath = "time_loop/output/meshes/mesh",
+        attr_names = c("material_ids"),
+        flatten_on_exp = character(),
+        remove_name_on_exp = TRUE
+        ),
+        class = "prj_output_mesh"
+    )
+}
