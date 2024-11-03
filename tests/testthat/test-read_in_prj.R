@@ -242,7 +242,7 @@ test_that("read_in works for prj_tl_process, pr_output, prj_submesh_residuum_out
 
     # output
     expect_equal(class(test$time_loop$output), "prj_output")
-    expect_equal(length(test$time_loop$output), 15)
+    expect_equal(length(test$time_loop$output), 16)
     expect_equal(test$time_loop$output$type, "VTK")
     expect_equal(test$time_loop$output$prefix, "PointHeatSource")
     expect_equal(test$time_loop$output$suffix, "_ts_{:timestep}_t_{:time}")
