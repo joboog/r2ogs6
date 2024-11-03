@@ -11,7 +11,6 @@
 #' @param secondary_variables Optional:
 #' @param specific_body_force Optional:
 #' @param solid_density Optional:
-#' @param dimension Optional:
 #' @param coupling_scheme Optional:
 #' @param darcy_gravity Optional:
 #' @param reference_temperature Optional:
@@ -98,7 +97,6 @@ prj_process <- function(name,
                            secondary_variables = NULL,
                            specific_body_force = NULL,
                            solid_density = NULL,
-                           dimension = NULL,
                            coupling_scheme = NULL,
                            darcy_gravity = NULL,
                            reference_temperature = NULL,
@@ -179,7 +177,6 @@ prj_process <- function(name,
     #Coerce input
     integration_order <- coerce_string_to_numeric(integration_order)
     specific_body_force <- coerce_string_to_numeric(specific_body_force)
-    dimension <- coerce_string_to_numeric(dimension)
     internal_length <- coerce_string_to_numeric(internal_length)
     fluid_specific_heat_source <-
         coerce_string_to_numeric(fluid_specific_heat_source)
@@ -231,7 +228,6 @@ prj_process <- function(name,
         specific_body_force,
         constitutive_relation,
         solid_density,
-        dimension,
         coupling_scheme,
         darcy_gravity,
         reference_temperature,
@@ -321,7 +317,6 @@ new_prj_process <- function(name,
                             specific_body_force = NULL,
                             constitutive_relation = NULL,
                             solid_density = NULL,
-                            dimension = NULL,
                             coupling_scheme = NULL,
                             darcy_gravity = NULL,
                             reference_temperature = NULL,
@@ -511,8 +506,7 @@ new_prj_process <- function(name,
                        subtype)
 
 
-    are_null_or_numbers(dimension,
-                       internal_length,
+    are_null_or_numbers(internal_length,
                        fluid_specific_heat_source,
                        fluid_specific_isobaric_heat_capacity,
                        solid_hydraulic_permeability,
@@ -560,7 +554,6 @@ new_prj_process <- function(name,
             specific_body_force = specific_body_force,
             constitutive_relation = constitutive_relation,
             solid_density = solid_density,
-            dimension = dimension,
             coupling_scheme = coupling_scheme,
             darcy_gravity = darcy_gravity,
             reference_temperature = reference_temperature,
