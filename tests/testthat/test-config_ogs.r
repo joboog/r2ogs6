@@ -5,7 +5,7 @@ test_that("install_ogs installs OGS correctly", {
   }
 
   # Setup
-  ogs_version <- "6.4.4"
+  ogs_version <- "6.5.2"
   envname <- "r2ogs6"
   if (!(reticulate::virtualenv_exists(envname))){
     reticulate::virtualenv_create(
@@ -17,8 +17,12 @@ test_that("install_ogs installs OGS correctly", {
   reticulate::py_config()
 
   # Run the function
-  install_ogs(ogs_version = ogs_version, envname = envname)
-  set_ogs6_bin_path()
+  if (!(reticulate::py_module_available("ogs"))){
+    install_ogs(ogs_version = ogs_version, envname = envname)
+  }
+  if (is.null(options("r2ogs6.default_ogs6_bin_path"))){
+    set_ogs6_bin_path()
+  }  
 
   # Check if ogs was installed
   expect_true(reticulate::py_module_available("ogs"))
