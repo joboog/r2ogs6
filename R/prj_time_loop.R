@@ -692,7 +692,7 @@ validate_timesteps <- function(timesteps, in_output = FALSE){
 
 #'prj_output_mesh
 #'@description tag: mesh
-#'@param name: string
+#'@param name string : Name of the mesh
 #'@param material_ids Optional: string
 #'@export
 prj_output_mesh <- function(name,
