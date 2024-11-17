@@ -119,6 +119,9 @@ as returned by \code{rhdf5::h5read()}.}
 \item{\code{mshs}}{\code{mshs} \code{value} must be an object of class \code{OGS6_msh}.}
 
 \item{\code{include}}{\code{include} \code{value} must be a string.}
+
+\item{\code{rasters}}{\code{.prj} \code{rasters} tag. \code{value} must be list of
+\code{prj_raster} objects}
 }
 \if{html}{\out{</div>}}
 }
