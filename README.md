@@ -86,7 +86,7 @@ Create a Python virtual environment with a specific name (e.g. "r2ogs6) and the
 reticulate::virtualenv_create(
     envname="r2ogs6", 
     python="/path/to/python",
-    packages = c("numpy", "vtk")
+    packages = c("numpy==1.26.4", "vtk==9.3.1")
 )
 ```
 
@@ -120,7 +120,7 @@ will be installed alongside) as Python module.
 
 ```
 library(r2ogs6)
-install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")
+install_ogs(ogs_version = "6.5.2", envname = "r2ogs6")
 ```
 Be aware, to install the OpenGeoSys 6 version compatible with the `r2ogs6` version,
  see [releases](https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/releases).
