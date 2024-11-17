@@ -55,7 +55,7 @@ set_ogs6_bin_path <-
         cfg <- reticulate::py_config()
 
         has_python <- reticulate::py_available(initialize = FALSE)
-        has_numpy <- reticulate::py_numpy_available(initialize = FALSE)
+        has_numpy <- reticulate::py_numpy_available(initialize = TRUE)
         has_vtk <- reticulate::py_module_available("vtk")
         has_ogs <- reticulate::py_module_available("ogs")
         assertthat::assert_that(
