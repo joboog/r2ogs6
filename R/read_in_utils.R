@@ -123,13 +123,15 @@ node_to_prj_class_object <- function(xml_node,
             stringr::str_remove_all(xml_text_clean, "[\n]")
             if(xml_text_clean != ""){
                 parameters <- c(parameters, xml_text_clean)
-            }
-        if(length(parameters)==1){
-            names(parameters) <- "name"
-        }else{
-            names(parameters)[2] <- "name"
-        }
-        
+                
+                # Add dummy name "name" to parameter
+                if(length(parameters)==1){
+                    names(parameters) <- "name"
+                # In case there is an attribute
+                }else{
+                    names(parameters)[2] <- "name"
+                }
+            }        
         
     }else{
         for(i in seq_len(length(parameter_nodes))){
@@ -217,6 +219,12 @@ node_to_object <- function(xml_node,
 
     node_name <- xml2::xml_name(xml_node)
 
+    #Node is represented by subclass
+    if(!is.null(get_class_from_xpath(xpath))){
+        return(invisible(node_to_prj_class_object(xml_node,
+                                                     xpath)))
+    }
+
     # joboog: I think this if statements should be combined to if-else
     # statements to be more explicit and to catch errors easier.
     #Node is leaf
@@ -247,11 +255,6 @@ node_to_object <- function(xml_node,
         }
     }
 
-    #Node is represented by subclass
-    if(!is.null(get_class_from_xpath(xpath))){
-        return(invisible(node_to_prj_class_object(xml_node,
-                                                     xpath)))
-    }
 
     #Node has children but is not represented by subclass
     wrapper_list <- list()
