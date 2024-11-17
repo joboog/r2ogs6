@@ -17,7 +17,6 @@
         <secondary_variable internal_name="velocity" output_name="velocity"/>
       </secondary_variables>
       <specific_body_force>0 0 0</specific_body_force>
-      <dimension>3</dimension>
       <constitutive_relation>
         <type>LinearElasticIsotropic</type>
         <youngs_modulus>E</youngs_modulus>

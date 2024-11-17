@@ -12,7 +12,6 @@ prj_process(
   secondary_variables = NULL,
   specific_body_force = NULL,
   solid_density = NULL,
-  dimension = NULL,
   coupling_scheme = NULL,
   darcy_gravity = NULL,
   reference_temperature = NULL,
