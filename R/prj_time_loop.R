@@ -218,6 +218,8 @@ new_prj_output <- function(type,
     if(!is.null(variables)){
         assertthat::assert_that(is.vector(variables))
         names(variables) <- rep("variable", length(variables))
+    } else {
+        variables <- character()
     }
 
     are_null_or_strings(suffix,
