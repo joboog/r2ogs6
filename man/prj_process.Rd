@@ -104,8 +104,6 @@ prj_process(
 
 \item{solid_density}{Optional:}
 
-\item{dimension}{Optional:}
-
 \item{coupling_scheme}{Optional:}
 
 \item{darcy_gravity}{Optional:}
