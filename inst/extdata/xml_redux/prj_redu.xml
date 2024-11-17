@@ -74,7 +74,6 @@
         <dependency_parameter_mvm required="FALSE" read_content_as="string"/>
       </constitutive_relation>
       <solid_density required="FALSE" read_content_as="string"/>
-      <dimension required="FALSE" read_content_as="string"/>
       <coupling_scheme required="FALSE" read_content_as="string"/>
       <reference_solid_density required="FALSE" read_content_as="string"/>
       <linear_thermal_expansion_coefficient required="FALSE" read_content_as="string"/>
