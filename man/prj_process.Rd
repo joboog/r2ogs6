@@ -86,6 +86,7 @@ prj_process(
   pressurized_crack_scheme = NULL,
   subtype = NULL,
   apply_body_force_for_deformation = NULL,
+  use_b_bar = NULL,
   ...
 )
 }
@@ -252,7 +253,10 @@ prj_process(
 
 \item{apply_body_force_for_deformation}{Optional:}
 
-\item{...}{Optional: fracture_properties, constitutive_relation}
+\item{use_b_bar}{Optional: string "true" or "false"}
+
+\item{...}{Optional: fracture_properties, constitutive_relation, 
+ice_constitutive_relation}
 }
 \description{
 tag: process (parent tag: processes)
@@ -269,7 +273,6 @@ prj_process(
         secondary_variable = c(internal_name = "sigma_yy", output_name = "sigma_yy")
     ),
     specific_body_force = c(0, 0, 0),
-    dimension = 3,
     constitutive_relation = prj_constitutive_relation(
         type = "LinearElasticIsotropic",
         youngs_modulus = "E",
