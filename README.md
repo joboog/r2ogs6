@@ -18,7 +18,7 @@ It enables geoscientist, hydrologists and engineers to perform and analyze simul
 `r2ogs6` requires an installation of OpenGeoSys 6.
 Furthermore, Python including the libraries `numpy` and `vtk` is required to read in the `.vtu` and `.pvd` files produced by OpenGeoSys 6.
 These can be install after having installed `r2ogs6`.
-`r2ogs6` was tested with the following environment: `python==3.10.12`, `vtk==9.3.0`, `numpy==1.26.4`
+`r2ogs6` was tested with the following environment: `python==3.10.12`, `vtk==9.3.1`, `numpy==1.26.4`
 
 
 ### r2ogs6 Installation
