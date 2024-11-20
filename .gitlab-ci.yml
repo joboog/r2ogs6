@@ -50,6 +50,7 @@ test:
     # - R CMD build . --no-manual --no-build-vignettes
     # - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
   after_script:
+    - R -e "install.packages('covr', repos = c(CRAN = 'https://cloud.r-project.org'))"
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
   # Omit cache for now, ci always crashed the second time, dunno why
