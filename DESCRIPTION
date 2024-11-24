@@ -1,7 +1,7 @@
 Package: r2ogs6
 Type: Package
 Title: An API to the multi-physics simulator OpenGeoSys-v6
-Version: 0.4.644
+Version: 0.4.652
 Authors@R: c(person(given = "Ruben",
                     family = "Heinrich",
                     role = c("aut"),
