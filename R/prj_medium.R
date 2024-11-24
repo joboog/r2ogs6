@@ -102,6 +102,8 @@ new_prj_medium <- function(phases = NULL,
 #' @param dry_thermal_conductivity Optional:
 #' @param wet_thermal_conductivity Optional:
 #' @param mean_type Optional: string
+#' @param steepness Optional: numeric
+#' @param characteristic_temperature Optional: numeric
 #' @param ... dvalue
 #' @example man/examples/ex_prj_pr_property.R
 #' @export
@@ -150,6 +152,8 @@ prj_pr_property <- function(name,
                             dry_thermal_conductivity = NULL,
                             wet_thermal_conductivity = NULL,
                             mean_type = NULL,
+                            steepness = NULL,
+                            characteristic_temperature = NULL,
                             ...) {
 
     #Coerce input
@@ -172,6 +176,10 @@ prj_pr_property <- function(name,
         coerce_string_to_numeric(tensile_strength_parameter)
     entry_pressure <- coerce_string_to_numeric(entry_pressure)
     jacobian_factor <- coerce_string_to_numeric(jacobian_factor)
+    steepness <- coerce_string_to_numeric(steepness)
+    characteristic_temperature <- coerce_string_to_numeric(
+        characteristic_temperature
+    )
 
     ellipsis_list <- list(...)
     dvalue <- ellipsis_list[names(ellipsis_list) == "dvalue"]
@@ -221,6 +229,8 @@ prj_pr_property <- function(name,
                         dry_thermal_conductivity,
                         wet_thermal_conductivity,
                         mean_type,
+                        steepness,
+                        characteristic_temperature,
                         dvalue)
 }
 
@@ -270,6 +280,8 @@ new_prj_pr_property <- function(name,
                                 dry_thermal_conductivity = NULL,
                                 wet_thermal_conductivity = NULL,
                                 mean_type = NULL,
+                                steepness = NULL,
+                                characteristic_temperature = NULL,
                                 dvalue = NULL) {
 
 
@@ -300,7 +312,9 @@ new_prj_pr_property <- function(name,
                         friction_angle,
                         maximum_permeability,
                         tensile_strength_parameter,
-                        entry_pressure)
+                        entry_pressure,
+                        steepness,
+                        characteristic_temperature)
 
     are_null_or_strings(parameter_name,
                         independent_variable,
@@ -367,6 +381,8 @@ new_prj_pr_property <- function(name,
                    dry_thermal_conductivity = dry_thermal_conductivity,
                    wet_thermal_conductivity = wet_thermal_conductivity,
                    mean_type = mean_type,
+                   steepness = steepness,
+                   characteristic_temperature = characteristic_temperature,
                    dvalue = dvalue,
                    xpath = "media/medium/properties/property",
                    attr_names = character(),
@@ -453,7 +469,8 @@ get_valid_phase_types <- function(){
     valid_phase_types <- c("Gas",
                            "Solid",
                            "AqueousLiquid",
-                           "NonAqueousLiquid")
+                           "NonAqueousLiquid",
+                           "FrozenLiquid")
 
     return(invisible(valid_phase_types))
 }

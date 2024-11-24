@@ -11,7 +11,6 @@
 #' @param secondary_variables Optional:
 #' @param specific_body_force Optional:
 #' @param solid_density Optional:
-#' @param dimension Optional:
 #' @param coupling_scheme Optional:
 #' @param darcy_gravity Optional:
 #' @param reference_temperature Optional:
@@ -86,7 +85,9 @@
 #' @param pressurized_crack_scheme Optional:
 #' @param subtype Optional:
 #' @param apply_body_force_for_deformation Optional:
-#' @param ... Optional: fracture_properties, constitutive_relation
+#' @param use_b_bar Optional: string "true" or "false"
+#' @param ... Optional: fracture_properties, constitutive_relation, 
+#' ice_constitutive_relation
 #' @example man/examples/ex_prj_process.R
 #' @export
 prj_process <- function(name,
@@ -96,7 +97,6 @@ prj_process <- function(name,
                            secondary_variables = NULL,
                            specific_body_force = NULL,
                            solid_density = NULL,
-                           dimension = NULL,
                            coupling_scheme = NULL,
                            darcy_gravity = NULL,
                            reference_temperature = NULL,
@@ -171,12 +171,12 @@ prj_process <- function(name,
                            pressurized_crack_scheme = NULL,
                            subtype = NULL,
                            apply_body_force_for_deformation = NULL,
+                           use_b_bar = NULL,
                            ...){
 
     #Coerce input
     integration_order <- coerce_string_to_numeric(integration_order)
     specific_body_force <- coerce_string_to_numeric(specific_body_force)
-    dimension <- coerce_string_to_numeric(dimension)
     internal_length <- coerce_string_to_numeric(internal_length)
     fluid_specific_heat_source <-
         coerce_string_to_numeric(fluid_specific_heat_source)
@@ -216,6 +216,9 @@ prj_process <- function(name,
     constitutive_relation <-
         ellipsis_list[names(ellipsis_list) == "constitutive_relation"]
 
+    ice_constitutive_relation <-
+        ellipsis_list[names(ellipsis_list) == "ice_constitutive_relation"]
+
     new_prj_process(
         name,
         type,
@@ -225,7 +228,6 @@ prj_process <- function(name,
         specific_body_force,
         constitutive_relation,
         solid_density,
-        dimension,
         coupling_scheme,
         darcy_gravity,
         reference_temperature,
@@ -300,7 +302,9 @@ prj_process <- function(name,
         linear,
         pressurized_crack_scheme,
         subtype,
-        apply_body_force_for_deformation
+        apply_body_force_for_deformation,
+        ice_constitutive_relation,
+        use_b_bar
     )
 }
 
@@ -313,7 +317,6 @@ new_prj_process <- function(name,
                             specific_body_force = NULL,
                             constitutive_relation = NULL,
                             solid_density = NULL,
-                            dimension = NULL,
                             coupling_scheme = NULL,
                             darcy_gravity = NULL,
                             reference_temperature = NULL,
@@ -388,7 +391,9 @@ new_prj_process <- function(name,
                             linear = NULL,
                             pressurized_crack_scheme = NULL,
                             subtype = NULL,
-                            apply_body_force_for_deformation) {
+                            apply_body_force_for_deformation,
+                            ice_constitutive_relation = NULL,
+                            use_b_bar = NULL) {
 
     #Basic validation
     assertthat::assert_that(assertthat::is.string(name))
@@ -406,6 +411,11 @@ new_prj_process <- function(name,
     if(!is.null(constitutive_relation)){
         is_wrapper_list(constitutive_relation,
                         "prj_constitutive_relation")
+    }
+
+    if(!is.null(ice_constitutive_relation)){
+        is_wrapper_list(ice_constitutive_relation,
+                        "prj_ice_constitutive_relation")
     }
 
     if(!is.null(darcy_gravity)){
@@ -496,8 +506,7 @@ new_prj_process <- function(name,
                        subtype)
 
 
-    are_null_or_numbers(dimension,
-                       internal_length,
+    are_null_or_numbers(internal_length,
                        fluid_specific_heat_source,
                        fluid_specific_isobaric_heat_capacity,
                        solid_hydraulic_permeability,
@@ -526,7 +535,8 @@ new_prj_process <- function(name,
     are_null_or_string_flags(mass_lumping,
                             non_advective_form,
                             linear,
-                            apply_body_force_for_deformation)
+                            apply_body_force_for_deformation,
+                            use_b_bar)
 
     assertthat::assert_that(is.null(numerical_stabilization) |
                                 is.list(numerical_stabilization))
@@ -544,7 +554,6 @@ new_prj_process <- function(name,
             specific_body_force = specific_body_force,
             constitutive_relation = constitutive_relation,
             solid_density = solid_density,
-            dimension = dimension,
             coupling_scheme = coupling_scheme,
             darcy_gravity = darcy_gravity,
             reference_temperature = reference_temperature,
@@ -626,10 +635,15 @@ new_prj_process <- function(name,
             pressurized_crack_scheme = pressurized_crack_scheme,
             subtype = subtype,
             apply_body_force_for_deformation = apply_body_force_for_deformation,
+            ice_constitutive_relation = ice_constitutive_relation,
+            use_b_bar = use_b_bar,
             xpath = "processes/process",
             attr_names = c("secondary_variable"),
             flatten_on_exp = c("specific_body_force"),
-            unwrap_on_exp = c("fracture_properties", "constitutive_relation")
+            unwrap_on_exp = c(
+                "fracture_properties", "constitutive_relation",
+                "ice_constitutive_relation"
+            )
         ),
 
         class = "prj_process"
@@ -645,11 +659,17 @@ new_prj_process <- function(name,
 #' @param type string:
 #' @param id Optional:
 #' @param youngs_modulus Optional:
+#' @param youngs_modulus_i Optional:
+#' @param youngs_modulus_a Optional:
 #' @param poissons_ratio Optional:
+#' @param poissons_ratio_ii Optional:
+#' @param poissons_ratio_ia Optional:
 #' @param nonlinear_solver Optional:
 #' @param behaviour Optional:
 #' @param material_properties Optional:
 #' @param shear_modulus Optional:
+#' @param shear_modulus_ii Optional:
+#' @param shear_modulus_ia Optional:
 #' @param bulk_modulus Optional:
 #' @param kappa Optional:
 #' @param beta Optional:
@@ -687,11 +707,17 @@ new_prj_process <- function(name,
 prj_constitutive_relation <- function(type,
                                          id = NULL,
                                          youngs_modulus = NULL,
+                                         youngs_modulus_i = NULL,
+                                         youngs_modulus_a = NULL,
                                          poissons_ratio = NULL,
+                                         poissons_ratio_ii = NULL,
+                                         poissons_ratio_ia = NULL,
                                          nonlinear_solver = NULL,
                                          behaviour = NULL,
                                          material_properties = NULL,
                                          shear_modulus = NULL,
+                                         shear_modulus_ii = NULL,
+                                         shear_modulus_ia = NULL,
                                          bulk_modulus = NULL,
                                          kappa = NULL,
                                          beta = NULL,
@@ -731,11 +757,17 @@ prj_constitutive_relation <- function(type,
     new_prj_constitutive_relation(type,
                                      id,
                                      youngs_modulus,
+                                     youngs_modulus_i,
+                                     youngs_modulus_a,
                                      poissons_ratio,
+                                     poissons_ratio_ii,
+                                     poissons_ratio_ia,
                                      nonlinear_solver,
                                      behaviour,
                                      material_properties,
                                      shear_modulus,
+                                     shear_modulus_ii,
+                                     shear_modulus_ia,
                                      bulk_modulus,
                                      kappa,
                                      beta,
@@ -774,11 +806,17 @@ prj_constitutive_relation <- function(type,
 new_prj_constitutive_relation <- function(type,
                                              id = NULL,
                                              youngs_modulus = NULL,
+                                             youngs_modulus_i = NULL,
+                                             youngs_modulus_a = NULL,
                                              poissons_ratio = NULL,
+                                             poissons_ratio_ii = NULL,
+                                             poissons_ratio_ia = NULL,
                                              nonlinear_solver = NULL,
                                              behaviour = NULL,
                                              material_properties = NULL,
                                              shear_modulus = NULL,
+                                             shear_modulus_ii = NULL,
+                                             shear_modulus_ia = NULL,
                                              bulk_modulus = NULL,
                                              kappa = NULL,
                                              beta = NULL,
@@ -814,11 +852,17 @@ new_prj_constitutive_relation <- function(type,
     structure(list(type = type,
                    id = id,
                    youngs_modulus = youngs_modulus,
+                   youngs_modulus_i = youngs_modulus_i,
+                   youngs_modulus_a = youngs_modulus_a,
                    poissons_ratio = poissons_ratio,
+                   poissons_ratio_ii = poissons_ratio_ii,
+                   poissons_ratio_ia = poissons_ratio_ia,
                    nonlinear_solver = nonlinear_solver,
                    behaviour = behaviour,
                    material_properties = material_properties,
                    shear_modulus = shear_modulus,
+                   shear_modulus_ii = shear_modulus_ii,
+                   shear_modulus_ia = shear_modulus_ia,
                    bulk_modulus = bulk_modulus,
                    kappa = kappa,
                    beta = beta,
@@ -856,6 +900,46 @@ new_prj_constitutive_relation <- function(type,
                    flatten_on_exp = character()
     ),
     class = "prj_constitutive_relation"
+    )
+}
+
+
+#' prj_ice_constitutive_relation
+#' @description tag: ice_constitutive_relation
+#' @param type string:
+#' @param youngs_modulus Optional:
+#' @param poissons_ratio Optional:
+#' @export
+prj_ice_constitutive_relation <- function(
+    type,
+    youngs_modulus = NULL,
+    poissons_ratio = NULL
+    ) {
+
+
+    new_prj_ice_constitutive_relation(
+        type,
+        youngs_modulus,
+        poissons_ratio
+    )
+
+}
+
+
+new_prj_ice_constitutive_relation <- function(
+    type,
+    youngs_modulus = NULL,
+    poissons_ratio = NULL
+    ) {
+    
+    structure(list(type = type,
+                   youngs_modulus = youngs_modulus,
+                   poissons_ratio = poissons_ratio,
+                   xpath = "processes/process/ice_constitutive_relation",
+                   attr_names = character(),
+                   flatten_on_exp = character()
+    ),
+    class = "prj_ice_constitutive_relation"
     )
 }
 

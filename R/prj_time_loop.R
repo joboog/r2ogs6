@@ -5,13 +5,15 @@
 #' prj_time_loop
 #' @description tag: time_loop
 #' @param processes list, prj_tl_process:
-#' @param output prj_output:
+#' @param output Optional: prj_output:
+#' @param outputs Optional: list, prj_output:
 #' @param global_process_coupling Optional: prj_global_process_coupling:
 #' @param submesh_residuum_output Optional: prj_submesh_residuum_output:
 #' @example man/examples/ex_prj_time_loop.R
 #' @export
 prj_time_loop <- function(processes,
-                          output,
+                          output = NULL,
+                          outputs = NULL,
                           global_process_coupling = NULL,
                           submesh_residuum_output = NULL) {
 
@@ -20,18 +22,26 @@ prj_time_loop <- function(processes,
 
     new_prj_time_loop(processes,
                         output,
+                        outputs,
                         global_process_coupling,
                         submesh_residuum_output)
 }
 
 
 new_prj_time_loop <- function(processes,
-                                output,
+                                output = NULL,
+                                outputs = NULL,
                                 global_process_coupling = NULL,
                                 submesh_residuum_output = NULL) {
 
     is_wrapper_list(processes, "prj_tl_process")
-    assertthat::assert_that(class(output) == "prj_output")
+    # either output or outputs has to be given
+    assertthat::assert_that((!is.null(output)) | (!is.null(outputs)))
+    assertthat::assert_that(!(!is.null(output) & !is.null(outputs))) 
+    is_null_or_has_class(output, "prj_output")
+    if(!is.null(outputs)){
+        is_wrapper_list(outputs, "prj_output")
+    }
 
     is_null_or_has_class(global_process_coupling,
                                   "prj_global_process_coupling")
@@ -42,6 +52,7 @@ new_prj_time_loop <- function(processes,
         list(
             processes = processes,
             output = output,
+            outputs = outputs,
             global_process_coupling = global_process_coupling,
             submesh_residuum_output = submesh_residuum_output,
             xpath = "time_loop",
@@ -150,11 +161,12 @@ new_prj_tl_process <- function(ref,
 #' @param fixed_output_times Optional: string | numeric:
 #' @param hdf Optional: numeric
 #' @param geometrical_sets Optional: list, prj_geometrical_set
+#' @param output_extrapolation_residuals Optional: string: Either "true" or "false"
 #' @example man/examples/ex_prj_output.R
 #' @export
 prj_output <- function(type,
                           prefix,
-                          variables,
+                          variables = NULL,
                           suffix = NULL,
                           timesteps = NULL,
                           compress_output = NULL,
@@ -163,7 +175,9 @@ prj_output <- function(type,
                           meshes = NULL,
                           fixed_output_times = NULL,
                           hdf = NULL,
-                          geometrical_sets = NULL) {
+                          geometrical_sets = NULL,
+                          output_extrapolation_residuals = NULL
+                ) {
 
     #Coerce input
     fixed_output_times <- coerce_string_to_numeric(fixed_output_times)
@@ -179,13 +193,14 @@ prj_output <- function(type,
                          meshes,
                          fixed_output_times,
                          hdf,
-                         geometrical_sets)
+                         geometrical_sets,
+                         output_extrapolation_residuals)
 }
 
 
 new_prj_output <- function(type,
                                  prefix,
-                                 variables,
+                                 variables = NULL,
                                  suffix = NULL,
                                  timesteps = NULL,
                                  compress_output = NULL,
@@ -194,15 +209,22 @@ new_prj_output <- function(type,
                                  meshes = NULL,
                                  fixed_output_times = NULL,
                                  hdf = NULL,
-                                 geometrical_sets = NULL) {
+                                 geometrical_sets = NULL,
+                                 output_extrapolation_residuals = NULL) {
 
     assertthat::assert_that(assertthat::is.string(type))
     assertthat::assert_that(assertthat::is.string(prefix))
-    assertthat::assert_that(is.vector(variables))
-    names(variables) <- rep("variable", length(variables))
+
+    if(!is.null(variables)){
+        assertthat::assert_that(is.vector(variables))
+        names(variables) <- rep("variable", length(variables))
+    } else {
+        variables <- character()
+    }
 
     are_null_or_strings(suffix,
-                               data_mode)
+                        data_mode,
+                        output_extrapolation_residuals)
 
 
     if(!is.null(timesteps)){
@@ -211,7 +233,7 @@ new_prj_output <- function(type,
 
     are_null_or_string_flags(compress_output)
 
-    is_null_or_wrapper_list(meshes, "character")
+    is_null_or_wrapper_list(meshes, "prj_output_mesh")
 
     are_null_or_numeric(fixed_output_times)
 
@@ -230,7 +252,8 @@ new_prj_output <- function(type,
              fixed_output_times = fixed_output_times,
              hdf = hdf,
              geometrical_sets = geometrical_sets,
-             xpath = "time_loop/output",
+             output_extrapolation_residuals = output_extrapolation_residuals,
+             xpath = c("time_loop/output", "time_loop/outputs/output"),
              attr_names = character(),
              flatten_on_exp = c("fixed_output_times")
         ),
@@ -662,4 +685,36 @@ validate_timesteps <- function(timesteps, in_output = FALSE){
     names(timesteps) <- rep("pair", length(timesteps))
 
     return(invisible(timesteps))
+}
+
+
+#===== prj_output_mesh =====
+
+#'prj_output_mesh
+#'@description tag: mesh
+#'@param name string : Name of the mesh
+#'@param material_ids Optional: string
+#'@export
+prj_output_mesh <- function(name,
+                            material_ids = NULL) {
+
+    new_prj_output_mesh(name,
+                        material_ids)
+}
+
+new_prj_output_mesh <- function(name,
+                                material_ids = NULL) {
+
+    are_null_or_strings(material_ids)
+
+    structure(list(
+        name = name,
+        material_ids = material_ids,
+        xpath = "time_loop/output/meshes/mesh",
+        attr_names = c("material_ids"),
+        flatten_on_exp = character(),
+        remove_name_on_exp = TRUE
+        ),
+        class = "prj_output_mesh"
+    )
 }

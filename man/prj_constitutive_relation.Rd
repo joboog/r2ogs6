@@ -8,11 +8,17 @@ prj_constitutive_relation(
   type,
   id = NULL,
   youngs_modulus = NULL,
+  youngs_modulus_i = NULL,
+  youngs_modulus_a = NULL,
   poissons_ratio = NULL,
+  poissons_ratio_ii = NULL,
+  poissons_ratio_ia = NULL,
   nonlinear_solver = NULL,
   behaviour = NULL,
   material_properties = NULL,
   shear_modulus = NULL,
+  shear_modulus_ii = NULL,
+  shear_modulus_ia = NULL,
   bulk_modulus = NULL,
   kappa = NULL,
   beta = NULL,
@@ -54,7 +60,15 @@ prj_constitutive_relation(
 
 \item{youngs_modulus}{Optional:}
 
+\item{youngs_modulus_i}{Optional:}
+
+\item{youngs_modulus_a}{Optional:}
+
 \item{poissons_ratio}{Optional:}
+
+\item{poissons_ratio_ii}{Optional:}
+
+\item{poissons_ratio_ia}{Optional:}
 
 \item{nonlinear_solver}{Optional:}
 
@@ -63,6 +77,10 @@ prj_constitutive_relation(
 \item{material_properties}{Optional:}
 
 \item{shear_modulus}{Optional:}
+
+\item{shear_modulus_ii}{Optional:}
+
+\item{shear_modulus_ia}{Optional:}
 
 \item{bulk_modulus}{Optional:}
 

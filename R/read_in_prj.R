@@ -168,4 +168,14 @@ read_in_prj <- function(ogs6_obj,
         }
     }
 
+    if(!is.null(ogs6_obj$rasters)){
+        for(i in seq_len(length(ogs6_obj$rasters))){
+            if(!is.null(ogs6_obj$rasters[[i]])){
+                file_path <- ogs6_obj$rasters[[i]]$file
+                ogs6_obj$rasters[[i]]$file <- make_abs_path(file_path,
+                                                            prj_base_path)
+            }
+        }
+    }
+
 }

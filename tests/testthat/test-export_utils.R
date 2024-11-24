@@ -196,7 +196,6 @@ test_that("to_node works for prj_process class", {
         name = "HM",
         type = "HYDRO_MECHANICS",
         integration_order = 3,
-        dimension = 2,
         constitutive_relation = prj_constitutive_relation(
             type = "LinearElasticIsotropic",
             youngs_modulus = "E",

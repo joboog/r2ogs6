@@ -50,6 +50,8 @@ prj_pr_property(
   dry_thermal_conductivity = NULL,
   wet_thermal_conductivity = NULL,
   mean_type = NULL,
+  steepness = NULL,
+  characteristic_temperature = NULL,
   ...
 )
 }
@@ -143,6 +145,10 @@ prj_pr_property(
 \item{wet_thermal_conductivity}{Optional:}
 
 \item{mean_type}{Optional: string}
+
+\item{steepness}{Optional: numeric}
+
+\item{characteristic_temperature}{Optional: numeric}
 
 \item{...}{dvalue}
 }

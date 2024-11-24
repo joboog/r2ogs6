@@ -116,19 +116,38 @@ node_to_prj_class_object <- function(xml_node,
     parameter_nodes <- xml2::xml_children(xml_node)
     parameters <- c(list(), xml2::xml_attrs(xml_node))
 
-    for(i in seq_len(length(parameter_nodes))){
+    if(length(parameter_nodes)==0){
+        xml_text <- xml2::xml_text(xml_node)
+        xml_text_clean <- stringr::str_trim(xml_text)
+        xml_text_clean <-
+            stringr::str_remove_all(xml_text_clean, "[\n]")
+            if(xml_text_clean != ""){
+                parameters <- c(parameters, xml_text_clean)
+                
+                # Add dummy name "name" to parameter
+                if(length(parameters)==1){
+                    names(parameters) <- "name"
+                # In case there is an attribute
+                }else{
+                    names(parameters)[2] <- "name"
+                }
+            }        
+        
+    }else{
+        for(i in seq_len(length(parameter_nodes))){
 
-        new_xpath <- paste0(xpath,
-                             "/",
-                             xml2::xml_name(parameter_nodes[[i]]))
+            new_xpath <- paste0(xpath,
+                                "/",
+                                xml2::xml_name(parameter_nodes[[i]]))
 
-        #Guess R representation of node, add it to parameter list
-        parameters <- c(parameters, list(node_to_object(parameter_nodes[[i]],
-                                                        new_xpath)))
+            #Guess R representation of node, add it to parameter list
+            parameters <- c(parameters, list(node_to_object(parameter_nodes[[i]],
+                                                            new_xpath)))
 
-        #Name parameter after the xml_node child name
-        names(parameters)[[length(parameters)]] <-
-            xml2::xml_name(parameter_nodes[[i]])
+            #Name parameter after the xml_node child name
+            names(parameters)[[length(parameters)]] <-
+                xml2::xml_name(parameter_nodes[[i]])
+    }
     }
 
     class_name <- get_class_from_xpath(xpath)
@@ -200,6 +219,12 @@ node_to_object <- function(xml_node,
 
     node_name <- xml2::xml_name(xml_node)
 
+    #Node is represented by subclass
+    if(!is.null(get_class_from_xpath(xpath))){
+        return(invisible(node_to_prj_class_object(xml_node,
+                                                     xpath)))
+    }
+
     # joboog: I think this if statements should be combined to if-else
     # statements to be more explicit and to catch errors easier.
     #Node is leaf
@@ -230,11 +255,6 @@ node_to_object <- function(xml_node,
         }
     }
 
-    #Node is represented by subclass
-    if(!is.null(get_class_from_xpath(xpath))){
-        return(invisible(node_to_prj_class_object(xml_node,
-                                                     xpath)))
-    }
 
     #Node has children but is not represented by subclass
     wrapper_list <- list()

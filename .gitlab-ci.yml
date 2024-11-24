@@ -24,7 +24,7 @@ variables:
   - apt-get install -y python3.10-venv python3-pip
 
 test:
-  image: rocker/r-ver:4.2.3
+  image: rocker/r-ver:4.4.1
   stage: test
   tags:
     - docker
@@ -38,7 +38,7 @@ test:
     - R -e "install.packages('renv', repos = c(CRAN = 'https://cloud.r-project.org'))"
     - R -e "renv::restore()"
     # Setup python and fix python virtual environment
-    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy", "vtk"))'
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy==1.26.4", "vtk==9.3.1"))'
     - echo "RETICULATE_PYTHON=/root/.virtualenvs/r2ogs6/bin/python" > .Renviron
     - R -e 'reticulate::py_config()'
     #- R -e 'renv::status()'
@@ -50,6 +50,7 @@ test:
     # - R CMD build . --no-manual --no-build-vignettes
     # - R CMD check $(ls -1t *.tar.gz | head -n 1) --no-manual --no-build-vignettes
   after_script:
+    - R -e "install.packages('covr', repos = c(CRAN = 'https://cloud.r-project.org'))"
     - R -e 'covr::package_coverage(type = c("tests", "examples"), quiet = F)'
   coverage: '/Coverage: \d+\.\d+\%/'
   # Omit cache for now, ci always crashed the second time, dunno why
@@ -64,7 +65,7 @@ test:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 test_install:
-  image: rocker/r-ver:4.2.3
+  image: rocker/r-ver:4.4.1
   stage: production
   tags:
     - docker
@@ -75,11 +76,11 @@ test_install:
     # Install r2ogs6
     - R -e 'install.packages(c("remotes", "BiocManager"))'
     - R -e "remotes::install_local(path=\"$CI_PROJECT_DIR\", dependencies='Imports', repos=BiocManager::repositories())"
-    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy", "vtk"))'
+    - R -e 'reticulate::virtualenv_create(envname="r2ogs6", python="/usr/bin/python3", packages = c("numpy==1.26.4", "vtk==9.3.1"))'
     #- R -e 'reticulate::use_virtualenv(virtualenv="r2ogs6")'
     - echo "RETICULATE_PYTHON=/root/.virtualenvs/r2ogs6/bin/python" > .Renviron
     - R -e 'reticulate::py_config()'
-    - R -e 'r2ogs6::install_ogs(ogs_version = "6.4.4", envname = "r2ogs6")'
+    - R -e 'r2ogs6::install_ogs(ogs_version = "6.5.2", envname = "r2ogs6")'
     - R -e 'reticulate::py_module_available("ogs")'
     # Run benchmark
     - |

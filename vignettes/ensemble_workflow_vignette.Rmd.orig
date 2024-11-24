@@ -25,6 +25,12 @@ library(ggplot2)
 library(dplyr)
 ```
 
+```
+# call this if you have not set a `config.yml` file as stated in the installation
+# instructions
+set_ogs6_bin_path()
+```
+
 ## Introduction
 Hi there! This is a practical guide on the `OGS6_Ensemble` class from the `r2ogs6` package. I will show you how you can use this class to set up ensemble runs for OpenGeoSys 6, extract the results and plot them.
 
@@ -166,6 +172,7 @@ So far we've only considered the `storage` parameter. Now we want to have a look
 This time it's important we set the `OGS6_Ensemble` parameter `sequential_mode` to `TRUE` as this will change the supplied parameters *sequentially* which means in the end we have 18 (7 + 7 + 4) simulations which is equal to the sum of elements in the value vectors you supply (I've named them `values` below for clarity, naming them is optional though).
 
 The default `FALSE` would give an error message because our value vectors do not have the same length and even if they had, it wouldn't do what we want - the number of simulations would equal the length of *one* value vector (thus requiring them to be of the same length). Generally, set `sequential_mode` to `TRUE` if you want to examine the influence of parameters on a simulation *independently*. If you want to examine how the parameters influence *each other* as in wanting to test parameter combinations, the default mode is the way to go. 
+Note, that the run time of this ensemble simulation may take up to 20 min.
 
 ```{r}
 # Change this to fit your system
@@ -346,6 +353,7 @@ ogs6_ens_theis_2 <-
 ```
 
 Now you can start the simulation.
+Be aware that the run tim of the simulation can be up to 15 min.
 
 ```{r results='hide'}
 ogs6_ens_theis_2$run_simulation()

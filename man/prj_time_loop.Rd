@@ -6,7 +6,8 @@
 \usage{
 prj_time_loop(
   processes,
-  output,
+  output = NULL,
+  outputs = NULL,
   global_process_coupling = NULL,
   submesh_residuum_output = NULL
 )
@@ -14,7 +15,9 @@ prj_time_loop(
 \arguments{
 \item{processes}{list, prj_tl_process:}
 
-\item{output}{prj_output:}
+\item{output}{Optional: prj_output:}
+
+\item{outputs}{Optional: list, prj_output:}
 
 \item{global_process_coupling}{Optional: prj_global_process_coupling:}
 

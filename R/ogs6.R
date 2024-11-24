@@ -692,6 +692,23 @@ OGS6 <- R6::R6Class("OGS6",
           private$.include <- value
           names(private$.include) <- "file"
         }
+      },
+
+      #' @field rasters
+      #' \code{.prj} \code{rasters} tag. \code{value} must be list of
+      #' \code{prj_raster} objects
+      rasters = function(value) {
+        if(missing(value)) {
+          private$.rasters
+        }else{
+          if(assertthat::is.string(value)){
+            value <- list(include = c(file = value))
+          }else{
+            is_wrapper_list(value,
+                          ogs6_prj_top_level_classes()[["rasters"]])
+          }
+          private$.rasters <- value
+        }
       }
   ),
 
@@ -732,6 +749,7 @@ OGS6 <- R6::R6Class("OGS6",
       .linear_solvers = list(),
       .test_definition = list(),
       .insitu = NULL,
+      .rasters = list(),
 
       # .pvd objects (output)
       .pvds = NULL,

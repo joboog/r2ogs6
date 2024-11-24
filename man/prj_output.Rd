@@ -7,7 +7,7 @@
 prj_output(
   type,
   prefix,
-  variables,
+  variables = NULL,
   suffix = NULL,
   timesteps = NULL,
   compress_output = NULL,
@@ -16,7 +16,8 @@ prj_output(
   meshes = NULL,
   fixed_output_times = NULL,
   hdf = NULL,
-  geometrical_sets = NULL
+  geometrical_sets = NULL,
+  output_extrapolation_residuals = NULL
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ Either "true" or "false"}
 \item{hdf}{Optional: numeric}
 
 \item{geometrical_sets}{Optional: list, prj_geometrical_set}
+
+\item{output_extrapolation_residuals}{Optional: string: Either "true" or "false"}
 }
 \description{
 tag: output

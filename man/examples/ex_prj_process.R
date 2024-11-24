@@ -9,7 +9,6 @@ prj_process(
         secondary_variable = c(internal_name = "sigma_yy", output_name = "sigma_yy")
     ),
     specific_body_force = c(0, 0, 0),
-    dimension = 3,
     constitutive_relation = prj_constitutive_relation(
         type = "LinearElasticIsotropic",
         youngs_modulus = "E",

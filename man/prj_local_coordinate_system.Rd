@@ -11,17 +11,21 @@ prj_local_coordinate_system(
 )
 }
 \arguments{
-\item{basis_vector_0}{string | double: A basis vector}
+\item{basis_vector_0}{prj_basis_vector_0: A basis vector}
 
-\item{basis_vector_1}{string | double: A basis vector}
+\item{basis_vector_1}{prj_basis_vector_1: A basis vector}
 
-\item{basis_vector_2}{Optional: string | double: A basis vector}
+\item{basis_vector_2}{Optional prj_basis_vector_2: A basis vector}
 }
 \description{
 tag: local_coordinate_system
 }
 \examples{
-prj_local_coordinate_system(basis_vector_0 = "e0",
-                               basis_vector_1 = "e1",
-                               basis_vector_2 = "e2")
+e0 <- prj_basis_vector_0(name = "e0")
+e1 <- prj_basis_vector_1(name = "e1")
+e2 <- prj_basis_vector_2(implicit = "true")
+
+prj_local_coordinate_system(basis_vector_0 = e0,
+                            basis_vector_1 = e1,
+                            basis_vector_2 = e2)
 }
