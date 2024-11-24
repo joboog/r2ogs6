@@ -263,6 +263,60 @@ df
 ```
 
 
+### Example Bechnmark with HDF5 output
+
+Now this shows how to run a real example benchmark that outputs a hdf5 file.
+Setup and run the benchmark.
+```r
+sim_path <- tempdir()
+ogs6_obj2 <- OGS6$new("ex_hdf5", sim_path = sim_path)
+bm <- "/home/boogjoha/work/r2ogs6/tmp/update_652/Data_652/Elliptic/square_1x1_SteadyStateDiffusion/square_1e2_GMRES_GML_output_xdmf-hdf5.prj"
+read_in_prj(ogs6_obj2, bm)
+
+dir_make_overwrite(ogs6_obj2$sim_path)
+run_benchmark(prj_path = bm, sim_path = ogs6_obj2$sim_path)
+```
+
+Now read the h5df output.
+```r
+ogs6_read_output_files(ogs6_obj2)
+h5_list <- ogs6_obj2$h5s[[1]]$get_h5("/")
+
+h5_list
+#> ogs6_obj2$h5s
+# [[1]]
+# OGS6_h5
+# h5 path:
+# /tmp/Rtmp4SkpPb/square_1x1_quad_1e2_GMRES_GML_output.h5 
+
+# h5 file structure ---------------------------------------------------------------------------------------------- 
+                              group                     name       otype
+#0                                 /                   meshes   H5I_GROUP
+#1                           /meshes square_1x1_geometry_left   H5I_GROUP
+#2  /meshes/square_1x1_geometry_left                 geometry H5I_DATASET
+#3  /meshes/square_1x1_geometry_left                 pressure H5I_DATASET
+#4  /meshes/square_1x1_geometry_left                 topology H5I_DATASET
+#5  /meshes/square_1x1_geometry_left                        v H5I_DATASET
+#6                           /meshes      square_1x1_quad_1e2   H5I_GROUP
+#7       /meshes/square_1x1_quad_1e2                 geometry H5I_DATASET
+#8       /meshes/square_1x1_quad_1e2                 pressure H5I_DATASET
+#9       /meshes/square_1x1_quad_1e2                 topology H5I_DATASET
+#10      /meshes/square_1x1_quad_1e2                        v H5I_DATASET
+#11                                /                    times H5I_DATASET
+#    dclass         dim
+#0                     
+#1                     
+#2    FLOAT  3 x 11 x 1
+#3    FLOAT      11 x 2
+#4  INTEGER      40 x 1
+#5    FLOAT  2 x 11 x 2
+#6                     
+#7    FLOAT 3 x 121 x 1
+#8    FLOAT     121 x 2
+#9  INTEGER     500 x 1
+#10   FLOAT 2 x 121 x 2
+#11   FLOAT           2
+```
 
 ## Running multiple simulations
 
