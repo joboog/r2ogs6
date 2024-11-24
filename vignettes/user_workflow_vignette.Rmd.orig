@@ -202,7 +202,26 @@ df <- ogs6_obj$h5s[[1]]$get_df(group = "/t_0", names = "pressure")
 df
 ```
 
+### Example Bechnmark with HDF5 output
 
+Now this shows how to run a real example benchmark that outputs a hdf5 file.
+Setup and run the benchmark.
+```
+sim_path <- tempdir()
+ogs6_obj2 <- OGS6$new("ex_hdf5", sim_path = sim_path)
+bm <- "/home/boogjoha/work/r2ogs6/tmp/update_652/Data_652/Elliptic/square_1x1_SteadyStateDiffusion/square_1e2_GMRES_GML_output_xdmf-hdf5.prj"
+read_in_prj(ogs6_obj2, bm)
+
+dir_make_overwrite(ogs6_obj2$sim_path)
+run_benchmark(prj_path = bm, sim_path = ogs6_obj2$sim_path)
+```
+
+Now read the h5df output.
+```
+ogs6_read_output_files(ogs6_obj2)
+h5_list <- ogs6_obj2$h5s[[1]]$get_h5("/")
+h5_list
+```
 
 ## Running multiple simulations
 
