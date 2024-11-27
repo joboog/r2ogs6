@@ -209,11 +209,12 @@ Setup and run the benchmark.
 ```
 sim_path <- tempdir()
 ogs6_obj2 <- OGS6$new("ex_hdf5", sim_path = sim_path)
-bm <- "/home/boogjoha/work/r2ogs6/tmp/update_652/Data_652/Elliptic/square_1x1_SteadyStateDiffusion/square_1e2_GMRES_GML_output_xdmf-hdf5.prj"
-read_in_prj(ogs6_obj2, bm)
+prj_path <- system.file("extdata/benchmarks/square_1x1_SteadyStateDiffusion/square_1e2_GMRES_GML_output_xdmf-hdf5.prj",
+                       package = "r2ogs6")
+read_in_prj(ogs6_obj2, prj_path)
 
 dir_make_overwrite(ogs6_obj2$sim_path)
-run_benchmark(prj_path = bm, sim_path = ogs6_obj2$sim_path)
+run_benchmark(prj_path = prj_path, sim_path = ogs6_obj2$sim_path)
 ```
 
 Now read the h5df output.
