@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,11 +54,17 @@
 <span>  <span class="va">type</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  youngs_modulus <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  youngs_modulus_i <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  youngs_modulus_a <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  poissons_ratio <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  poissons_ratio_ii <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  poissons_ratio_ia <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nonlinear_solver <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  behaviour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  material_properties <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shear_modulus <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shear_modulus_ii <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shear_modulus_ia <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bulk_modulus <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  kappa <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  beta <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -108,7 +114,23 @@
 <dd><p>Optional:</p></dd>
 
 
+<dt>youngs_modulus_i</dt>
+<dd><p>Optional:</p></dd>
+
+
+<dt>youngs_modulus_a</dt>
+<dd><p>Optional:</p></dd>
+
+
 <dt>poissons_ratio</dt>
+<dd><p>Optional:</p></dd>
+
+
+<dt>poissons_ratio_ii</dt>
+<dd><p>Optional:</p></dd>
+
+
+<dt>poissons_ratio_ia</dt>
 <dd><p>Optional:</p></dd>
 
 
@@ -125,6 +147,14 @@
 
 
 <dt>shear_modulus</dt>
+<dd><p>Optional:</p></dd>
+
+
+<dt>shear_modulus_ii</dt>
+<dd><p>Optional:</p></dd>
+
+
+<dt>shear_modulus_ia</dt>
 <dd><p>Optional:</p></dd>
 
 
@@ -273,8 +303,20 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "E"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus_i</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "nu"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio_ii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio_ia</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nonlinear_solver</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -286,6 +328,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus_ii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus_ia</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $bulk_modulus</span>

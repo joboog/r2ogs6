@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prj_time_loop</span><span class="op">(</span></span>
 <span>  <span class="va">processes</span>,</span>
-<span>  <span class="va">output</span>,</span>
+<span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outputs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  global_process_coupling <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  submesh_residuum_output <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -65,7 +66,11 @@
 
 
 <dt>output</dt>
-<dd><p>prj_output:</p></dd>
+<dd><p>Optional: prj_output:</p></dd>
+
+
+<dt>outputs</dt>
+<dd><p>Optional: list, prj_output:</p></dd>
 
 
 <dt>global_process_coupling</dt>
@@ -286,8 +291,11 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $geometrical_sets</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $output_extrapolation_residuals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "time_loop/output"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "time_loop/output"         "time_loop/outputs/output"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $attr_names</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
@@ -297,6 +305,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prj_output"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $outputs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $global_process_coupling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,31 +60,92 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>basis_vector_0</dt>
-<dd><p>string | double: A basis vector</p></dd>
+<dd><p>prj_basis_vector_0: A basis vector</p></dd>
 
 
 <dt>basis_vector_1</dt>
-<dd><p>string | double: A basis vector</p></dd>
+<dd><p>prj_basis_vector_1: A basis vector</p></dd>
 
 
 <dt>basis_vector_2</dt>
-<dd><p>Optional: string | double: A basis vector</p></dd>
+<dd><p>Optional prj_basis_vector_2: A basis vector</p></dd>
 
 </dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">prj_local_coordinate_system</span><span class="op">(</span>basis_vector_0 <span class="op">=</span> <span class="st">"e0"</span>,</span></span>
-<span class="r-in"><span>                               basis_vector_1 <span class="op">=</span> <span class="st">"e1"</span>,</span></span>
-<span class="r-in"><span>                               basis_vector_2 <span class="op">=</span> <span class="st">"e2"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">e0</span> <span class="op">&lt;-</span> <span class="fu"><a href="prj_basis_vector_0.html">prj_basis_vector_0</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"e0"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu"><a href="prj_basis_vector_1.html">prj_basis_vector_1</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"e1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">e2</span> <span class="op">&lt;-</span> <span class="fu"><a href="prj_basis_vector_2.html">prj_basis_vector_2</a></span><span class="op">(</span>implicit <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">prj_local_coordinate_system</span><span class="op">(</span>basis_vector_0 <span class="op">=</span> <span class="va">e0</span>,</span></span>
+<span class="r-in"><span>                            basis_vector_1 <span class="op">=</span> <span class="va">e1</span>,</span></span>
+<span class="r-in"><span>                            basis_vector_2 <span class="op">=</span> <span class="va">e2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $basis_vector_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e0"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $implicit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "local_coordinate_system/basis_vector_0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $attr_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "implicit"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $flatten_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $remove_name_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prj_basis_vector_0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $basis_vector_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $implicit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "local_coordinate_system/basis_vector_1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $attr_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "implicit"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $flatten_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $remove_name_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prj_basis_vector_1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $basis_vector_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "e2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $implicit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "true"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "local_coordinate_system/basis_vector_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $attr_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "implicit"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $flatten_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $remove_name_on_exp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prj_basis_vector_2"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "local_coordinate_system"</span>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,6 @@
 <span>  secondary_variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  specific_body_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  solid_density <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  coupling_scheme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  darcy_gravity <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference_temperature <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -133,6 +132,7 @@
 <span>  pressurized_crack_scheme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  subtype <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  apply_body_force_for_deformation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  use_b_bar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -164,10 +164,6 @@
 
 
 <dt>solid_density</dt>
-<dd><p>Optional:</p></dd>
-
-
-<dt>dimension</dt>
 <dd><p>Optional:</p></dd>
 
 
@@ -467,8 +463,13 @@
 <dd><p>Optional:</p></dd>
 
 
+<dt>use_b_bar</dt>
+<dd><p>Optional: string "true" or "false"</p></dd>
+
+
 <dt>...</dt>
-<dd><p>Optional: fracture_properties, constitutive_relation</p></dd>
+<dd><p>Optional: fracture_properties, constitutive_relation, 
+ice_constitutive_relation</p></dd>
 
 </dl></div>
 
@@ -485,7 +486,6 @@
 <span class="r-in"><span>        secondary_variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>internal_name <span class="op">=</span> <span class="st">"sigma_yy"</span>, output_name <span class="op">=</span> <span class="st">"sigma_yy"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    specific_body_force <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    dimension <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>    constitutive_relation <span class="op">=</span> <span class="fu"><a href="prj_constitutive_relation.html">prj_constitutive_relation</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>        type <span class="op">=</span> <span class="st">"LinearElasticIsotropic"</span>,</span></span>
 <span class="r-in"><span>        youngs_modulus <span class="op">=</span> <span class="st">"E"</span>,</span></span>
@@ -533,8 +533,20 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "E"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus_i</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $youngs_modulus_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "nu"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio_ii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $poissons_ratio_ia</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $nonlinear_solver</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -546,6 +558,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus_ii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $shear_modulus_ia</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $bulk_modulus</span>
@@ -659,9 +677,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $solid_density</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $dimension</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coupling_scheme</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -888,6 +903,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $apply_body_force_for_deformation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ice_constitutive_relation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> named list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $use_b_bar</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "processes/process"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -898,7 +919,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "specific_body_force"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $unwrap_on_exp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fracture_properties"   "constitutive_relation"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fracture_properties"       "constitutive_relation"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "ice_constitutive_relation"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prj_process"</span>

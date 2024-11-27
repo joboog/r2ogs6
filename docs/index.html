@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,23 +62,22 @@
 <div class="page-header"><h1 id="r2ogs6">r2ogs6<a class="anchor" aria-label="anchor" href="#r2ogs6"></a>
 </h1></div>
 <p><a href="https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/commits/master" class="external-link"><img src="https://gitlab.opengeosys.org/ogs/tools/r2ogs6/badges/master/pipeline.svg" alt="Pipeline Status"></a> <a href="https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/jobs" class="external-link"><img src="https://gitlab.opengeosys.org/ogs/tools/r2ogs6/badges/master/coverage.svg" alt="Test Coverage"></a> <a href="https://doi.org/10.5281/zenodo.7389626" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.7389626.svg" alt="DOI"></a> <a href="https://joss.theoj.org/papers/08cb661c22ca8553e418acafeb9e7cb5" class="external-link"><img src="https://joss.theoj.org/papers/08cb661c22ca8553e418acafeb9e7cb5/status.svg" alt="JOSS Submission"></a></p>
-<p><code>r2ogs6</code> is an R-API to the multiphysics simulator <a href="https://gitlab.opengeosys.org/ogs/ogs" class="external-link">OpenGeoSys 6</a>. <code>r2ogs6</code> allows pre-processing (preparing input files), executing simulation runs, retrieving, post-processing and visualizing output data in R. Furthermore, the package comes with functionality to define ensemble runs.</p>
+<p><code>r2ogs6</code> provides a file–based interface of the multi–physics sub-surface process simulator <a href="https://gitlab.opengeosys.org/ogs/ogs" class="external-link">OpenGeoSys 6</a> to the <code>R</code> programing and statistical computing environment. It enables geoscientist, hydrologists and engineers to perform and analyze simulation models of the sub–surface earth system with R. <code>r2ogs6</code> provides means to: - pre-process (preparing input files) simulations with OpenGeoSys 6 - execute single and ensemble simulations - output post-processing and visualization</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p><code>r2ogs6</code> requires an installation of OpenGeoSys 6. Furthermore, Python including the libraries <code>numpy</code> and <code>vtk</code> is required to read in the <code>.vtu</code> and <code>.pvd</code> files produced by OpenGeoSys 6. These can be install after having installed <code>r2ogs6</code>. <code>r2ogs6</code> was tested with the following environment: <code>python==3.10.12</code>, <code>vtk==9.3.0</code>, <code>numpy==1.26.4</code></p>
+<p><code>r2ogs6</code> requires an installation of OpenGeoSys 6. Furthermore, Python including the libraries <code>numpy</code> and <code>vtk</code> is required to read in the <code>.vtu</code> and <code>.pvd</code> files produced by OpenGeoSys 6. These can be install after having installed <code>r2ogs6</code>. <code>r2ogs6</code> was tested with the following environment: <code>python==3.10.12</code>, <code>vtk==9.3.1</code>, <code>numpy==1.26.4</code></p>
 <div class="section level3">
 <h3 id="r2ogs6-installation">r2ogs6 Installation<a class="anchor" aria-label="anchor" href="#r2ogs6-installation"></a>
 </h3>
 <p>First, open a terminal and clone the <code>r2ogs6</code> repository to your local machine.</p>
-<pre><code>git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git
-cd r2ogs6</code></pre>
+<pre><code>git clone https://gitlab.opengeosys.org/ogs/tools/r2ogs6.git</code></pre>
 <p>To install <code>r2ogs6</code>, you first need the R-packages <code>remotes</code> and <code>BiocManager</code>. <code>remotes</code> is used for installing <code>r2ogs6</code> and <code>BiocManager</code> to set the URLs to search dependencies on <em>CRAN</em> and <em>bioconductor.org</em>. For instance, the dependency <code>rhdf5</code> is only available on <em>bioconductor.org</em>. Open a R console in your specific project:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"remotes"</span>, <span class="st">"BiocManager"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>With <code>remotes</code>, you can now install <code>r2ogs6</code> in your preferred library.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install r2ogs6. Change the path to that of the cloned repository!</span></span>
+<code class="sourceCode R"><span><span class="co"># Install r2ogs6. Change "path/to/r2ogs6" to that of the cloned repository!</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_local.html" class="external-link">install_local</a></span><span class="op">(</span></span>
 <span>    path<span class="op">=</span><span class="st">"path/to/r2ogs6"</span>, </span>
 <span>    dependencies<span class="op">=</span><span class="st">"Imports"</span>,</span>
@@ -109,18 +108,22 @@ cd r2ogs6</code></pre>
 </h4>
 <p>Create a Python virtual environment with a specific name (e.g. "r2ogs6) and the path to the Python executable you just installed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_create</a></span><span class="op">(</span>envname<span class="op">=</span><span class="st">"r2ogs6"</span>, python<span class="op">=</span><span class="st">"/path/to/python"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_create</a></span><span class="op">(</span></span>
+<span>    envname<span class="op">=</span><span class="st">"r2ogs6"</span>, </span>
+<span>    python<span class="op">=</span><span class="st">"/path/to/python"</span>,</span>
+<span>    packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"numpy==1.26.4"</span>, <span class="st">"vtk==9.3.1"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Make sure that <code>reticulate::py_config()$python</code> points to the python executable in the newly installed Python virtual environment. You can try to force <code>reticulate</code> to use the executable of your environment by:</p>
-<pre><code><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span>envname<span class="op">=</span><span class="st">"r2ogs6"</span><span class="op">)</span></span></code></pre>
-<p>If that does not work, quit your R session and create a <code>.Renviron</code> file in your project folder:</p>
+<pre><code><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span>virtualenv<span class="op">=</span><span class="st">"r2ogs6"</span><span class="op">)</span></span></code></pre>
+<p>If that does not work, quit your R session and create a <code>.Renviron</code> file in your project folder where you can set the path to the created virtual python environment:</p>
 <pre><code># .Renviron linux
 RETICULATE_PYTHON=/path/to/your/virtualenv/bin/python</code></pre>
-<p>This file is read at the start-up of R and forces <code>reticulate</code> to use your specific Python executable. Double check:</p>
+<p>This file is read at the start-up of R and forces <code>reticulate</code> to use your specific Python executable. Double check if your python envrionment is now recognized:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_config.html" class="external-link">py_config</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Then you can install OpenGeoSys 6 (the Python dependencies <code>numpy</code> and <code>vtk</code> will be installed alongside) as Python module.</p>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">r2ogs6</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/install_ogs.html">install_ogs</a></span><span class="op">(</span>ogs_version <span class="op">=</span> <span class="st">"6.4.4"</span>, envname <span class="op">=</span> <span class="st">"r2ogs6"</span><span class="op">)</span></span></code></pre>
+<span><span class="fu"><a href="reference/install_ogs.html">install_ogs</a></span><span class="op">(</span>ogs_version <span class="op">=</span> <span class="st">"6.5.2"</span>, envname <span class="op">=</span> <span class="st">"r2ogs6"</span><span class="op">)</span></span></code></pre>
 <p>Be aware, to install the OpenGeoSys 6 version compatible with the <code>r2ogs6</code> version, see <a href="https://gitlab.opengeosys.org/ogs/tools/r2ogs6/-/releases" class="external-link">releases</a>. Check if OpenGeoSys 6 was installed correctly.</p>
 <pre><code><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_module_available.html" class="external-link">py_module_available</a></span><span class="op">(</span><span class="st">"ogs"</span><span class="op">)</span></span></code></pre>
 <p>The OpenGeoSys 6 binary should be located at <code>/path/to/your/python_env/bin/ogs</code> (Linux) or <code>/path/to/your/python_env/Scripts/ogs</code> (Windows). In your active R session you can temporarily set this path as default when using <code>r2ogs6</code> (sets <code>options("r2ogs6.default_ogs6_bin_path")</code>.)</p>
@@ -140,6 +143,31 @@ RETICULATE_PYTHON=/path/to/your/virtualenv/bin/python</code></pre>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<p>To quickly test if your set up works just run a benchmark shipped with the package. Remember that if you closed your R session in between you may have to reset the <code>ogs_bin_path</code> by <code><a href="reference/set_ogs6_bin_path.html">set_ogs6_bin_path()</a></code>. Now you can setup an example by:</p>
+<pre><code><span><span class="va">sim_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create new ogs object</span></span>
+<span><span class="va">ogs6_obj</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/OGS6.html">OGS6</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>    sim_name <span class="op">=</span> <span class="st">"my_simulation"</span>,</span>
+<span>    sim_path <span class="op">=</span> <span class="va">sim_path</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Read in a project setup file</span></span>
+<span><span class="va">prj_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>    <span class="st">"extdata/benchmarks/flow_no_strain/flow_no_strain.prj"</span>,</span>
+<span>    package <span class="op">=</span> <span class="st">"r2ogs6"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/read_in_prj.html">read_in_prj</a></span><span class="op">(</span><span class="va">ogs6_obj</span>, prj_path <span class="op">=</span> <span class="va">prj_path</span>, read_in_gml <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre>
+<p>Just start the simulation, check if it succeeds (returns a “0” exit status) and hav a look at the output.</p>
+<pre><code><span><span class="fu"><a href="reference/ogs6_run_simulation.html">ogs6_run_simulation</a></span><span class="op">(</span><span class="va">ogs6_obj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/ogs6_read_output_files.html">ogs6_read_output_files</a></span><span class="op">(</span><span class="va">ogs6_obj</span><span class="op">)</span></span>
+<span><span class="va">result_df</span> <span class="op">&lt;-</span> <span class="va">ogs6_obj</span><span class="op">$</span><span class="va">pvds</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">get_point_data</span><span class="op">(</span>keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pressure"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">result_df</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="further-reading">Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <p>For tutorials on how to use the <code>r2ogs6</code> package, have a look at its vignettes:</p>
 <ul>

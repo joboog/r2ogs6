@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">r2ogs6</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.644</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.652</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prj_output</span><span class="op">(</span></span>
 <span>  <span class="va">type</span>,</span>
 <span>  <span class="va">prefix</span>,</span>
-<span>  <span class="va">variables</span>,</span>
+<span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  suffix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  timesteps <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  compress_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -62,7 +62,8 @@
 <span>  meshes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fixed_output_times <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hdf <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  geometrical_sets <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  geometrical_sets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_extrapolation_residuals <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +116,10 @@ Either "true" or "false"</p></dd>
 
 <dt>geometrical_sets</dt>
 <dd><p>Optional: list, prj_geometrical_set</p></dd>
+
+
+<dt>output_extrapolation_residuals</dt>
+<dd><p>Optional: string: Either "true" or "false"</p></dd>
 
 </dl></div>
 
@@ -179,8 +184,11 @@ Either "true" or "false"</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $geometrical_sets</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $output_extrapolation_residuals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xpath</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "time_loop/output"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "time_loop/output"         "time_loop/outputs/output"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $attr_names</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>

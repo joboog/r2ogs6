@@ -91,6 +91,15 @@
     <loc>https://joboog.github.io/r2ogs6/reference/ogs6_run_simulation.html</loc>
   </url>
   <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_basis_vector_0.html</loc>
+  </url>
+  <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_basis_vector_1.html</loc>
+  </url>
+  <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_basis_vector_2.html</loc>
+  </url>
+  <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_borehole_heat_exchanger.html</loc>
   </url>
   <url>
@@ -148,6 +157,9 @@
     <loc>https://joboog.github.io/r2ogs6/reference/prj_global_process_coupling.html</loc>
   </url>
   <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_ice_constitutive_relation.html</loc>
+  </url>
+  <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_insitu.html</loc>
   </url>
   <url>
@@ -176,6 +188,9 @@
   </url>
   <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_output.html</loc>
+  </url>
+  <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_output_mesh.html</loc>
   </url>
   <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_parameter.html</loc>
@@ -209,6 +224,9 @@
   </url>
   <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_python_script.html</loc>
+  </url>
+  <url>
+    <loc>https://joboog.github.io/r2ogs6/reference/prj_raster.html</loc>
   </url>
   <url>
     <loc>https://joboog.github.io/r2ogs6/reference/prj_rate.html</loc>
